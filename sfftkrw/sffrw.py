@@ -23,7 +23,7 @@ __updated__ = '2018-02-23'
 
 
 
-def handle_convert(args, configs):  # @UnusedVariable
+def handle_convert(args):  # @UnusedVariable
     """
     Handle `convert` subcommand
 
@@ -67,7 +67,7 @@ def handle_convert(args, configs):  # @UnusedVariable
     return os.EX_OK
 
 
-def handle_view(args, configs):  # @UnusedVariable
+def handle_view(args):  # @UnusedVariable
     """Handle `view` subcommand
     
     :param args: parsed arguments
@@ -106,26 +106,6 @@ def handle_view(args, configs):  # @UnusedVariable
     else:
         print("Not implemented view for files of type .{}".format(args.from_file.split('.')[-1]), file=sys.stderr)
     return os.EX_OK
-
-
-def handle_config(args, configs):
-    """Handle `view` subcommand
-    
-    :param args: parsed arguments
-    :type args: `argparse.Namespace`
-    :param configs: configurations object
-    :type configs: ``sfftk.core.configs.Configs``
-    :return int status: status
-    """
-    if args.config_subcommand == "get":
-        from .core.configs import get_configs
-        return get_configs(args, configs)
-    elif args.config_subcommand == "set":
-        from .core.configs import set_configs
-        return set_configs(args, configs)
-    elif args.config_subcommand == "del":
-        from .core.configs import del_configs
-        return del_configs(args, configs)
 
 
 def _module_test_runner(mod, args):
@@ -167,7 +147,7 @@ def _discover_test_runner(path, args, top_level_dir=None):
     return os.EX_OK
 
 
-def handle_tests(args, configs):
+def handle_tests(args):
     """Handle `test` subcommand
     
     :param args: parsed arguments
@@ -205,7 +185,7 @@ def handle_tests(args, configs):
 def main():
     try:
         from .core.parser import parse_args
-        args, configs = parse_args(sys.argv[1:])
+        args = parse_args(sys.argv[1:])
         # missing args
         if args == os.EX_USAGE:
             return os.EX_USAGE
@@ -213,17 +193,17 @@ def main():
             return os.EX_OK
         # subcommands
         if args.subcommand == 'prep':
-            return handle_prep(args, configs)
+            return handle_prep(args)
         elif args.subcommand == 'convert':
-            return handle_convert(args, configs)
+            return handle_convert(args)
         elif args.subcommand == 'notes':
-            return handle_notes(args, configs)
+            return handle_notes(args)
         elif args.subcommand == "view":
-            return handle_view(args, configs)
+            return handle_view(args)
         elif args.subcommand == "config":
-            return handle_config(args, configs)
+            return handle_config(args)
         elif args.subcommand == "tests":
-            return handle_tests(args, configs)
+            return handle_tests(args)
 
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
