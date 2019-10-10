@@ -39,61 +39,6 @@ class TestMain_handle_convert(unittest.TestCase):
         for s in glob.glob(os.path.join(TEST_DATA_PATH, '*.sff')):
             os.remove(s)
 
-    def test_seg(self):
-        """Test that we can convert .seg"""
-        args, configs = parse_args('convert -o {} {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'test_data.sff'),
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.seg'),
-            self.config_fn,
-        ), use_shlex=True)
-        Main.handle_convert(args, configs)
-        sff_files = glob.glob(os.path.join(TEST_DATA_PATH, '*.sff'))
-        self.assertEqual(len(sff_files), 1)
-
-    def test_mod(self):
-        """Test that we can convert .mod"""
-        args, configs = parse_args('convert -o {} {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'test_data.sff'),
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.mod'),
-            self.config_fn,
-        ), use_shlex=True)
-        Main.handle_convert(args, configs)
-        sff_files = glob.glob(os.path.join(TEST_DATA_PATH, '*.sff'))
-        self.assertEqual(len(sff_files), 1)
-
-    def test_am(self):
-        """Test that we can convert .am"""
-        args, configs = parse_args('convert -o {} {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'test_data.sff'),
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.am'),
-            self.config_fn,
-        ), use_shlex=True)
-        Main.handle_convert(args, configs)
-        sff_files = glob.glob(os.path.join(TEST_DATA_PATH, '*.sff'))
-        self.assertEqual(len(sff_files), 1)
-
-    def test_surf(self):
-        """Test that we can convert .surf"""
-        args, configs = parse_args('convert -o {} {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'test_data.sff'),
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.surf'),
-            self.config_fn,
-        ), use_shlex=True)
-        Main.handle_convert(args, configs)
-        sff_files = glob.glob(os.path.join(TEST_DATA_PATH, '*.sff'))
-        self.assertEqual(len(sff_files), 1)
-
-    def test_survos(self):
-        """Test that we can convert SuRVoS (.h5) files"""
-        args, configs = parse_args('convert -o {} {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'test_data.sff'),
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.h5'),
-            self.config_fn,
-        ), use_shlex=True)
-        Main.handle_convert(args, configs)
-        sff_files = glob.glob(os.path.join(TEST_DATA_PATH, '*.sff'))
-        self.assertEqual(len(sff_files), 1)
-
     def test_unknown(self):
         """Test that unknown fails"""
         args, configs = parse_args('convert -o {} {} --config-path {}'.format(
@@ -111,7 +56,7 @@ class TestMain_handle_convert(unittest.TestCase):
         #  first convert from some other format e.g. .mod
         args, configs = parse_args('convert -o {} {} --config-path {}'.format(
             os.path.join(TEST_DATA_PATH, 'test_data.sff'),
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.mod'),
+            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.hff'),
             self.config_fn,
         ), use_shlex=True)
         Main.handle_convert(args, configs)
@@ -129,7 +74,7 @@ class TestMain_handle_convert(unittest.TestCase):
         #  first convert from some other format e.g. .mod
         args, configs = parse_args('convert -o {} {} --config-path {}'.format(
             os.path.join(TEST_DATA_PATH, 'test_data.hff'),
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.mod'),
+            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.sff'),
             self.config_fn,
         ), use_shlex=True)
         Main.handle_convert(args, configs)
@@ -148,7 +93,7 @@ class TestMain_handle_convert(unittest.TestCase):
         #  first convert from some other format e.g. .mod
         args, configs = parse_args('convert -o {output} {input} --config-path {config}'.format(
             output=os.path.join(TEST_DATA_PATH, 'test_data.json'),
-            input=os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.mod'),
+            input=os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.hff'),
             config=self.config_fn,
         ), use_shlex=True)
         Main.handle_convert(args, configs)
@@ -163,52 +108,31 @@ class TestMain_handle_convert(unittest.TestCase):
         self.assertEqual(len(sff_files), 1)
 
 
-"""
-:TODO: view .hff, .json
-"""
-
-
 class TestMain_handle_view(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.config_fn = os.path.join(BASE_DIR, 'sffrw.conf')
 
-    def test_read_am(self):
-        """Test that we can view .am"""
-        args, configs = parse_args('view {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.am'),
-            self.config_fn,
-        ), use_shlex=True)
-        self.assertEqual(0, Main.handle_view(args, configs))
-
-    def test_read_map(self):
-        """Test that we can view .map"""
-        args, configs = parse_args('view {}'.format(
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.map'),
-            self.config_fn,
-        ), use_shlex=True)
-        self.assertEqual(0, Main.handle_view(args, configs))
-
-    def test_read_mod(self):
+    def test_read_sff(self):
         """Test that we can view .mod"""
-        args, configs = parse_args('view {} --config-path {} --show-chunks'.format(
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.mod'),
+        args, configs = parse_args('view {} --config-path {} '.format(
+            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.sff'),
             self.config_fn,
         ), use_shlex=True)
         self.assertEqual(0, Main.handle_view(args, configs))
 
-    def test_seg(self):
-        """Test that we can view .seg"""
-        args, configs = parse_args('view {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.seg'),
+    def test_read_hff(self):
+        """Test that we can view .mod"""
+        args, configs = parse_args('view {} --config-path {} '.format(
+            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.hff'),
             self.config_fn,
         ), use_shlex=True)
         self.assertEqual(0, Main.handle_view(args, configs))
 
-    def test_read_surf(self):
-        """Test that we can view .surf"""
-        args, configs = parse_args('view {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.surf'),
+    def test_read_json(self):
+        """Test that we can view .mod"""
+        args, configs = parse_args('view {} --config-path {} '.format(
+            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.json'),
             self.config_fn,
         ), use_shlex=True)
         self.assertEqual(0, Main.handle_view(args, configs))
@@ -220,48 +144,3 @@ class TestMain_handle_view(unittest.TestCase):
             self.config_fn,
         ), use_shlex=True)
         self.assertEqual(0, Main.handle_view(args, configs))
-
-
-class TestMain_handle_notes(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.config_fn = os.path.join(BASE_DIR, 'sffrw.conf')
-
-    def test_list(self):
-        """Test that we can list notes"""
-        args, configs = parse_args('notes list {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff'),
-            self.config_fn,
-        ), use_shlex=True)
-        self.assertEqual(0, Main.handle_notes_list(args, configs))
-
-    def test_show(self):
-        """Test that we can list notes"""
-        args, configs = parse_args('notes show -i 15559 {} --config-path {}'.format(
-            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff'),
-            self.config_fn,
-        ), use_shlex=True)
-        self.assertEqual(0, Main.handle_notes_show(args, configs))
-
-    def test_search(self):
-        """Test that we can list notes"""
-        args, configs = parse_args('notes search "mitochondria" --config-path {}'.format(self.config_fn),
-                                   use_shlex=True)
-        self.assertEqual(0, Main.handle_notes_search(args, configs))
-
-
-class TestMain_handle_prep(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.config_fn = os.path.join(BASE_DIR, 'sffrw.conf')
-
-    def setUp(self):
-        self.test_data = os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.map')
-
-    def tearDown(self):
-        os.remove(os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data_prep.map'))
-
-    def test_ccp4_binmap(self):
-        """Test that we can prepare a CCP4 map by binning"""
-        args, configs = parse_args('prep binmap -v {}'.format(self.test_data), use_shlex=True)
-        self.assertEqual(os.EX_OK, Main.handle_prep(args, configs))
