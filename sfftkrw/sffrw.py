@@ -13,14 +13,12 @@ import re
 import sys
 
 from . import schema
-from .core import _dict_iter_values
 from .core.print_tools import print_date
 
 __author__ = "Paul K. Korir, PhD"
 __email__ = "pkorir@ebi.ac.uk, paul.korir@gmail.com"
 __date__ = '2017-02-15'
 __updated__ = '2018-02-23'
-
 
 
 def handle_convert(args):  # @UnusedVariable
@@ -51,20 +49,18 @@ def handle_convert(args):  # @UnusedVariable
             print_date("Created SFFSegmentation object")
     else:
         raise ValueError("Unknown file type %s" % args.from_file)
-    # export (convert first if needed)
-    sff_seg = seg  #  no conversion needed
     if args.primary_descriptor is not None:
-        sff_seg.primaryDescriptor = args.primary_descriptor
+        seg.primaryDescriptor = args.primary_descriptor
     if args.details is not None:
-        sff_seg.details = args.details
+        seg.details = args.details
     # export as args.format
     if args.verbose:
         print_date("Exporting to {}".format(args.output))
-    sff_seg.export(args.output)
+    # perform actual export
+    status = seg.export(args.output)
     if args.verbose:
         print_date("Done")
-
-    return os.EX_OK
+    return status
 
 
 def handle_view(args):  # @UnusedVariable

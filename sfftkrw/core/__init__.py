@@ -4,6 +4,7 @@
 Convenience utilities
 
 """
+import _io
 import sys
 
 # redefinitions used globally
@@ -59,8 +60,12 @@ if sys.version_info[0] > 2:
             return data
         return data
 
-
+    # input
     _input = input
+
+    # file
+    import io
+    _file = io.IOBase
 else:
     import __builtin__
 
@@ -114,5 +119,8 @@ else:
             return data.encode(encoding)
         return data
 
-
+    # input
     _input = __builtin__.raw_input
+
+    # file
+    _file = __builtin__.file

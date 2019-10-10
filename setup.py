@@ -42,7 +42,7 @@ SFFTKRW_CLASSIFIERS = [
     u"Topic :: Utilities",
 ]
 if sys.version_info[0] > 2:
-    SFFTKRW_INSTALL_REQUIRES = ['h5py>2.7.0', "RandomWords", "styled"]
+    SFFTKRW_INSTALL_REQUIRES = ['h5py>2.7.0', "RandomWords"]
     SFFTKRW_SETUP_REQUIRES = []
     setup(
         name=SFFTKRW_NAME,
