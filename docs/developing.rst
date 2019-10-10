@@ -27,7 +27,23 @@ All aspects of the structure of an EMDB-SFF file are handled by :py:mod:`sfftk.s
 
 .. code:: python
 
-    >>> from sfftk.schema import SFFSegmentation
+    >>> from sfftkrw.schema import SFFSegmentation
+        >>> from sfftkrw.unittests import TEST_DATA_PATH
+        >>> import os
+        >>>
+        >>> # XML file
+        >>> seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
+        >>> seg_fn
+        '/Users/pkorir/PycharmProjects/sfftk/sfftk/test_data/sff/v0.7/emd_1014.sff'
+        >>> seg = SFFSegmentation(seg_fn)
+        >>>
+        >>> # HDF5 file
+        >>> seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.hff')
+        >>> seg = SFFSegmentation(seg_fn)
+        >>>
+        >>> # JSON file
+        >>> seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.json')
+        >>> seg = SFFSegmentation(seg_fn)
     >>> from sfftk.unittests import TEST_DATA_PATH
     >>> import os
     >>>
@@ -51,6 +67,48 @@ Viewing Segmentation Metadata
 .. code:: python
 
     >>> from __future__ import print_function
+        >>> from sfftkrw.schema import SFFSegmentation
+        >>> from sfftk.unittests import TEST_DATA_PATH
+        >>> import os
+        >>> # XML file
+        >>> seg_fn = os.path.join(TEST_DATA_PATH, 'annotated_sff', 'v0.7', 'emd_6338.sff')
+        >>> seg = SFFSegmentation(seg_fn)
+        >>>
+        >>> # name
+        >>> print(seg.name)
+        Segger Segmentation
+        >>>
+        >>> # schema version
+        >>> print(seg.version)
+        0.7.0.dev0
+        >>>
+        >>> # software details
+        ... print(seg.software)
+        Software object
+        >>>
+        >>> # primary descriptor
+        >>> print(seg.primaryDescriptor)
+        threeDVolume
+        >>>
+        >>> # transforms
+        >>> print(seg.transforms)
+        List of transforms
+        >>> print(len(seg.transforms))
+        2
+        >>> print(seg.transforms[0])
+        [1.0000 0.0000 0.0000 1.0000 ]
+        [0.0000 1.0000 0.0000 1.0000 ]
+        [0.0000 0.0000 1.0000 1.0000 ]
+
+        >>>
+        >>> # bounding box
+        >>> print(seg.boundingBox)
+        Bounding box: (0.0, None, 0.0, None, 0.0, None)
+        >>>
+        >>> # details
+        >>> print(seg.details)
+        DNA replication in eukaryotes is strictly regulated by several mechanisms. A central step in this replication is the assembly of the heterohexameric minichromosome maintenance (MCM2-7) helicase complex at replication origins during G1 phase as an inactive double hexamer. Here, using cryo-electron microscopy, we report a near-atomic structure of the MCM2-7 double hexamer purified from yeast G1 chromatin. Our structure shows that two single hexamers, arranged in a tilted and twisted fashion through interdigitated amino-terminal domain interactions, form a kinked central channel. Four constricted rings consisting of conserved interior β-hairpins from the two single hexamers create a narrow passageway that tightly fits duplex DNA. This narrow passageway, reinforced by the offset of the two single hexamers at the double hexamer interface, is flanked by two pairs of gate-forming subunits, MCM2 and MCM5. These unusual features of the twisted and tilted single hexamers suggest a concerted mechanism for the melting of origin DNA that requires structural deformation of the intervening DNA.
+        >>>
     >>> from sfftk.schema import SFFSegmentation
     >>> from sfftk.unittests import TEST_DATA_PATH
     >>> import os
@@ -176,6 +234,15 @@ Users can create EMDB-SFF objects from scratch then export them to a file format
 .. code:: python
 
     >>> from __future__ import print_function
+        >>> from sfftkrw import schema
+        >>> import sys
+        >>> seg = schema.SFFSegmentation()
+        >>>
+        >>> # We can view how the file looks like so far; note the lack of an XML header <?xml ...>
+        >>> seg.export(sys.stderr)
+        <segmentation>
+            <version>0.7.0.dev0</version>
+        </segmentation>
     >>> from sfftk import schema
     >>> import sys
     >>> seg = schema.SFFSegmentation()
@@ -648,7 +715,43 @@ Note Objects
 
 .. code:: python
 
-    >>> from sfftk.notes.modify import SimpleNote, ExternalReference
+    >>> from sfftkrw.notes.modify import SimpleNote, ExternalReference
+        >>>
+        >>> note = SimpleNote()
+        >>> note.name = 'some name'
+        >>> note.description = 'some description'
+        >>> note.numberOfInstances = 5
+        >>> # these are random data hence no real label and description will be found
+        >>> Es = [
+            ExternalReference(type_='ontology1', otherType='iri1', value='obo_id1'),
+        ...     ExternalReference(type_='ontology2', otherType='iri2', value='obo_id2'),
+        ... ]
+        Tue Mar 12 13:21:48 2019	Could not find label and description for external reference ontology1:obo_id1
+        Tue Mar 12 13:21:48 2019	Could not find label and description for external reference ontology2:obo_id2
+        >>> note.externalReferences = Es
+        >>> note.complexes = ['comp1', 'comp2']
+        >>> note.macromolecules = ['macr1', 'macr2']
+        >>> note
+        <sfftk.notes.modify.SimpleNote object at 0x10c9c0550>
+        >>> note.name
+        'some name'
+        >>> note.description
+        'some description'
+        >>> note.externalReferences
+        [<sfftk.notes.modify.ExternalReference object at 0x10c960dd0>, <sfftk.notes.modify.ExternalReference object at 0x10bfc66d0>]
+        >>> note.externalReferences[0]
+        <sfftk.notes.modify.ExternalReference object at 0x10c960dd0>
+        >>> note.externalReferences[0].type
+        'ontology1'
+        >>> note.externalReferences[0].otherType
+        'iri1'
+        >>> note.externalReferences[0].value
+        'obo_id1'
+        >>> note.complexes
+        ['comp1', 'comp2']
+        >>> note.macromolecules
+        ['macr1', 'macr2']
+        >>>
     >>>
     >>> note = SimpleNote()
     >>> note.name = 'some name'
@@ -692,7 +795,15 @@ Adding Notes
 
 .. code:: python
 
-    >>> from sfftk.schema import SFFSegment
+    >>> from sfftkrw.schema import SFFSegment
+        >>>
+        >>> segment = SFFSegment()
+        >>>
+        >>> # add the notes
+        >>> segment = note.add_to_segment(segment)
+        Tue Mar 12 13:24:06 2019	Could not find label and description for external reference ontology1:obo_id1
+        Tue Mar 12 13:24:06 2019	Could not find label and description for external reference ontology2:obo_id2
+        >>>
     >>>
     >>> segment = SFFSegment()
     >>>
@@ -764,7 +875,8 @@ AmiraMesh (.am)
 
 .. code:: python
 
-    >>> from sfftk.formats.am import AmiraMeshSegmentation
+    >>> from sfftkrw.formats.am import AmiraMeshSegmentation
+        >>> am_seg = AmiraMeshSegmentation('file.am')
     >>> am_seg = AmiraMeshSegmentation('file.am')
 
 CCP4 (.map)
@@ -772,7 +884,8 @@ CCP4 (.map)
 
 .. code:: python
 
-    >>> from sfftk.formats.map import MAPSegmentation
+    >>> from sfftkrw.formats.map import MAPSegmentation
+        >>> map_seg = MAPSegmentation('file.map')
     >>> map_seg = MAPSegmentation('file.map')
 
 IMOD (.mod)
@@ -780,7 +893,8 @@ IMOD (.mod)
 
 .. code:: python
 
-    >>> from sfftk.formats.mod import IMODSegmentation
+    >>> from sfftkrw.formats.mod import IMODSegmentation
+        >>> mod_seg = IMODSegmentation('file.mod')
     >>> mod_seg = IMODSegmentation('file.mod')
 
 Segger (.seg)
@@ -788,7 +902,8 @@ Segger (.seg)
 
 .. code:: python
 
-    >>> from sfftk.formats.seg import SeggerSegmentation
+    >>> from sfftkrw.formats.seg import SeggerSegmentation
+        >>> seg_seg = SeggerSegmentation('file.seg')
     >>> seg_seg = SeggerSegmentation('file.seg')
 
 STL (.stl)
@@ -796,7 +911,8 @@ STL (.stl)
 
 .. code:: python
 
-    >>> from sfftk.formats.stl import STLSegmentation
+    >>> from sfftkrw.formats.stl import STLSegmentation
+        >>> stl_seg = STLSegmentation('file.stl')
     >>> stl_seg = STLSegmentation('file.stl')
 
 Amira HyperSurface (.surf)
@@ -804,7 +920,8 @@ Amira HyperSurface (.surf)
 
 .. code:: python
 
-    >>> from sfftk.formats.surf import AmiraHyperSurfaceSegmentation
+    >>> from sfftkrw.formats.surf import AmiraHyperSurfaceSegmentation
+        >>> surf_seg = AmiraHyperSurfaceSegmentation('file.surf')
     >>> surf_seg = AmiraHyperSurfaceSegmentation('file.surf')
 
 Converting Application-Specific Segmentations to EMDB-SFF

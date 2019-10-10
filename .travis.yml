@@ -25,8 +25,8 @@ install:
 #  - sff --help
 
 script:
-  - pytest --cov=./sfftk sfftk/unittests
-#  - coverage run --include="/home/travis/build/emdb-empiar/sfftk/sfftk/*" --omit="/home/travis/build/emdb-empiar/sfftk/sfftk/schema/v*.py","/home/travis/build/emdb-empiar/sfftk/sfftk/test_data","/home/travis/build/emdb-empiar/sfftk/sfftk/unittests" `which sff` tests all -v 3
+  - pytest --cov=./sfftkrw sfftkrw/unittests
+#  - coverage run --include="/home/travis/build/emdb-empiar/sfftkrw/sfftkrw/*" --omit="/home/travis/build/emdb-empiar/sfftkrw/sfftkrw/schema/v*.py","/home/travis/build/emdb-empiar/sfftkrw/sfftkrw/test_data","/home/travis/build/emdb-empiar/sfftkrw/sfftkrw/unittests" `which sff` tests all -v 3
 
 after_success:
   - coveralls

@@ -1,11 +1,8 @@
 [run]
 omit =
-    sfftk/schema/v_0_5_8.py
-    sfftk/schema/v_0_6_0_a_2.py
-    sfftk/schema/v_0_6_0_a_3.py
-    sfftk/schema/v_0_6_0_a_4.py
-    sfftk/schema/v_0_7_0_dev_0.py
-    sfftk/test_data/*
-    sfftk/unittests/*
-    sfftk/sff.py
-    sfftk/core/__init__.py
+    sfftkrw/schema/v_*.py
+    sfftkrw/schema/emdb_sff.py
+    sfftkrw/test_data/*
+    sfftkrw/unittests/*
+    sfftkrw/sff.py
+    sfftkrw/core/__init__.py

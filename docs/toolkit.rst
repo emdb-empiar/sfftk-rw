@@ -1,6 +1,6 @@
-============================
-EMDB-SFF Toolkit (``sfftk``)
-============================
+========================================================
+EMDB-SFF Read/Write Toolkit (``sfftk-rw``)
+========================================================
 
 .. image:: https://badge.fury.io/py/sfftk.svg
     :target: https://badge.fury.io/py/sfftk

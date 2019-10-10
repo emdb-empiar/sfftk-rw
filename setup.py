@@ -4,20 +4,20 @@ import sys
 
 from setuptools import setup, find_packages
 
-from sfftk import SFFTK_VERSION
+from sfftkrw import SFFTKRW_VERSION
 
 with open(u'README.rst') as f:
     long_description = f.read()
 
-SFFTK_NAME = u"sfftk"
-SFFTK_AUTHOR = u"Paul K. Korir, PhD"
-SFFTK_AUTHOR_EMAIL = u"pkorir@ebi.ac.uk, paul.korir@gmail.com"
-SFFTK_DESCRIPTION = u"Toolkit for working with EMDB-SFF and other segmentation file formats"
-SFFTK_DESCRIPTION_CONTENT_TYPE = u'text/x-rst; charset=UTF-8'
-SFFTK_URL = u"http://sfftk.readthedocs.io/en/latest/index.html"
-SFFTK_LICENSE = u"Apache License"
-SFFTK_KEYWORDS = u"EMDB-SFF, SFF, segmentation"
-SFFTK_CLASSIFIERS = [
+SFFTKRW_NAME = u"sfftkrw"
+SFFTKRW_AUTHOR = u"Paul K. Korir, PhD"
+SFFTKRW_AUTHOR_EMAIL = u"pkorir@ebi.ac.uk, paul.korir@gmail.com"
+SFFTKRW_DESCRIPTION = u"Toolkit for working with EMDB-SFF and other segmentation file formats"
+SFFTKRW_DESCRIPTION_CONTENT_TYPE = u'text/x-rst; charset=UTF-8'
+SFFTKRW_URL = u"http://sfftk.readthedocs.io/en/latest/index.html"
+SFFTKRW_LICENSE = u"Apache License"
+SFFTKRW_KEYWORDS = u"EMDB-SFF, SFF, segmentation"
+SFFTKRW_CLASSIFIERS = [
     # maturity
     u"Development Status :: 2 - Pre-Alpha",
     # environment
@@ -42,50 +42,50 @@ SFFTK_CLASSIFIERS = [
     u"Topic :: Utilities",
 ]
 if sys.version_info[0] > 2:
+    SFFTKRW_INSTALL_REQUIRES = ['h5py>2.7.0', "RandomWords", "styled"]
+    SFFTKRW_SETUP_REQUIRES = []
     setup(
-        name=SFFTK_NAME,
-        version=SFFTK_VERSION,
+        name=SFFTKRW_NAME,
+        version=SFFTKRW_VERSION,
         packages=find_packages(),
-        author=SFFTK_AUTHOR,
-        author_email=SFFTK_AUTHOR_EMAIL,
-        description=SFFTK_DESCRIPTION,
+        author=SFFTKRW_AUTHOR,
+        author_email=SFFTKRW_AUTHOR_EMAIL,
+        description=SFFTKRW_DESCRIPTION,
         long_description=long_description,
-        long_description_content_type=SFFTK_DESCRIPTION_CONTENT_TYPE,
-        url=SFFTK_URL,
-        license=SFFTK_LICENSE,
-        keywords=SFFTK_KEYWORDS,
-        setup_requires=["numpy"],
-        install_requires=["ahds==0.2.0.dev0", "lxml", "h5py>2.7.0", "RandomWords", "styled", "mrcfile", "bitarray", "requests",
-                          "mock",
-                          "numpy-stl", "styled"],
-        classifiers=SFFTK_CLASSIFIERS,
+        long_description_content_type=SFFTKRW_DESCRIPTION_CONTENT_TYPE,
+        url=SFFTKRW_URL,
+        license=SFFTKRW_LICENSE,
+        keywords=SFFTKRW_KEYWORDS,
+        setup_requires=SFFTKRW_SETUP_REQUIRES,
+        install_requires=SFFTKRW_INSTALL_REQUIRES,
+        classifiers=SFFTKRW_CLASSIFIERS,
         entry_points={
             'console_scripts': [
-                'sff = sfftk.sff:main',
+                'sff-rw = sfftkrw.sffrw:main',
             ]
         },
     )
 else:
+    SFFTKRW_INSTALL_REQUIRES = ['h5py>2.7.0', "RandomWords", "styled", "backports.shutil_get_terminal_size"]
+    SFFTKRW_SETUP_REQUIRES = []
     setup(
-        name=SFFTK_NAME,
-        version=SFFTK_VERSION,
+        name=SFFTKRW_NAME,
+        version=SFFTKRW_VERSION,
         packages=find_packages(),
-        author=SFFTK_AUTHOR,
-        author_email=SFFTK_AUTHOR_EMAIL,
-        description=SFFTK_DESCRIPTION,
+        author=SFFTKRW_AUTHOR,
+        author_email=SFFTKRW_AUTHOR_EMAIL,
+        description=SFFTKRW_DESCRIPTION,
         long_description=long_description,
-        long_description_content_type=SFFTK_DESCRIPTION_CONTENT_TYPE,
-        url=SFFTK_URL,
-        license=SFFTK_LICENSE,
-        keywords=SFFTK_KEYWORDS,
-        setup_requires=["numpy<1.17"],
-        install_requires=["ahds==0.2.0.dev0", "lxml", "h5py>2.7.0", "requests", "bitarray",
-                          "numpy-stl", "backports.shutil_get_terminal_size", "mock", "mrcfile",
-                          "matplotlib<3.0", "scipy<1.2", "RandomWords", "styled", "networkx<2.3"],
-        classifiers=SFFTK_CLASSIFIERS,
+        long_description_content_type=SFFTKRW_DESCRIPTION_CONTENT_TYPE,
+        url=SFFTKRW_URL,
+        license=SFFTKRW_LICENSE,
+        keywords=SFFTKRW_KEYWORDS,
+        setup_requires=SFFTKRW_SETUP_REQUIRES,
+        install_requires=SFFTKRW_INSTALL_REQUIRES,
+        classifiers=SFFTKRW_CLASSIFIERS,
         entry_points={
             'console_scripts': [
-                'sff = sfftk.sff:main',
+                'sff-rw = sfftkrw.sffrw:main',
             ]
         },
     )
