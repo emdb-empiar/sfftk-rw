@@ -78,7 +78,7 @@ def handle_view(args):  # @UnusedVariable
         print("EMDB-SFF Segmentation version {}".format(seg.version))
         print("Segmentation name: {}".format(seg.name))
         print("Format: XML")
-        print("Primary descriptor: {}".format(seg.primaryDescriptor))
+        print("Primary descriptor: {}".format(seg.primary_descriptor))
         print("No. of segments: {}".format(len(seg.segments)))
         print("*" * 50)
     elif re.match(r'.*\.hff$', args.from_file, re.IGNORECASE):
@@ -87,7 +87,7 @@ def handle_view(args):  # @UnusedVariable
         print("EMDB-SFF Segmentation version {}".format(seg.version))
         print("Segmentation name: {}".format(seg.name))
         print("Format: HDF5")
-        print("Primary descriptor: {}".format(seg.primaryDescriptor))
+        print("Primary descriptor: {}".format(seg.primary_descriptor))
         print("No. of segments: {}".format(len(seg.segments)))
         print("*" * 50)
     elif re.match(r'.*\.json$', args.from_file, re.IGNORECASE):
@@ -96,7 +96,7 @@ def handle_view(args):  # @UnusedVariable
         print("EMDB-SFF Segmentation version {}".format(seg.version))
         print("Segmentation name: {}".format(seg.name))
         print("Format: JSON")
-        print("Primary descriptor: {}".format(seg.primaryDescriptor))
+        print("Primary descriptor: {}".format(seg.primary_descriptor))
         print("No. of segments: {}".format(len(seg.segments)))
         print("*" * 50)
     else:

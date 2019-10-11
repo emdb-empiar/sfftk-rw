@@ -30,7 +30,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def setUpClass(cls):
         # empty segmentation object
         segmentation = schema.SFFSegmentation()  # 3D volume
-        segmentation.primaryDescriptor = "threeDVolume"
+        segmentation.primary_descriptor = "threeDVolume"
         # transforms
         transforms = schema.SFFTransformList()
         transforms.add_transform(
@@ -54,11 +54,11 @@ class TestSFFSegmentation(Py23FixTestCase):
                 data=" ".join(map(str, range(12)))
             )
         )
-        # boundingBox
+        # bounding_box
         xmax = _random_integer(start=500)
         ymax = _random_integer(start=500)
         zmax = _random_integer(start=500)
-        segmentation.boundingBox = schema.SFFBoundingBox(
+        segmentation.bounding_box = schema.SFFBoundingBox(
             xmax=xmax,
             ymax=ymax,
             zmax=zmax
@@ -124,7 +124,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_create_3D(self):
         """Create an SFFSegmentation object with 3D volume segmentation from scratch"""
         segmentation = schema.SFFSegmentation()  # 3D volume
-        segmentation.primaryDescriptor = "threeDVolume"
+        segmentation.primary_descriptor = "threeDVolume"
         # transforms
         transforms = schema.SFFTransformList()
         transforms.add_transform(
@@ -148,11 +148,11 @@ class TestSFFSegmentation(Py23FixTestCase):
                 data=" ".join(map(str, range(12)))
             )
         )
-        # boundingBox
+        # bounding_box
         xmax = _random_integer(start=500)
         ymax = _random_integer(start=500)
         zmax = _random_integer(start=500)
-        segmentation.boundingBox = schema.SFFBoundingBox(
+        segmentation.bounding_box = schema.SFFBoundingBox(
             xmax=xmax,
             ymax=ymax,
             zmax=zmax
@@ -204,13 +204,13 @@ class TestSFFSegmentation(Py23FixTestCase):
         # export
         # segmentation.export(os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'test_3d_segmentation.sff'))
         # assertions
-        self.assertEqual(segmentation.primaryDescriptor, "threeDVolume")
-        self.assertEqual(segmentation.boundingBox.xmin, 0)
-        self.assertEqual(segmentation.boundingBox.xmax, xmax)
-        self.assertEqual(segmentation.boundingBox.ymin, 0)
-        self.assertEqual(segmentation.boundingBox.ymax, ymax)
-        self.assertEqual(segmentation.boundingBox.zmin, 0)
-        self.assertEqual(segmentation.boundingBox.zmax, zmax)
+        self.assertEqual(segmentation.primary_descriptor, "threeDVolume")
+        self.assertEqual(segmentation.bounding_box.xmin, 0)
+        self.assertEqual(segmentation.bounding_box.xmax, xmax)
+        self.assertEqual(segmentation.bounding_box.ymin, 0)
+        self.assertEqual(segmentation.bounding_box.ymax, ymax)
+        self.assertEqual(segmentation.bounding_box.zmin, 0)
+        self.assertEqual(segmentation.bounding_box.zmax, zmax)
         # test the number of transforms
         self.assertEqual(len(segmentation.transforms), 3)
         # test the transform IDs
@@ -221,12 +221,12 @@ class TestSFFSegmentation(Py23FixTestCase):
         # segment one
         segment = segmentation.segments[0]
         # volume
-        self.assertEqual(segment.volume.latticeId, 0)
+        self.assertEqual(segment.volume.lattice_id, 0)
         self.assertEqual(segment.volume.value, vol1_value)
         # segment two
         segment = segmentation.segments.get_by_id(2)
         # volume
-        self.assertEqual(segment.volume.latticeId, 1)
+        self.assertEqual(segment.volume.lattice_id, 1)
         self.assertEqual(segment.volume.value, vol2_value)
         # lattices
         lattices = segmentation.lattices
@@ -246,7 +246,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_create_shapes(self):
         """Test that we can create a segmentation of shapes programmatically"""
         segmentation = schema.SFFSegmentation()
-        segmentation.primaryDescriptor = "shapePrimitiveList"
+        segmentation.primary_descriptor = "shapePrimitiveList"
         transforms = schema.SFFTransformList()
         segments = schema.SFFSegmentList()
         segment = schema.SFFSegment()
@@ -508,15 +508,15 @@ class TestSFFSegmentation(Py23FixTestCase):
         # segmentation.export(os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'test_shape_segmentation.sff'))
         # assertions
         self.assertEqual(len(segment.shapes), 9)
-        self.assertEqual(segment.shapes.numCones, 4)
-        self.assertEqual(segment.shapes.numCylinders, 1)
-        self.assertEqual(segment.shapes.numCuboids, 2)
-        self.assertEqual(segment.shapes.numEllipsoids, 2)
+        self.assertEqual(segment.shapes.num_cones, 4)
+        self.assertEqual(segment.shapes.num_cylinders, 1)
+        self.assertEqual(segment.shapes.num_cuboids, 2)
+        self.assertEqual(segment.shapes.num_ellipsoids, 2)
 
     def test_create_meshes(self):
         """Test that we can create a segmentation of meshes programmatically"""
         segmentation = schema.SFFSegmentation()
-        segmentation.primaryDescriptor = "meshList"
+        segmentation.primary_descriptor = "meshList"
         segments = schema.SFFSegmentList()
         segment = schema.SFFSegment()
         # meshes
@@ -628,15 +628,15 @@ class TestSFFSegmentation(Py23FixTestCase):
         )
         segmentation.details = "Details"
         # global external references
-        segmentation.globalExternalReferences = schema.SFFGlobalExternalReferences()
-        segmentation.globalExternalReferences.add_externalReference(
+        segmentation.global_external_references = schema.SFFGlobalExternalReferences()
+        segmentation.global_external_references.add_external_reference(
             schema.SFFExternalReference(
                 type='one',
                 otherType='two',
                 value='three'
             )
         )
-        segmentation.globalExternalReferences.add_externalReference(
+        segmentation.global_external_references.add_external_reference(
             schema.SFFExternalReference(
                 type='four',
                 otherType='five',
@@ -645,35 +645,35 @@ class TestSFFSegmentation(Py23FixTestCase):
         )
         segmentation.segments = schema.SFFSegmentList()
         segment = schema.SFFSegment()
-        biolAnn = schema.SFFBiologicalAnnotation()
-        biolAnn.name = "Segment1"
-        biolAnn.description = "Some description"
+        biol_ann = schema.SFFBiologicalAnnotation()
+        biol_ann.name = "Segment1"
+        biol_ann.description = "Some description"
         # external refs
-        biolAnn.externalReferences = schema.SFFExternalReferences()
-        biolAnn.externalReferences.add_externalReference(
+        biol_ann.external_references = schema.SFFExternalReferences()
+        biol_ann.external_references.add_external_reference(
             schema.SFFExternalReference(
                 type="sldjflj",
                 value="doieaik"
             )
         )
-        biolAnn.externalReferences.add_externalReference(
+        biol_ann.external_references.add_external_reference(
             schema.SFFExternalReference(
                 type="sljd;f",
                 value="20ijalf"
             )
         )
-        biolAnn.externalReferences.add_externalReference(
+        biol_ann.external_references.add_external_reference(
             schema.SFFExternalReference(
                 type="lsdjlsd",
                 otherType="lsjfd;sd",
                 value="23ijlsdjf"
             )
         )
-        biolAnn.numberOfInstances = 30
-        segment.biologicalAnnotation = biolAnn
+        biol_ann.number_of_instances = 30
+        segment.biological_annotation = biol_ann
         # complexes and macromolecules
         # complexes
-        compMac = schema.SFFComplexesAndMacromolecules()
+        comp_mac = schema.SFFComplexesAndMacromolecules()
         comp = schema.SFFComplexes()
         comp.add_complex(str(_random_integer(1, 1000)))
         comp.add_complex(str(_random_integer(1, 1000)))
@@ -688,9 +688,9 @@ class TestSFFSegmentation(Py23FixTestCase):
         macr.add_macromolecule(str(_random_integer(1, 1000)))
         macr.add_macromolecule(str(_random_integer(1, 1000)))
         macr.add_macromolecule(str(_random_integer(1, 1000)))
-        compMac.complexes = comp
-        compMac.macromolecules = macr
-        segment.complexesAndMacromolecules = compMac
+        comp_mac.complexes = comp
+        comp_mac.macromolecules = macr
+        segment.complexes_and_macromolecules = comp_mac
         # colour
         segment.colour = schema.SFFRGBA(
             red=1,
@@ -706,35 +706,35 @@ class TestSFFSegmentation(Py23FixTestCase):
         self.assertEqual(segmentation.version, segmentation._local.schemaVersion)  # automatically set
         self.assertEqual(segmentation.software.name, "Software")
         self.assertEqual(segmentation.software.version, "1.0.9")
-        self.assertEqual(segmentation.software.processingDetails, "Processing details")
+        self.assertEqual(segmentation.software.processing_details, "Processing details")
         self.assertEqual(segmentation.details, "Details")
         # global external references
-        self.assertEqual(segmentation.globalExternalReferences[0].type, 'one')
-        self.assertEqual(segmentation.globalExternalReferences[0].otherType, 'two')
-        self.assertEqual(segmentation.globalExternalReferences[0].value, 'three')
-        self.assertEqual(segmentation.globalExternalReferences[1].type, 'four')
-        self.assertEqual(segmentation.globalExternalReferences[1].otherType, 'five')
-        self.assertEqual(segmentation.globalExternalReferences[1].value, 'six')
-        # segment: biologicalAnnotation
-        self.assertEqual(segment.biologicalAnnotation.name, "Segment1")
-        self.assertEqual(segment.biologicalAnnotation.description, "Some description")
-        self.assertEqual(len(segment.biologicalAnnotation.externalReferences), 3)
-        self.assertEqual(segment.biologicalAnnotation.externalReferences[0].type, "sldjflj")
-        self.assertEqual(segment.biologicalAnnotation.externalReferences[0].value, "doieaik")
-        self.assertEqual(segment.biologicalAnnotation.externalReferences[1].type, "sljd;f")
-        self.assertEqual(segment.biologicalAnnotation.externalReferences[1].value, "20ijalf")
-        self.assertEqual(segment.biologicalAnnotation.externalReferences[2].type, "lsdjlsd")
-        self.assertEqual(segment.biologicalAnnotation.externalReferences[2].otherType, "lsjfd;sd")
-        self.assertEqual(segment.biologicalAnnotation.externalReferences[2].value, "23ijlsdjf")
-        self.assertEqual(segment.biologicalAnnotation.numberOfInstances, 30)
-        # segment: complexesAndMacromolecules
+        self.assertEqual(segmentation.global_external_references[0].type, 'one')
+        self.assertEqual(segmentation.global_external_references[0].other_type, 'two')
+        self.assertEqual(segmentation.global_external_references[0].value, 'three')
+        self.assertEqual(segmentation.global_external_references[1].type, 'four')
+        self.assertEqual(segmentation.global_external_references[1].other_type, 'five')
+        self.assertEqual(segmentation.global_external_references[1].value, 'six')
+        # segment: biological_annotation
+        self.assertEqual(segment.biological_annotation.name, "Segment1")
+        self.assertEqual(segment.biological_annotation.description, "Some description")
+        self.assertEqual(len(segment.biological_annotation.external_references), 3)
+        self.assertEqual(segment.biological_annotation.external_references[0].type, "sldjflj")
+        self.assertEqual(segment.biological_annotation.external_references[0].value, "doieaik")
+        self.assertEqual(segment.biological_annotation.external_references[1].type, "sljd;f")
+        self.assertEqual(segment.biological_annotation.external_references[1].value, "20ijalf")
+        self.assertEqual(segment.biological_annotation.external_references[2].type, "lsdjlsd")
+        self.assertEqual(segment.biological_annotation.external_references[2].other_type, "lsjfd;sd")
+        self.assertEqual(segment.biological_annotation.external_references[2].value, "23ijlsdjf")
+        self.assertEqual(segment.biological_annotation.number_of_instances, 30)
+        # segment: complexes_and_macromolecules
         # complexes
-        self.assertEqual(len(segment.complexesAndMacromolecules.complexes), 5)
-        complexes_bool = map(lambda c: isinstance(c, str), segment.complexesAndMacromolecules.complexes)
+        self.assertEqual(len(segment.complexes_and_macromolecules.complexes), 5)
+        complexes_bool = map(lambda c: isinstance(c, str), segment.complexes_and_macromolecules.complexes)
         self.assertTrue(all(complexes_bool))
         # macromolecules
-        self.assertEqual(len(segment.complexesAndMacromolecules.macromolecules), 6)
-        macromolecules_bool = map(lambda c: isinstance(c, str), segment.complexesAndMacromolecules.macromolecules)
+        self.assertEqual(len(segment.complexes_and_macromolecules.macromolecules), 6)
+        macromolecules_bool = map(lambda c: isinstance(c, str), segment.complexes_and_macromolecules.macromolecules)
         self.assertTrue(all(macromolecules_bool))
         # colour
         self.assertEqual(segment.colour.value, (1, 0, 1, 0))
@@ -786,8 +786,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         self.assertTrue(len(segmentation.version) > 0)
         self.assertEqual(segmentation.software.name, "segger")
         self.assertEqual(segmentation.software.version, "2")
-        self.assertEqual(segmentation.software.processingDetails, None)
-        self.assertEqual(segmentation.primaryDescriptor, "threeDVolume")
+        self.assertEqual(segmentation.software.processing_details, None)
+        self.assertEqual(segmentation.primary_descriptor, "threeDVolume")
         self.assertEqual(transform.rows, 3)
         self.assertEqual(transform.cols, 4)
         self.assertEqual(transform.data,
@@ -802,8 +802,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         self.assertTrue(len(segmentation.version) > 0)
         self.assertEqual(segmentation.software.name, "segger")
         self.assertEqual(segmentation.software.version, "2")
-        self.assertEqual(segmentation.software.processingDetails, None)
-        self.assertEqual(segmentation.primaryDescriptor, "threeDVolume")
+        self.assertEqual(segmentation.software.processing_details, None)
+        self.assertEqual(segmentation.primary_descriptor, "threeDVolume")
 
     def test_read_json(self):
         """Read from JSON (.json) file"""
@@ -814,8 +814,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         self.assertTrue(len(segmentation.version) > 0)
         self.assertEqual(segmentation.software.name, "segger")
         self.assertEqual(segmentation.software.version, "2")
-        self.assertEqual(segmentation.software.processingDetails, None)
-        self.assertEqual(segmentation.primaryDescriptor, "threeDVolume")
+        self.assertEqual(segmentation.software.processing_details, None)
+        self.assertEqual(segmentation.primary_descriptor, "threeDVolume")
 
     def test_export_sff(self):
         """Export to an XML (.sff) file"""

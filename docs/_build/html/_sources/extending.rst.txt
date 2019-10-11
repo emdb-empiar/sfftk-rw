@@ -230,7 +230,7 @@ To perform a conversion the :py:class:`sfftk.formats.seg.SeggerSegmentation` cla
                     data=" ".join(map(str, self.header.ijk_to_xyz_transform.flatten().tolist()))
                 )
             )
-            segmentation.primaryDescriptor = "threeDVolume"
+            segmentation.primary_descriptor = "threeDVolume"
             segments = schema.SFFSegmentList()
             for s in self.segments:
                 segment = s.convert()
@@ -272,7 +272,7 @@ Notice that in the loop for each segment (``for s in self.segments``) we refer t
             # geometry
             # segment.volume = self.volume.convert()
             segment.volume = schema.SFFThreeDVolume()
-            segment.volume.latticeId = 0
+            segment.volume.lattice_id = 0
             segment.volume.value = self.region_id
             return segment
 

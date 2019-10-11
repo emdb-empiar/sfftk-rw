@@ -87,7 +87,7 @@ Viewing Segmentation Metadata
         Software object
         >>>
         >>> # primary descriptor
-        >>> print(seg.primaryDescriptor)
+        >>> print(seg.primary_descriptor)
         threeDVolume
         >>>
         >>> # transforms
@@ -102,7 +102,7 @@ Viewing Segmentation Metadata
 
         >>>
         >>> # bounding box
-        >>> print(seg.boundingBox)
+        >>> print(seg.bounding_box)
         Bounding box: (0.0, None, 0.0, None, 0.0, None)
         >>>
         >>> # details
@@ -129,7 +129,7 @@ Viewing Segmentation Metadata
     Software object
     >>>
     >>> # primary descriptor
-    >>> print(seg.primaryDescriptor)
+    >>> print(seg.primary_descriptor)
     threeDVolume
     >>>
     >>> # transforms
@@ -144,7 +144,7 @@ Viewing Segmentation Metadata
 
     >>>
     >>> # bounding box
-    >>> print(seg.boundingBox)
+    >>> print(seg.bounding_box)
     Bounding box: (0.0, None, 0.0, None, 0.0, None)
     >>>
     >>> # details
