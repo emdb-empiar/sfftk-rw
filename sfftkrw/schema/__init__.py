@@ -297,7 +297,7 @@ class SFFType(object):
                 if isinstance(var, self.gds_type):  # 2 - gds_type to SFFType
                     self._local = var
                 else:
-                    raise ValueError('{} is not of type {}'.format(var, self.gds_type))
+                    raise TypeError('{} is not of type {}'.format(var, self.gds_type))
             else:
                 # restructure kwargs of type SFF* to their gds_type equivalents
                 _kwargs = dict()
@@ -311,7 +311,7 @@ class SFFType(object):
                 if isinstance(self._local, sff.segmentation):
                     self.version = self._local.schemaVersion
         else:
-            raise TypeError("attribute 'gds_type' cannot be 'None'")
+            raise ValueError("attribute 'gds_type' cannot be 'None'")
         # load dict
         self._load_dict()
 
@@ -338,14 +338,9 @@ class SFFType(object):
             return str(type(self))
 
     def __iter__(self):
-        if self.iter_attr:
+        if self.iter_attr: # if this class has an iterable attribute
             iter_name, iter_type = self.iter_attr
-            if iter_name and iter_type:
-                return iter(map(iter_type, getattr(self._local, iter_name)))
-            elif iter_name:
-                return iter(getattr(self._local, iter_name))
-            elif iter_type:
-                return iter(map(iter_type, self._local))
+            return iter(list(map(iter_type, getattr(self._local, iter_name))))
         else:
             raise TypeError("{} object is not iterable".format(self.__class__))
 
@@ -372,9 +367,6 @@ class SFFType(object):
         if self.iter_attr:
             for item in self:
                 if isinstance(item, SFFType):
-                    # if isinstance(item, SFFContourPoint):
-                    #     pass  # contours points do not have ids (no reason why they can't though)
-                    # else:§
                     self.iter_dict[item.id] = item
                 elif isinstance(item, int):
                     self.iter_dict[item] = item

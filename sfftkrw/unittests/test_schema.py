@@ -8,15 +8,19 @@ from __future__ import print_function
 import json
 import os
 import random
+import sys
 import tempfile
 import unittest
 
 import h5py
 import numpy
+from random_words import RandomWords
 
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float
 from .. import schema
 from ..core import _xrange
+
+rw = RandomWords()
 
 __author__ = "Paul K. Korir, PhD"
 __email__ = "pkorir@ebi.ac.uk, paul.korir@gmail.com"
@@ -1034,6 +1038,123 @@ class TestSFFLattice(Py23FixTestCase):
         self.lattice.decode()
         self.assertCountEqual(self.lattice.data.flatten(), self.lattice_data.flatten())
         self.assertFalse(self.lattice.is_encoded)
+
+
+class TestSFFTypeError(Py23FixTestCase):
+    """Tests for the exception"""
+
+    def test_default(self):
+        """Test default operation"""
+        c = schema.SFFComplexes()
+        with self.assertRaisesRegex(schema.SFFTypeError, r".*?list.*?"):
+            c.set_complexes('complexes')
+
+    def test_message(self):
+        """Test error raised with message"""
+        v = schema.SFFVolumeStructure()
+        with self.assertRaisesRegex(schema.SFFTypeError, r"should be of length 3"):
+            v.value = (1, 2)
+
+
+class TestSFFType(Py23FixTestCase):
+    """Tests for the main base class"""
+
+    def test_default(self):
+        """Test default operation"""
+        _c = schema.emdb_sff.colourType(rgba=(1.0, 0, 0, 0))
+        with self.assertRaisesRegex(TypeError, r'.*is not of type.*'):
+            c = schema.SFFComplexes(_c)
+
+    def test_gds_type_missing(self):
+        """Test for presence of `gds_type` attribute"""
+
+        class _SomeEntity(schema.SFFType):
+            """Empty entity"""
+
+        with self.assertRaisesRegex(ValueError, r'.*gds_type.*'):
+            _s = _SomeEntity()
+
+    def test_ref_attr(self):
+        """Test the `ref` attribute"""
+        c = schema.SFFRGBA(
+            red=1, green=1, blue=0, alpha=0.5
+        )
+        r = repr(c)
+        self.assertRegex(r, r"\(.*\d+,.*\)")
+
+    def test_repr_string_repr_args(self):
+        """Test the string representation using `repr_string` and `repr_args`"""
+        # correct rendering for colour: prints out repr_string filled with repr_args
+        c = schema.SFFRGBA(random_colour=True)
+        self.assertRegex(str(c), r"\(\d\.\d+,.*\)")
+        # correct assessment of length: prints out a string with the correct len() value
+        c = schema.SFFComplexes()
+        c.set_complexes(rw.random_words(count=10))
+        self.assertRegex(str(c), ".*10.*")
+        # plain string: prints the plain string
+        v = schema.SFFThreeDVolume()
+        self.assertEqual(str(v), "3D formatted segment")
+
+        # repr_str is missing: prints out the output of type
+        class _RGBA(schema.SFFRGBA):
+            repr_string = ""
+
+        _c = _RGBA(random_colour=True)
+        self.assertRegex(str(_c), r".class.*_RGBA.*")
+
+        # unmatched repr_args (it should be a tuple of four values)
+        class _RGBA(schema.SFFRGBA):
+            repr_args = ('red', 'green')
+
+        _c = _RGBA(random_colour=True)
+        with self.assertRaisesRegex(ValueError, r'Unmatched number.*'):
+            str(_c)
+
+    def test_iter_attr(self):
+        """Test use of `iter_attr`"""
+        # first we should be able to get items from the objects using next(iter(...))
+        c = schema.SFFComplexes()
+        words = rw.random_words(count=3)
+        c.set_complexes(words)
+        self.assertEqual(next(iter(c)), words[0])
+        # next, let's see this fail for a non-iterable class
+        c = schema.SFFRGBA(random_colour=True)
+        with self.assertRaisesRegex(TypeError, r".*object is not iterable"):
+            iter(c)
+        # iter_attr is useful for evaluating length
+        c = schema.SFFComplexes()
+        _len = _random_integer(start=2)
+        c.set_complexes(rw.random_words(count=_len))
+        self.assertEqual(len(c), _len)
+        # some classes have no length
+        c = schema.SFFRGBA(random_colour=True)
+        with self.assertRaisesRegex(TypeError, r"object of type.*has no len\(\)"):
+            len(c)
+        # iter_attr also allows us to delete
+        c = schema.SFFComplexes()
+        c.add_complex(rw.random_word())
+        self.assertEqual(len(c), 1)
+        del c[0]
+        self.assertEqual(len(c), 0)
+
+    def test_iter_dict(self):
+        """Test the convenience dict for quick access to items by ID"""
+        self.assertTrue(False)
+
+    def test_get_ids(self):
+        """Test that get_ids() returns a list of IDs"""
+        self.assertTrue(False)
+
+    def test_get_by_id(self):
+        """Test that we can get by ID"""
+        self.assertTrue(False)
+
+
+class TestSFFAttribute(Py23FixTestCase):
+    """Test the main attribute class"""
+
+    def test_default(self):
+        """Test default operation"""
 
 
 if __name__ == "__main__":

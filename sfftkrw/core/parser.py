@@ -11,12 +11,10 @@ from __future__ import print_function
 import argparse
 import os
 import re
-import sys
-from copy import deepcopy
 
 from . import _dict_iter_keys
 from .print_tools import print_date
-from ..core import _decode, _input
+from ..core import _decode
 
 __author__ = 'Paul K. Korir, PhD'
 __email__ = 'pkorir@ebi.ac.uk, paul.korir@gmail.com'
@@ -163,7 +161,6 @@ group = convert_parser.add_mutually_exclusive_group()
 group.add_argument(*output['args'], **output['kwargs'])
 group.add_argument(*format_['args'], **format_['kwargs'])
 
-
 # =========================================================================
 # view subparser
 # =========================================================================
@@ -186,34 +183,6 @@ tests_parser = subparsers.add_parser(
 tests_parser.add_argument('tool', nargs='+', help=test_help)
 tests_parser.add_argument('-v', '--verbosity', default=1, type=int,
                           help="set verbosity; valid values: %s [default: 0]" % ", ".join(map(str, verbosity_range)))
-
-
-def check_multi_file_formats(file_names):
-    """Check file names for file formats
-
-    When working with multifile segmentations, this function checks that all files are consistent
-
-    :param list file_names: a list of file names
-    :return: a tuple consisting of whether or not the set of file formats if valid, the set of file formats observed
-        and the set of invalid file formats
-    :rtype: tuple[bool, set, set]
-    """
-    is_valid_format = True
-    file_formats = set()
-    invalid_formats = set()
-    for fn in file_names:
-        ff = fn.split('.')[-1].lower()
-        if ff in multi_file_formats:
-            file_formats.add(ff)
-        else:
-            invalid_formats.add(ff)
-            is_valid_format = False
-    if len(file_formats) == 1:
-        file_format = file_formats.pop()
-    else:
-        file_format = None
-        invalid_formats.union(file_formats)
-    return is_valid_format, file_format, invalid_formats
 
 
 # parser function

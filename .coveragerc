@@ -4,5 +4,5 @@ omit =
     sfftkrw/schema/emdb_sff.py
     sfftkrw/test_data/*
     sfftkrw/unittests/*
-    sfftkrw/sff.py
     sfftkrw/core/__init__.py
+    docs
