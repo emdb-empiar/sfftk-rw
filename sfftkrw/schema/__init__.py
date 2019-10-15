@@ -93,7 +93,7 @@ import numpy
 import numpy as np
 
 from . import emdb_sff as sff
-from ..core import _basestring, _xrange, _bytes, _decode, _str, _encode, _file
+from ..core import _basestring, _xrange, _bytes, _decode, _str, _encode, _dict
 from ..core.print_tools import print_date
 
 __author__ = "Paul K. Korir, PhD"
@@ -102,6 +102,8 @@ __date__ = "2016-09-14"
 
 # ensure that we can read/write encoded data
 sff.ExternalEncoding = "utf-8"
+
+# todo: repr_string = SFF*()
 
 FORMAT_CHARS = {
     'int8': 'b',
@@ -124,15 +126,17 @@ ENDIANNESS = {
 
 class SFFTypeError(Exception):
     """`SFFTypeError` exception"""
-    def __init__(self, value, message=None):
-        self.value = value
+
+    def __init__(self, instance, klass, message=None):
+        self.instance = instance
+        self.klass = klass
         self.message = message
 
     def __str__(self):
         if self.message is None:
-            return repr("not object of {}".format(self.value))
+            return repr("'{}' is not object of type {}".format(self.instance, self.klass))
         else:
-            return repr("no object of {}; {}".format(self.value, self.message))
+            return repr("'{}' is not object of type {}: {}".format(self.instance, self.klass, self.message))
 
 
 class SFFType(object):
@@ -277,9 +281,9 @@ class SFFType(object):
     repr_string = ""
     repr_args = ()
     iter_attr = ()
-    iter_dict = dict()
+    iter_dict = None  # previously was _dict()
 
-    def __init__(self, var=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Base initialiser
         
         The top-level class has three forms
@@ -293,27 +297,37 @@ class SFFType(object):
         
         """
         if self.gds_type:
-            if var:
-                if isinstance(var, self.gds_type):  # 2 - gds_type to SFFType
-                    self._local = var
+            # restructure kwargs of type SFF* to their gds_type equivalents
+            _kwargs = _dict()
+            for k in kwargs:
+                if isinstance(kwargs[k], SFFType):
+                    _kwargs[k] = kwargs[k]._local
+                # todo: keep an eye open for this
+                elif k == 'new_obj':
+                    continue
                 else:
-                    raise TypeError('{} is not of type {}'.format(var, self.gds_type))
-            else:
-                # restructure kwargs of type SFF* to their gds_type equivalents
-                _kwargs = dict()
-                for k in kwargs:
-                    if isinstance(kwargs[k], SFFType):
-                        _kwargs[k] = kwargs[k]._local
-                    else:
-                        _kwargs[k] = kwargs[k]
-                self._local = self.gds_type(*args, **_kwargs)  # 1 and #3 - SFFType from (*a, **kw)
-                # ensure that the version is copied without requiring user intervention
-                if isinstance(self._local, sff.segmentation):
-                    self.version = self._local.schemaVersion
+                    _kwargs[k] = kwargs[k]
+            self._local = self.gds_type(*args, **_kwargs)  # 1 and #3 - SFFType from (*a, **kw)
+            # ensure that the version is copied without requiring user intervention
+            if isinstance(self._local, sff.segmentation):
+                self.version = self._local.schemaVersion
         else:
             raise ValueError("attribute 'gds_type' cannot be 'None'")
         # load dict
-        self._load_dict()
+        # self._load_dict()
+
+    @classmethod
+    def from_gds_type(cls, inst):
+        """Create an `SFFType` subclass directly from a `gds_type` object
+
+        Notice that we ignore do not pass `*args, **kwargs` as we assume the `inst` is complete.
+        """
+        if isinstance(inst, cls.gds_type):
+            obj = cls(new_obj=False)
+            obj._local = inst
+        else:
+            raise SFFTypeError(inst, cls)
+        return obj
 
     def __repr__(self):
         return self.ref
@@ -338,9 +352,12 @@ class SFFType(object):
             return str(type(self))
 
     def __iter__(self):
-        if self.iter_attr: # if this class has an iterable attribute
+        if self.iter_attr:  # if this class has an iterable attribute
             iter_name, iter_type = self.iter_attr
-            return iter(list(map(iter_type, getattr(self._local, iter_name))))
+            if isinstance(iter_type, SFFType):
+                return iter(list(map(iter_type.from_gds_type, getattr(self._local, iter_name))))
+            else:
+                return iter(list(map(iter_type.from_gds_type, getattr(self._local, iter_name))))
         else:
             raise TypeError("{} object is not iterable".format(self.__class__))
 
@@ -351,10 +368,17 @@ class SFFType(object):
         else:
             raise TypeError("object of type {} has no len()".format(self.__class__))
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            raise NotImplementedError  # by default; force explicit comparison
+        else:
+            raise SFFTypeError(other, self.__class__)
+
     def __getitem__(self, index):
         if self.iter_attr:
             iter_name, iter_type = self.iter_attr
-            return iter_type(getattr(self._local, iter_name)[index])
+            return iter_type.from_gds_type(getattr(self._local, iter_name)[index])
+            # return iter_type(getattr(self._local, iter_name)[index])
 
     def __delitem__(self, index):
         if self.iter_attr:
@@ -363,14 +387,14 @@ class SFFType(object):
             del getattr(self._local, iter_name)[index]
 
     def _load_dict(self):
-        self.iter_dict = dict()  #  initialise
-        if self.iter_attr:
+        if self.iter_attr and self.iter_dict is not None:
+            self.iter_dict = _dict()  #  initialise
             for item in self:
                 if isinstance(item, SFFType):
                     self.iter_dict[item.id] = item
-                elif isinstance(item, int):
+                elif isinstance(item, int):  # applies to vertices
                     self.iter_dict[item] = item
-                elif isinstance(item, _basestring):
+                elif isinstance(item, _basestring):  # applies to complexes and macromolecules
                     self.iter_dict[item] = item
                 else:
                     raise ValueError("Unknown class {}".format(type(item)))
@@ -398,23 +422,23 @@ class SFFType(object):
             else:
                 raise ValueError("ID {} not found".format(item_id))
 
-    @classmethod
-    def reset_id(cls):
-        """Reset the ID for a subclass"""
-        if issubclass(cls, SFFTransformationMatrix):
-            cls.transform_id = -1
-        elif issubclass(cls, SFFMesh):
-            cls.mesh_id = -1
-        elif issubclass(cls, SFFPolygon):
-            cls.polygon_id = -1
-        elif issubclass(cls, SFFSegment):
-            cls.segment_id = 0
-        elif issubclass(cls, SFFShape):
-            cls.shape_id = -1
-        elif issubclass(cls, SFFVertex):
-            cls.vertex_id = -1
-        elif issubclass(cls, SFFLattice):
-            cls.lattice_id = -1
+    # @classmethod
+    # def reset_id(cls):
+    #     """Reset the ID for a subclass"""
+    #     if issubclass(cls, SFFTransformationMatrix):
+    #         cls.transform_id = -1
+    #     elif issubclass(cls, SFFMesh):
+    #         cls.mesh_id = -1
+    #     elif issubclass(cls, SFFPolygon):
+    #         cls.polygon_id = -1
+    #     elif issubclass(cls, SFFSegment):
+    #         cls.segment_id = 0
+    #     elif issubclass(cls, SFFShape):
+    #         cls.shape_id = -1
+    #     elif issubclass(cls, SFFVertex):
+    #         cls.vertex_id = -1
+    #     elif issubclass(cls, SFFLattice):
+    #         cls.lattice_id = -1
 
     def export(self, fn, *_args, **_kwargs):
         """Export to a file on disc
@@ -450,6 +474,69 @@ class SFFType(object):
             with open(fn, 'w') as f:
                 self.as_json(f, *_args, **_kwargs)
         return os.EX_OK
+
+
+class SFFIndexType(SFFType):
+    """Mixin to handle object IDs"""
+    index_attr = ""
+    """the name of the attribute on the class which will be treated as the ID"""
+    increment_by = 1
+    """by default we increment by 1"""
+    start_at = 0
+    """used when resetting `index_attr` attribute"""
+
+    def __new__(cls, new_obj=True, *args, **kwargs):
+        # make sure we have a non-blank `index_attr` in the class
+        try:
+            assert cls.index_attr
+        except AssertionError:
+            raise SFFTypeError(cls.index_attr, str, 'subclasses must provide an index attribute')
+        # make sure there is an attribute with the value of the `index_attr` string
+        try:
+            assert hasattr(cls, cls.index_attr)
+        except AssertionError:
+            raise AttributeError("'{}' is missing a class variable '{}'".format(cls, cls.index_attr))
+        # make sure the `index_attr` attribute is set to an integer
+        try:
+            assert isinstance(getattr(cls, cls.index_attr), numbers.Integral)
+        except AssertionError:
+            raise SFFTypeError(cls.index_attr, numbers.Integral)
+        # create the instance
+        obj = super(SFFIndexType, cls).__new__(cls)
+        if new_obj:
+            # current index
+            current = getattr(cls, cls.index_attr)
+            # set the index on the instance3
+            setattr(obj, cls.index_attr, current)
+            # update the index
+            next = current + cls.increment_by
+            # update the index attr
+            setattr(cls, cls.index_attr, next)
+        return obj
+
+    def __init__(self, *args, **kwargs):
+        # we don't want the `new_obj` kwarg to propagate so we terminate it here
+        if 'new_obj' in kwargs:
+            # only set the `index_attr` to None if `new_obj=False`
+            if not kwargs['new_obj']:
+                setattr(self, self.index_attr, None)
+            del kwargs['new_obj']
+        super(SFFIndexType, self).__init__(*args, **kwargs)
+        # todo: if I want to add a new segment to a set of available segments does the id begin at the right value?
+        # id
+        if 'id' in kwargs:
+            self._local.id = kwargs['id']
+        else:
+            self._local.id = getattr(self, self.index_attr)
+
+    @classmethod
+    def reset_id(cls):
+        """Reset the `index_attr` attribute to its starting value"""
+        setattr(cls, cls.index_attr, cls.start_at)
+
+
+class SFFListType(SFFType):
+    """`SFFType` subclass for handling lists"""
 
 
 class SFFAttribute(object):
@@ -489,9 +576,14 @@ class SFFAttribute(object):
     def __get__(self, obj, _):  # replaced objtype with _
         if self._sff_type:
             if self._get_from:
-                return self._sff_type(getattr(obj._local, self._get_from, None))
+                return self._sff_type.from_gds_type(getattr(obj._local, self._get_from, None))
             else:
-                return self._sff_type(getattr(obj._local, self._name, None))
+                return self._sff_type.from_gds_type(getattr(obj._local, self._name, None))
+        # if self._sff_type:
+        #     if self._get_from:
+        #         return self._sff_type(getattr(obj._local, self._get_from, None))
+        #     else:
+        #         return self._sff_type(getattr(obj._local, self._name, None))
         else:
             if self._get_from:
                 return getattr(obj._local, self._get_from, None)
@@ -506,7 +598,7 @@ class SFFAttribute(object):
                 else:
                     setattr(obj._local, self._name, value._local)
             else:
-                raise SFFTypeError(self._sff_type)
+                raise SFFTypeError(value, self._sff_type)
         else:
             if self._set_to:
                 setattr(obj._local, self._set_to, value)
@@ -524,7 +616,7 @@ class SFFRGBA(SFFType):
     """RGBA colour"""
     gds_type = sff.rgbaType
     ref = "RGBA colour"
-    repr_string = "({}, {}, {}, {})"
+    repr_string = "SFFRGBA(red={}, green={}, blue={}, alpha={})"
     repr_args = ('red', 'green', 'blue', 'alpha')
 
     # attributes
@@ -533,8 +625,8 @@ class SFFRGBA(SFFType):
     blue = SFFAttribute('blue', help="blue channel")
     alpha = SFFAttribute('alpha', help="alpha (opacity) channel")
 
-    def __init__(self, var=None, random_colour=False, *args, **kwargs):
-        super(SFFRGBA, self).__init__(var=var, *args, **kwargs)
+    def __init__(self, random_colour=False, *args, **kwargs):
+        super(SFFRGBA, self).__init__(*args, **kwargs)
         if random_colour:
             self.value = random.random(), random.random(), random.random()
 
@@ -593,6 +685,12 @@ class SFFComplexes(SFFType):
     # todo: buggy; refers to emdb_sff attribute instead of SFFType attribute (which is inconsistent)
     iter_attr = ('id', str)
 
+    id = SFFAttribute('id', help="the list of complex ids")
+
+    def __eq__(self, other):
+        super(SFFComplexes, self).__eq__(other)
+        return
+
     def set_complexes(self, cs):
         """Set value to the iterable of complexes
 
@@ -601,7 +699,7 @@ class SFFComplexes(SFFType):
         if isinstance(cs, list):
             self._local.set_id(cs)
         else:
-            raise SFFTypeError(list)
+            raise SFFTypeError(cs, list)
 
     def add_complex(self, c):
         """Add a complex accession to the available complexes
@@ -611,7 +709,7 @@ class SFFComplexes(SFFType):
         if isinstance(c, _basestring):
             self._local.add_id(c)
         else:
-            raise SFFTypeError(_basestring)
+            raise SFFTypeError(c, _basestring)
 
     def insert_complex_at(self, index, c):
         """Insert a complex accession at the given index
@@ -623,7 +721,7 @@ class SFFComplexes(SFFType):
         if isinstance(c, _basestring):
             self._local.insert_id_at(index, c)
         else:
-            raise SFFTypeError(_basestring)
+            raise SFFTypeError(c, _basestring)
 
     def replace_complex_at(self, index, c):
         """Replace a complex accession at the given index
@@ -635,9 +733,9 @@ class SFFComplexes(SFFType):
         if isinstance(c, _basestring):
             self._local.replace_id_at(index, c)
         else:
-            raise SFFTypeError(_basestring)
+            raise SFFTypeError(c, _basestring)
 
-    def delete_at(self, index):
+    def delete_complex_at(self, index):
         """Delete the complex accession at the given index
 
         :param int index: index from which to delete the complex accession
@@ -659,8 +757,9 @@ class SFFMacromolecules(SFFType):
     ref = "Macromolecules"
     repr_string = "Macromolecule list of length {}"
     repr_args = ("len()",)
+    # todo: same problem as SFFComplexes
     iter_attr = ('id', str)
-    iter_dict = dict()
+    iter_dict = _dict()
 
     def set_macromolecules(self, ms):
         """Set the value of macromoleclues to the provided list of macromolecule accessions
@@ -670,7 +769,7 @@ class SFFMacromolecules(SFFType):
         if isinstance(ms, list):
             self._local.set_id(ms)
         else:
-            raise SFFTypeError(list)
+            raise SFFTypeError(ms, list)
 
     def add_macromolecule(self, m):
         """Add the given macromolecule accession to this container
@@ -679,8 +778,9 @@ class SFFMacromolecules(SFFType):
         """
         if isinstance(m, _basestring):
             self._local.add_id(m)
+
         else:
-            raise SFFTypeError(_basestring)
+            raise SFFTypeError(m, _basestring)
 
     def insert_macromolecule_at(self, index, m):
         """Insert the given macromolecule accession at the specified index bumping all others down the list
@@ -691,7 +791,7 @@ class SFFMacromolecules(SFFType):
         if isinstance(m, _basestring):
             self._local.insert_id_at(index, m)
         else:
-            raise SFFTypeError(_basestring)
+            raise SFFTypeError(m, _basestring)
 
     def replace_macromolecule_at(self, index, m):
         """Replace the macromolecule accession at the specified index with the one specified
@@ -702,7 +802,7 @@ class SFFMacromolecules(SFFType):
         if isinstance(m, _basestring):
             self._local.replace_id_at(index, m)
         else:
-            raise SFFTypeError(_basestring)
+            raise SFFTypeError(m, _basestring)
 
     def delete_at(self, index):
         """Delete the macromolecule accession at the give index
@@ -753,6 +853,10 @@ class SFFComplexesAndMacromolecules(SFFType):
         def __nonzero__(self):
             return self._boolean_test()
 
+    def __eq__(self, other):
+        super(SFFComplexesAndMacromolecules, self).__eq__(other)
+        return self.complexes == other.complexes and self.molecules == other.molecules
+
     def as_hff(self, parent_group, name="complexesAndMacromolecules"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
@@ -796,7 +900,7 @@ class SFFExternalReference(SFFType):
         if 'type' in kwargs:
             kwargs['type_'] = kwargs['type']
             del kwargs['type']
-        super(SFFExternalReference, self).__init__(var=var, *args, **kwargs)
+        super(SFFExternalReference, self).__init__(*args, **kwargs)
 
 
 class SFFExternalReferences(SFFType):
@@ -806,50 +910,50 @@ class SFFExternalReferences(SFFType):
     repr_string = "External references list with {} reference(s)"
     repr_args = ('len()',)
     iter_attr = ('ref', SFFExternalReference)
-    iter_dict = dict()
+    iter_dict = _dict()
 
     # methods
-    def add_external_reference(self, eR):
+    def add_external_reference(self, e_r):
         """Add the specified external reference object to this container
 
-        :param eR: an external reference object
-        :type eR: :py:class:`SFFExternalReference`
+        :param e_r: an external reference object
+        :type e_r: :py:class:`SFFExternalReference`
         """
-        if isinstance(eR, SFFExternalReference):
-            self._local.add_ref(eR._local)
+        if isinstance(e_r, SFFExternalReference):
+            self._local.add_ref(e_r._local)
         else:
-            raise SFFTypeError(SFFExternalReference)
+            raise SFFTypeError(e_r, SFFExternalReference)
 
-    def insert_external_reference(self, eR, index):
+    def insert_external_reference(self, e_r, index):
         """Insert the specified external reference object at the specified index
 
-        :param eR: an external reference object
-        :type eR: :py:class:`SFFExternalReference`
+        :param e_r: an external reference object
+        :type e_r: :py:class:`SFFExternalReference`
         :param int index: the index to insert to; bumps all other external references down the list
         """
         # todo: catch IndexError
-        if isinstance(eR, SFFExternalReference) and isinstance(index, int):
-            self._local.insert_ref_at(index, eR._local)
+        if isinstance(e_r, SFFExternalReference) and isinstance(index, int):
+            self._local.insert_ref_at(index, e_r._local)
         else:
-            if not isinstance(eR, SFFExternalReference):
-                raise SFFTypeError(SFFExternalReference)
+            if not isinstance(e_r, SFFExternalReference):
+                raise SFFTypeError(e_r, SFFExternalReference)
             elif not isinstance(index, int):
-                raise SFFTypeError(int)
+                raise SFFTypeError(index, int)
 
-    def replace_external_reference(self, eR, index):
+    def replace_external_reference(self, e_r, index):
         """Replace the external reference at ``index`` with the specified external reference
 
-        :param eR: an external reference object
-        :type eR: :py:class:`SFFExternalReference`
+        :param e_r: an external reference object
+        :type e_r: :py:class:`SFFExternalReference`
         :param int index: the index to replace at
         """
-        if isinstance(eR, SFFExternalReference) and isinstance(index, int):
-            self._local.replace_ref_at(index, eR._local)
+        if isinstance(e_r, SFFExternalReference) and isinstance(index, int):
+            self._local.replace_ref_at(index, e_r._local)
         else:
-            if not isinstance(eR, SFFExternalReference):
-                raise SFFTypeError(SFFExternalReference)
+            if not isinstance(e_r, SFFExternalReference):
+                raise SFFTypeError(e_r, SFFExternalReference)
             elif not isinstance(index, int):
-                raise SFFTypeError(int)
+                raise SFFTypeError(index, int)
 
 
 class SFFBiologicalAnnotation(SFFType):
@@ -862,8 +966,8 @@ class SFFBiologicalAnnotation(SFFType):
     # attributes
     name = SFFAttribute('name', help="the name of this segment")
     description = SFFAttribute('description', help="a brief description for this segment")
-    external_references = SFFAttribute('externalReferences', SFFExternalReferences,
-                                      help="the set of external references")
+    external_references = SFFAttribute('externalReferences', sff_type=SFFExternalReferences,
+                                       help="the set of external references")
     number_of_instances = SFFAttribute('numberOfInstances', help="the number of instances of this segment")
 
     # methods
@@ -879,6 +983,13 @@ class SFFBiologicalAnnotation(SFFType):
     else:
         def __nonzero__(self):
             return self._boolean_test()
+
+    def __eq__(self, other):
+        super(SFFBiologicalAnnotation, self).__eq__(other)
+        return self.name == other.name and \
+               self.description == other.description and \
+               self.number_of_instances == other.number_of_instances and \
+               self.external_references == other.external_references
 
     @property
     def num_external_references(self):
@@ -995,7 +1106,7 @@ class SFFVolume(SFFType):
         if len(value) == 3:
             self.cols, self.rows, self.sections = value
         else:
-            raise SFFTypeError("Iterable", "should be of length 3")
+            raise SFFTypeError(value, "Iterable", message="should be of length 3")
 
     @classmethod
     def from_hff(cls, hff_data):
@@ -1011,7 +1122,7 @@ class SFFVolume(SFFType):
 class SFFVolumeStructure(SFFVolume):
     gds_type = sff.volumeStructureType
     ref = "3D volume structure: cols, rows, sections"
-    repr_string = "3D volume structure: ({}, {}, {})"
+    repr_string = "SFFVolumeStructure(cols={}, rows={}, sections={})"
     repr_args = ('cols', 'rows', 'sections')
 
     @property
@@ -1023,17 +1134,19 @@ class SFFVolumeStructure(SFFVolume):
 class SFFVolumeIndex(SFFVolume):
     gds_type = sff.volumeIndexType
     ref = "3D volume start index: cols, rows, sections"
-    repr_string = "3D volume start index: [{}, {}, {}]"
+    repr_string = "SFFVolumeIndex(cols={}, rows={}, sections={})"
     repr_args = ('cols', 'rows', 'sections')
 
 
-class SFFLattice(SFFType):
+class SFFLattice(SFFIndexType, SFFType):
     """Class representing 3D """
     gds_type = sff.latticeType
     ref = "3D lattice"
-    repr_string = "Encoded 3D lattice with {}"
-    repr_args = ('size',)
-    lattice_id = -1
+    repr_string = "SFFLattice(mode={}, endianness={}, size={}, start={}, data=<numpy.ndarray>)"
+    repr_args = ('mode', 'endianness', 'size', 'start')
+    lattice_id = 0
+
+    index_attr = 'lattice_id'
 
     # attributes
     id = SFFAttribute('id', help="the ID for this lattice (referenced by 3D volumes)")
@@ -1049,16 +1162,8 @@ class SFFLattice(SFFType):
     data = SFFAttribute('data', help="data provided by a numpy array; the dimensions should correspond with those "
                                      "specified in the 'size' attribute")
 
-    def __new__(cls, *args, **kwargs):
-        cls.lattice_id += 1
-        return super(SFFLattice, cls).__new__(cls)
-
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFLattice, self).__init__(var=var, *args, **kwargs)
-        if 'id' in kwargs:
-            self._local.id = kwargs['id']
-        elif not var:
-            self._local.id = self.lattice_id
+    def __init__(self, *args, **kwargs):
+        super(SFFLattice, self).__init__(*args, **kwargs)
         # ensure that data is bytes, not string
         if isinstance(self.data, _str):  # for python2: unicode, for python3: str
             # we should decode it using ASCII
@@ -1157,12 +1262,12 @@ class SFFLatticeList(SFFType):
     repr_string = "Container with {} 3D lattices"
     repr_args = ("len()",)
     iter_attr = ('lattice', SFFLattice)
-    iter_dict = dict()
+    iter_dict = _dict()
 
-    def __init__(self, var=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         # reset id
         SFFLattice.reset_id()
-        super(SFFLatticeList, self).__init__(var=var, *args, **kwargs)
+        super(SFFLatticeList, self).__init__(*args, **kwargs)
 
     def add_lattice(self, l):
         """Add a lattice to the list of lattices
@@ -1177,7 +1282,7 @@ class SFFLatticeList(SFFType):
             l.data = _decode(l.data, 'utf-8')
             self._local.add_lattice(l._local)
         else:
-            raise SFFTypeError(SFFLattice)
+            raise SFFTypeError(l, SFFLattice)
 
     def as_hff(self, parent_group, name='lattices'):
         """Return the data of this object as an HDF5 group in the given parent group"""
@@ -1199,11 +1304,13 @@ class SFFLatticeList(SFFType):
         return obj
 
 
-class SFFShape(SFFType):
+class SFFShape(SFFIndexType, SFFType):
     """Base shape class"""
     repr_string = "{} {}"
     repr_args = ('ref', 'id')
-    shape_id = -1
+    shape_id = 0
+
+    index_attr = 'shape_id'
 
     # attributes
     id = SFFAttribute('id', help="the ID of this shape")
@@ -1224,12 +1331,12 @@ class SFFCone(SFFShape):
         cls.shape_id = super(SFFCone, cls).shape_id + 1
         return super(SFFCone, cls).__new__(cls)
 
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFCone, self).__init__(var=var, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(SFFCone, self).__init__(*args, **kwargs)
         if 'id' in kwargs:
             self._local.id = kwargs['id']
             SFFShape.shape_id = self.shape_id
-        elif not var:
+        else:
             self._local.id = self.shape_id
             SFFShape.shape_id = self.shape_id
         self._local.original_tagname_ = self.ref
@@ -1249,12 +1356,12 @@ class SFFCuboid(SFFShape):
         cls.shape_id = super(SFFCuboid, cls).shape_id + 1
         return super(SFFCuboid, cls).__new__(cls)
 
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFCuboid, self).__init__(var=var, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(SFFCuboid, self).__init__(*args, **kwargs)
         if 'id' in kwargs:
             self._local.id = kwargs['id']
             SFFShape.shape_id = self.shape_id
-        elif not var:
+        else:
             self._local.id = self.shape_id
             SFFShape.shape_id = self.shape_id
         self._local.original_tagname_ = self.ref
@@ -1273,12 +1380,12 @@ class SFFCylinder(SFFShape):
         cls.shape_id = super(SFFCylinder, cls).shape_id + 1
         return super(SFFCylinder, cls).__new__(cls)
 
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFCylinder, self).__init__(var=var, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(SFFCylinder, self).__init__(*args, **kwargs)
         if 'id' in kwargs:
             self._local.id = kwargs['id']
             SFFShape.shape_id = self.shape_id
-        elif not var:
+        else:
             self._local.id = self.shape_id
             SFFShape.shape_id = self.shape_id
         self._local.original_tagname_ = self.ref
@@ -1298,12 +1405,12 @@ class SFFEllipsoid(SFFShape):
         cls.shape_id = super(SFFEllipsoid, cls).shape_id + 1
         return super(SFFEllipsoid, cls).__new__(cls)
 
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFEllipsoid, self).__init__(var=var, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(SFFEllipsoid, self).__init__(*args, **kwargs)
         if 'id' in kwargs:
             self._local.id = kwargs['id']
             SFFShape.shape_id = self.shape_id
-        elif not var:
+        else:
             self._local.id = self.shape_id
             SFFShape.shape_id = self.shape_id
         self._local.original_tagname_ = self.ref
@@ -1315,10 +1422,10 @@ class SFFShapePrimitiveList(SFFType):
     ref = 'shape_primitive_list'
     repr_string = "Shape primitive list with some shapes"
 
-    def __init__(self, var=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         # reset id
         SFFShape.reset_id()
-        super(SFFShapePrimitiveList, self).__init__(var=var, *args, **kwargs)
+        super(SFFShapePrimitiveList, self).__init__(*args, **kwargs)
 
     def add_shape(self, s):
         """Add the provide shape into this shape container
@@ -1330,7 +1437,7 @@ class SFFShapePrimitiveList(SFFType):
         if isinstance(s, SFFShape):
             self._local.shapePrimitive.append(s._local)
         else:
-            raise SFFTypeError(SFFShape)
+            raise SFFTypeError(s, SFFShape)
 
     def __len__(self):
         return len(self._local.shapePrimitive)
@@ -1431,13 +1538,15 @@ class SFFShapePrimitiveList(SFFType):
         return obj
 
 
-class SFFVertex(SFFType):
+class SFFVertex(SFFIndexType, SFFType):
     """Single vertex"""
     gds_type = sff.vertexType
     ref = "Vertex"
     repr_string = "{} vertex {}: ({}, {}, {})"
     repr_args = ('designation', 'vID', 'x', 'y', 'z')
-    vertex_id = -1
+    vertex_id = 0
+
+    index_attr = 'vertex_id'
 
     # attributes
     vID = SFFAttribute('vID', help="vertex ID; referenced by polygons")
@@ -1445,20 +1554,6 @@ class SFFVertex(SFFType):
     x = SFFAttribute('x', help="x co-ordinate")
     y = SFFAttribute('y', help="y co-ordinate")
     z = SFFAttribute('z', help="z co-ordinate")
-
-    def __new__(cls, *args, **kwargs):
-        cls.vertex_id += 1
-        return super(SFFVertex, cls).__new__(cls)
-
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFVertex, self).__init__(var=var, *args, **kwargs)
-        """
-        :TODO: vID fails to take effect; fails with IMODSegmentation
-        """
-        if 'vID' in kwargs:
-            self._local.vID = kwargs['vID']
-        elif not var:
-            self._local.vID = self.vertex_id
 
     @property
     def point(self):
@@ -1473,32 +1568,22 @@ class SFFVertex(SFFType):
             else:
                 raise TypeError("point does not have three values")
         else:
-            raise SFFTypeError(tuple)
+            raise SFFTypeError(p, tuple)
 
 
-class SFFPolygon(SFFType):
+class SFFPolygon(SFFIndexType, SFFType):
     """Single polygon"""
     gds_type = sff.polygonType
     ref = "Polygon"
     repr_string = "Polygon {}"
     repr_args = ('PID',)
     iter_attr = ('v', int)
-    polygon_id = -1
-    iter_dict = dict()
+    polygon_id = 0
+    iter_dict = _dict()
+    index_attr = 'polygon_id'
 
     # attributes
     PID = SFFAttribute('PID', help="the ID for this polygon")
-
-    def __new__(cls, *args, **kwargs):
-        cls.polygon_id += 1
-        return super(SFFPolygon, cls).__new__(cls)
-
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFPolygon, self).__init__(var=var, *args, **kwargs)
-        if 'PID' in kwargs:
-            self._local.PID = kwargs['PID']
-        elif not var:
-            self._local.PID = self.polygon_id
 
     @property
     def vertex_ids(self):
@@ -1513,7 +1598,7 @@ class SFFPolygon(SFFType):
         if isinstance(v, int):
             self._local.add_v(v)
         else:
-            raise SFFTypeError(int)
+            raise SFFTypeError(v, int)
 
 
 class SFFVertexList(SFFType):
@@ -1521,10 +1606,10 @@ class SFFVertexList(SFFType):
     gds_type = sff.vertexListType
     ref = "List of vertices"
 
-    def __init__(self, var=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         # reset id
         SFFVertex.reset_id()
-        super(SFFVertexList, self).__init__(var=var, *args, **kwargs)
+        super(SFFVertexList, self).__init__(*args, **kwargs)
         self._vertex_dict = {v.vID: v for v in map(SFFVertex, self._local.v)}
 
     @property
@@ -1560,7 +1645,7 @@ class SFFVertexList(SFFType):
             self._local.add_v(v._local)
             self._local.numVertices = self.num_vertices
         else:
-            raise SFFTypeError(SFFVertex)
+            raise SFFTypeError(v, SFFVertex)
 
     @classmethod
     def from_hff(cls, hff_data):
@@ -1587,10 +1672,10 @@ class SFFPolygonList(SFFType):
     repr_string = "Polygon list with {} polygons"
     repr_args = ('len()',)
 
-    def __init__(self, var=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         # reset id
         SFFPolygon.reset_id()
-        super(SFFPolygonList, self).__init__(var=var, *args, **kwargs)
+        super(SFFPolygonList, self).__init__(*args, **kwargs)
         self._polygon_dict = {P.PID: P for P in list(map(SFFPolygon, self._local.P))}
 
     @property
@@ -1625,7 +1710,7 @@ class SFFPolygonList(SFFType):
             self._local.add_P(P._local)
             self._local.numPolygons = self.num_polygons
         else:
-            raise SFFTypeError(SFFPolygon)
+            raise SFFTypeError(P, SFFPolygon)
 
     @classmethod
     def from_hff(cls, hff_data):
@@ -1640,13 +1725,14 @@ class SFFPolygonList(SFFType):
         return obj
 
 
-class SFFMesh(SFFType):
+class SFFMesh(SFFIndexType, SFFType):
     """Single mesh"""
     gds_type = sff.meshType
     ref = "Mesh"
     repr_string = "Mesh {} with {} and {}"
     repr_args = ('id', 'vertices', 'polygons')
-    mesh_id = -1
+    mesh_id = 0
+    index_attr = 'mesh_id'
 
     # attributes
     id = SFFAttribute('id')
@@ -1655,17 +1741,6 @@ class SFFMesh(SFFType):
     polygons = SFFAttribute('polygonList', sff_type=SFFPolygonList,
                             help="a list of derived polygons (object of class :py:class:`sfftkrw.schema.SFFPolygonList`)")
     transform_id = SFFAttribute('transformId', help="a transform applied to the mesh")
-
-    def __new__(cls, *args, **kwargs):
-        cls.mesh_id += 1
-        return super(SFFMesh, cls).__new__(cls)
-
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFMesh, self).__init__(var=var, *args, **kwargs)
-        if 'id' in kwargs:
-            self._local.id = kwargs['id']
-        elif not var:
-            self._local.id = self.mesh_id
 
     @property
     def num_vertices(self):
@@ -1694,12 +1769,12 @@ class SFFMeshList(SFFType):
     repr_string = "Mesh list with {} meshe(s)"
     repr_args = ('len()',)
     iter_attr = ('mesh', SFFMesh)
-    iter_dict = dict()
+    iter_dict = _dict()
 
-    def __init__(self, var=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         # reset id
         SFFMesh.reset_id()
-        super(SFFMeshList, self).__init__(var=var, *args, **kwargs)
+        super(SFFMeshList, self).__init__(*args, **kwargs)
 
     def add_mesh(self, m):
         """Add a mesh into the list of meshes
@@ -1771,14 +1846,17 @@ class SFFMeshList(SFFType):
         return obj
 
 
-class SFFSegment(SFFType):
+class SFFSegment(SFFIndexType, SFFType):
     """Class that encapsulates segment data"""
     gds_type = sff.segmentType
     ref = "Segment"
     repr_string = "Segment {}"
     repr_args = ('id',)
-    segment_id = 0
+    segment_id = 1
     segment_parentID = 0
+
+    index_attr = 'segment_id'
+    start_at = 1
 
     # attributes
     id = SFFAttribute('id',
@@ -1786,9 +1864,9 @@ class SFFSegment(SFFType):
     parentID = SFFAttribute('parentID',
                             help="the ID for the segment that contains this segment; defaults to 0 (the whole segmentation)")
     biological_annotation = SFFAttribute('biologicalAnnotation', sff_type=SFFBiologicalAnnotation,
-                                        help="the biological annotation for this segment; described using a :py:class:`sfftkrw.schema.SFFBiologicalAnnotation` object")
+                                         help="the biological annotation for this segment; described using a :py:class:`sfftkrw.schema.SFFBiologicalAnnotation` object")
     complexes_and_macromolecules = SFFAttribute('complexesAndMacromolecules', sff_type=SFFComplexesAndMacromolecules,
-                                              help="the complexes and macromolecules associated with this segment; described using a :py:class:`sfftkrw.schema.SFFComplexesAndMacromolecules` object")
+                                                help="the complexes and macromolecules associated with this segment; described using a :py:class:`sfftkrw.schema.SFFComplexesAndMacromolecules` object")
     colour = SFFAttribute('colour', sff_type=SFFRGBA,
                           help="this segments colour; described using a :py:class:`sfftkrw.schema.SFFRGBA` object")
     meshes = SFFAttribute('meshList', sff_type=SFFMeshList,
@@ -1798,25 +1876,29 @@ class SFFSegment(SFFType):
     shapes = SFFAttribute('shapePrimitiveList', sff_type=SFFShapePrimitiveList,
                           help="the list of shape primitives that describe this segment; a :py:class:`sfftkrw.schema.SFFShapePrimitiveList` object")
 
-    def __new__(cls, *args, **kwargs):
-        cls.segment_id += 1
-        return super(SFFType, cls).__new__(cls)
+    # def __new__(cls, *args, **kwargs):
+    #     cls.segment_id += 1
+    #     return super(SFFSegment, cls).__new__(cls)
 
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFSegment, self).__init__(var=var, *args, **kwargs)
-        """
-        :TODO: if I want to add a new segment to a set of available segments does the id begin at the right value?
-        """
-        # id
-        if 'id' in kwargs:
-            self._local.id = kwargs['id']
-        elif not var:
-            self._local.id = self.segment_id
+    def __init__(self, *args, **kwargs):
+        super(SFFSegment, self).__init__(*args, **kwargs)
         # parentID
+        # unlink segment_id, parentID is not managed by `SFFIndexType`
         if 'parentID' in kwargs:
             self._local.parentID = kwargs['parentID']
-        elif not var:
+        else:
             self._local.parentID = self.segment_parentID
+
+    def __eq__(self, other):
+        super(SFFSegment, self).__eq__(other)
+        return self.id == other.id and \
+               self.parentID == other.parentID and \
+               self.biological_annotation == other.biological_annotation and \
+               self.complexes_and_macromolecules == other.complexes_and_macromolecules  # and \
+        # self.colour == other.colour and \
+        # self.meshes == other.meshes and \
+        # self.volume == other.volume and \
+        # self.shapes == other.shapes
 
     def as_hff(self, parent_group, name="{}"):
         """Return the data of this object as an HDF5 group in the given parent group"""
@@ -1942,12 +2024,12 @@ class SFFSegmentList(SFFType):
     ref = "segment_list"
     repr_string = "Segment container"
     iter_attr = ('segment', SFFSegment)
-    iter_dict = dict()
+    iter_dict = _dict()
 
-    def __init__(self, var=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         # reset id
         SFFSegment.reset_id()
-        super(SFFSegmentList, self).__init__(var=var, *args, **kwargs)
+        super(SFFSegmentList, self).__init__(*args, **kwargs)
 
     def add_segment(self, s):
         """Add a segment to this segment container
@@ -1959,7 +2041,7 @@ class SFFSegmentList(SFFType):
         if isinstance(s, SFFSegment):
             self._local.add_segment(s._local)
         else:
-            raise SFFTypeError(SFFSegment)
+            raise SFFTypeError(s, SFFSegment)
 
     def as_hff(self, parent_group, name="segments"):
         """Return the data of this object as an HDF5 group in the given parent group"""
@@ -1990,11 +2072,12 @@ class SFFSegmentList(SFFType):
 #     id = SFFAttribute('id')
 
 
-class SFFTransformationMatrix(SFFType):
+class SFFTransformationMatrix(SFFIndexType, SFFType):
     """Transformation matrix transform"""
     gds_type = sff.transformationMatrixType
     ref = "transformation_matrix"
-    transform_id = -1
+    transform_id = 0
+    index_attr = 'transform_id'
 
     # attributes
     id = SFFAttribute('id', help="an ID for this transform")
@@ -2008,12 +2091,12 @@ class SFFTransformationMatrix(SFFType):
         cls.transform_id += 1
         return super(SFFTransformationMatrix, cls).__new__(cls)
 
-    def __init__(self, var=None, *args, **kwargs):
-        super(SFFTransformationMatrix, self).__init__(var=var, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(SFFTransformationMatrix, self).__init__(*args, **kwargs)
         # override id if it is included
         if 'id' in kwargs:
             self._local.id = kwargs['id']
-        elif not var:
+        else:
             self._local.id = self.transform_id
 
         self._local.original_tagname_ = self.ref
@@ -2037,12 +2120,12 @@ class SFFTransformList(SFFType):
     ref = "Transform list"
     repr_string = "List of transforms"
     iter_attr = ('transform', SFFTransformationMatrix)
-    iter_dict = dict()
+    iter_dict = _dict()
 
-    def __init__(self, var=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         # a new container of transforms needs the transform ID reset
         SFFTransformationMatrix.reset_id()
-        super(SFFTransformList, self).__init__(var=var, *args, **kwargs)
+        super(SFFTransformList, self).__init__(*args, **kwargs)
 
     @property
     def transformation_matrix_count(self):
@@ -2054,7 +2137,7 @@ class SFFTransformList(SFFType):
         if isinstance(T, SFFTransformationMatrix):
             self._local.add_transform(T._local)
         else:
-            raise SFFTypeError(SFFTransformationMatrix)
+            raise SFFTypeError(T, SFFTransformationMatrix)
 
     def check_transformation_matrix_homogeneity(self):
         """Helper method to check transformation matrix homogeneity
@@ -2171,7 +2254,7 @@ class SFFSoftware(SFFType):
     name = SFFAttribute('name', help="the software/programme's name")
     version = SFFAttribute('version', help="the version used")
     processing_details = SFFAttribute('processingDetails',
-                                     help="a description of how the data was processed to produce the segmentation")
+                                      help="a description of how the data was processed to produce the segmentation")
 
     def as_hff(self, parent_group, name="software"):
         """Return the data of this object as an HDF5 group in the given parent group"""
@@ -2245,49 +2328,49 @@ class SFFGlobalExternalReferences(SFFType):
     repr_string = "Global external reference list with {} reference(s)"
     repr_args = ('len()',)
     iter_attr = ('ref', SFFExternalReference)
-    iter_dict = dict()
+    iter_dict = _dict()
 
     # methods
-    def add_external_reference(self, eR):
+    def add_external_reference(self, e_r):
         """Add the specified external reference object to this container
 
-        :param eR: an external reference object
-        :type eR: :py:class:`SFFExternalReference`
+        :param e_r: an external reference object
+        :type e_r: :py:class:`SFFExternalReference`
         """
-        if isinstance(eR, SFFExternalReference):
-            self._local.add_ref(eR._local)
+        if isinstance(e_r, SFFExternalReference):
+            self._local.add_ref(e_r._local)
         else:
-            raise SFFTypeError(SFFExternalReference)
+            raise SFFTypeError(e_r, SFFExternalReference)
 
-    def insert_external_reference(self, eR, index):
+    def insert_external_reference(self, e_r, index):
         """Insert the specified external reference object at the specified index
 
-        :param eR: an external reference object
-        :type eR: :py:class:`SFFExternalReference`
+        :param e_r: an external reference object
+        :type e_r: :py:class:`SFFExternalReference`
         :param int index: the index to insert to; bumps all other external references down the list
         """
-        if isinstance(eR, SFFExternalReference) and isinstance(index, int):
-            self._local.insert_ref_at(index, eR._local)
+        if isinstance(e_r, SFFExternalReference) and isinstance(index, int):
+            self._local.insert_ref_at(index, e_r._local)
         else:
-            if not isinstance(eR, SFFExternalReference):
-                raise SFFTypeError(SFFExternalReference)
+            if not isinstance(e_r, SFFExternalReference):
+                raise SFFTypeError(e_r, SFFExternalReference)
             elif not isinstance(index, int):
-                raise SFFTypeError(int)
+                raise SFFTypeError(index, int)
 
-    def replace_external_reference(self, eR, index):
+    def replace_external_reference(self, e_r, index):
         """Replace the external reference at ``index`` with the specified external reference
 
-        :param eR: an external reference object
-        :type eR: :py:class:`SFFExternalReference`
+        :param e_r: an external reference object
+        :type e_r: :py:class:`SFFExternalReference`
         :param int index: the index to replace at
         """
-        if isinstance(eR, SFFExternalReference) and isinstance(index, int):
-            self._local.replace_ref_at(index, eR._local)
+        if isinstance(e_r, SFFExternalReference) and isinstance(index, int):
+            self._local.replace_ref_at(index, e_r._local)
         else:
-            if not isinstance(eR, SFFExternalReference):
-                raise SFFTypeError(SFFExternalReference)
+            if not isinstance(e_r, SFFExternalReference):
+                raise SFFTypeError(e_r, SFFExternalReference)
             elif not isinstance(index, int):
-                raise SFFTypeError(int)
+                raise SFFTypeError(index, int)
 
 
 class SFFSegmentation(SFFType):
@@ -2302,13 +2385,13 @@ class SFFSegmentation(SFFType):
     software = SFFAttribute('software', sff_type=SFFSoftware,
                             help="the software details used to generate this segmentationa :py:class:`sfftkrw.schema.SFFSoftware` object")
     primary_descriptor = SFFAttribute('primaryDescriptor',
-                                     help="the main type of representation used for this segmentation; can be one of 'meshList', 'shapePrimitiveList' or 'threeDVolume'")
+                                      help="the main type of representation used for this segmentation; can be one of 'meshList', 'shapePrimitiveList' or 'threeDVolume'")
     transforms = SFFAttribute('transformList', sff_type=SFFTransformList,
                               help="a list of transforms; a :py:class:`sfftkrw.schema.SFFTransformList` object")
     bounding_box = SFFAttribute('boundingBox', sff_type=SFFBoundingBox,
-                               help="the bounding box in which the segmentation sits; a :py:class:`sfftkrw.schema.SFFBoundingBox` object")
+                                help="the bounding box in which the segmentation sits; a :py:class:`sfftkrw.schema.SFFBoundingBox` object")
     global_external_references = SFFAttribute('globalExternalReferences', sff_type=SFFGlobalExternalReferences,
-                                            help="a list of external references that apply to the whole segmentation (global); a :py:class:`sfftkrw.schema.SFFGlobalExternalReferences` object")
+                                              help="a list of external references that apply to the whole segmentation (global); a :py:class:`sfftkrw.schema.SFFGlobalExternalReferences` object")
     segments = SFFAttribute('segmentList', sff_type=SFFSegmentList,
                             help="the list of annotated segments; a :py:class:`sfftkrw.schema.SFFSegmentList` object")
     lattices = SFFAttribute('latticeList', sff_type=SFFLatticeList,
@@ -2316,26 +2399,29 @@ class SFFSegmentation(SFFType):
     details = SFFAttribute('details', help="any other details about this segmentation (free text)")
 
     # properties, methods
-    def __init__(self, var=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Initialiser to handle opening from EMDB-SFF files (XML, HDF5, JSON)"""
-        if isinstance(var, _basestring):
-            # Experimental
-            if re.match(r'.*\.sff$', var, re.IGNORECASE):
-                try:
-                    self._local = sff.parse(var, silence=True)
-                except IOError:
-                    print_date("File {} not found".format(var))
-                    sys.exit(os.EX_IOERR)
-            elif re.match(r'.*\.hff$', var, re.IGNORECASE):
-                with h5py.File(var, 'r') as h:
-                    self._local = self.__class__.from_hff(h)._local
-            elif re.match(r'.*\.json$', var, re.IGNORECASE):
-                self._local = self.__class__.from_json(var)._local
-            else:
-                print_date("Invalid EMDB-SFF file name: {}".format(var))
-                sys.exit(os.EX_USAGE)
+        super(SFFSegmentation, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def from_file(cls, fn):
+        """Instantiate an EMDB-SFF object from a file"""
+        seg = cls()
+        if re.match(r'.*\.sff$', fn, re.IGNORECASE):
+            try:
+                seg._local = sff.parse(fn, silence=True)
+            except IOError:
+                print_date("File {} not found".format(fn))
+                sys.exit(os.EX_IOERR)
+        elif re.match(r'.*\.hff$', fn, re.IGNORECASE):
+            with h5py.File(fn, 'r') as h:
+                seg._local = seg.from_hff(h)._local
+        elif re.match(r'.*\.json$', fn, re.IGNORECASE):
+            seg._local = seg.from_json(fn)._local
         else:
-            super(SFFSegmentation, self).__init__(var, *args, **kwargs)
+            print_date("Invalid EMDB-SFF file name: {}".format(fn))
+            sys.exit(os.EX_USAGE)
+        return seg
 
     @property
     def num_global_external_references(self):
@@ -2372,7 +2458,8 @@ class SFFSegmentation(SFFType):
             )
             i = 0
             for g_ext_ref in self.global_external_references:
-                h_gext[i] = (g_ext_ref.type, g_ext_ref.other_type, g_ext_ref.value, g_ext_ref.label, g_ext_ref.description)
+                h_gext[i] = (
+                    g_ext_ref.type, g_ext_ref.other_type, g_ext_ref.value, g_ext_ref.label, g_ext_ref.description)
                 i += 1
         group = self.segments.as_hff(group)
         group = self.lattices.as_hff(group)
@@ -2425,7 +2512,7 @@ class SFFSegmentation(SFFType):
         """
         :TODO: also extract geometrical data
         """
-        sff_data = dict()
+        sff_data = _dict()
         # can be simplified
         sff_data['name'] = self.name
         sff_data['version'] = self.version
@@ -2461,11 +2548,12 @@ class SFFSegmentation(SFFType):
         sff_data['globalExternalReferences'] = global_external_references
         sff_data['segments'] = list()
         for segment in self.segments:
-            seg_data = dict()
+            seg_data = _dict()
             seg_data['id'] = int(segment.id)
             seg_data['parentID'] = int(segment.parentID)
-            bio_ann = dict()
-            bio_ann['name'] = segment.biological_annotation.name if segment.biological_annotation.name is not None else None
+            bio_ann = _dict()
+            bio_ann[
+                'name'] = segment.biological_annotation.name if segment.biological_annotation.name is not None else None
             bio_ann['description'] = str(
                 segment.biological_annotation.description) if segment.biological_annotation.description is not None else None
             bio_ann[
@@ -2624,6 +2712,7 @@ class SFFSegmentation(SFFType):
         sff_seg.details = J['details']
         return sff_seg
 
+    # todo: the following methods should be moved to sfftk from sfftk-rw
     def merge_annotation(self, other_seg):
         """Merge the annotation from another sff_seg to this one
         

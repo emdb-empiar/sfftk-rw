@@ -14,13 +14,14 @@ import unittest
 
 import h5py
 import numpy
-from random_words import RandomWords
+from random_words import RandomWords, LoremIpsum
 
-from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float
+from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_integers
 from .. import schema
-from ..core import _xrange
+from ..core import _xrange, _dict, _str
 
 rw = RandomWords()
+li = LoremIpsum()
 
 __author__ = "Paul K. Korir, PhD"
 __email__ = "pkorir@ebi.ac.uk, paul.korir@gmail.com"
@@ -783,7 +784,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_read_sff(self):
         """Read from XML (.sff) file"""
         sff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
-        segmentation = schema.SFFSegmentation(sff_file)
+        segmentation = schema.SFFSegmentation.from_file(sff_file)
         transform = segmentation.transforms[1]
         # assertions
         self.assertEqual(segmentation.name, "Segger Segmentation")
@@ -959,43 +960,84 @@ class TestSFFRGBA(Py23FixTestCase):
 
 
 class TestSFFComplexes(Py23FixTestCase):
-    pass
+    """Tests for SFFComplexes class"""
+
+    def test_default(self):
+        """Test default settings"""
+        c = schema.SFFComplexes()
+        self.assertEqual(c.gds_type, schema.emdb_sff.complexType)
+        self.assertEqual(c.ref, "Complexes")
+        self.assertEqual(str(c), "Complex list of length 0")
+        with self.assertRaises(StopIteration):  # because it's empty
+            next(iter(c))
+
+    def test_set_complexes(self):
+        """Test that we can set complexes"""
+
+    # test_set_complexes
+    # test_add_complexe
+    # test_insert_complex_at
+    # test_replace_complex_at
+    # test_delete_complex_at
 
 
-class TestSFFMacromolecules(Py23FixTestCase):
-    pass
-
-
-class TestSFFComplexesAndMacromolecules(Py23FixTestCase):
-    pass
-
-
-class TestSFFExternalReference(Py23FixTestCase):
-    pass
-
-
-class TestSFFExternalReferences(Py23FixTestCase):
-    pass
-
-
-class TestSFFBiologicalAnnotation(Py23FixTestCase):
-    pass
-
-
-class TestSFFThreeDVolume(Py23FixTestCase):
-    pass
-
-
-class TestSFFVolume(Py23FixTestCase):
-    pass
-
-
+# class TestSFFMacromolecules(Py23FixTestCase):
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFComplexesAndMacromolecules(Py23FixTestCase):
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFExternalReference(Py23FixTestCase):
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFExternalReferences(Py23FixTestCase):
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFBiologicalAnnotation(Py23FixTestCase):
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFThreeDVolume(Py23FixTestCase):
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFVolume(Py23FixTestCase):
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
 class TestSFFVolumeStructure(Py23FixTestCase):
-    pass
+    def test_default(self):
+        """Test default settings"""
+        vs = schema.SFFVolumeStructure(cols=10, rows=20, sections=30)
+        self.assertRegex(_str(vs), r"SFFVolumeStructure\(cols.*rows.*sections.*\)")
+        self.assertEqual(vs.cols, 10)
+        self.assertEqual(vs.rows, 20)
+        self.assertEqual(vs.sections, 30)
+        self.assertEqual(vs.voxel_count, 10 * 20 * 30)
 
-
-class TestSFFVolumeIndex(Py23FixTestCase):
-    pass
+#
+# class TestSFFVolumeIndex(Py23FixTestCase):
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
 
 
 class TestSFFLattice(Py23FixTestCase):
@@ -1023,8 +1065,13 @@ class TestSFFLattice(Py23FixTestCase):
         """Test creation of a lattice object"""
         self.assertEqual(self.lattice.ref, "3D lattice")
         self.assertEqual(
-            str(self.lattice),
-            "Encoded 3D lattice with 3D volume structure: ({}, {}, {})".format(*self.lattice_size.value)
+            _str(self.lattice),
+            "SFFLattice(mode={}, endianness={}, size={}, start={}, data=<numpy.ndarray>)".format(
+                self.lattice_mode,
+                self.lattice_endianness,
+                self.lattice_size,
+                self.lattice_start,
+            )
         )
         self.assertEqual(self.lattice.id, 0)
         self.assertEqual(self.lattice.mode, self.lattice_mode)
@@ -1059,12 +1106,6 @@ class TestSFFTypeError(Py23FixTestCase):
 class TestSFFType(Py23FixTestCase):
     """Tests for the main base class"""
 
-    def test_default(self):
-        """Test default operation"""
-        _c = schema.emdb_sff.colourType(rgba=(1.0, 0, 0, 0))
-        with self.assertRaisesRegex(TypeError, r'.*is not of type.*'):
-            c = schema.SFFComplexes(_c)
-
     def test_gds_type_missing(self):
         """Test for presence of `gds_type` attribute"""
 
@@ -1073,6 +1114,28 @@ class TestSFFType(Py23FixTestCase):
 
         with self.assertRaisesRegex(ValueError, r'.*gds_type.*'):
             _s = _SomeEntity()
+
+    def test_create_from_gds_type(self):
+        """Test creating an `SFFType` subclass object from a `gds_type' object"""
+        # we will try with SFFRGBA and rgbaType
+        red = _random_float()
+        green = _random_float()
+        blue = _random_float()
+        _r = schema.emdb_sff.rgbaType(
+            red=red, green=green, blue=blue,
+        )
+        r = schema.SFFRGBA.from_gds_type(_r)
+        self.assertIsInstance(r, schema.SFFRGBA)
+        self.assertEqual(r.red, red)
+        self.assertEqual(r.green, green)
+        self.assertEqual(r.blue, blue)
+
+    def test_create_from_gds_type_raises_error(self):
+        """Test that we get an exception when the `SFFType` subclass object's `gds_type` attribute is not the same
+        as the one provided"""
+        _r = schema.emdb_sff.biologicalAnnotationType()
+        with self.assertRaisesRegex(schema.SFFTypeError, r".*is not of type.*"):
+            r = schema.SFFRGBA.from_gds_type(_r)
 
     def test_ref_attr(self):
         """Test the `ref` attribute"""
@@ -1110,6 +1173,19 @@ class TestSFFType(Py23FixTestCase):
         with self.assertRaisesRegex(ValueError, r'Unmatched number.*'):
             str(_c)
 
+    def test_ids(self):
+        """Test that IDs work correctly
+
+        - When a blank object is created, ID should start from 0/1
+        - When ID is specified as a kwarg then the ID counter should be set to that value so the next will increment from there
+        - When an object is instantiated using the `from_gds_type` classmethod then we should set the ID counter to the value of the gds_type ID
+        - Where a object container exists e.g. `SFFSegmentList` for `SFFSegment` then every new instantiation of the container resets the ID
+        - That we can manually reset IDs
+        -
+        """
+
+        self.assertTrue(False)
+
     def test_iter_attr(self):
         """Test use of `iter_attr`"""
         # first we should be able to get items from the objects using next(iter(...))
@@ -1137,24 +1213,327 @@ class TestSFFType(Py23FixTestCase):
         del c[0]
         self.assertEqual(len(c), 0)
 
+    def test_iter_attr_ids(self):
+        """Test that iter_attrs have correct IDs"""
+        S = schema.SFFSegmentList()
+        ss = [schema.SFFSegment(
+            biologicalAnnotation=schema.SFFBiologicalAnnotation(
+                name=rw.random_word(),
+                description=li.get_sentence(),
+            ),
+            colour=schema.SFFRGBA(random_colour=True),
+        ) for _ in _xrange(10)]
+        [S.add_segment(s) for s in ss]
+        print(S, file=sys.stderr)
+        print(list(map(lambda s: s.id, ss)), file=sys.stderr)
+        for s in S:
+            print(s, file=sys.stderr)
+        sy = schema.SFFSegment()
+        print('sy.id:', sy.id, file=sys.stderr)
+        self.assertEqual(sy.id, 11)
+
     def test_iter_dict(self):
         """Test the convenience dict for quick access to items by ID"""
-        self.assertTrue(False)
+        S = schema.SFFSegmentList()
+        ids = _random_integers(count=10)
+        segment_dict = _dict()
+        for i in ids:
+            s = schema.SFFSegment(id=i)
+            S.add_segment(s)
+            segment_dict[i] = s
+        # print('segment_dict:', id(list(_dict_iter_values(segment_dict))[0]), file=sys.stderr)
+        # print('S.iter_dict:', id(list(_dict_iter_values(S.iter_dict))[0]), file=sys.stderr)
+        #
+        # print(dir(s), file=sys.stderr)
+        # for attr in dir(s):
+        #     print(attr, getattr(s, attr), type(getattr(s, attr)), file=sys.stderr)
+        #     if isinstance(attr, schema.SFFAttribute):
+        #         print(getattr(s, attr), file=sys.stderr)
+        self.assertDictEqual(segment_dict, S.iter_dict)
 
-    def test_get_ids(self):
-        """Test that get_ids() returns a list of IDs"""
-        self.assertTrue(False)
-
-    def test_get_by_id(self):
-        """Test that we can get by ID"""
-        self.assertTrue(False)
+        # add complex
+        # word = rw.random_word()
+        # c.add_complex(word)
+        # p[word] = word
+        # self.assertDictEqual(p, c.iter_dict)
 
 
-class TestSFFAttribute(Py23FixTestCase):
-    """Test the main attribute class"""
+#     def test_get_ids(self):
+#         """Test that get_ids() returns a list of IDs"""
+#         self.assertTrue(False)
+#
+#     def test_get_by_id(self):
+#         """Test that we can get by ID"""
+#         self.assertTrue(False)
+#
+
+
+class TestSFFIndexType(Py23FixTestCase):
+    """Test the indexing mixin class `SFFIndexType"""
+
+    def setUp(self):
+        """Reset ids"""
+        schema.SFFSegment.segment_id = 1 # we test resetting formerly
+
+    def test_new_obj_True(self):
+        """Test that an empty `SFFIndexType` subclass has correct indexes"""
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 1)
+        s = schema.SFFSegment(new_obj=True) # verbose: `new_obj=True` by default
+        self.assertEqual(s.id, 2)
+
+    def test_new_obj_False(self):
+        """Test that `new_obj=False` for empty `SFFIndexType` subclass has None for ID"""
+        s = schema.SFFSegment(new_obj=False)
+        self.assertIsNone(s.id)
+
+    def test_proper_incrementing(self):
+        """Test that proper incrementing with and without `new_obj=False/True`"""
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 1)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 2)
+        s = schema.SFFSegment(new_obj=False)
+        self.assertIsNone(s.id)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 3)
+        s = schema.SFFSegment(new_obj=True)
+        self.assertEqual(s.id, 4)
+        s = schema.SFFSegment(new_obj=False)
+        self.assertIsNone(s.id)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 5)
+        s = schema.SFFSegment.from_gds_type(schema.emdb_sff.segmentType(id=35))
+        self.assertEqual(s.id, 35)
+        s = schema.SFFSegment.from_gds_type(schema.emdb_sff.segmentType())
+        self.assertIsNone(s.id)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 6)
+
+    def test_with_gds_type(self):
+        """Test that we can work with generateDS types"""
+        s = schema.SFFSegment.from_gds_type(schema.emdb_sff.segmentType())
+        self.assertIsNone(s.id)
+        s = schema.SFFSegment.from_gds_type(schema.emdb_sff.segmentType(id=37))
+        self.assertIsNotNone(s.id)
+
+    def test_reset_id(self):
+        """Test that we can reset the ID"""
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 1)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 2)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 3)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 4)
+        schema.SFFSegment.reset_id()
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 1)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 2)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 3)
+        s = schema.SFFSegment()
+        self.assertEqual(s.id, 4)
+
+    def test_errors(self):
+        """Test that we get the right exceptions"""
+        class _Segment(schema.SFFSegment):
+            index_attr = ''
+
+        with self.assertRaisesRegex(schema.SFFTypeError, r".*subclasses must provide an index attribute"):
+            _Segment()
+
+        class _Segment(schema.SFFSegment):
+            index_attr = 'segment_index'
+
+        with self.assertRaisesRegex(AttributeError, r".*is missing a class variable.*"):
+            _Segment()
+
+        class _Segment(schema.SFFSegment):
+            segment_id = 3.8
+
+        with self.assertRaises(schema.SFFTypeError):
+            _Segment()
+
+
+#
+# class TestSFFAttribute(Py23FixTestCase):
+#     """Test the main attribute class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+# class TestSFFMesh(Py23FixTestCase):
+#     """Test the SFFMesh class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFMeshList(Py23FixTestCase):
+#     """Test the SFFMeshList class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFBoundingBox(Py23FixTestCase):
+#     """Test the SFFBoundingBox class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFCone(Py23FixTestCase):
+#     """Test the SFFCone class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFCuboid(Py23FixTestCase):
+#     """Test the SFFCuboid class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFCylinder(Py23FixTestCase):
+#     """Test the SFFCylinder class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFEllipsoid(Py23FixTestCase):
+#     """Test the SFFEllipsoid class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFGlobalExternalReferences(Py23FixTestCase):
+#     """Test the SFFGlobalExternalReferences class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFLatticeList(Py23FixTestCase):
+#     """Test the SFFLatticeList class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFPolygon(Py23FixTestCase):
+#     """Test the SFFPolygon class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFPolygonList(Py23FixTestCase):
+#     """Test the SFFPolygonList class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFSegment(Py23FixTestCase):
+#     """Test the SFFSegment class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+class TestSFFSegmentList(Py23FixTestCase):
+    """Test the SFFSegmentList class"""
 
     def test_default(self):
-        """Test default operation"""
+        """Test default settings"""
+        S = schema.SFFSegmentList()
+        S.add_segment(schema.SFFSegment())
+        S.add_segment(schema.SFFSegment())
+        S.add_segment(schema.SFFSegment())
+        S.add_segment(schema.SFFSegment())
+        for s in S:
+            print(s.id, file=sys.stderr)
+        S.add_segment(schema.SFFSegment())
+        S.add_segment(schema.SFFSegment())
+        S.add_segment(schema.SFFSegment())
+        S.add_segment(schema.SFFSegment())
+        for s in S:
+            print(s, file=sys.stderr)
+        S.add_segment(schema.SFFSegment.from_gds_type(
+            schema.emdb_sff.segmentType()
+        ))
+        for s in S:
+            print(s, file=sys.stderr)
+        # self.assertTrue(False)
+
+#
+# class TestSFFShape(Py23FixTestCase):
+#     """Test the SFFShape class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFShapePrimitiveList(Py23FixTestCase):
+#     """Test the SFFShapePrimitiveList class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFSoftware(Py23FixTestCase):
+#     """Test the SFFSoftware class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFTransformationMatrix(Py23FixTestCase):
+#     """Test the SFFTransformationMatrix class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFVertex(Py23FixTestCase):
+#     """Test the SFFVertex class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
+#
+#
+# class TestSFFVertexList(Py23FixTestCase):
+#     """Test the SFFVertexList class"""
+#
+#     def test_default(self):
+#         """Test default settings"""
+#         self.assertTrue(False)
 
 
 if __name__ == "__main__":

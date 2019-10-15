@@ -73,7 +73,7 @@ def handle_view(args):  # @UnusedVariable
     :return int status: status
     """
     if re.match(r'.*\.sff$', args.from_file, re.IGNORECASE):
-        seg = schema.SFFSegmentation(args.from_file)
+        seg = schema.SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
         print("EMDB-SFF Segmentation version {}".format(seg.version))
         print("Segmentation name: {}".format(seg.name))
@@ -82,7 +82,7 @@ def handle_view(args):  # @UnusedVariable
         print("No. of segments: {}".format(len(seg.segments)))
         print("*" * 50)
     elif re.match(r'.*\.hff$', args.from_file, re.IGNORECASE):
-        seg = schema.SFFSegmentation(args.from_file)
+        seg = schema.SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
         print("EMDB-SFF Segmentation version {}".format(seg.version))
         print("Segmentation name: {}".format(seg.name))
@@ -91,7 +91,7 @@ def handle_view(args):  # @UnusedVariable
         print("No. of segments: {}".format(len(seg.segments)))
         print("*" * 50)
     elif re.match(r'.*\.json$', args.from_file, re.IGNORECASE):
-        seg = schema.SFFSegmentation(args.from_file)
+        seg = schema.SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
         print("EMDB-SFF Segmentation version {}".format(seg.version))
         print("Segmentation name: {}".format(seg.name))
