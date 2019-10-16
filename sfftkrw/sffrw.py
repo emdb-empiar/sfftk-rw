@@ -164,8 +164,9 @@ def handle_tests(args):
             from .unittests import test_core
             _module_test_runner(test_core, args)
         if 'schema' in args.tool:
-            from .unittests import test_schema
-            _module_test_runner(test_schema, args)
+            from .unittests import test_base, test_adapter
+            _module_test_runner(test_base, args)
+            _module_test_runner(test_adapter, args)
         if 'formats' in args.tool:
             from .unittests import test_formats
             _module_test_runner(test_formats, args)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# test_schema.py
+# test_adapter.py
 """
 Unit for schema adapter
 """
@@ -16,9 +16,9 @@ import h5py
 import numpy
 from random_words import RandomWords, LoremIpsum
 
-from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_integers
-from .. import schema
-from ..core import _xrange, _dict, _str
+from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float
+from ..core import _xrange, _str
+from ..schema import adapter
 
 rw = RandomWords()
 li = LoremIpsum()
@@ -29,31 +29,31 @@ __date__ = "2017-02-20"
 
 
 # todo: add ID within each test method
-
+# todo: the individual class tests should include the repr_string check
 class TestSFFSegmentation(Py23FixTestCase):
     @classmethod
     def setUpClass(cls):
         # empty segmentation object
-        segmentation = schema.SFFSegmentation()  # 3D volume
+        segmentation = adapter.SFFSegmentation()  # 3D volume
         segmentation.primary_descriptor = "threeDVolume"
         # transforms
-        transforms = schema.SFFTransformList()
+        transforms = adapter.SFFTransformList()
         transforms.add_transform(
-            schema.SFFTransformationMatrix(
+            adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=" ".join(map(str, range(12)))
             )
         )
         transforms.add_transform(
-            schema.SFFTransformationMatrix(
+            adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=" ".join(map(str, range(12)))
             )
         )
         transforms.add_transform(
-            schema.SFFTransformationMatrix(
+            adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=" ".join(map(str, range(12)))
@@ -63,43 +63,43 @@ class TestSFFSegmentation(Py23FixTestCase):
         xmax = _random_integer(start=500)
         ymax = _random_integer(start=500)
         zmax = _random_integer(start=500)
-        segmentation.bounding_box = schema.SFFBoundingBox(
+        segmentation.bounding_box = adapter.SFFBoundingBox(
             xmax=xmax,
             ymax=ymax,
             zmax=zmax
         )
         # lattice container
-        lattices = schema.SFFLatticeList()
+        lattices = adapter.SFFLatticeList()
         # lattice 1
         binlist = numpy.array([random.randint(0, 5) for i in _xrange(20 * 20 * 20)])
-        lattice = schema.SFFLattice(
+        lattice = adapter.SFFLattice(
             mode='uint32',
             endianness='little',
-            size=schema.SFFVolumeStructure(cols=20, rows=20, sections=20),
-            start=schema.SFFVolumeIndex(cols=0, rows=0, sections=0),
+            size=adapter.SFFVolumeStructure(cols=20, rows=20, sections=20),
+            start=adapter.SFFVolumeIndex(cols=0, rows=0, sections=0),
             data=binlist,
         )
         lattices.add_lattice(lattice)
         # lattice 2
         binlist2 = numpy.array([random.random() * 100 for i in _xrange(30 * 40 * 50)])
-        lattice2 = schema.SFFLattice(
+        lattice2 = adapter.SFFLattice(
             mode='float32',
             endianness='big',
-            size=schema.SFFVolumeStructure(cols=30, rows=40, sections=50),
-            start=schema.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
+            size=adapter.SFFVolumeStructure(cols=30, rows=40, sections=50),
+            start=adapter.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
             data=binlist2,
         )
         lattices.add_lattice(lattice2)
         # segments
-        segments = schema.SFFSegmentList()
+        segments = adapter.SFFSegmentList()
         # segment one
-        segment = schema.SFFSegment()
+        segment = adapter.SFFSegment()
         vol1_value = 1
-        segment.volume = schema.SFFThreeDVolume(
+        segment.volume = adapter.SFFThreeDVolume(
             latticeId=0,
             value=vol1_value,
         )
-        segment.colour = schema.SFFRGBA(
+        segment.colour = adapter.SFFRGBA(
             red=random.random(),
             green=random.random(),
             blue=random.random(),
@@ -107,13 +107,13 @@ class TestSFFSegmentation(Py23FixTestCase):
         )
         segments.add_segment(segment)
         # segment two
-        segment = schema.SFFSegment()
+        segment = adapter.SFFSegment()
         vol2_value = 37.1
-        segment.volume = schema.SFFThreeDVolume(
+        segment.volume = adapter.SFFThreeDVolume(
             latticeId=1,
             value=vol2_value
         )
-        segment.colour = schema.SFFRGBA(
+        segment.colour = adapter.SFFRGBA(
             red=random.random(),
             green=random.random(),
             blue=random.random(),
@@ -128,26 +128,26 @@ class TestSFFSegmentation(Py23FixTestCase):
 
     def test_create_3D(self):
         """Create an SFFSegmentation object with 3D volume segmentation from scratch"""
-        segmentation = schema.SFFSegmentation()  # 3D volume
+        segmentation = adapter.SFFSegmentation()  # 3D volume
         segmentation.primary_descriptor = "threeDVolume"
         # transforms
-        transforms = schema.SFFTransformList()
+        transforms = adapter.SFFTransformList()
         transforms.add_transform(
-            schema.SFFTransformationMatrix(
+            adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=" ".join(map(str, range(12)))
             )
         )
         transforms.add_transform(
-            schema.SFFTransformationMatrix(
+            adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=" ".join(map(str, range(12)))
             )
         )
         transforms.add_transform(
-            schema.SFFTransformationMatrix(
+            adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=" ".join(map(str, range(12)))
@@ -157,47 +157,47 @@ class TestSFFSegmentation(Py23FixTestCase):
         xmax = _random_integer(start=500)
         ymax = _random_integer(start=500)
         zmax = _random_integer(start=500)
-        segmentation.bounding_box = schema.SFFBoundingBox(
+        segmentation.bounding_box = adapter.SFFBoundingBox(
             xmax=xmax,
             ymax=ymax,
             zmax=zmax
         )
         # lattice container
-        lattices = schema.SFFLatticeList()
+        lattices = adapter.SFFLatticeList()
         # lattice 1
         binlist = numpy.array([random.randint(0, 5) for i in _xrange(20 * 20 * 20)])
-        lattice = schema.SFFLattice(
+        lattice = adapter.SFFLattice(
             mode='uint32',
             endianness='little',
-            size=schema.SFFVolumeStructure(cols=20, rows=20, sections=20),
-            start=schema.SFFVolumeIndex(cols=0, rows=0, sections=0),
+            size=adapter.SFFVolumeStructure(cols=20, rows=20, sections=20),
+            start=adapter.SFFVolumeIndex(cols=0, rows=0, sections=0),
             data=binlist,
         )
         lattices.add_lattice(lattice)
         # lattice 2
         binlist2 = numpy.array([random.random() * 100 for i in _xrange(30 * 40 * 50)])
-        lattice2 = schema.SFFLattice(
+        lattice2 = adapter.SFFLattice(
             mode='float32',
             endianness='big',
-            size=schema.SFFVolumeStructure(cols=30, rows=40, sections=50),
-            start=schema.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
+            size=adapter.SFFVolumeStructure(cols=30, rows=40, sections=50),
+            start=adapter.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
             data=binlist2,
         )
         lattices.add_lattice(lattice2)
         # segments
-        segments = schema.SFFSegmentList()
+        segments = adapter.SFFSegmentList()
         # segment one
-        segment = schema.SFFSegment()
+        segment = adapter.SFFSegment()
         vol1_value = 1
-        segment.volume = schema.SFFThreeDVolume(
+        segment.volume = adapter.SFFThreeDVolume(
             latticeId=0,
             value=vol1_value,
         )
         segments.add_segment(segment)
         # segment two
-        segment = schema.SFFSegment()
+        segment = adapter.SFFSegment()
         vol2_value = 37.1
-        segment.volume = schema.SFFThreeDVolume(
+        segment.volume = adapter.SFFThreeDVolume(
             latticeId=1,
             value=vol2_value
         )
@@ -250,129 +250,161 @@ class TestSFFSegmentation(Py23FixTestCase):
 
     def test_create_shapes(self):
         """Test that we can create a segmentation of shapes programmatically"""
-        segmentation = schema.SFFSegmentation()
+        segmentation = adapter.SFFSegmentation()
         segmentation.primary_descriptor = "shapePrimitiveList"
-        transforms = schema.SFFTransformList()
-        segments = schema.SFFSegmentList()
-        segment = schema.SFFSegment()
+        transforms = adapter.SFFTransformList()
+        segments = adapter.SFFSegmentList()
+        segment = adapter.SFFSegment()
         # shapes
-        shapes = schema.SFFShapePrimitiveList()
-        transform = schema.SFFTransformationMatrix(
+        shapes = adapter.SFFShapePrimitiveList()
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCone(
+            adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCone(
+            adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCone(
+            adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCuboid(
+            adapter.SFFCuboid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
                 z=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCuboid(
+            adapter.SFFCuboid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
                 z=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
+            rows=3,
+            cols=4,
+            data=" ".join(map(str, range(12))),
+        )
+        transforms.add_transform(transform)
+        cylinder = adapter.SFFCylinder(
+            height=_random_float() * 100,
+            diameter=_random_float() * 100,
+            transformId=transform.id,
+        )
+        shapes.add_shape(cylinder)
+        transform = adapter.SFFTransformationMatrix(
+            rows=3,
+            cols=4,
+            data=" ".join(map(str, range(12))),
+        )
+        transforms.add_transform(transform)
+        ellipsoid = adapter.SFFEllipsoid(
+            x=_random_float() * 100,
+            y=_random_float() * 100,
+            z=_random_float() * 100,
+            transformId=transform.id,
+        )
+        shapes.add_shape(ellipsoid)
+        transform = adapter.SFFTransformationMatrix(
+            rows=3,
+            cols=4,
+            data=" ".join(map(str, range(12))),
+        )
+        transforms.add_transform(transform)
+        ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
+                                          transformId=transform.id, )
+        shapes.add_shape(ellipsoid2)
+        print('cylinder.id', cylinder.id, file=sys.stderr)
+        cylinder = adapter.SFFCylinder(
+            height=_random_float() * 100,
+            diameter=_random_float() * 100,
+            transformId=transform.id,
+        )
+        print('cylinder.id', cylinder.id, file=sys.stderr)
+        cylinder = adapter.SFFCylinder(
+            height=_random_float() * 100,
+            diameter=_random_float() * 100,
+            transformId=transform.id,
+        )
+        print('cylinder.id', cylinder.id, file=sys.stderr)
+        cylinder = adapter.SFFCylinder(
+            height=_random_float() * 100,
+            diameter=_random_float() * 100,
+            transformId=transform.id,
+        )
+        print('cylinder.id', cylinder.id, file=sys.stderr)
+        cylinder = adapter.SFFCylinder(
+            height=_random_float() * 100,
+            diameter=_random_float() * 100,
+            transformId=transform.id,
+        )
+        print('cylinder.id', cylinder.id, file=sys.stderr)
+        print('ellipsoid.id', ellipsoid.id, file=sys.stderr)
+        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
+        ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
+                                          transformId=transform.id, )
+        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
+        ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
+                                          transformId=transform.id, )
+        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
+        ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
+                                          transformId=transform.id, )
+        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
+        ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
+                                          transformId=transform.id, )
+        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCylinder(
-                height=_random_float() * 100,
-                diameter=_random_float() * 100,
-                transformId=transform.id,
-            )
-        )
-        transform = schema.SFFTransformationMatrix(
-            rows=3,
-            cols=4,
-            data=" ".join(map(str, range(12))),
-        )
-        transforms.add_transform(transform)
-        shapes.add_shape(
-            schema.SFFEllipsoid(
-                x=_random_float() * 100,
-                y=_random_float() * 100,
-                z=_random_float() * 100,
-                transformId=transform.id,
-            )
-        )
-        transform = schema.SFFTransformationMatrix(
-            rows=3,
-            cols=4,
-            data=" ".join(map(str, range(12))),
-        )
-        transforms.add_transform(transform)
-        shapes.add_shape(
-            schema.SFFEllipsoid(
-                x=_random_float() * 100,
-                y=_random_float() * 100,
-                z=_random_float() * 100,
-                transformId=transform.id,
-            )
-        )
-        transform = schema.SFFTransformationMatrix(
-            rows=3,
-            cols=4,
-            data=" ".join(map(str, range(12))),
-        )
-        transforms.add_transform(transform)
-        shapes.add_shape(
-            schema.SFFCone(
+            adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
                 transformId=transform.id,
@@ -381,125 +413,125 @@ class TestSFFSegmentation(Py23FixTestCase):
         segment.shapes = shapes
         segments.add_segment(segment)
         # more shapes
-        segment = schema.SFFSegment()
+        segment = adapter.SFFSegment()
         # shapes
-        shapes = schema.SFFShapePrimitiveList()
-        transform = schema.SFFTransformationMatrix(
+        shapes = adapter.SFFShapePrimitiveList()
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCone(
+            adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCone(
+            adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCone(
+            adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCuboid(
+            adapter.SFFCuboid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
                 z=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCuboid(
+            adapter.SFFCuboid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
                 z=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCylinder(
+            adapter.SFFCylinder(
                 height=_random_float() * 100,
                 diameter=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFEllipsoid(
+            adapter.SFFEllipsoid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
                 z=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFEllipsoid(
+            adapter.SFFEllipsoid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
                 z=_random_float() * 100,
                 transformId=transform.id,
             )
         )
-        transform = schema.SFFTransformationMatrix(
+        transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
         transforms.add_transform(transform)
         shapes.add_shape(
-            schema.SFFCone(
+            adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
                 transformId=transform.id,
@@ -520,20 +552,20 @@ class TestSFFSegmentation(Py23FixTestCase):
 
     def test_create_meshes(self):
         """Test that we can create a segmentation of meshes programmatically"""
-        segmentation = schema.SFFSegmentation()
+        segmentation = adapter.SFFSegmentation()
         segmentation.primary_descriptor = "meshList"
-        segments = schema.SFFSegmentList()
-        segment = schema.SFFSegment()
+        segments = adapter.SFFSegmentList()
+        segment = adapter.SFFSegment()
         # meshes
-        meshes = schema.SFFMeshList()
+        meshes = adapter.SFFMeshList()
         # mesh 1
-        mesh = schema.SFFMesh()
+        mesh = adapter.SFFMesh()
         # mesh 2
-        mesh2 = schema.SFFMesh()
-        vertices1 = schema.SFFVertexList()
+        mesh2 = adapter.SFFMesh()
+        vertices1 = adapter.SFFVertexList()
         no_vertices1 = _random_integer(stop=100)
         for i in _xrange(no_vertices1):
-            vertex = schema.SFFVertex()
+            vertex = adapter.SFFVertex()
             vertex.point = tuple(
                 map(float, (
                     _random_integer(1, 1000),
@@ -542,27 +574,27 @@ class TestSFFSegmentation(Py23FixTestCase):
                 ))
             )
             vertices1.add_vertex(vertex)
-        polygons1 = schema.SFFPolygonList()
+        polygons1 = adapter.SFFPolygonList()
         no_polygons1 = _random_integer(stop=100)
         for i in _xrange(no_polygons1):
-            polygon = schema.SFFPolygon()
+            polygon = adapter.SFFPolygon()
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygons1.add_polygon(polygon)
         mesh.vertices = vertices1
         mesh.polygons = polygons1
-        vertices2 = schema.SFFVertexList()
+        vertices2 = adapter.SFFVertexList()
         no_vertices2 = _random_integer(stop=100)
         for i in _xrange(no_vertices2):
-            vertex = schema.SFFVertex()
+            vertex = adapter.SFFVertex()
             vertex.point = tuple(map(float, (
                 _random_integer(1, 1000), _random_integer(1, 1000), _random_integer(1, 1000))))
             vertices2.add_vertex(vertex)
-        polygons2 = schema.SFFPolygonList()
+        polygons2 = adapter.SFFPolygonList()
         no_polygons2 = _random_integer(stop=100)
         for i in _xrange(no_polygons2):
-            polygon = schema.SFFPolygon()
+            polygon = adapter.SFFPolygon()
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
@@ -574,14 +606,14 @@ class TestSFFSegmentation(Py23FixTestCase):
         segment.meshes = meshes
         segments.add_segment(segment)
         # segment two
-        segment = schema.SFFSegment()
+        segment = adapter.SFFSegment()
         # mesh
-        meshes = schema.SFFMeshList()
-        mesh = schema.SFFMesh()
-        vertices3 = schema.SFFVertexList()
+        meshes = adapter.SFFMeshList()
+        mesh = adapter.SFFMesh()
+        vertices3 = adapter.SFFVertexList()
         no_vertices3 = _random_integer(stop=100)
         for i in _xrange(no_vertices3):
-            vertex = schema.SFFVertex()
+            vertex = adapter.SFFVertex()
             vertex.point = tuple(
                 map(float, (
                     _random_integer(1, 1000),
@@ -590,10 +622,10 @@ class TestSFFSegmentation(Py23FixTestCase):
                 ))
             )
             vertices3.add_vertex(vertex)
-        polygons3 = schema.SFFPolygonList()
+        polygons3 = adapter.SFFPolygonList()
         no_polygons3 = _random_integer(stop=100)
         for i in _xrange(no_polygons3):
-            polygon = schema.SFFPolygon()
+            polygon = adapter.SFFPolygon()
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
@@ -624,51 +656,51 @@ class TestSFFSegmentation(Py23FixTestCase):
 
     def test_create_annotations(self):
         """Test that we can add annotations programmatically"""
-        segmentation = schema.SFFSegmentation()  # annotation
+        segmentation = adapter.SFFSegmentation()  # annotation
         segmentation.name = "name"
-        segmentation.software = schema.SFFSoftware(
+        segmentation.software = adapter.SFFSoftware(
             name="Software",
             version="1.0.9",
             processingDetails="Processing details"
         )
         segmentation.details = "Details"
         # global external references
-        segmentation.global_external_references = schema.SFFGlobalExternalReferences()
+        segmentation.global_external_references = adapter.SFFGlobalExternalReferences()
         segmentation.global_external_references.add_external_reference(
-            schema.SFFExternalReference(
+            adapter.SFFExternalReference(
                 type='one',
                 otherType='two',
                 value='three'
             )
         )
         segmentation.global_external_references.add_external_reference(
-            schema.SFFExternalReference(
+            adapter.SFFExternalReference(
                 type='four',
                 otherType='five',
                 value='six'
             )
         )
-        segmentation.segments = schema.SFFSegmentList()
-        segment = schema.SFFSegment()
-        biol_ann = schema.SFFBiologicalAnnotation()
+        segmentation.segments = adapter.SFFSegmentList()
+        segment = adapter.SFFSegment()
+        biol_ann = adapter.SFFBiologicalAnnotation()
         biol_ann.name = "Segment1"
         biol_ann.description = "Some description"
         # external refs
-        biol_ann.external_references = schema.SFFExternalReferences()
+        biol_ann.external_references = adapter.SFFExternalReferences()
         biol_ann.external_references.add_external_reference(
-            schema.SFFExternalReference(
+            adapter.SFFExternalReference(
                 type="sldjflj",
                 value="doieaik"
             )
         )
         biol_ann.external_references.add_external_reference(
-            schema.SFFExternalReference(
+            adapter.SFFExternalReference(
                 type="sljd;f",
                 value="20ijalf"
             )
         )
         biol_ann.external_references.add_external_reference(
-            schema.SFFExternalReference(
+            adapter.SFFExternalReference(
                 type="lsdjlsd",
                 otherType="lsjfd;sd",
                 value="23ijlsdjf"
@@ -678,15 +710,15 @@ class TestSFFSegmentation(Py23FixTestCase):
         segment.biological_annotation = biol_ann
         # complexes and macromolecules
         # complexes
-        comp_mac = schema.SFFComplexesAndMacromolecules()
-        comp = schema.SFFComplexes()
+        comp_mac = adapter.SFFComplexesAndMacromolecules()
+        comp = adapter.SFFComplexes()
         comp.add_complex(str(_random_integer(1, 1000)))
         comp.add_complex(str(_random_integer(1, 1000)))
         comp.add_complex(str(_random_integer(1, 1000)))
         comp.add_complex(str(_random_integer(1, 1000)))
         comp.add_complex(str(_random_integer(1, 1000)))
         # macromolecules
-        macr = schema.SFFMacromolecules()
+        macr = adapter.SFFMacromolecules()
         macr.add_macromolecule(str(_random_integer(1, 1000)))
         macr.add_macromolecule(str(_random_integer(1, 1000)))
         macr.add_macromolecule(str(_random_integer(1, 1000)))
@@ -697,7 +729,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         comp_mac.macromolecules = macr
         segment.complexes_and_macromolecules = comp_mac
         # colour
-        segment.colour = schema.SFFRGBA(
+        segment.colour = adapter.SFFRGBA(
             red=1,
             green=0,
             blue=1,
@@ -747,14 +779,14 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_segment_ids(self):
         """to ensure IDs are correctly reset"""
         # segmentation one
-        segmentation = schema.SFFSegmentation()
-        segmentation.segments = schema.SFFSegmentList()
-        segment = schema.SFFSegment()
+        segmentation = adapter.SFFSegmentation()
+        segmentation.segments = adapter.SFFSegmentList()
+        segment = adapter.SFFSegment()
         segmentation.segments.add_segment(segment)
         # segmentation two
-        segmentation2 = schema.SFFSegmentation()
-        segmentation2.segments = schema.SFFSegmentList()
-        segmentation2.segments.add_segment(schema.SFFSegment())
+        segmentation2 = adapter.SFFSegmentation()
+        segmentation2.segments = adapter.SFFSegmentList()
+        segmentation2.segments.add_segment(adapter.SFFSegment())
         # assertions
         self.assertEqual(segmentation.segments[0].id, segmentation2.segments[0].id)
         # segment two :: mainly to test that ids of mesh, contour, polygon, segment, shape, vertex reset
@@ -770,12 +802,12 @@ class TestSFFSegmentation(Py23FixTestCase):
 
     def test_transform_ids(self):
         """Test that transform ids work correctly"""
-        transforms = schema.SFFTransformList()
-        matrix = schema.SFFTransformationMatrix(rows=3, cols=3, data=' '.join(map(str, range(9))))
+        transforms = adapter.SFFTransformList()
+        matrix = adapter.SFFTransformationMatrix(rows=3, cols=3, data=' '.join(map(str, range(9))))
         transforms.add_transform(matrix)
 
-        transforms2 = schema.SFFTransformList()
-        matrix2 = schema.SFFTransformationMatrix(rows=3, cols=3, data=' '.join(map(str, range(9))))
+        transforms2 = adapter.SFFTransformList()
+        matrix2 = adapter.SFFTransformationMatrix(rows=3, cols=3, data=' '.join(map(str, range(9))))
         transforms2.add_transform(matrix2)
 
         self.assertIsNotNone(transforms[0].id)
@@ -784,7 +816,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_read_sff(self):
         """Read from XML (.sff) file"""
         sff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
-        segmentation = schema.SFFSegmentation.from_file(sff_file)
+        segmentation = adapter.SFFSegmentation.from_file(sff_file)
         transform = segmentation.transforms[1]
         # assertions
         self.assertEqual(segmentation.name, "Segger Segmentation")
@@ -801,7 +833,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_read_hff(self):
         """Read from HDF5 (.hff) file"""
         hff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.hff')
-        segmentation = schema.SFFSegmentation(hff_file)
+        segmentation = adapter.SFFSegmentation(hff_file)
         # assertions
         self.assertEqual(segmentation.name, "Segger Segmentation")
         self.assertTrue(len(segmentation.version) > 0)
@@ -813,7 +845,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_read_json(self):
         """Read from JSON (.json) file"""
         json_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.json')
-        segmentation = schema.SFFSegmentation(json_file)
+        segmentation = adapter.SFFSegmentation(json_file)
         # assertions
         self.assertEqual(segmentation.name, "Segger Segmentation")
         self.assertTrue(len(segmentation.version) > 0)
@@ -869,7 +901,7 @@ class TestSFFRGBA(Py23FixTestCase):
 
     def test_default(self):
         """Test default colour"""
-        colour = schema.SFFRGBA()
+        colour = adapter.SFFRGBA()
         colour.red = self.red
         colour.green = self.green
         colour.blue = self.blue
@@ -880,7 +912,7 @@ class TestSFFRGBA(Py23FixTestCase):
 
     def test_kwarg_colour(self):
         """Test colour using kwargs"""
-        colour = schema.SFFRGBA(
+        colour = adapter.SFFRGBA(
             red=self.red,
             green=self.green,
             blue=self.blue,
@@ -893,7 +925,7 @@ class TestSFFRGBA(Py23FixTestCase):
 
     def test_get_value(self):
         """Test colour.value"""
-        colour = schema.SFFRGBA(
+        colour = adapter.SFFRGBA(
             red=self.red,
             green=self.green,
             blue=self.blue,
@@ -908,7 +940,7 @@ class TestSFFRGBA(Py23FixTestCase):
     def test_set_value(self):
         """Test colour.value = rgb(a)"""
         # rgb
-        colour = schema.SFFRGBA()
+        colour = adapter.SFFRGBA()
         colour.value = self.red, self.green, self.blue
         self.assertEqual(colour.red, self.red)
         self.assertEqual(colour.green, self.green)
@@ -922,7 +954,7 @@ class TestSFFRGBA(Py23FixTestCase):
 
     def test_as_hff(self):
         """Test convert to HDF5 group"""
-        colour = schema.SFFRGBA(
+        colour = adapter.SFFRGBA(
             red=self.red,
             green=self.green,
             blue=self.blue,
@@ -936,7 +968,7 @@ class TestSFFRGBA(Py23FixTestCase):
 
     def test_from_hff(self):
         """Test create from HDF5 group"""
-        colour = schema.SFFRGBA(
+        colour = adapter.SFFRGBA(
             red=self.red,
             green=self.green,
             blue=self.blue,
@@ -947,12 +979,12 @@ class TestSFFRGBA(Py23FixTestCase):
             group = colour.as_hff(group)
             self.assertIn("colour", group)
             self.assertCountEqual(group['colour'][()], colour.value)
-            colour2 = schema.SFFRGBA.from_hff(h['container'])
+            colour2 = adapter.SFFRGBA.from_hff(h['container'])
             self.assertCountEqual(colour.value, colour2.value)
 
     def test_native_random_colour(self):
         """Test that using a kwarg random_colour will set random colours"""
-        colour = schema.SFFRGBA(random_colour=True)
+        colour = adapter.SFFRGBA(random_colour=True)
         self.assertTrue(0 <= colour.red <= 1)
         self.assertTrue(0 <= colour.green <= 1)
         self.assertTrue(0 <= colour.blue <= 1)
@@ -964,8 +996,8 @@ class TestSFFComplexes(Py23FixTestCase):
 
     def test_default(self):
         """Test default settings"""
-        c = schema.SFFComplexes()
-        self.assertEqual(c.gds_type, schema.emdb_sff.complexType)
+        c = adapter.SFFComplexes()
+        self.assertEqual(c.gds_type, adapter.emdb_sff.complexType)
         self.assertEqual(c.ref, "Complexes")
         self.assertEqual(str(c), "Complex list of length 0")
         with self.assertRaises(StopIteration):  # because it's empty
@@ -1026,12 +1058,13 @@ class TestSFFComplexes(Py23FixTestCase):
 class TestSFFVolumeStructure(Py23FixTestCase):
     def test_default(self):
         """Test default settings"""
-        vs = schema.SFFVolumeStructure(cols=10, rows=20, sections=30)
+        vs = adapter.SFFVolumeStructure(cols=10, rows=20, sections=30)
         self.assertRegex(_str(vs), r"SFFVolumeStructure\(cols.*rows.*sections.*\)")
         self.assertEqual(vs.cols, 10)
         self.assertEqual(vs.rows, 20)
         self.assertEqual(vs.sections, 30)
         self.assertEqual(vs.voxel_count, 10 * 20 * 30)
+
 
 #
 # class TestSFFVolumeIndex(Py23FixTestCase):
@@ -1043,17 +1076,17 @@ class TestSFFVolumeStructure(Py23FixTestCase):
 class TestSFFLattice(Py23FixTestCase):
     @classmethod
     def setUpClass(cls):
-        cls.lattice_size = schema.SFFVolumeStructure(
+        cls.lattice_size = adapter.SFFVolumeStructure(
             cols=10, rows=10, sections=10,
         )
         cls.lattice_endianness = 'little'
         cls.lattice_mode = 'uint32'
-        cls.lattice_start = schema.SFFVolumeIndex(cols=0, rows=0, sections=0)
+        cls.lattice_start = adapter.SFFVolumeIndex(cols=0, rows=0, sections=0)
         data_ = numpy.array(range(1000), dtype=numpy.uint32).reshape((10, 10, 10))  # data
         numpy.random.shuffle(data_)  # shuffle in place
         cls.lattice_data = data_
-        lattices = schema.SFFLatticeList()  # to reset lattice_id
-        cls.lattice = schema.SFFLattice(
+        lattices = adapter.SFFLatticeList()  # to reset lattice_id
+        cls.lattice = adapter.SFFLattice(
             mode=cls.lattice_mode,
             endianness=cls.lattice_endianness,
             size=cls.lattice_size,
@@ -1087,285 +1120,6 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertFalse(self.lattice.is_encoded)
 
 
-class TestSFFTypeError(Py23FixTestCase):
-    """Tests for the exception"""
-
-    def test_default(self):
-        """Test default operation"""
-        c = schema.SFFComplexes()
-        with self.assertRaisesRegex(schema.SFFTypeError, r".*?list.*?"):
-            c.set_complexes('complexes')
-
-    def test_message(self):
-        """Test error raised with message"""
-        v = schema.SFFVolumeStructure()
-        with self.assertRaisesRegex(schema.SFFTypeError, r"should be of length 3"):
-            v.value = (1, 2)
-
-
-class TestSFFType(Py23FixTestCase):
-    """Tests for the main base class"""
-
-    def test_gds_type_missing(self):
-        """Test for presence of `gds_type` attribute"""
-
-        class _SomeEntity(schema.SFFType):
-            """Empty entity"""
-
-        with self.assertRaisesRegex(ValueError, r'.*gds_type.*'):
-            _s = _SomeEntity()
-
-    def test_create_from_gds_type(self):
-        """Test creating an `SFFType` subclass object from a `gds_type' object"""
-        # we will try with SFFRGBA and rgbaType
-        red = _random_float()
-        green = _random_float()
-        blue = _random_float()
-        _r = schema.emdb_sff.rgbaType(
-            red=red, green=green, blue=blue,
-        )
-        r = schema.SFFRGBA.from_gds_type(_r)
-        self.assertIsInstance(r, schema.SFFRGBA)
-        self.assertEqual(r.red, red)
-        self.assertEqual(r.green, green)
-        self.assertEqual(r.blue, blue)
-
-    def test_create_from_gds_type_raises_error(self):
-        """Test that we get an exception when the `SFFType` subclass object's `gds_type` attribute is not the same
-        as the one provided"""
-        _r = schema.emdb_sff.biologicalAnnotationType()
-        with self.assertRaisesRegex(schema.SFFTypeError, r".*is not of type.*"):
-            r = schema.SFFRGBA.from_gds_type(_r)
-
-    def test_ref_attr(self):
-        """Test the `ref` attribute"""
-        c = schema.SFFRGBA(
-            red=1, green=1, blue=0, alpha=0.5
-        )
-        r = repr(c)
-        self.assertRegex(r, r"\(.*\d+,.*\)")
-
-    def test_repr_string_repr_args(self):
-        """Test the string representation using `repr_string` and `repr_args`"""
-        # correct rendering for colour: prints out repr_string filled with repr_args
-        c = schema.SFFRGBA(random_colour=True)
-        self.assertRegex(str(c), r"\(\d\.\d+,.*\)")
-        # correct assessment of length: prints out a string with the correct len() value
-        c = schema.SFFComplexes()
-        c.set_complexes(rw.random_words(count=10))
-        self.assertRegex(str(c), ".*10.*")
-        # plain string: prints the plain string
-        v = schema.SFFThreeDVolume()
-        self.assertEqual(str(v), "3D formatted segment")
-
-        # repr_str is missing: prints out the output of type
-        class _RGBA(schema.SFFRGBA):
-            repr_string = ""
-
-        _c = _RGBA(random_colour=True)
-        self.assertRegex(str(_c), r".class.*_RGBA.*")
-
-        # unmatched repr_args (it should be a tuple of four values)
-        class _RGBA(schema.SFFRGBA):
-            repr_args = ('red', 'green')
-
-        _c = _RGBA(random_colour=True)
-        with self.assertRaisesRegex(ValueError, r'Unmatched number.*'):
-            str(_c)
-
-    def test_ids(self):
-        """Test that IDs work correctly
-
-        - When a blank object is created, ID should start from 0/1
-        - When ID is specified as a kwarg then the ID counter should be set to that value so the next will increment from there
-        - When an object is instantiated using the `from_gds_type` classmethod then we should set the ID counter to the value of the gds_type ID
-        - Where a object container exists e.g. `SFFSegmentList` for `SFFSegment` then every new instantiation of the container resets the ID
-        - That we can manually reset IDs
-        -
-        """
-
-        self.assertTrue(False)
-
-    def test_iter_attr(self):
-        """Test use of `iter_attr`"""
-        # first we should be able to get items from the objects using next(iter(...))
-        c = schema.SFFComplexes()
-        words = rw.random_words(count=3)
-        c.set_complexes(words)
-        self.assertEqual(next(iter(c)), words[0])
-        # next, let's see this fail for a non-iterable class
-        c = schema.SFFRGBA(random_colour=True)
-        with self.assertRaisesRegex(TypeError, r".*object is not iterable"):
-            iter(c)
-        # iter_attr is useful for evaluating length
-        c = schema.SFFComplexes()
-        _len = _random_integer(start=2)
-        c.set_complexes(rw.random_words(count=_len))
-        self.assertEqual(len(c), _len)
-        # some classes have no length
-        c = schema.SFFRGBA(random_colour=True)
-        with self.assertRaisesRegex(TypeError, r"object of type.*has no len\(\)"):
-            len(c)
-        # iter_attr also allows us to delete
-        c = schema.SFFComplexes()
-        c.add_complex(rw.random_word())
-        self.assertEqual(len(c), 1)
-        del c[0]
-        self.assertEqual(len(c), 0)
-
-    def test_iter_attr_ids(self):
-        """Test that iter_attrs have correct IDs"""
-        S = schema.SFFSegmentList()
-        ss = [schema.SFFSegment(
-            biologicalAnnotation=schema.SFFBiologicalAnnotation(
-                name=rw.random_word(),
-                description=li.get_sentence(),
-            ),
-            colour=schema.SFFRGBA(random_colour=True),
-        ) for _ in _xrange(10)]
-        [S.add_segment(s) for s in ss]
-        print(S, file=sys.stderr)
-        print(list(map(lambda s: s.id, ss)), file=sys.stderr)
-        for s in S:
-            print(s, file=sys.stderr)
-        sy = schema.SFFSegment()
-        print('sy.id:', sy.id, file=sys.stderr)
-        self.assertEqual(sy.id, 11)
-
-    def test_iter_dict(self):
-        """Test the convenience dict for quick access to items by ID"""
-        S = schema.SFFSegmentList()
-        ids = _random_integers(count=10)
-        segment_dict = _dict()
-        for i in ids:
-            s = schema.SFFSegment(id=i)
-            S.add_segment(s)
-            segment_dict[i] = s
-        # print('segment_dict:', id(list(_dict_iter_values(segment_dict))[0]), file=sys.stderr)
-        # print('S.iter_dict:', id(list(_dict_iter_values(S.iter_dict))[0]), file=sys.stderr)
-        #
-        # print(dir(s), file=sys.stderr)
-        # for attr in dir(s):
-        #     print(attr, getattr(s, attr), type(getattr(s, attr)), file=sys.stderr)
-        #     if isinstance(attr, schema.SFFAttribute):
-        #         print(getattr(s, attr), file=sys.stderr)
-        self.assertDictEqual(segment_dict, S.iter_dict)
-
-        # add complex
-        # word = rw.random_word()
-        # c.add_complex(word)
-        # p[word] = word
-        # self.assertDictEqual(p, c.iter_dict)
-
-
-#     def test_get_ids(self):
-#         """Test that get_ids() returns a list of IDs"""
-#         self.assertTrue(False)
-#
-#     def test_get_by_id(self):
-#         """Test that we can get by ID"""
-#         self.assertTrue(False)
-#
-
-
-class TestSFFIndexType(Py23FixTestCase):
-    """Test the indexing mixin class `SFFIndexType"""
-
-    def setUp(self):
-        """Reset ids"""
-        schema.SFFSegment.segment_id = 1 # we test resetting formerly
-
-    def test_new_obj_True(self):
-        """Test that an empty `SFFIndexType` subclass has correct indexes"""
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 1)
-        s = schema.SFFSegment(new_obj=True) # verbose: `new_obj=True` by default
-        self.assertEqual(s.id, 2)
-
-    def test_new_obj_False(self):
-        """Test that `new_obj=False` for empty `SFFIndexType` subclass has None for ID"""
-        s = schema.SFFSegment(new_obj=False)
-        self.assertIsNone(s.id)
-
-    def test_proper_incrementing(self):
-        """Test that proper incrementing with and without `new_obj=False/True`"""
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 1)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 2)
-        s = schema.SFFSegment(new_obj=False)
-        self.assertIsNone(s.id)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 3)
-        s = schema.SFFSegment(new_obj=True)
-        self.assertEqual(s.id, 4)
-        s = schema.SFFSegment(new_obj=False)
-        self.assertIsNone(s.id)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 5)
-        s = schema.SFFSegment.from_gds_type(schema.emdb_sff.segmentType(id=35))
-        self.assertEqual(s.id, 35)
-        s = schema.SFFSegment.from_gds_type(schema.emdb_sff.segmentType())
-        self.assertIsNone(s.id)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 6)
-
-    def test_with_gds_type(self):
-        """Test that we can work with generateDS types"""
-        s = schema.SFFSegment.from_gds_type(schema.emdb_sff.segmentType())
-        self.assertIsNone(s.id)
-        s = schema.SFFSegment.from_gds_type(schema.emdb_sff.segmentType(id=37))
-        self.assertIsNotNone(s.id)
-
-    def test_reset_id(self):
-        """Test that we can reset the ID"""
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 1)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 2)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 3)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 4)
-        schema.SFFSegment.reset_id()
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 1)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 2)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 3)
-        s = schema.SFFSegment()
-        self.assertEqual(s.id, 4)
-
-    def test_errors(self):
-        """Test that we get the right exceptions"""
-        class _Segment(schema.SFFSegment):
-            index_attr = ''
-
-        with self.assertRaisesRegex(schema.SFFTypeError, r".*subclasses must provide an index attribute"):
-            _Segment()
-
-        class _Segment(schema.SFFSegment):
-            index_attr = 'segment_index'
-
-        with self.assertRaisesRegex(AttributeError, r".*is missing a class variable.*"):
-            _Segment()
-
-        class _Segment(schema.SFFSegment):
-            segment_id = 3.8
-
-        with self.assertRaises(schema.SFFTypeError):
-            _Segment()
-
-
-#
-# class TestSFFAttribute(Py23FixTestCase):
-#     """Test the main attribute class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
 # class TestSFFMesh(Py23FixTestCase):
 #     """Test the SFFMesh class"""
 #
@@ -1465,27 +1219,28 @@ class TestSFFIndexType(Py23FixTestCase):
 class TestSFFSegmentList(Py23FixTestCase):
     """Test the SFFSegmentList class"""
 
-    def test_default(self):
+    def test_iterate(self):
         """Test default settings"""
-        S = schema.SFFSegmentList()
-        S.add_segment(schema.SFFSegment())
-        S.add_segment(schema.SFFSegment())
-        S.add_segment(schema.SFFSegment())
-        S.add_segment(schema.SFFSegment())
+        S = adapter.SFFSegmentList()
+        S.add_segment(adapter.SFFSegment())
+        S.add_segment(adapter.SFFSegment())
+        S.add_segment(adapter.SFFSegment())
+        S.add_segment(adapter.SFFSegment())
         for s in S:
             print(s.id, file=sys.stderr)
-        S.add_segment(schema.SFFSegment())
-        S.add_segment(schema.SFFSegment())
-        S.add_segment(schema.SFFSegment())
-        S.add_segment(schema.SFFSegment())
+        S.add_segment(adapter.SFFSegment())
+        S.add_segment(adapter.SFFSegment())
+        S.add_segment(adapter.SFFSegment())
+        S.add_segment(adapter.SFFSegment())
         for s in S:
             print(s, file=sys.stderr)
-        S.add_segment(schema.SFFSegment.from_gds_type(
-            schema.emdb_sff.segmentType()
+        S.add_segment(adapter.SFFSegment.from_gds_type(
+            adapter.emdb_sff.segmentType()
         ))
         for s in S:
             print(s, file=sys.stderr)
         # self.assertTrue(False)
+
 
 #
 # class TestSFFShape(Py23FixTestCase):

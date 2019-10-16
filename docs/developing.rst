@@ -795,7 +795,24 @@ Adding Notes
 
 .. code:: python
 
-    >>> from sfftkrw.schema import SFFSegment
+
+from sfftkrw.schema.adapter import SFFSegment
+        >>>
+        >>> segment = SFFSegment()
+        >>>
+        >>> # add the notes
+        >>> segment = note.add_to_segment(segment)
+        Tue Mar 12 13:24:06 2019	Could not find label and description for external reference ontology1:obo_id1
+        Tue Mar 12 13:24:06 2019	Could not find label and description for external reference ontology2:obo_id2
+        >>>
+    >>>
+    >>> segment = SFFSegment()
+    >>>
+    >>> # add the notes
+    >>> segment = note.add_to_segment(segment)
+    Tue Mar 12 13:24:06 2019	Could not find label and description for external reference ontology1:obo_id1
+    Tue Mar 12 13:24:06 2019	Could not find label and description for external reference ontology2:obo_id2
+    >>>
         >>>
         >>> segment = SFFSegment()
         >>>
