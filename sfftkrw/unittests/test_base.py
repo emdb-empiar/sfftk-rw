@@ -358,7 +358,7 @@ class TestSFFListType(Py23FixTestCase):
     def test_length(self):
         """Test that we can evaluate length"""
         S = adapter.SFFSegmentList()
-        _no_segments = _random_integer(start=1)
+        _no_segments = _random_integer(start=1, stop=10)
         for _ in _xrange(_no_segments):
             S.add_segment(adapter.SFFSegment())
         self.assertEqual(len(S), _no_segments)
@@ -375,7 +375,7 @@ class TestSFFListType(Py23FixTestCase):
     def test_iterate(self):
         """Test that we can iterate"""
         S = adapter.SFFSegmentList()
-        _no_segments = _random_integer(start=2)
+        _no_segments = _random_integer(start=2, stop=10)
         for _ in _xrange(_no_segments):
             S.add_segment(adapter.SFFSegment())
         for i, s in enumerate(S, start=1):
@@ -391,12 +391,12 @@ class TestSFFListType(Py23FixTestCase):
         """Test that we use index syntax to retrieve an object"""
         # segments
         S = adapter.SFFSegmentList()
-        _no_segments = _random_integer(start=3)
+        _no_segments = _random_integer(start=3, stop=10)
         [S.add_segment(adapter.SFFSegment()) for _ in _xrange(_no_segments)]
         self.assertIsInstance(S[_no_segments - 1], adapter.SFFSegment)
         # complexes
         C = adapter.SFFComplexes()
-        _no_complexes = _random_integer(start=3)
+        _no_complexes = _random_integer(start=3, stop=10)
         [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
         self.assertIsInstance(C[_no_complexes - 1], _str)
         # do we get an IndexError?
@@ -455,23 +455,40 @@ class TestSFFListType(Py23FixTestCase):
     def test_clear(self):
         """Test that we can clear the list"""
         C = adapter.SFFComplexes()
-        _no_complexes = _random_integer(start=2)
+        _no_complexes = _random_integer(start=2, stop=10)
         [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
         self.assertEqual(len(C), _no_complexes)
         C.clear()
         self.assertEqual(len(C), 0)
 
     def test_copy(self):
-        """"""
+        """Test that we can create a shallow copy"""
+        # segments
+        S = adapter.SFFSegmentList()
+        _no_segments = _random_integer(start=2, stop=10)
+        [S.append(adapter.SFFSegment()) for _ in _xrange(_no_segments)]
+        R = S
+        self.assertEqual(id(S), id(R))
+        R = S.copy()
+        self.assertNotEqual(id(S), id(R))
+        # complexes
+        # complexes
+        C = adapter.SFFComplexes()
+        _no_complexes = _random_integer(start=2, stop=10)
+        [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
+        D = C
+        self.assertEqual(id(C), id(D))
+        D = C.copy()
+        self.assertNotEqual(id(C), id(D))
 
     def test_extend(self):
         """Test that we can extend a `SFFListType` subclass with another"""
         # segments
         S1 = adapter.SFFSegmentList()
-        _no_segments1 = _random_integer(start=2)
+        _no_segments1 = _random_integer(start=2, stop=10)
         [S1.append(adapter.SFFSegment()) for _ in _xrange(_no_segments1)]
         S2 = adapter.SFFSegmentList()
-        _no_segments2 = _random_integer(start=2)
+        _no_segments2 = _random_integer(start=2, stop=10)
         [S2.append(adapter.SFFSegment()) for _ in _xrange(_no_segments2)]
         self.assertEqual(len(S1), _no_segments1)
         self.assertEqual(len(S2), _no_segments2)
@@ -479,10 +496,10 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(S1), _no_segments1 + _no_segments2)
         # complexes
         C1 = adapter.SFFComplexes()
-        _no_complexes1 = _random_integer(start=2)
+        _no_complexes1 = _random_integer(start=2, stop=10)
         [C1.append(rw.random_word()) for _ in _xrange(_no_complexes1)]
         C2 = adapter.SFFComplexes()
-        _no_complexes2 = _random_integer(start=2)
+        _no_complexes2 = _random_integer(start=2, stop=10)
         [C2.append(rw.random_word()) for _ in _xrange(_no_complexes2)]
         self.assertEqual(len(C1), _no_complexes1)
         self.assertEqual(len(C2), _no_complexes2)
@@ -498,7 +515,7 @@ class TestSFFListType(Py23FixTestCase):
         """Test that we can perform an insert"""
         # segments
         S = adapter.SFFSegmentList()
-        _no_segments = _random_integer(start=2)
+        _no_segments = _random_integer(start=2, stop=10)
         [S.append(adapter.SFFSegment()) for _ in _xrange(_no_segments)]
         self.assertEqual(len(S), _no_segments)
         s = adapter.SFFSegment()
@@ -507,7 +524,7 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(S[1].id, s.id)
         # complexes
         C = adapter.SFFComplexes()
-        _no_complexes = _random_integer(start=2)
+        _no_complexes = _random_integer(start=2, stop=10)
         [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
         self.assertEqual(len(C), _no_complexes)
         c = rw.random_word()
@@ -522,13 +539,14 @@ class TestSFFListType(Py23FixTestCase):
 
     def test_pop(self):
         """Test that we can pop items off"""
+        # segments
         S = adapter.SFFSegmentList()
         s0 = adapter.SFFSegment()
         S.append(s0)
         s1 = S.pop()
         self.assertEqual(len(S), 0)
         self.assertIsInstance(s1, adapter.SFFSegment)
-        self.assertEqual(s0.id, s1.id) # ensure we are not creating a new one
+        self.assertEqual(s0.id, s1.id)  # ensure we are not creating a new one
         # pop with index
         S.append(adapter.SFFSegment())
         S.append(adapter.SFFSegment())
@@ -536,12 +554,58 @@ class TestSFFListType(Py23FixTestCase):
         s = S.pop(index=1)
         self.assertEqual(len(S), 2)
         self.assertIsInstance(s, adapter.SFFSegment)
+        # complexes
+        C = adapter.SFFComplexes()
+        c0 = rw.random_word()
+        C.append(c0)
+        c1 = C.pop()
+        self.assertEqual(len(C), 0)
+        self.assertIsInstance(c1, _str)
+        self.assertEqual(c0, c1)
+        # pop with index
+        C.append(rw.random_word())
+        C.append(rw.random_word())
+        C.append(rw.random_word())
+        c = C.pop(index=1)
+        self.assertEqual(len(C), 2)
+        self.assertIsInstance(c, _str)
 
     def test_remove(self):
-        """"""
+        """Test remove from list"""
+        # segments
+        S = adapter.SFFSegmentList()
+        _no_segments = _random_integer(start=2, stop=10)
+        [S.append(adapter.SFFSegment(id=1)) for _ in _xrange(_no_segments)]
+        self.assertEqual(len(S), _no_segments)
+        S.remove(adapter.SFFSegment(id=1))
+        self.assertEqual(len(S), _no_segments - 1)
+        S.remove(adapter.SFFSegment(id=1))
+        self.assertEqual(len(S), _no_segments - 2)
+        # complexes
+        C = adapter.SFFComplexes()
+        _no_complexes = _random_integer(start=2, stop=10)
+        _word = rw.random_word()
+        [C.append(_word) for _ in _xrange(_no_complexes)]
+        self.assertEqual(len(C), _no_complexes)
+        C.remove(_word)
+        self.assertEqual(len(C), _no_complexes - 1)
+        C.remove(_word)
+        self.assertEqual(len(C), _no_complexes - 2)
+        # exceptions
+        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
+            S.remove(_word)
+        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
+            C.remove(adapter.SFFSegment())
 
     def test_reverse(self):
-        """"""
+        """Test that we can reverse the list"""
+        S = adapter.SFFSegmentList()
+        _no_segments = _random_integer(start=1, stop=10)
+        [S.append(adapter.SFFSegment(id=i)) for i in _xrange(_no_segments)]
+        _ids = list(map(lambda s: s.id, S))
+        S.reverse()
+        _rids = list(map(lambda s: s.id, S))
+        self.assertEqual(_ids[::-1], _rids)
 
     def test_errors(self):
         """Test that the right exceptions are raised"""
@@ -568,11 +632,10 @@ class TestSFFListType(Py23FixTestCase):
         """Test that we can get IDs of contained objects"""
         # segments
         # S = adapter.SFFSegmentList()
-        # _no_segments = _random_integer(start=1)
+        # _no_segments = _random_integer(start=1, stop=10)
         # for _ in _xrange(_no_segments):
         #     S.add_segment(adapter.SFFSegment())
         # self.assertEqual(S.get_ids(), list(_xrange(1, _no_segments + 1)))
-
 
 
 class TestSFFDictType(Py23FixTestCase):

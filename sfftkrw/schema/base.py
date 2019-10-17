@@ -488,8 +488,10 @@ class SFFListType(SFFType):
         iter_name, iter_type = self.iter_attr
         if issubclass(iter_type, SFFType):
             return iter(list(map(iter_type.from_gds_type, getattr(self._local, iter_name))))
-        else:
+        elif iter_type in [_str, int]:
             return iter(list(map(iter_type, getattr(self._local, iter_name))))
+        else:
+            raise SFFTypeError(getattr(self._local, iter_name), iter_type)
 
     def __len__(self):
         iter_name, _ = self.iter_attr
@@ -499,8 +501,10 @@ class SFFListType(SFFType):
         iter_name, iter_type = self.iter_attr
         if issubclass(iter_type, SFFType):
             return iter_type.from_gds_type(getattr(self._local, iter_name)[index])
-        else:
+        elif iter_type in [_str, int]:
             return iter_type(getattr(self._local, iter_name)[index])
+        else:
+            raise SFFTypeError(getattr(self._local, iter_name), iter_type, "cannot reconcile types")
 
     def __setitem__(self, index, value):
         iter_name, iter_type = self.iter_attr
@@ -537,9 +541,17 @@ class SFFListType(SFFType):
 
     def copy(self):
         """Create a shallow copy"""
+        iter_name, iter_type = self.iter_attr
+        cont = getattr(self._local, iter_name)[:]
+        if issubclass(iter_type, SFFType):
+            return list(map(iter_type.from_gds_type, cont))
+        elif iter_type in [_str, int]:
+            return list(map(iter_type, cont))
+        else:
+            raise SFFTypeError(getattr(self._local, iter_name), iter_type)
 
     def extend(self, other):
-        """Make a new list using this and other"""
+        """Extend this list using this and other"""
         try:
             assert isinstance(other, type(self))
         except AssertionError:
@@ -567,15 +579,27 @@ class SFFListType(SFFType):
         popped = cont.pop(index)
         if issubclass(iter_type, SFFType):
             return iter_type.from_gds_type(popped)
-        else:
+        elif iter_type in [_str, int]:
             return iter_type(popped)
-
+        else:
+            raise SFFTypeError(getattr(self._local, iter_name), iter_type, "cannot reconcile types")
 
     def remove(self, item):
         """Removes the first occurrence of item"""
+        iter_name, iter_type = self.iter_attr
+        cont = getattr(self._local, iter_name)
+        if iter_type not in [_str, int] and isinstance(item, iter_type):
+            cont.remove(item._local)
+        elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
+            cont.remove(item)
+        else:
+            raise SFFTypeError(item, SFFType, "or int or str")
 
     def reverse(self):
         """Reverses the items in place"""
+        iter_name, _ = self.iter_attr
+        cont = getattr(self._local, iter_name)
+        cont.reverse()
 
 
 class SFFDictType(SFFType):
