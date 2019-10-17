@@ -521,7 +521,21 @@ class TestSFFListType(Py23FixTestCase):
             C.insert(1, s)
 
     def test_pop(self):
-        """"""
+        """Test that we can pop items off"""
+        S = adapter.SFFSegmentList()
+        s0 = adapter.SFFSegment()
+        S.append(s0)
+        s1 = S.pop()
+        self.assertEqual(len(S), 0)
+        self.assertIsInstance(s1, adapter.SFFSegment)
+        self.assertEqual(s0.id, s1.id) # ensure we are not creating a new one
+        # pop with index
+        S.append(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
+        s = S.pop(index=1)
+        self.assertEqual(len(S), 2)
+        self.assertIsInstance(s, adapter.SFFSegment)
 
     def test_remove(self):
         """"""

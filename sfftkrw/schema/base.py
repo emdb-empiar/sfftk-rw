@@ -562,6 +562,14 @@ class SFFListType(SFFType):
 
     def pop(self, index=-1):
         """Remove and return the indexed (default: last) item"""
+        iter_name, iter_type = self.iter_attr
+        cont = getattr(self._local, iter_name)
+        popped = cont.pop(index)
+        if issubclass(iter_type, SFFType):
+            return iter_type.from_gds_type(popped)
+        else:
+            return iter_type(popped)
+
 
     def remove(self, item):
         """Removes the first occurrence of item"""
