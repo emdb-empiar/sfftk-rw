@@ -12,7 +12,7 @@ import tempfile
 
 from random_words import RandomWords, LoremIpsum
 
-from . import _random_integer, Py23FixTestCase, _random_float
+from . import _random_integer, Py23FixTestCase, _random_float, _random_floats
 from ..core import _xrange, _str
 from ..schema import adapter, base, emdb_sff
 
@@ -187,6 +187,17 @@ class TestSFFType(Py23FixTestCase):
 
         with self.assertRaises(NotImplementedError):
             _S.as_json('test')
+
+        with self.assertRaises(NotImplementedError):
+            _S.from_hff('test')
+
+        with self.assertRaises(NotImplementedError):
+            _S.from_json('test')
+
+        with self.assertRaises(NotImplementedError):
+            _S == _S
+
+
 
 
 class TestSFFIndexType(Py23FixTestCase):
@@ -944,13 +955,13 @@ class TestSFFListType(Py23FixTestCase):
         S2 = adapter.SFFSegmentList()
         [S2.append(adapter.SFFSegment()) for _ in _xrange(_no_items * 2)]
         S2.extend(S1)
-        s_id = random.choice(S2.get_ids())
+        s_id = random.choice(list(S2.get_ids()))
         self.assertIsInstance(S2.get_by_id(s_id), adapter.SFFSegment)
         self.assertEqual(len(S2), _no_items * 3)
         # reversing has no impact
         S = S2.copy()
         S.reverse()
-        s_id = random.choice(S.get_ids())
+        s_id = random.choice(list(S.get_ids()))
         self.assertEqual(S.get_by_id(s_id).id, S2.get_by_id(s_id).id)
         # exceptions
         # ID collisions
@@ -961,10 +972,36 @@ class TestSFFListType(Py23FixTestCase):
         # nothing with key 'None'
 
 
-
 class TestSFFAttribute(Py23FixTestCase):
     """Test the attribute descriptor class"""
 
     def test_default(self):
         """Test default settings"""
-        self.assertTrue(False)
+        class _Colour(adapter.SFFType):
+            gds_type = emdb_sff.rgbaType
+            r = base.SFFAttribute('red', help='red colour')
+            g = base.SFFAttribute('green', help='green colour')
+            b = base.SFFAttribute('blue', help='blue colour')
+            a = base.SFFAttribute('alpha', help='alpha colour')
+
+        _r, _g, _b, _a = _random_floats(count=4)
+        _c = _Colour(red=_r, green=_g, blue=_b, alpha=_a)
+        self.assertEqual(_c.r, _r)
+        self.assertEqual(_c.g, _g)
+        self.assertEqual(_c.b, _b)
+        self.assertEqual(_c.a, _a)
+        # delete alpha
+        del _c.a
+        self.assertIsNone(_c.a)
+
+    def test_error(self):
+        """Test that we get an exception on setting wrong type"""
+        class _Segmentation(adapter.SFFType):
+            gds_type = emdb_sff.segmentation
+            s = base.SFFAttribute('software', sff_type=adapter.SFFSoftware)
+        _S = _Segmentation()
+        with self.assertRaises(base.SFFTypeError):
+            _S.s = adapter.SFFSegment()
+
+
+

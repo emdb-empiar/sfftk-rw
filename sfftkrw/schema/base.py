@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function
 
-import sys
-
 """
 ========================
 sfftkrw.schema.base
@@ -307,42 +305,6 @@ class SFFType(object):
     def __eq__(self, other):
         raise NotImplementedError  # by default; force explicit comparison
 
-    # def _load_dict(self):
-    #     if self.iter_attr and self.iter_dict is not None:
-    #         self.iter_dict = _dict()  #  initialise
-    #         for item in self:
-    #             if isinstance(item, SFFType):
-    #                 self.iter_dict[item.id] = item
-    #             elif isinstance(item, int):  # applies to vertices
-    #                 self.iter_dict[item] = item
-    #             elif isinstance(item, _basestring):  # applies to complexes and macromolecules
-    #                 self.iter_dict[item] = item
-    #             else:
-    #                 raise ValueError("Unknown class {}".format(type(item)))
-
-    # def get_ids(self):
-    #     """If the subclass is a container class, returns a list of IDs for items contained
-    #
-    #     :return: a list of IDs
-    #     :rtype: int
-    #     """
-    #     if self.iter_attr:
-    #         return self.iter_dict.keys()
-    #
-    # def get_by_id(self, item_id):
-    #     """If the subclass is a container class, returns the object of the specified ID
-    #
-    #     :param int item_id: the ID whose item is required
-    #     :return: a contained object
-    #     :rtype: depends on the container class
-    #     :raises ValueError: if the item is not found
-    #     """
-    #     if self.iter_attr:
-    #         if item_id in self.iter_dict:
-    #             return self.iter_dict[item_id]
-    #         else:
-    #             raise ValueError("ID {} not found".format(item_id))
-
     def export(self, fn, *_args, **_kwargs):
         """Export to a file on disc
 
@@ -620,7 +582,7 @@ class SFFListType(SFFType):
     def copy(self):
         """Create a shallow copy"""
         iter_name, _ = self.iter_attr
-        copy = type(self)() # create a new instance of the class
+        copy = type(self)()  # create a new instance of the class
         # assign _local to a copy of self
         setattr(copy._local, iter_name, getattr(self._local, iter_name)[:])
         copy._id_dict = self._id_dict
@@ -666,8 +628,6 @@ class SFFListType(SFFType):
                 return sff_popped
             elif iter_type in [_str, int]:
                 return iter_type(popped)
-            else:
-                raise SFFTypeError(getattr(self._local, iter_name), iter_type, "cannot reconcile types")
 
     def remove(self, item):
         """Removes the first occurrence of item"""
@@ -720,65 +680,34 @@ class SFFAttribute(object):
     instance to refer to.
     """
 
-    def __init__(self, name, sff_type=None, get_from=None, set_to=None, del_from=None, help=""):
+    def __init__(self, name, sff_type=None, help=""):
         """Initialiser for an attribute
 
-        This class acts as an intermediary between ``SFFType`` and ``emdb_sff`` objects. Each ``SFFType``
+        This class acts as an intermediary between ``SFFType`` and ``emdb_sff`` attributes. Each ``SFFType``
         defines a ``_local`` attribute (defined from the ``gds_type`` class attribute, which points to
         the ``emdb_sff`` object.
 
-        Occasionally, the name of the ``emdb_sff`` attribute is different from the ``SFFType`` attribute.
-        In this cases, a ``get_from`` argument controls where in the ``emdb_sff`` object the data should
-        be obtained from and the ``set_to`` argument controls which attribute in ``emdb_sff`` it should
-        be set to. If both arguments are ``None`` (default) then get from the argument referred to by
-        ``name``.
-
-        :param str name: the name the attribute is referred to on the containing object
+        :param str name: which ``emdb_sff`` attribute to get the data from
         :param sff_type: class of attribute (default: None - standard Python types like int, str, float)
-        :param str get_from: which ``emdb_sff`` attribute to get the data from
-        :param str set_to: which ``emdb_sff`` attribute to set the data to
         """
         self._name = name
         self.__doc__ = help
         self._sff_type = sff_type
-        self._get_from = get_from
-        self._set_to = set_to
-        self._del_from = del_from
 
     def __get__(self, obj, _):  # replaced objtype with _
         if self._sff_type:
-            if self._get_from:
-                return self._sff_type.from_gds_type(getattr(obj._local, self._get_from, None))
-            else:
-                return self._sff_type.from_gds_type(getattr(obj._local, self._name, None))
-        # if self._sff_type:
-        #     if self._get_from:
-        #         return self._sff_type(getattr(obj._local, self._get_from, None))
-        #     else:
-        #         return self._sff_type(getattr(obj._local, self._name, None))
+            return self._sff_type.from_gds_type(getattr(obj._local, self._name, None))
         else:
-            if self._get_from:
-                return getattr(obj._local, self._get_from, None)
-            else:
-                return getattr(obj._local, self._name, None)
+            return getattr(obj._local, self._name, None)
 
     def __set__(self, obj, value):
         if self._sff_type:
             if isinstance(value, self._sff_type):
-                if self._set_to:
-                    setattr(obj._local, self._set_to, value._local)
-                else:
-                    setattr(obj._local, self._name, value._local)
+                setattr(obj._local, self._name, value._local)
             else:
                 raise SFFTypeError(value, self._sff_type)
         else:
-            if self._set_to:
-                setattr(obj._local, self._set_to, value)
-            else:
-                setattr(obj._local, self._name, value)
+            setattr(obj._local, self._name, value)
 
     def __delete__(self, obj):
-        if self._del_from:
-            delattr(obj._local, self._del_from)
-        else:
-            delattr(obj._local, self._name)
+        delattr(obj._local, self._name)
