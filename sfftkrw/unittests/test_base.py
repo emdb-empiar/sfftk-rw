@@ -6,6 +6,8 @@ Unit for schema adapter
 from __future__ import print_function
 
 import os
+import random
+import sys
 import tempfile
 
 from random_words import RandomWords, LoremIpsum
@@ -66,6 +68,9 @@ class TestSFFType(Py23FixTestCase):
         self.assertEqual(r.red, red)
         self.assertEqual(r.green, green)
         self.assertEqual(r.blue, blue)
+        # from None returns None
+        r = adapter.SFFRGBA.from_gds_type()
+        self.assertIsNone(r)
 
     def test_create_from_gds_type_raises_error(self):
         """Test that we get an exception when the `SFFType` subclass object's `gds_type` attribute is not the same
@@ -86,7 +91,7 @@ class TestSFFType(Py23FixTestCase):
         """Test the string representation using `repr_string` and `repr_args`"""
         # correct rendering for colour: prints out repr_string filled with repr_args
         c = adapter.SFFRGBA(random_colour=True)
-        self.assertRegex(str(c), r"SFFRGBA\(red=\d\.\d+.*\)")
+        self.assertRegex(_str(c), r"SFFRGBA\(red=\d\.\d+.*\)")
         # correct assessment of length: prints out a string with the correct len() value
         c = adapter.SFFComplexes()
         c.set_complexes(rw.random_words(count=10))
@@ -206,20 +211,20 @@ class TestSFFIndexType(Py23FixTestCase):
     def test_vertex_ids(self):
         """Test that vID works as expected"""
         v = adapter.SFFVertex()
-        self.assertEqual(v.vID, 0)
+        self.assertEqual(v.id, 0)
         v = adapter.SFFVertex(vID=999)
-        self.assertEqual(v.vID, 999)
+        self.assertEqual(v.id, 999)
         v = adapter.SFFVertex()
-        self.assertEqual(v.vID, 1000)
+        self.assertEqual(v.id, 1000)
 
     def test_polygon_ids(self):
         """Test that PID works as expected"""
         p = adapter.SFFPolygon()
-        self.assertEqual(p.PID, 0)
+        self.assertEqual(p.id, 0)
         p = adapter.SFFPolygon(PID=999)
-        self.assertEqual(p.PID, 999)
+        self.assertEqual(p.id, 999)
         p = adapter.SFFPolygon()
-        self.assertEqual(p.PID, 1000)
+        self.assertEqual(p.id, 1000)
 
     def test_new_obj_True(self):
         """Test that an empty `SFFIndexType` subclass has correct indexes"""
@@ -357,27 +362,36 @@ class TestSFFListType(Py23FixTestCase):
 
     def test_length(self):
         """Test that we can evaluate length"""
+        # segments
         S = adapter.SFFSegmentList()
         _no_segments = _random_integer(start=1, stop=10)
-        for _ in _xrange(_no_segments):
-            S.add_segment(adapter.SFFSegment())
+        [S.append(adapter.SFFSegment()) for _ in _xrange(_no_segments)]
         self.assertEqual(len(S), _no_segments)
+        # shapes
+        Sh = adapter.SFFShapePrimitiveList()
+        _no_shapes = _random_integer(start=1, stop=10)
+        [Sh.append(adapter.SFFCone()) for _ in _xrange(_no_shapes)]
+        [Sh.append(adapter.SFFCuboid()) for _ in _xrange(_no_shapes)]
+        [Sh.append(adapter.SFFCylinder()) for _ in _xrange(_no_shapes)]
+        [Sh.append(adapter.SFFEllipsoid()) for _ in _xrange(_no_shapes)]
+        self.assertEqual(len(Sh), _no_shapes * 4)
 
     def test_reset_id(self):
         """Test that we can reset IDs"""
-        S = adapter.SFFSegmentList()
+        adapter.SFFSegmentList()
         s = adapter.SFFSegment()
         self.assertEqual(s.id, 1)
-        S = adapter.SFFSegmentList()
+        adapter.SFFSegmentList()
         s = adapter.SFFSegment()
         self.assertEqual(s.id, 1)
 
     def test_iterate(self):
         """Test that we can iterate"""
+        # segments
         S = adapter.SFFSegmentList()
         _no_segments = _random_integer(start=2, stop=10)
         for _ in _xrange(_no_segments):
-            S.add_segment(adapter.SFFSegment())
+            S.append(adapter.SFFSegment())
         for i, s in enumerate(S, start=1):
             self.assertIsInstance(s, adapter.SFFSegment)
             self.assertEqual(s.id, i)
@@ -386,19 +400,74 @@ class TestSFFListType(Py23FixTestCase):
         words = rw.random_words(count=3)
         c.set_complexes(words)
         self.assertEqual(next(iter(c)), words[0])
+        # vertices
+        V = adapter.SFFVertexList()
+        _no_vertices = _random_integer(start=2, stop=10)
+        [V.append(adapter.SFFVertex()) for _ in _xrange(_no_vertices)]
+        for i, v in enumerate(V):
+            self.assertIsInstance(v, adapter.SFFVertex)
+            self.assertEqual(v.id, i)
+        # polygons
+        P = adapter.SFFPolygonList()
+        _no_polygons = _random_integer(start=2, stop=10)
+        [P.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons)]
+        for i, P in enumerate(P):
+            self.assertIsInstance(P, adapter.SFFPolygon)
+            self.assertEqual(P.id, i)
+
+    def test_sibling_classes(self):
+        """Test that the `sibling_classes` attribute works"""
+        Sh = adapter.SFFShapePrimitiveList()
+        _no_items = _random_integer(start=2, stop=10)
+        [Sh.append(adapter.SFFCone(height=_random_float(), bottomRadius=_random_float())) for _ in _xrange(_no_items)]
+        [Sh.append(adapter.SFFCuboid(x=_random_float(), y=_random_float(), z=_random_float())) for _ in
+         _xrange(_no_items)]
+        [Sh.append(adapter.SFFCylinder(height=_random_float(), diameter=_random_float())) for _ in _xrange(_no_items)]
+        [Sh.append(adapter.SFFEllipsoid(x=_random_float(), y=_random_float(), z=_random_float())) for _ in
+         _xrange(_no_items)]
+        for i in _xrange(_no_items):
+            self.assertIsInstance(Sh[i], adapter.SFFCone)
+        for i in _xrange(i + 1, _no_items * 2):
+            self.assertIsInstance(Sh[i], adapter.SFFCuboid)
+        for i in _xrange(i + 1, _no_items * 3):
+            self.assertIsInstance(Sh[i], adapter.SFFCylinder)
+        for i in _xrange(i + 1, _no_items * 4):
+            self.assertIsInstance(Sh[i], adapter.SFFEllipsoid)
+
+        # exceptions
+        class _Shapes(adapter.SFFShapePrimitiveList):
+            sibling_classes = [
+                (emdb_sff.cone, adapter.SFFCone),
+                (emdb_sff.ellipsoid, adapter.SFFEllipsoid)
+            ]
+
+        _S = _Shapes()
+        _S.append(adapter.SFFCylinder())
+        with self.assertRaises(base.SFFTypeError):
+            _S[0]
 
     def test_getitem(self):
         """Test that we use index syntax to retrieve an object"""
         # segments
         S = adapter.SFFSegmentList()
         _no_segments = _random_integer(start=3, stop=10)
-        [S.add_segment(adapter.SFFSegment()) for _ in _xrange(_no_segments)]
+        [S.append(adapter.SFFSegment()) for _ in _xrange(_no_segments)]
         self.assertIsInstance(S[_no_segments - 1], adapter.SFFSegment)
         # complexes
         C = adapter.SFFComplexes()
         _no_complexes = _random_integer(start=3, stop=10)
         [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
         self.assertIsInstance(C[_no_complexes - 1], _str)
+        # vertices
+        V = adapter.SFFVertexList()
+        _no_vertexs = _random_integer(start=3, stop=10)
+        [V.append(adapter.SFFVertex()) for _ in _xrange(_no_vertexs)]
+        self.assertIsInstance(V[_no_vertexs - 1], adapter.SFFVertex)
+        # polygons
+        P = adapter.SFFPolygonList()
+        _no_polygons = _random_integer(start=3, stop=10)
+        [P.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons)]
+        self.assertIsInstance(P[_no_polygons - 1], adapter.SFFPolygon)
         # do we get an IndexError?
         with self.assertRaises(IndexError):
             _ = S[_no_segments]
@@ -409,14 +478,24 @@ class TestSFFListType(Py23FixTestCase):
         """Test that we can use index syntax to set an object"""
         # segment
         S = adapter.SFFSegmentList()
-        S.add_segment(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
         S[0] = adapter.SFFSegment()
         self.assertEqual(len(S), 1)
         # complex
         C = adapter.SFFComplexes()
-        C.add_complex(rw.random_word())
+        C.append(rw.random_word())
         C[0] = rw.random_word()
         self.assertEqual(len(C), 1)
+        # vertices
+        V = adapter.SFFVertexList()
+        V.append(adapter.SFFVertex())
+        V[0] = adapter.SFFVertex()
+        self.assertEqual(len(V), 1)
+        # polygons
+        P = adapter.SFFPolygonList()
+        P.append(adapter.SFFPolygon())
+        P[0] = adapter.SFFPolygon()
+        self.assertEqual(len(P), 1)
         # exceptions
         with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
             S[0] = rw.random_word()
@@ -427,10 +506,26 @@ class TestSFFListType(Py23FixTestCase):
 
     def test_delitem(self):
         """Test that we can use index syntax for setting an item to the list"""
+        # segments
         S = adapter.SFFSegmentList()
-        S.add_segment(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
         del S[0]
         self.assertEqual(len(S), 0)
+        # complexes
+        C = adapter.SFFComplexes()
+        C.append(rw.random_word())
+        del C[0]
+        self.assertEqual(len(C), 0)
+        # vertices
+        V = adapter.SFFVertexList()
+        V.append(adapter.SFFVertex())
+        del V[0]
+        self.assertEqual(len(V), 0)
+        # polygons
+        P = adapter.SFFPolygonList()
+        P.append(adapter.SFFPolygon())
+        del P[0]
+        self.assertEqual(len(P), 0)
 
     def test_append(self):
         """Test that we can append to the end of the list"""
@@ -444,6 +539,16 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(C), 0)
         C.append(rw.random_word())
         self.assertEqual(len(C), 1)
+        # vertices
+        V = adapter.SFFVertexList()
+        self.assertEqual(len(V), 0)
+        V.append(adapter.SFFVertex())
+        self.assertEqual(len(V), 1)
+        # segments
+        P = adapter.SFFPolygonList()
+        self.assertEqual(len(P), 0)
+        P.append(adapter.SFFPolygon())
+        self.assertEqual(len(P), 1)
         # exceptions
         with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
             S.append(rw.random_word())
@@ -470,8 +575,8 @@ class TestSFFListType(Py23FixTestCase):
         R = S
         self.assertEqual(id(S), id(R))
         R = S.copy()
+        self.assertIsInstance(R, type(S))
         self.assertNotEqual(id(S), id(R))
-        # complexes
         # complexes
         C = adapter.SFFComplexes()
         _no_complexes = _random_integer(start=2, stop=10)
@@ -479,7 +584,20 @@ class TestSFFListType(Py23FixTestCase):
         D = C
         self.assertEqual(id(C), id(D))
         D = C.copy()
+        self.assertIsInstance(D, type(C))
         self.assertNotEqual(id(C), id(D))
+        # shapes
+        Sh = adapter.SFFShapePrimitiveList()
+        _no_shapes = 3
+        Sh.append(adapter.SFFCone())
+        Sh.append(adapter.SFFCuboid())
+        Sh.append(adapter.SFFCylinder())
+        Sh.append(adapter.SFFEllipsoid())
+        Rh = Sh
+        self.assertEqual(id(Sh), id(Rh))
+        Rh = Sh.copy()
+        self.assertIsInstance(Rh, type(Sh))
+        self.assertNotEqual(id(Sh), id(Rh))
 
     def test_extend(self):
         """Test that we can extend a `SFFListType` subclass with another"""
@@ -505,6 +623,28 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(C2), _no_complexes2)
         C1.extend(C2)
         self.assertEqual(len(C1), _no_complexes1 + _no_complexes2)
+        # vertices
+        V1 = adapter.SFFVertexList()
+        _no_vertices1 = _random_integer(start=2, stop=10)
+        [V1.append(adapter.SFFVertex()) for _ in _xrange(_no_vertices1)]
+        V2 = adapter.SFFVertexList()
+        _no_vertices2 = _random_integer(start=2, stop=10)
+        [V2.append(adapter.SFFVertex()) for _ in _xrange(_no_vertices2)]
+        self.assertEqual(len(V1), _no_vertices1)
+        self.assertEqual(len(V2), _no_vertices2)
+        V1.extend(V2)
+        self.assertEqual(len(V1), _no_vertices1 + _no_vertices2)
+        # polygons
+        P1 = adapter.SFFPolygonList()
+        _no_polygons1 = _random_integer(start=2, stop=10)
+        [P1.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons1)]
+        P2 = adapter.SFFPolygonList()
+        _no_polygons2 = _random_integer(start=2, stop=10)
+        [P2.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons2)]
+        self.assertEqual(len(P1), _no_polygons1)
+        self.assertEqual(len(P2), _no_polygons2)
+        P1.extend(P2)
+        self.assertEqual(len(P1), _no_polygons1 + _no_polygons2)
         # exceptions
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
             S1.extend(C1)
@@ -531,6 +671,24 @@ class TestSFFListType(Py23FixTestCase):
         C.insert(1, c)
         self.assertEqual(len(C), _no_complexes + 1)
         self.assertEqual(C[1], c)
+        # vertices
+        V = adapter.SFFVertexList()
+        _no_vertices = _random_integer(start=2, stop=10)
+        [V.append(adapter.SFFVertex()) for _ in _xrange(_no_vertices)]
+        self.assertEqual(len(V), _no_vertices)
+        v = adapter.SFFVertex()
+        V.insert(1, v)
+        self.assertEqual(len(V), _no_vertices + 1)
+        self.assertEqual(V[1].id, v.id)
+        # segments
+        P = adapter.SFFPolygonList()
+        _no_polygons = _random_integer(start=2, stop=10)
+        [P.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons)]
+        self.assertEqual(len(P), _no_polygons)
+        p = adapter.SFFPolygon()
+        P.insert(1, p)
+        self.assertEqual(len(P), _no_polygons + 1)
+        self.assertEqual(P[1].id, p.id)
         # exceptions
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
             S.insert(1, c)
@@ -569,21 +727,69 @@ class TestSFFListType(Py23FixTestCase):
         c = C.pop(index=1)
         self.assertEqual(len(C), 2)
         self.assertIsInstance(c, _str)
+        # vertices
+        V = adapter.SFFVertexList()
+        v0 = adapter.SFFVertex()
+        V.append(v0)
+        v1 = V.pop()
+        self.assertEqual(len(V), 0)
+        self.assertIsInstance(v1, adapter.SFFVertex)
+        self.assertEqual(v0.id, v1.id)  # ensure we are not creating a new one
+        # pop with index
+        V.append(adapter.SFFVertex())
+        V.append(adapter.SFFVertex())
+        V.append(adapter.SFFVertex())
+        s = V.pop(index=1)
+        self.assertEqual(len(V), 2)
+        self.assertIsInstance(s, adapter.SFFVertex)
+        # polygons
+        P = adapter.SFFPolygonList()
+        p0 = adapter.SFFPolygon()
+        P.append(p0)
+        p1 = P.pop()
+        self.assertEqual(len(P), 0)
+        self.assertIsInstance(p1, adapter.SFFPolygon)
+        self.assertEqual(p0.id, p1.id)  # ensure we are not creating a new one
+        # pop with index
+        P.append(adapter.SFFPolygon())
+        P.append(adapter.SFFPolygon())
+        P.append(adapter.SFFPolygon())
+        s = P.pop(index=1)
+        self.assertEqual(len(P), 2)
+        self.assertIsInstance(s, adapter.SFFPolygon)
+        # shapes
+        Sh = adapter.SFFShapePrimitiveList()
+        sh00 = adapter.SFFCone()
+        Sh.append(sh00)
+        sh01 = adapter.SFFEllipsoid()
+        Sh.append(sh01)
+        sh11 = Sh.pop()
+        sh10 = Sh.pop()
+        self.assertEqual(len(Sh), 0)
+        self.assertIsInstance(sh11, adapter.SFFEllipsoid)
+        self.assertIsInstance(sh10, adapter.SFFCone)
+        self.assertEqual(sh00.id, sh10.id)
+        self.assertEqual(sh01.id, sh11.id)
+        # pop with index
+        Sh.append(adapter.SFFCylinder())
+        Sh.append(adapter.SFFCylinder())
+        Sh.append(adapter.SFFCuboid())
+        sh = Sh.pop(index=1)
+        self.assertEqual(len(Sh), 2)
+        self.assertIsInstance(sh, adapter.SFFCylinder)
 
     def test_remove(self):
         """Test remove from list"""
         # segments
         S = adapter.SFFSegmentList()
-        _no_segments = _random_integer(start=2, stop=10)
-        [S.append(adapter.SFFSegment(id=1)) for _ in _xrange(_no_segments)]
-        self.assertEqual(len(S), _no_segments)
-        S.remove(adapter.SFFSegment(id=1))
-        self.assertEqual(len(S), _no_segments - 1)
-        S.remove(adapter.SFFSegment(id=1))
-        self.assertEqual(len(S), _no_segments - 2)
+        s = adapter.SFFSegment(id=1)
+        S.append(s)
+        self.assertEqual(len(S), 1)
+        S.remove(s)
+        self.assertEqual(len(S), 0)
         # complexes
         C = adapter.SFFComplexes()
-        _no_complexes = _random_integer(start=2, stop=10)
+        _no_complexes = _random_integer(start=3, stop=10)
         _word = rw.random_word()
         [C.append(_word) for _ in _xrange(_no_complexes)]
         self.assertEqual(len(C), _no_complexes)
@@ -591,6 +797,27 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(C), _no_complexes - 1)
         C.remove(_word)
         self.assertEqual(len(C), _no_complexes - 2)
+        # vertices
+        V = adapter.SFFVertexList()
+        v = adapter.SFFVertex(vID=1)
+        V.append(v)
+        self.assertEqual(len(V), 1)
+        V.remove(v)
+        self.assertEqual(len(V), 0)
+        # polygons
+        P = adapter.SFFPolygonList()
+        p = adapter.SFFPolygon(PID=1)
+        P.append(p)
+        self.assertEqual(len(P), 1)
+        P.remove(p)
+        self.assertEqual(len(P), 0)
+        # shapes
+        Sh = adapter.SFFShapePrimitiveList()
+        sh = adapter.SFFCuboid(id=1)
+        Sh.append(sh)
+        self.assertEqual(len(Sh), 1)
+        Sh.remove(sh)
+        self.assertEqual(len(Sh), 0)
         # exceptions
         with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
             S.remove(_word)
@@ -599,12 +826,37 @@ class TestSFFListType(Py23FixTestCase):
 
     def test_reverse(self):
         """Test that we can reverse the list"""
+        # segments
         S = adapter.SFFSegmentList()
         _no_segments = _random_integer(start=1, stop=10)
         [S.append(adapter.SFFSegment(id=i)) for i in _xrange(_no_segments)]
         _ids = list(map(lambda s: s.id, S))
         S.reverse()
         _rids = list(map(lambda s: s.id, S))
+        self.assertEqual(_ids[::-1], _rids)
+        # vertices
+        V = adapter.SFFVertexList()
+        _no_verticess = _random_integer(start=1, stop=10)
+        [V.append(adapter.SFFVertex(vID=i)) for i in _xrange(_no_verticess)]
+        _ids = list(map(lambda v: v.id, V))
+        V.reverse()
+        _rids = list(map(lambda v: v.id, V))
+        self.assertEqual(_ids[::-1], _rids)
+        # polygon
+        P = adapter.SFFPolygonList()
+        _no_polygons = _random_integer(start=1, stop=10)
+        [P.append(adapter.SFFPolygon(PID=i)) for i in _xrange(_no_polygons)]
+        _ids = list(map(lambda p: p.id, P))
+        P.reverse()
+        _rids = list(map(lambda p: p.id, P))
+        self.assertEqual(_ids[::-1], _rids)
+        # shapes
+        Sh = adapter.SFFShapePrimitiveList()
+        _no_shapes = _random_integer(start=1, stop=10)
+        [Sh.append(adapter.SFFCone(id=i)) for i in _xrange(_no_shapes)]
+        _ids = list(map(lambda sh: sh.id, Sh))
+        Sh.reverse()
+        _rids = list(map(lambda sh: sh.id, Sh))
         self.assertEqual(_ids[::-1], _rids)
 
     def test_errors(self):
@@ -631,50 +883,83 @@ class TestSFFListType(Py23FixTestCase):
     def test_get_ids(self):
         """Test that we can get IDs of contained objects"""
         # segments
-        # S = adapter.SFFSegmentList()
-        # _no_segments = _random_integer(start=1, stop=10)
-        # for _ in _xrange(_no_segments):
-        #     S.add_segment(adapter.SFFSegment())
-        # self.assertEqual(S.get_ids(), list(_xrange(1, _no_segments + 1)))
-
-
-class TestSFFDictType(Py23FixTestCase):
-    """Test the direct-access mixin class `SFFDictType`"""
-
-    # applies to List
-
-    def test_get_ids(self):
-        """Test that get_ids() returns a list of IDs"""
-        self.assertTrue(False)
+        S = adapter.SFFSegmentList()
+        _no_items = _random_integer(start=1, stop=10)
+        [S.append(adapter.SFFSegment()) for _ in _xrange(_no_items)]
+        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
+        # complexes
+        C = adapter.SFFComplexes()
+        [C.append(rw.random_word()) for _ in _xrange(_no_items)]
+        self.assertEqual(list(C.get_ids()), list())
+        # vertices
+        V = adapter.SFFVertexList()
+        [V.append(adapter.SFFVertex()) for _ in _xrange(_no_items)]
+        self.assertEqual(list(V.get_ids()), list(_xrange(_no_items)))
+        # polygons
+        P = adapter.SFFPolygonList()
+        [P.append(adapter.SFFPolygon()) for _ in _xrange(_no_items)]
+        self.assertEqual(list(P.get_ids()), list(_xrange(_no_items)))
+        # shapes
+        Sh = adapter.SFFShapePrimitiveList()
+        [Sh.append(adapter.SFFCone()) for _ in _xrange(_no_items)]
+        [Sh.append(adapter.SFFCuboid()) for _ in _xrange(_no_items)]
+        [Sh.append(adapter.SFFCylinder()) for _ in _xrange(_no_items)]
+        [Sh.append(adapter.SFFEllipsoid()) for _ in _xrange(_no_items)]
+        self.assertEqual(list(Sh.get_ids()), list(_xrange(_no_items * 4)))
 
     def test_get_by_id(self):
-        """Test that we can get by ID"""
-        self.assertTrue(False)
+        """Test that we can get an item by ID"""
+        # segments
+        S = adapter.SFFSegmentList()
+        s0 = adapter.SFFSegment(biologicalAnnotation=adapter.SFFBiologicalAnnotation())
+        S.append(s0)
+        s1 = S.get_by_id(1)
+        self.assertEqual(s0.id, s1.id)
+        # appending/setting/inserting a new item immediately makes it available on the dict
+        s0 = adapter.SFFSegment(id=1000)
+        S.append(s0)
+        s1 = S.get_by_id(1000)
+        self.assertEqual(s0.id, s1.id)
+        with self.assertRaises(KeyError):
+            S.get_by_id(1001)
+        # popping/removing removes from the dict
+        S = adapter.SFFSegmentList()
+        S.append(adapter.SFFSegment())
+        s_id = S[-1].id
+        s = S.pop()
+        self.assertEqual(s.id, s_id)
+        with self.assertRaises(KeyError):
+            S.get_by_id(s_id)
+        # clearing clears the dict
+        S = adapter.SFFSegmentList()
+        _no_items = _random_integer(start=2, stop=10)
+        [S.append(adapter.SFFSegment()) for _ in _xrange(_no_items)]
+        self.assertTrue(len(S) > 1)
+        S.clear()
+        with self.assertRaises(KeyError):
+            S.get_by_id(1)
+        # extending extends the dict
+        S1 = adapter.SFFSegmentList()
+        [S1.append(adapter.SFFSegment()) for _ in _xrange(_no_items)]
+        S2 = adapter.SFFSegmentList()
+        [S2.append(adapter.SFFSegment()) for _ in _xrange(_no_items * 2)]
+        S2.extend(S1)
+        s_id = random.choice(S2.get_ids())
+        self.assertIsInstance(S2.get_by_id(s_id), adapter.SFFSegment)
+        self.assertEqual(len(S2), _no_items * 3)
+        # reversing has no impact
+        S = S2.copy()
+        S.reverse()
+        s_id = random.choice(S.get_ids())
+        self.assertEqual(S.get_by_id(s_id).id, S2.get_by_id(s_id).id)
+        # exceptions
+        # ID collisions
+        S = adapter.SFFSegmentList()
+        S.append(adapter.SFFSegment())
+        with self.assertRaisesRegex(KeyError, r"item with ID.*already present"):
+            S.append(adapter.SFFSegment(id=1))
+        # nothing with key 'None'
 
-    # def test_iter_dict(self):
-    #     """Test the convenience dict for quick access to items by ID"""
-    #     S = adapter.SFFSegmentList()
-    #     ids = _random_integers(count=10)
-    #     segment_dict = _dict()
-    #     for i in ids:
-    #         s = adapter.SFFSegment(id=i)
-    #         S.add_segment(s)
-    #         segment_dict[i] = s
-    # print('segment_dict:', id(list(_dict_iter_values(segment_dict))[0]), file=sys.stderr)
-    # print('S.iter_dict:', id(list(_dict_iter_values(S.iter_dict))[0]), file=sys.stderr)
-    #
-    # print(dir(s), file=sys.stderr)
-    # for attr in dir(s):
-    #     print(attr, getattr(s, attr), type(getattr(s, attr)), file=sys.stderr)
-    #     if isinstance(attr, adapter.SFFAttribute):
-    #         print(getattr(s, attr), file=sys.stderr)
-    # self.assertDictEqual(segment_dict, S.iter_dict)
-
-    # add complex
-    # word = rw.random_word()
-    # c.add_complex(word)
-    # p[word] = word
-    # self.assertDictEqual(p, c.iter_dict)
 
 
 class TestSFFAttribute(Py23FixTestCase):

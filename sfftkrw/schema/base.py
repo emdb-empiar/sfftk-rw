@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function
 
+import sys
+
 """
 ========================
 sfftkrw.schema.base
@@ -198,11 +200,28 @@ class SFFType(object):
                 T[15]
     """
     gds_type = None
+    """the generateDS which this `SFFType` subclass adapts"""
     ref = ""
+    """a reference name for objects of this subclass"""
     repr_string = ""
+    """the representational string with or without arguments
+    
+    arguments are provided using the `repr_args` attribute
+    """
     repr_args = ()
-    iter_attr = ()
-    iter_dict = None  # previously was _dict()
+    """a tuple of strings each of which is an attribute that can be 
+    referenced for a value to put into the `repr_string`
+    
+    For example to have the representational string "SFFSegment(id=33)"
+    we set `repr_string="SFFSegment(id={})` and `repr_args=('id', )`
+    
+    Two special `repr_args` values are:
+    - `len()` fills the `{}` with the length;
+    - `list()` fills the `{}` with a list of contained objects. 
+    """
+
+    # iter_attr = ()
+    # iter_dict = None  # previously was _dict()
 
     def __init__(self, *args, **kwargs):
         """Base initialiser
@@ -239,7 +258,7 @@ class SFFType(object):
         # self._load_dict()
 
     @classmethod
-    def from_gds_type(cls, inst):
+    def from_gds_type(cls, inst=None):
         """Create an `SFFType` subclass directly from a `gds_type` object
 
         Notice that we ignore do not pass `*args, **kwargs` as we assume the `inst` is complete.
@@ -247,24 +266,36 @@ class SFFType(object):
         if isinstance(inst, cls.gds_type):
             obj = cls(new_obj=False)
             obj._local = inst
+        elif inst is None:
+            obj = None
         else:
             raise SFFTypeError(inst, cls)
         return obj
 
-    def __repr__(self):
-        return self.ref
-
+    # def __repr__(self):
+    #     return self.ref
     def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        """Return a representation of the object
+
+        In most cases can be used to instantiate the object.
+        """
         if self.repr_string:
             if self.repr_args:
                 assert isinstance(self.repr_args, tuple)
                 if len(self.repr_args) == self.repr_string.count('{}'):
-                    repr_args = list()
+                    _repr_args = list()
                     for arg in self.repr_args:
                         if arg == 'len()':
-                            repr_args.append(len(self))
+                            _repr_args.append(len(self))
+                        elif arg == 'list()':
+                            _repr_args.append(list(self))
                         else:
-                            repr_args.append(getattr(self, arg, None))
+                            _repr_args.append(getattr(self, arg, None))
+                    # quote strings
+                    repr_args = list(map(lambda r: "\"{}\"".format(r) if isinstance(r, _str) else r, _repr_args))
                     return self.repr_string.format(*repr_args)
                 else:
                     raise ValueError("Unmatched number of '{}' and args in repr_args")
@@ -346,10 +377,18 @@ class SFFType(object):
                 self.as_json(f, *_args, **_kwargs)
         return os.EX_OK
 
-    def as_hff(self, f, *args, **kwargs):
+    def as_hff(self, *args, **kwargs):
         raise NotImplementedError
 
-    def as_json(self, f, *args, **kwargs):
+    def as_json(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @classmethod
+    def from_hff(cls, *args, **kwargs):
+        raise NotImplementedError
+
+    @classmethod
+    def from_json(cls, *args, **kwargs):
         raise NotImplementedError
 
 
@@ -431,7 +470,7 @@ class SFFIndexType(SFFType):
                 setattr(self, self.index_attr, None)
             del kwargs['new_obj']
         super(SFFIndexType, self).__init__(*args, **kwargs)
-        # todo: if I want to add a new segment to a set of available segments does the id begin at the right value?
+        # fixme: adds `vID` and `PID` to segments ?! (harmless bug)
         # id
         if 'id' in kwargs:
             self._local.id = kwargs['id']
@@ -457,6 +496,17 @@ class SFFIndexType(SFFType):
 class SFFListType(SFFType):
     """Mixin to confer list-like behaviour"""
     iter_attr = None
+    """the name of the attribute in the `generateDS` class that we iterate over together with 
+    the `SFFType` subclass to cast each received object to"""
+    sibling_classes = []
+    """a list of pairs of classes which are all subclasses of some convenience class
+    
+    For example: `SFFShape` is the parent of `SFFCone`, `SFFCuboid`, `SFFCylinder` and `SFFEllipsoid`.
+    This is because the ``SFFShape` class manages a continuous set of IDs for the different
+    shapes. However, when we iterate over a `SFFShapePrimitiveList` we can't get a 
+    generic shape; we need individual subclasses. Therefore, this class variable defines how
+    we return individual subclass instances from a `SFFShapePrimitiveList`.
+    """
 
     def __init__(self, *args, **kwargs):
         # make sure `iter_attr` is not empty
@@ -477,6 +527,24 @@ class SFFListType(SFFType):
         if issubclass(self.iter_attr[1], SFFType):
             self.iter_attr[1].reset_id()
         super(SFFListType, self).__init__(*args, **kwargs)
+        # initialise the list of IDs
+        self._id_list = list()
+        self._id_dict = dict()
+
+    def _cast(self, instance):
+        """Private method used in conjunction with `sibling_classes`.
+
+        We iterate of the list of sibling-subclass pairs.
+
+        The sibling is the one defined in generateDS while the
+        subclass is the `SFFType` subclass.
+        """
+        for sibling, subclass in self.sibling_classes:
+            if isinstance(instance, sibling):
+                return subclass.from_gds_type(instance)
+            # we must return else...
+        else:
+            raise SFFTypeError(instance, self.sibling_classes)
 
     def __iter__(self):
         """When we iterate over subclasses we want to recast back from generateDS types to
@@ -486,12 +554,13 @@ class SFFListType(SFFType):
         a simple type cast.
         """
         iter_name, iter_type = self.iter_attr
-        if issubclass(iter_type, SFFType):
-            return iter(list(map(iter_type.from_gds_type, getattr(self._local, iter_name))))
-        elif iter_type in [_str, int]:
-            return iter(list(map(iter_type, getattr(self._local, iter_name))))
-        else:
-            raise SFFTypeError(getattr(self._local, iter_name), iter_type)
+        if self.sibling_classes:  # if the contained objects are subclasses of some generic class
+            return iter(list(map(self._cast, getattr(self._local, iter_name))))
+        else:  # there is only one type of contained objects
+            if issubclass(iter_type, SFFType):
+                return iter(list(map(iter_type.from_gds_type, getattr(self._local, iter_name))))
+            elif iter_type in [_str, int]:
+                return iter(list(map(iter_type, getattr(self._local, iter_name))))
 
     def __len__(self):
         iter_name, _ = self.iter_attr
@@ -499,12 +568,14 @@ class SFFListType(SFFType):
 
     def __getitem__(self, index):
         iter_name, iter_type = self.iter_attr
-        if issubclass(iter_type, SFFType):
-            return iter_type.from_gds_type(getattr(self._local, iter_name)[index])
-        elif iter_type in [_str, int]:
-            return iter_type(getattr(self._local, iter_name)[index])
+        if self.sibling_classes:
+            item = getattr(self._local, iter_name)[index]
+            return self._cast(item)
         else:
-            raise SFFTypeError(getattr(self._local, iter_name), iter_type, "cannot reconcile types")
+            if issubclass(iter_type, SFFType):
+                return iter_type.from_gds_type(getattr(self._local, iter_name)[index])
+            elif iter_type in [_str, int]:
+                return iter_type(getattr(self._local, iter_name)[index])
 
     def __setitem__(self, index, value):
         iter_name, iter_type = self.iter_attr
@@ -512,6 +583,7 @@ class SFFListType(SFFType):
         cont = getattr(self._local, iter_name)
         if iter_type not in [_str, int] and isinstance(value, iter_type):
             cont[index] = value._local
+            self._add_to_dict(value.id, value)
         elif iter_type in [_str, int] and (isinstance(value, _str) or isinstance(value, int)):
             cont[index] = value
         else:
@@ -520,7 +592,11 @@ class SFFListType(SFFType):
     def __delitem__(self, index):
         iter_name, _ = self.iter_attr
         # get the name of the iterable in _local (a list) then delete index pos from it
-        del getattr(self._local, iter_name)[index]
+        cont = getattr(self._local, iter_name)
+        sff_item = self[index]
+        del cont[index]
+        if hasattr(sff_item, 'id'):
+            self._del_from_dict(sff_item.id)
 
     def append(self, item):
         """Append to the list"""
@@ -528,6 +604,7 @@ class SFFListType(SFFType):
         cont = getattr(self._local, iter_name)
         if iter_type not in [_str, int] and isinstance(item, iter_type):
             cont.append(item._local)
+            self._add_to_dict(item.id, item)
         elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
             cont.append(item)
         else:
@@ -538,17 +615,16 @@ class SFFListType(SFFType):
         iter_name, _ = self.iter_attr
         cont = getattr(self._local, iter_name)
         cont.clear()
+        self._id_dict.clear()
 
     def copy(self):
         """Create a shallow copy"""
-        iter_name, iter_type = self.iter_attr
-        cont = getattr(self._local, iter_name)[:]
-        if issubclass(iter_type, SFFType):
-            return list(map(iter_type.from_gds_type, cont))
-        elif iter_type in [_str, int]:
-            return list(map(iter_type, cont))
-        else:
-            raise SFFTypeError(getattr(self._local, iter_name), iter_type)
+        iter_name, _ = self.iter_attr
+        copy = type(self)() # create a new instance of the class
+        # assign _local to a copy of self
+        setattr(copy._local, iter_name, getattr(self._local, iter_name)[:])
+        copy._id_dict = self._id_dict
+        return copy
 
     def extend(self, other):
         """Extend this list using this and other"""
@@ -560,6 +636,7 @@ class SFFListType(SFFType):
         cont = getattr(self._local, iter_name)
         cont_other = getattr(other._local, iter_name)
         cont.extend(cont_other)
+        self._id_dict.update(other._id_dict)
 
     def insert(self, index, item):
         """Insert into the list at the given index"""
@@ -567,6 +644,7 @@ class SFFListType(SFFType):
         cont = getattr(self._local, iter_name)
         if iter_type not in [_str, int] and isinstance(item, iter_type):
             cont.insert(index, item._local)
+            self._add_to_dict(item.id, item)
         elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
             cont.insert(index, item)
         else:
@@ -577,12 +655,19 @@ class SFFListType(SFFType):
         iter_name, iter_type = self.iter_attr
         cont = getattr(self._local, iter_name)
         popped = cont.pop(index)
-        if issubclass(iter_type, SFFType):
-            return iter_type.from_gds_type(popped)
-        elif iter_type in [_str, int]:
-            return iter_type(popped)
+        if self.sibling_classes:
+            sff_popped = self._cast(popped)
+            self._del_from_dict(sff_popped.id)
+            return sff_popped
         else:
-            raise SFFTypeError(getattr(self._local, iter_name), iter_type, "cannot reconcile types")
+            if issubclass(iter_type, SFFType):
+                sff_popped = iter_type.from_gds_type(popped)
+                self._del_from_dict(sff_popped.id)
+                return sff_popped
+            elif iter_type in [_str, int]:
+                return iter_type(popped)
+            else:
+                raise SFFTypeError(getattr(self._local, iter_name), iter_type, "cannot reconcile types")
 
     def remove(self, item):
         """Removes the first occurrence of item"""
@@ -598,15 +683,33 @@ class SFFListType(SFFType):
     def reverse(self):
         """Reverses the items in place"""
         iter_name, _ = self.iter_attr
-        cont = getattr(self._local, iter_name)
-        cont.reverse()
+        getattr(self._local, iter_name).reverse()
 
+    def get_ids(self):
+        """Return a list of IDs of the contained objects
 
-class SFFDictType(SFFType):
-    """Mixin to confer dictionary-like behaviour.
+        Should only work if the contained objects have IDs i.e. it should not work
+        for `SFFComplexes` and `SFFMacromolecules`
+        """
+        return self._id_dict.keys()
 
-    Dictionary-like access is through the :py:meth:`get_by_id` method.
-    """
+    def _add_to_dict(self, k, v):
+        """Private method that adds to the convenience dictionary"""
+        if k in self._id_dict:
+            raise KeyError("item with ID={} already present".format(k))
+        self._id_dict[k] = v
+        # self._id_dict = {item.id: item._local for item in self}
+
+    def _del_from_dict(self, k):
+        """Private method that removes from the convenience dictionary"""
+        del self._id_dict[k]
+
+    def get_by_id(self, id):
+        """A convenience dictionary to retrieve contained objects by ID
+
+        Items with no ID will not be found in the dictionary
+        """
+        return self._id_dict[id]
 
 
 class SFFAttribute(object):

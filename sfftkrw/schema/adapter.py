@@ -130,9 +130,6 @@ class SFFRGBA(SFFType):
         elif len(c) == 4:
             self.red, self.green, self.blue, self.alpha = c
 
-    def __repr__(self):
-        return str(self.value)
-
     def _boolean_test(self):
         if self.red is None or self.green is None or self.blue is None or self.alpha is None:
             return False
@@ -163,7 +160,6 @@ class SFFRGBA(SFFType):
         obj.value = hff_data['colour'][()]
         # obj.rgba = r
         return obj
-
 
 
 class SFFComplexes(SFFListType, SFFType):
@@ -443,8 +439,12 @@ class SFFBiologicalAnnotation(SFFType):
     """Biological annotation"""
     gds_type = sff.biologicalAnnotationType
     ref = "biological_annotation"
-    repr_string = "Container for biological annotation with {} external references"
-    repr_args = ('num_external_references',)
+    repr_string = """SFFBiologicalAnnotation(
+    \r\t\tname={}, 
+    \r\t\tdescription={}
+    \r\t)"""
+    # repr_args = ('num_external_references',)
+    repr_args = ('name', 'description')
 
     # attributes
     name = SFFAttribute('name', help="the name of this segment")
@@ -777,8 +777,8 @@ class SFFLatticeList(SFFListType, SFFType):
 
 class SFFShape(SFFIndexType, SFFType):
     """Base shape class"""
-    repr_string = "{} {}"
-    repr_args = ('ref', 'id')
+    # repr_string = "{} {}"
+    # repr_args = ('ref', 'id')
     shape_id = 0
     index_attr = 'shape_id'
     index_in_super = True
@@ -802,6 +802,8 @@ class SFFShape(SFFIndexType, SFFType):
 class SFFCone(SFFShape):
     """Cone shape class"""
     gds_type = sff.cone
+    repr_string = "SFFCone(id={}, height={}, bottomRadius={})"
+    repr_args = ('id', 'height', 'bottom_radius')
     ref = "cone"
 
     # attributes
@@ -826,6 +828,8 @@ class SFFCone(SFFShape):
 class SFFCuboid(SFFShape):
     """Cuboid shape class"""
     gds_type = sff.cuboid
+    repr_string = "SFFCuboid(id={}, x={}, y={}, z={})"
+    repr_args = ('id', 'x', 'y', 'z')
     ref = "cuboid"
 
     # attributes
@@ -851,6 +855,8 @@ class SFFCuboid(SFFShape):
 class SFFCylinder(SFFShape):
     """Cylinder shape class"""
     gds_type = sff.cylinder
+    repr_string = "SFFCylinder(id={}, height={}, diameter={})"
+    repr_args = ('id', 'height', 'diameter')
     ref = "cylinder"
 
     # attributes
@@ -875,6 +881,8 @@ class SFFCylinder(SFFShape):
 class SFFEllipsoid(SFFShape):
     """Ellipsoid shape class"""
     gds_type = sff.ellipsoid
+    repr_string = "SFFEllipsoid(id={}, x={}, y={}, z={})"
+    repr_args = ('id', 'x', 'y', 'z')
     ref = "ellipsoid"
 
     # attributes
@@ -901,13 +909,20 @@ class SFFShapePrimitiveList(SFFListType, SFFType):
     """Container for shapes"""
     gds_type = sff.shapePrimitiveListType
     ref = 'shape_primitive_list'
-    repr_string = "SFFShapePrimitiveList()"
+    repr_string = "SFFShapePrimitiveList({})"
+    repr_args = ('list()',)
     iter_attr = ('shapePrimitive', SFFShape)
+    sibling_classes = [
+        (sff.cone, SFFCone),
+        (sff.cuboid, SFFCuboid),
+        (sff.cylinder, SFFCylinder),
+        (sff.ellipsoid, SFFEllipsoid),
+    ]
 
-    def __init__(self, *args, **kwargs):
-        # reset id
-        SFFShape.reset_id()
-        super(SFFShapePrimitiveList, self).__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+    #     # reset id
+    #     SFFShape.reset_id()
+    #     super(SFFShapePrimitiveList, self).__init__(*args, **kwargs)
 
     def add_shape(self, s):
         """Add the provide shape into this shape container
@@ -921,27 +936,27 @@ class SFFShapePrimitiveList(SFFListType, SFFType):
         else:
             raise SFFTypeError(s, SFFShape)
 
-    def __len__(self):
-        return len(self._local.shapePrimitive)
+    # def __len__(self):
+    #     return len(self._local.shapePrimitive)
 
-    def __getitem__(self, index):
-        return self._shape_cast(self._local.shapePrimitive[index])
+    # def __getitem__(self, index):
+    #     return self._shape_cast(self._local.shapePrimitive[index])
 
-    @staticmethod
-    def _shape_cast(shape):
-        if isinstance(shape, sff.ellipsoid):
-            return SFFEllipsoid(shape)
-        elif isinstance(shape, sff.cuboid):
-            return SFFCuboid(shape)
-        elif isinstance(shape, sff.cylinder):
-            return SFFCylinder(shape)
-        elif isinstance(shape, sff.cone):
-            return SFFCone(shape)
-        else:
-            raise TypeError("unknown shape type '{}'".format(type(shape)))
-
-    def __iter__(self):
-        return iter(list(map(self._shape_cast, self._local.shapePrimitive)))
+    # @staticmethod
+    # def _shape_cast(shape):
+    #     if isinstance(shape, sff.ellipsoid):
+    #         return SFFEllipsoid.from_gds_type(shape)
+    #     elif isinstance(shape, sff.cuboid):
+    #         return SFFCuboid.from_gds_type(shape)
+    #     elif isinstance(shape, sff.cylinder):
+    #         return SFFCylinder.from_gds_type(shape)
+    #     elif isinstance(shape, sff.cone):
+    #         return SFFCone.from_gds_type(shape)
+    #     else:
+    #         raise TypeError("unknown shape type '{}'".format(type(shape)))
+    #
+    # def __iter__(self):
+    #     return iter(list(map(self._shape_cast, self._local.shapePrimitive)))
 
     def _shape_count(self, shape_type):
         return len(list(filter(lambda s: isinstance(s, shape_type), self._local.shapePrimitive)))
@@ -1031,7 +1046,7 @@ class SFFVertex(SFFIndexType, SFFType):
 
     # attributes
     # fixme: rename `vID` to `id` for simplicity in schema
-    vID = SFFAttribute('vID', help="vertex ID; referenced by polygons")
+    id = SFFAttribute('vID', help="vertex ID; referenced by polygons")
     designation = SFFAttribute('designation', help="type of vertex ('surface' (default) or 'normal')")
     x = SFFAttribute('x', help="x co-ordinate")
     y = SFFAttribute('y', help="y co-ordinate")
@@ -1066,7 +1081,7 @@ class SFFPolygon(SFFIndexType, SFFType):
 
     # attributes
     # fixme: rename `PID` to `id` for simplicity in schema
-    PID = SFFAttribute('PID', help="the ID for this polygon")
+    id = SFFAttribute('PID', help="the ID for this polygon")
 
     @property
     def vertex_ids(self):
@@ -1092,7 +1107,7 @@ class SFFVertexList(SFFListType, SFFType):
 
     def __init__(self, *args, **kwargs):
         super(SFFVertexList, self).__init__(*args, **kwargs)
-        self._vertex_dict = {v.vID: v for v in map(SFFVertex, self._local.v)}
+        self._vertex_dict = {v.vID: v for v in map(SFFVertex.from_gds_type, self._local.v)}
 
     @property
     def num_vertices(self):
@@ -1105,16 +1120,19 @@ class SFFVertexList(SFFListType, SFFType):
     def __len__(self):
         return len(self._local.v)
 
-    def __iter__(self):
-        return iter(self._vertex_dict.values())
+    # fixme: should use __iter__ in `SFFListType` parent class
+    # def __iter__(self):
+    #     return iter(self._vertex_dict.values())
 
-    @property
-    def vertex_ids(self):
-        """Iterable of vertex IDs contained in this vertex container"""
-        return iter(self._vertex_dict.keys())
+    # fixme: replace with `get_ids()`
+    # @property
+    # def vertex_ids(self):
+    #     """Iterable of vertex IDs contained in this vertex container"""
+    #     return iter(self._vertex_dict.keys())
 
-    def __getitem__(self, vertex_id):
-        return self._vertex_dict[vertex_id]
+    # fixme: replace all calls to `SFFVertexList`[key] with `SFFVertexList.get_by_id()`
+    # def __getitem__(self, vertex_id):
+    #     return self._vertex_dict[vertex_id]
 
     def add_vertex(self, v):
         """Add the provided vertex to this vertex container
@@ -1164,22 +1182,24 @@ class SFFPolygonList(SFFListType, SFFType):
         """The number of polygons in this list of polygons"""
         return len(self)
 
-    def __len__(self):
-        return len(self._local.P)
+    # def __len__(self):
+    #     return len(self._local.P)
 
-    def __iter__(self):
-        return iter(self._polygon_dict.values())
+    # def __iter__(self):
+    #     return iter(self._polygon_dict.values())
 
-    @property
-    def polygon_ids(self):
-        """An iterable over the polygon IDs of the contained polygons"""
-        return self.__iter__()
+    # fixme: replace with `get_ids()`
+    # @property
+    # def polygon_ids(self):
+    #     """An iterable over the polygon IDs of the contained polygons"""
+    #     return self.__iter__()
 
-    def __getitem__(self, polygon_id):
-        return self._polygon_dict[polygon_id]
+    # fixme: replace with `.get_by_id()`
+    # def __getitem__(self, polygon_id):
+    #     return self._polygon_dict[polygon_id]
 
-    def __str__(self):
-        return "Polygon list with {} polygons".format(len(self))
+    # def __str__(self):
+    #     return "Polygon list with {} polygons".format(len(self))
 
     def add_polygon(self, P):
         """Add a polygon to this polygon container
@@ -1326,8 +1346,13 @@ class SFFSegment(SFFIndexType, SFFType):
     """Class that encapsulates segment data"""
     gds_type = sff.segmentType
     ref = "Segment"
-    repr_string = "Segment {}"
-    repr_args = ('id',)
+    repr_string = """SFFSegment(
+    \r\tid={}, parentID={}, 
+    \r\tbiologicalAnnotation={},
+    \r\tcolour={}
+    \r)
+    """
+    repr_args = ('id', 'parentID', 'biological_annotation', 'colour')
     segment_id = 1
     segment_parentID = 0
 
@@ -1335,10 +1360,15 @@ class SFFSegment(SFFIndexType, SFFType):
     start_at = 1
 
     # attributes
-    id = SFFAttribute('id',
-                      help="the ID for this segment; segment IDs begin at 1 with the value of 0 implying the segmentation i.e. all segments are children of the root segment (the segmentation)")
-    parentID = SFFAttribute('parentID',
-                            help="the ID for the segment that contains this segment; defaults to 0 (the whole segmentation)")
+    id = SFFAttribute(
+        'id',
+        help="the ID for this segment; segment IDs begin at 1 with the value of 0 implying the segmentation "
+             "i.e. all segments are children of the root segment (the segmentation)"
+    )
+    parentID = SFFAttribute(
+        'parentID',
+        help="the ID for the segment that contains this segment; defaults to 0 (the whole segmentation)"
+    )
     biological_annotation = SFFAttribute('biologicalAnnotation', sff_type=SFFBiologicalAnnotation,
                                          help="the biological annotation for this segment; described using a :py:class:`sfftkrw.schema.SFFBiologicalAnnotation` object")
     complexes_and_macromolecules = SFFAttribute('complexesAndMacromolecules', sff_type=SFFComplexesAndMacromolecules,
@@ -1487,7 +1517,8 @@ class SFFSegmentList(SFFListType, SFFType):
     """Container for segments"""
     gds_type = sff.segmentListType
     ref = "segment_list"
-    repr_string = "Segment container"
+    repr_string = "SFFSegmentList({})"
+    repr_args = ('list()', )
     iter_attr = ('segment', SFFSegment)
     iter_dict = _dict()
 
@@ -1783,7 +1814,7 @@ class SFFGlobalExternalReferences(SFFExternalReferences):
     gds_type = sff.globalExternalReferencesType
     ref = "global_external_reference"
     repr_string = "SFFGlobalExternalReference(<list_of_{}_external_references>)"
-    repr_args = ('len()', )
+    repr_args = ('len()',)
 
 
 # class SFFGlobalExternalReferences(SFFListType, SFFType):
