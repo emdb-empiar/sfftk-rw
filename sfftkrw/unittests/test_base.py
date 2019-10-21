@@ -80,7 +80,7 @@ class TestSFFType(Py23FixTestCase):
             r = adapter.SFFRGBA.from_gds_type(_r)
 
     def test_ref_attr(self):
-        """Test the `ref` attribute"""
+        """Test the `gds_tag_name` attribute"""
         c = adapter.SFFRGBA(
             red=1, green=1, blue=0, alpha=0.5
         )

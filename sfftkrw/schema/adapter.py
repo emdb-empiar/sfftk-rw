@@ -26,8 +26,7 @@ Here is an example of how the :py:class:`SFFSegmentation` class is defined using
     class SFFSegmentation(SFFType):
         \"""Adapter class to make using the output of ``generateDS`` easier to use\"""
         gds_type = sff.segmentation
-        ref = "Segmentation"
-        repr_string = ""
+        repr_string = "SFFSegmentation(...)"
 
         # attributes
         name = SFFAttribute('name')
@@ -41,7 +40,7 @@ Here is an example of how the :py:class:`SFFSegmentation` class is defined using
         details = SFFAttribute('details')
 
 In the above example, the :py:class:`SFFSegmentation` class inherits from :py:class:`SFFType` which uses the first
-three attributes (``gds_type``, ``ref`` and ``repr_string``) to configure the user-level :py:class:`SFFSegmentation`
+three attributes (``gds_type``, ``gds_tag_name`` and ``repr_string``) to configure the user-level :py:class:`SFFSegmentation`
 class. A user can now use :py:class:`SFFSegmentation` normally:
 
 .. code:: python
@@ -72,9 +71,10 @@ import re
 import zlib
 
 import h5py
-import numpy as np
+import numpy
 
 from . import emdb_sff as sff
+from .. import SFFTKRW_VERSION
 from .base import SFFType, SFFAttribute, SFFListType, SFFTypeError, SFFIndexType
 from ..core import _basestring, _decode, _dict, _str, _encode, _bytes, _xrange
 from ..core.print_tools import print_date
@@ -104,7 +104,6 @@ sff.ExternalEncoding = "utf-8"
 class SFFRGBA(SFFType):
     """RGBA colour"""
     gds_type = sff.rgbaType
-    ref = "RGBA colour"
     repr_string = "SFFRGBA(red={}, green={}, blue={}, alpha={})"
     repr_args = ('red', 'green', 'blue', 'alpha')
 
@@ -115,6 +114,10 @@ class SFFRGBA(SFFType):
     alpha = SFFAttribute('alpha', help="alpha (opacity) channel")
 
     def __init__(self, random_colour=False, *args, **kwargs):
+        """
+        Initialise a new `SFFRGBA` object with/without `random_colour`
+        :param bool random_colour: set a random colour value
+        """
         super(SFFRGBA, self).__init__(*args, **kwargs)
         if random_colour:
             self.value = random.random(), random.random(), random.random()
@@ -162,10 +165,9 @@ class SFFRGBA(SFFType):
         return obj
 
 
-class SFFComplexes(SFFListType, SFFType):
+class SFFComplexes(SFFListType):
     """Class that encapsulates complex"""
     gds_type = sff.complexType
-    ref = "Complexes"
     repr_string = "Complex list of length {}"
     repr_args = ('len()',)
     iter_attr = ('id', _str)
@@ -232,10 +234,9 @@ class SFFComplexes(SFFListType, SFFType):
         return obj
 
 
-class SFFMacromolecules(SFFListType, SFFType):
+class SFFMacromolecules(SFFListType):
     """Class that encapsulates macromolecule"""
     gds_type = sff.macromoleculeType
-    ref = "Macromolecules"
     repr_string = "Macromolecule list of length {}"
     repr_args = ("len()",)
     # todo: same problem as SFFComplexes
@@ -304,7 +305,6 @@ class SFFMacromolecules(SFFListType, SFFType):
 class SFFComplexesAndMacromolecules(SFFType):
     """Complexes and macromolecules"""
     gds_type = sff.macromoleculesAndComplexesType
-    ref = "Complexes and macromolecules"
     repr_string = "Complexes: {}; Macromolecules: {}"
     repr_args = ('num_complexes', 'num_macromolecules')
 
@@ -356,10 +356,9 @@ class SFFComplexesAndMacromolecules(SFFType):
         return obj
 
 
-class SFFExternalReference(SFFIndexType, SFFType):
+class SFFExternalReference(SFFIndexType):
     """Class that encapsulates an external reference"""
     gds_type = sff.externalReferenceType
-    ref = "external_reference"
     repr_string = "Reference: {}; {}; {}"
     repr_args = ('type', 'other_type', 'value')
     ref_id = 0
@@ -382,10 +381,9 @@ class SFFExternalReference(SFFIndexType, SFFType):
         super(SFFExternalReference, self).__init__(*args, **kwargs)
 
 
-class SFFExternalReferences(SFFListType, SFFType):
+class SFFExternalReferences(SFFListType):
     """Container for external references"""
     gds_type = sff.externalReferencesType
-    ref = "external_references"
     repr_string = "External references list with {} reference(s)"
     repr_args = ('len()',)
     iter_attr = ('ref', SFFExternalReference)
@@ -438,7 +436,6 @@ class SFFExternalReferences(SFFListType, SFFType):
 class SFFBiologicalAnnotation(SFFType):
     """Biological annotation"""
     gds_type = sff.biologicalAnnotationType
-    ref = "biological_annotation"
     repr_string = """SFFBiologicalAnnotation(
     \r\t\tname={}, 
     \r\t\tdescription={}
@@ -523,7 +520,6 @@ class SFFBiologicalAnnotation(SFFType):
 class SFFThreeDVolume(SFFType):
     """Class representing segments described using a 3D volume"""
     gds_type = sff.threeDVolumeType
-    ref = 'three_d_volume'
     repr_string = "3D formatted segment"
 
     # attributes
@@ -597,7 +593,6 @@ class SFFVolume(SFFType):
 
 class SFFVolumeStructure(SFFVolume):
     gds_type = sff.volumeStructureType
-    ref = "3D volume structure: cols, rows, sections"
     repr_string = "SFFVolumeStructure(cols={}, rows={}, sections={})"
     repr_args = ('cols', 'rows', 'sections')
 
@@ -609,15 +604,13 @@ class SFFVolumeStructure(SFFVolume):
 
 class SFFVolumeIndex(SFFVolume):
     gds_type = sff.volumeIndexType
-    ref = "3D volume start index: cols, rows, sections"
     repr_string = "SFFVolumeIndex(cols={}, rows={}, sections={})"
     repr_args = ('cols', 'rows', 'sections')
 
 
-class SFFLattice(SFFIndexType, SFFType):
+class SFFLattice(SFFIndexType):
     """Class representing 3D """
     gds_type = sff.latticeType
-    ref = "3D lattice"
     repr_string = "SFFLattice(mode={}, endianness={}, size={}, start={}, data=<numpy.ndarray>)"
     repr_args = ('mode', 'endianness', 'size', 'start')
     lattice_id = 0
@@ -639,45 +632,125 @@ class SFFLattice(SFFIndexType, SFFType):
                                      "specified in the 'size' attribute")
 
     def __init__(self, *args, **kwargs):
+        if 'data' in kwargs:
+            if isinstance(kwargs['data'], numpy.ndarray):
+                self._data = kwargs['data']
+                kwargs['data'] = SFFLattice._encode(kwargs['data'], **kwargs)
+            elif isinstance(kwargs['data'], _bytes):
+                self._data = SFFLattice._decode(kwargs['data'], **kwargs)
+            elif isinstance(kwargs['data'], _str):
+                _data = _encode(kwargs['data'], 'ASCII')
+                self._data = SFFLattice._decode(_data, **kwargs)
+                kwargs['data'] = _data
+                del _data
         super(SFFLattice, self).__init__(*args, **kwargs)
-        # ensure that data is bytes, not string
-        if isinstance(self.data, _str):  # for python2: unicode, for python3: str
-            # we should decode it using ASCII
-            self.data = _encode(self.data, 'ASCII')
-        if not self.is_encoded:
-            # encode on create
-            self.encode()
+
+    @classmethod
+    def from_array(cls, data, size=None, mode='uint32', endianness='little',
+                   start=SFFVolumeIndex(rows=0, cols=0, sections=0)):
+        """Create a :py:class:`SFFLattice` object from a numpy array inferring size and assuming certain defaults
+
+        :param data: the data as a :py:class:`numpy.ndarray` object
+        :type data: :py:class:`numpy.ndarray`
+        :param size: the size of the lattice as a :py:class:`SFFVolumeStructure` object
+        :type size: :py:class:`SFFVolumeStructure`
+        :param str mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
+        :param str endianness: byte ordering: ``little`` (default) or ``big``
+        """
+        # assertions
+        r, c, s = data.shape
+        encoded_data = SFFLattice._encode(data, mode=mode, endianness=endianness)
+        if size is None:
+            size = SFFVolumeStructure(rows=r, cols=c, sections=s)
+        obj = cls(
+            mode=mode,
+            endianness=endianness,
+            size=size,
+            start=start,
+            data=encoded_data
+        )
+        obj._data = data
+        return obj
 
     @property
-    def is_encoded(self):
-        """Tells whether the data in the lattice is encoded or not"""
-        if isinstance(self.data, _bytes):
-            return True
-        return False
+    def data_array(self):
+        return self._data
 
-    def encode(self):
-        """Encode the numpy array provided in the initialiser
+    @classmethod
+    def from_bytes(cls):
+        return None
 
-        Flatten -> Pack -> Zip -> Base64 encode
+    # @property
+    # def is_encoded(self):
+    #     """Tells whether the data in the lattice is encoded or not"""
+    #     if isinstance(self.data, _bytes):
+    #         return True
+    #     return False
+
+    # todo: change from private to public method
+    @staticmethod
+    def _encode(array, mode='uint32', endianness='little', **kwargs):
+        """Encode a :py:class:`numpy.ndarray` as a base64-encoded, zipped byte sequence
+
+        :param array: a :py:class:`numpy.ndarray` array
+        :type array: :py:class:`numpy.ndarray`
+        :return bytes: the corresponding zipped bytes object
         """
-        try:
-            assert isinstance(self.data, np.ndarray)
-        except AssertionError as a:
-            print_date("Cannot encode data of type {}".format(type(self.data)))
-            sys.exit(os.EX_DATAERR)
-        format_string = "{}{}{}".format(ENDIANNESS[self.endianness], self.size.voxel_count, FORMAT_CHARS[self.mode])
-        try:
-            binpack = struct.pack(format_string, *self.data.flat)
-            # del binlist
-            self.data = None
-            binzip = zlib.compress(binpack)
-            del binpack
-            bin64 = base64.b64encode(binzip)
-            del binzip
-            self.data = bin64
-        except MemoryError:
-            print_date("Out of memory exception. Please rerun with more memory.")
-            self.data = None
+        r, c, s = array.shape
+        voxel_count = r * c * s
+        format_string = "{}{}{}".format(ENDIANNESS[endianness], voxel_count, FORMAT_CHARS[mode])
+        binpack = struct.pack(format_string, *array.flat)
+        del array
+        binzip = zlib.compress(binpack)
+        del binpack
+        bin64 = base64.b64encode(binzip)
+        del binzip
+        return bin64
+
+    # def encode(self):
+    #     """Encode the numpy array provided in the initialiser
+    #
+    #     Flatten -> Pack -> Zip -> Base64 encode
+    #     """
+    #     try:
+    #         assert isinstance(self.data, numpy.ndarray)
+    #     except AssertionError as a:
+    #         print_date("Cannot encode data of type {}".format(type(self.data)))
+    #         sys.exit(os.EX_DATAERR)
+    #     format_string = "{}{}{}".format(ENDIANNESS[self.endianness], self.size.voxel_count, FORMAT_CHARS[self.mode])
+    #     try:
+    #         binpack = struct.pack(format_string, *self.data.flat)
+    #         # del binlist
+    #         self.data = None
+    #         binzip = zlib.compress(binpack)
+    #         del binpack
+    #         bin64 = base64.b64encode(binzip)
+    #         del binzip
+    #         self.data = bin64
+    #     except MemoryError:
+    #         print_date("Out of memory exception. Please rerun with more memory.")
+    #         self.data = None
+
+    @staticmethod
+    def _decode(bin64, size, mode='uint32', endianness='little', **kwargs):
+        """Decode a base64-encoded, zipped byte sequence to a numpy array
+
+        :param bin64: the base64-encoded zipped bytes
+        :param size: the size of the expected volume
+        :type size: :py:class:`SFFVolumeStructure`
+        :return: a :py:class:`numpy.ndarray` object
+        :rtype: :py:class:`numpy.ndarray`
+        """
+        binzip = base64.b64decode(bin64)
+        del bin64
+        binpack = zlib.decompress(binzip)
+        del binzip
+        _count = size.voxel_count
+        bindata = struct.unpack("{}{}{}".format(ENDIANNESS[endianness], _count, FORMAT_CHARS[mode]), binpack)
+        del binpack
+        data = numpy.array(bindata).reshape(*size.value[::-1])
+        del bindata
+        return data
 
     def decode(self):
         """Decode the data for processing
@@ -691,7 +764,7 @@ class SFFLattice(SFFIndexType, SFFType):
         _count = self.size.voxel_count
         bindata = struct.unpack("{}{}{}".format(ENDIANNESS[self.endianness], _count, FORMAT_CHARS[self.mode]), binpack)
         del binpack
-        self.data = np.array(bindata).reshape(*self.size.value[::-1])
+        self.data = numpy.array(bindata).reshape(*self.size.value[::-1])
         del bindata
         # self.data = numpy.frombuffer(zlib.decompress(binzip)).reshape(*self.size.value)
         # del binzip
@@ -731,10 +804,9 @@ class SFFLattice(SFFIndexType, SFFType):
         return obj
 
 
-class SFFLatticeList(SFFListType, SFFType):
+class SFFLatticeList(SFFListType):
     """A container for lattice objects"""
     gds_type = sff.latticeListType
-    ref = "Container for 3D lattices"
     repr_string = "Container with {} 3D lattices"
     repr_args = ("len()",)
     iter_attr = ('lattice', SFFLattice)
@@ -775,7 +847,7 @@ class SFFLatticeList(SFFListType, SFFType):
         return obj
 
 
-class SFFShape(SFFIndexType, SFFType):
+class SFFShape(SFFIndexType):
     """Base shape class"""
     # repr_string = "{} {}"
     # repr_args = ('ref', 'id')
@@ -802,113 +874,56 @@ class SFFShape(SFFIndexType, SFFType):
 class SFFCone(SFFShape):
     """Cone shape class"""
     gds_type = sff.cone
+    gds_tag_name = "cone"
     repr_string = "SFFCone(id={}, height={}, bottomRadius={})"
     repr_args = ('id', 'height', 'bottom_radius')
-    ref = "cone"
 
     # attributes
     height = SFFAttribute('height', help="cone height")
     bottom_radius = SFFAttribute('bottomRadius', help="cone bottom radius")
 
-    # def __new__(cls, *args, **kwargs):
-    #     cls.shape_id = super(SFFCone, cls).shape_id + 1
-    #     return super(SFFCone, cls).__new__(cls, *args, **kwargs)
-
-    def __init__(self, *args, **kwargs):
-        super(SFFCone, self).__init__(*args, **kwargs)
-        # if 'id' in kwargs:
-        #     self._local.id = kwargs['id']
-        #     SFFShape.shape_id = self.shape_id
-        # else:
-        #     self._local.id = self.shape_id
-        #     SFFShape.shape_id = self.shape_id
-        self._local.original_tagname_ = self.ref
-
 
 class SFFCuboid(SFFShape):
     """Cuboid shape class"""
     gds_type = sff.cuboid
+    gds_tag_name = "cuboid"
     repr_string = "SFFCuboid(id={}, x={}, y={}, z={})"
     repr_args = ('id', 'x', 'y', 'z')
-    ref = "cuboid"
 
     # attributes
     x = SFFAttribute('x', help="length in x")
     y = SFFAttribute('y', help="length in y")
     z = SFFAttribute('z', help="length in z")
-
-    # def __new__(cls, *args, **kwargs):
-    #     cls.shape_id = super(SFFCuboid, cls).shape_id + 1
-    #     return super(SFFCuboid, cls).__new__(cls)
-
-    def __init__(self, *args, **kwargs):
-        super(SFFCuboid, self).__init__(*args, **kwargs)
-        # if 'id' in kwargs:
-        #     self._local.id = kwargs['id']
-        #     SFFShape.shape_id = self.shape_id
-        # else:
-        #     self._local.id = self.shape_id
-        #     SFFShape.shape_id = self.shape_id
-        self._local.original_tagname_ = self.ref
 
 
 class SFFCylinder(SFFShape):
     """Cylinder shape class"""
     gds_type = sff.cylinder
+    gds_tag_name = "cylinder"
     repr_string = "SFFCylinder(id={}, height={}, diameter={})"
     repr_args = ('id', 'height', 'diameter')
-    ref = "cylinder"
 
     # attributes
     height = SFFAttribute('height', help="cylinder height")
     diameter = SFFAttribute('diameter', help="cylinder diameter")
 
-    # def __new__(cls, *args, **kwargs):
-    #     cls.shape_id = super(SFFCylinder, cls).shape_id + 1
-    #     return super(SFFCylinder, cls).__new__(cls)
-
-    def __init__(self, *args, **kwargs):
-        super(SFFCylinder, self).__init__(*args, **kwargs)
-        # if 'id' in kwargs:
-        #     self._local.id = kwargs['id']
-        #     SFFShape.shape_id = self.shape_id
-        # else:
-        #     self._local.id = self.shape_id
-        #     SFFShape.shape_id = self.shape_id
-        self._local.original_tagname_ = self.ref
-
 
 class SFFEllipsoid(SFFShape):
     """Ellipsoid shape class"""
     gds_type = sff.ellipsoid
+    gds_tag_name = "ellipsoid"
     repr_string = "SFFEllipsoid(id={}, x={}, y={}, z={})"
     repr_args = ('id', 'x', 'y', 'z')
-    ref = "ellipsoid"
 
     # attributes
     x = SFFAttribute('x', help="length in x")
     y = SFFAttribute('y', help="length in y")
     z = SFFAttribute('z', help="length in z")
 
-    # def __new__(cls, *args, **kwargs):
-    #     cls.shape_id = super(SFFEllipsoid, cls).shape_id + 1
-    #     return super(SFFEllipsoid, cls).__new__(cls)
 
-    def __init__(self, *args, **kwargs):
-        super(SFFEllipsoid, self).__init__(*args, **kwargs)
-        # if 'id' in kwargs:
-        #     self._local.id = kwargs['id']
-        #     SFFShape.shape_id = self.shape_id
-        # else:
-        #     self._local.id = self.shape_id
-        #     SFFShape.shape_id = self.shape_id
-        self._local.original_tagname_ = self.ref
-
-
-class SFFShapePrimitiveList(SFFListType, SFFType):
+class SFFShapePrimitiveList(SFFListType):
     """Container for shapes"""
     gds_type = sff.shapePrimitiveListType
-    ref = 'shape_primitive_list'
     repr_string = "SFFShapePrimitiveList({})"
     repr_args = ('list()',)
     iter_attr = ('shapePrimitive', SFFShape)
@@ -918,11 +933,6 @@ class SFFShapePrimitiveList(SFFListType, SFFType):
         (sff.cylinder, SFFCylinder),
         (sff.ellipsoid, SFFEllipsoid),
     ]
-
-    # def __init__(self, *args, **kwargs):
-    #     # reset id
-    #     SFFShape.reset_id()
-    #     super(SFFShapePrimitiveList, self).__init__(*args, **kwargs)
 
     def add_shape(self, s):
         """Add the provide shape into this shape container
@@ -935,28 +945,6 @@ class SFFShapePrimitiveList(SFFListType, SFFType):
             self._local.shapePrimitive.append(s._local)
         else:
             raise SFFTypeError(s, SFFShape)
-
-    # def __len__(self):
-    #     return len(self._local.shapePrimitive)
-
-    # def __getitem__(self, index):
-    #     return self._shape_cast(self._local.shapePrimitive[index])
-
-    # @staticmethod
-    # def _shape_cast(shape):
-    #     if isinstance(shape, sff.ellipsoid):
-    #         return SFFEllipsoid.from_gds_type(shape)
-    #     elif isinstance(shape, sff.cuboid):
-    #         return SFFCuboid.from_gds_type(shape)
-    #     elif isinstance(shape, sff.cylinder):
-    #         return SFFCylinder.from_gds_type(shape)
-    #     elif isinstance(shape, sff.cone):
-    #         return SFFCone.from_gds_type(shape)
-    #     else:
-    #         raise TypeError("unknown shape type '{}'".format(type(shape)))
-    #
-    # def __iter__(self):
-    #     return iter(list(map(self._shape_cast, self._local.shapePrimitive)))
 
     def _shape_count(self, shape_type):
         return len(list(filter(lambda s: isinstance(s, shape_type), self._local.shapePrimitive)))
@@ -998,7 +986,7 @@ class SFFShapePrimitiveList(SFFListType, SFFType):
                 e.y = float(ellipsoid['y'])
                 e.z = float(ellipsoid['z'])
                 e.transform_id = int(ellipsoid['transformId'])
-                if not np.isnan(ellipsoid['attribute']):
+                if not numpy.isnan(ellipsoid['attribute']):
                     e.attribute = float(ellipsoid['attribute'])
                 obj.add_shape(e)
         if "cones" in hff_data:
@@ -1008,7 +996,7 @@ class SFFShapePrimitiveList(SFFListType, SFFType):
                 c.bottom_radius = float(cone['bottomRadius'])
                 c.height = float(cone['height'])
                 c.transform_id = int(cone['transformId'])
-                if not np.isnan(cone['attribute']):
+                if not numpy.isnan(cone['attribute']):
                     c.attribute = float(cone['attribute'])
                 obj.add_shape(c)
         if "cuboids" in hff_data:
@@ -1019,7 +1007,7 @@ class SFFShapePrimitiveList(SFFListType, SFFType):
                 c.y = float(cuboid['y'])
                 c.z = float(cuboid['z'])
                 c.transform_id = int(cuboid['transformId'])
-                if not np.isnan(cuboid['attribute']):
+                if not numpy.isnan(cuboid['attribute']):
                     c.attribute = float(cuboid['attribute'])
                 obj.add_shape(c)
         if "cylinders" in hff_data:
@@ -1029,16 +1017,15 @@ class SFFShapePrimitiveList(SFFListType, SFFType):
                 c.height = float(cylinder['height'])
                 c.diameter = float(cylinder['diameter'])
                 c.transform_id = int(cylinder['transformId'])
-                if not np.isnan(cylinder['attribute']):
+                if not numpy.isnan(cylinder['attribute']):
                     c.attribute = float(cylinder['attribute'])
                 obj.add_shape(c)
         return obj
 
 
-class SFFVertex(SFFIndexType, SFFType):
+class SFFVertex(SFFIndexType):
     """Single vertex"""
     gds_type = sff.vertexType
-    ref = "Vertex"
     repr_string = "{} vertex {}: ({}, {}, {})"
     repr_args = ('designation', 'vID', 'x', 'y', 'z')
     vertex_id = 0
@@ -1068,10 +1055,9 @@ class SFFVertex(SFFIndexType, SFFType):
             raise SFFTypeError(p, tuple)
 
 
-class SFFPolygon(SFFIndexType, SFFType):
+class SFFPolygon(SFFIndexType):
     """Single polygon"""
     gds_type = sff.polygonType
-    ref = "Polygon"
     repr_string = "Polygon {}"
     repr_args = ('PID',)
     iter_attr = ('v', int)
@@ -1099,10 +1085,9 @@ class SFFPolygon(SFFIndexType, SFFType):
             raise SFFTypeError(v, int)
 
 
-class SFFVertexList(SFFListType, SFFType):
+class SFFVertexList(SFFListType):
     """List of vertices"""
     gds_type = sff.vertexListType
-    ref = "List of vertices"
     iter_attr = ('v', SFFVertex)
 
     def __init__(self, *args, **kwargs):
@@ -1165,10 +1150,9 @@ class SFFVertexList(SFFListType, SFFType):
         return obj
 
 
-class SFFPolygonList(SFFListType, SFFType):
+class SFFPolygonList(SFFListType):
     """List of polygons"""
     gds_type = sff.polygonListType
-    ref = "List of polygons"
     repr_string = "Polygon list with {} polygons"
     repr_args = ('len()',)
     iter_attr = ('P', SFFPolygon)
@@ -1181,12 +1165,6 @@ class SFFPolygonList(SFFListType, SFFType):
     def num_polygons(self):
         """The number of polygons in this list of polygons"""
         return len(self)
-
-    # def __len__(self):
-    #     return len(self._local.P)
-
-    # def __iter__(self):
-    #     return iter(self._polygon_dict.values())
 
     # fixme: replace with `get_ids()`
     # @property
@@ -1226,10 +1204,9 @@ class SFFPolygonList(SFFListType, SFFType):
         return obj
 
 
-class SFFMesh(SFFIndexType, SFFType):
+class SFFMesh(SFFIndexType):
     """Single mesh"""
     gds_type = sff.meshType
-    ref = "Mesh"
     repr_string = "Mesh {} with {} and {}"
     repr_args = ('id', 'vertices', 'polygons')
     mesh_id = 0
@@ -1263,10 +1240,9 @@ class SFFMesh(SFFIndexType, SFFType):
         return obj
 
 
-class SFFMeshList(SFFListType, SFFType):
+class SFFMeshList(SFFListType):
     """Mesh list representation"""
     gds_type = sff.meshListType
-    ref = "mesh_list"
     repr_string = "Mesh list with {} meshe(s)"
     repr_args = ('len()',)
     iter_attr = ('mesh', SFFMesh)
@@ -1289,7 +1265,7 @@ class SFFMeshList(SFFListType, SFFType):
         group = parent_group.create_group(name)
         # structures
         vlen_str = h5py.special_dtype(vlen=str)
-        vertex_array = h5py.special_dtype(vlen=np.dtype('u4'))  # create a variable-length for vertices
+        vertex_array = h5py.special_dtype(vlen=numpy.dtype('u4'))  # create a variable-length for vertices
         for mesh in self:
             # /sff/segments/1/meshes/0 - mesh 0
             h_mesh = group.create_group("{}".format(mesh.id))
@@ -1324,7 +1300,7 @@ class SFFMeshList(SFFListType, SFFType):
             #  load polygon data
             j = 0
             for polygon in mesh.polygons:
-                h_P[j] = (polygon.PID, np.array(polygon.vertex_ids))
+                h_P[j] = (polygon.PID, numpy.array(polygon.vertex_ids))
                 j += 1
             if mesh.transform_id:
                 h_mesh["transformId"] = mesh.transform_id
@@ -1342,10 +1318,9 @@ class SFFMeshList(SFFListType, SFFType):
         return obj
 
 
-class SFFSegment(SFFIndexType, SFFType):
+class SFFSegment(SFFIndexType):
     """Class that encapsulates segment data"""
     gds_type = sff.segmentType
-    ref = "Segment"
     repr_string = """SFFSegment(
     \r\tid={}, parentID={}, 
     \r\tbiologicalAnnotation={},
@@ -1468,23 +1443,23 @@ class SFFSegment(SFFIndexType, SFFType):
             m = 0  # cone
             # n = 0 # subtomogram average
             for shape in self.shapes:
-                if shape.ref == "Ellipsoid":
+                if shape.gds_type == sff.ellipsoid:  # "ellipsoid":
                     h_ell[i] = (shape.id, shape.x, shape.y, shape.z, shape.transform_id,
                                 shape.attribute if hasattr(shape, 'attribute') else None)
                     i += 1
-                elif shape.ref == "Cuboid":
+                elif shape.gds_type == sff.cuboid:  # "cuboid":
                     h_cub[j] = (shape.id, shape.x, shape.y, shape.z, shape.transform_id,
                                 shape.attribute if hasattr(shape, 'attribute') else None)
                     j += 1
-                elif shape.ref == "Cylinder":
+                elif shape.gds_type == sff.cylinder:  # "cylinder":
                     h_cyl[k] = (shape.id, shape.height, shape.diameter, shape.transform_id,
                                 shape.attribute if hasattr(shape, 'attribute') else None)
                     k += 1
-                elif shape.ref == "Cone":
+                elif shape.gds_type == sff.cone:  # "cone":
                     h_con[m] = (shape.id, shape.height, shape.bottom_radius, shape.transform_id,
                                 shape.attribute if hasattr(shape, 'attribute') else None)
                     m += 1
-                # elif shape.ref == "Subtomogram average":
+                # elif shape.gds_type == sff.threeDVolume: # "Subtomogram average":
                 #     warn("Unimplemented portion")
         if self.volume:
             # /sff/segments/1/volume
@@ -1513,12 +1488,11 @@ class SFFSegment(SFFIndexType, SFFType):
         return obj
 
 
-class SFFSegmentList(SFFListType, SFFType):
+class SFFSegmentList(SFFListType):
     """Container for segments"""
     gds_type = sff.segmentListType
-    ref = "segment_list"
     repr_string = "SFFSegmentList({})"
-    repr_args = ('list()', )
+    repr_args = ('list()',)
     iter_attr = ('segment', SFFSegment)
     iter_dict = _dict()
 
@@ -1559,10 +1533,12 @@ class SFFSegmentList(SFFListType, SFFType):
         return obj
 
 
-class SFFTransformationMatrix(SFFIndexType, SFFType):
+class SFFTransformationMatrix(SFFIndexType):
     """Transformation matrix transform"""
     gds_type = sff.transformationMatrixType
-    ref = "transformation_matrix"
+    gds_tag_name = "transformationMatrix"
+    repr_string = "SFFTransformationMatrix(rows={}, cols={}, data={})"
+    repr_args = ('rows', 'cols', 'data_array')
     transform_id = 0
     index_attr = 'transform_id'
 
@@ -1570,41 +1546,51 @@ class SFFTransformationMatrix(SFFIndexType, SFFType):
     id = SFFAttribute('id', help="an ID for this transform")
     rows = SFFAttribute('rows', help="the number of rows in this matrix")
     cols = SFFAttribute('cols', help="the number of columns in this matrix")
-    data = SFFAttribute('data', help="the data in this matrix")
+    data = SFFAttribute('data', help="a string sequence by row of the data in this matrix")
 
     # todo: work with numpy arrays transparently
-
-    def __new__(cls, *args, **kwargs):
-        cls.transform_id += 1
-        return super(SFFTransformationMatrix, cls).__new__(cls)
-
     def __init__(self, *args, **kwargs):
+        if 'data' in kwargs:
+            if isinstance(kwargs['data'], numpy.ndarray):
+                self._data = kwargs['data']
+                # make string from numpy array
+                kwargs['data'] = SFFTransformationMatrix.stringify(kwargs['data'])
+            elif isinstance(kwargs['data'], _str):
+                # make numpy array from string
+                self._data = numpy.array(list(map(float, kwargs['data'].split(' ')))).reshape(kwargs['rows'],
+                                                                                              kwargs['cols'])
         super(SFFTransformationMatrix, self).__init__(*args, **kwargs)
-        # override id if it is included
-        if 'id' in kwargs:
-            self._local.id = kwargs['id']
-        else:
-            self._local.id = self.transform_id
 
-        self._local.original_tagname_ = self.ref
+    @classmethod
+    def from_array(cls, ndarray):
+        """Construct an `SFFTransformationMatrix` object from a numpy `numpy.ndarray` array
+
+        :param ndarray: a numpy array
+        :type ndarray: :py:class:`numpy.ndarray`
+        :return: a :py:class:`SFFTransformationMatrix` object
+        """
+        rows, cols = ndarray.shape
+        obj = cls(
+            rows=rows,
+            cols=cols,
+            data=SFFTransformationMatrix.stringify(ndarray)
+        )
+        obj._data = ndarray
+        return obj
+
+    @staticmethod
+    def stringify(array):
+        """Convert a """
+        return " ".join(list(map(str, array.flatten().tolist())))
 
     @property
     def data_array(self):
-        """The data in this matrix as an array"""
-        data_list = list(map(float, self.data.split(' ')))
-        data_array = np.array(data_list).reshape(self.rows, self.cols)
-        return data_array
-
-    # TODO: a setter for the above attribute
-
-    def __str__(self):
-        return (("[" + "{:.4f} " * self.cols + "]\n") * self.rows).format(*map(float, self.data.split(' ')))
+        return self._data
 
 
-class SFFTransformList(SFFListType, SFFType):
+class SFFTransformList(SFFListType):
     """Container for transforms"""
     gds_type = sff.transformListType
-    ref = "Transform list"
     repr_string = "List of transforms"
     iter_attr = ('transform', SFFTransformationMatrix)
     iter_dict = _dict()
@@ -1637,16 +1623,14 @@ class SFFTransformList(SFFListType, SFFType):
         rows = None
         cols = None
         for transform in self:
-            if transform.ref == "transformation_matrix":
-                if first:
-                    rows = transform.rows
-                    cols = transform.cols
-                    first = False
-                    continue
-                else:
-                    if transform.rows != rows or transform.cols != cols:
-                        transformation_matrices_similar = False
-                        break
+            if first:
+                rows = transform.rows
+                cols = transform.cols
+                first = False
+            else:
+                if transform.rows != rows or transform.cols != cols:
+                    transformation_matrices_similar = False
+                    break
         return transformation_matrices_similar, rows, cols
 
     def as_hff(self, parent_group, name="transforms"):
@@ -1678,7 +1662,7 @@ class SFFTransformList(SFFListType, SFFType):
         j = 0  # h_cEA index
         k = 0  # h_vVR index
         for transform in self:
-            if transform.ref == "transformation_matrix":
+            if transform.gds_type == sff.transformationMatrixType:  # "transformation_matrix":
                 if transformation_matrices_similar:
                     h_tM[i] = (transform.id, transform.rows, transform.cols, transform.data_array)
                     i += 1
@@ -1734,7 +1718,6 @@ class SFFSoftware(SFFType):
         Details of how the segmentation was produced
     """
     gds_type = sff.softwareType
-    ref = "Software"
     repr_string = "Software object"
 
     # attributes
@@ -1769,7 +1752,6 @@ class SFFBoundingBox(SFFType):
     """Dimensions of bounding box"""
     #  config
     gds_type = sff.boundingBoxType
-    ref = "Bounding box"
     repr_string = "Bounding box: ({}, {}, {}, {}, {}, {})"
     repr_args = ('xmin', 'xmax', 'ymin', 'ymax', 'zmin', 'zmax')
 
@@ -1787,11 +1769,11 @@ class SFFBoundingBox(SFFType):
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
         group['xmin'] = self.xmin
-        group['xmax'] = self.xmax
+        group['xmax'] = self.xmax if self.xmax else 1.0
         group['ymin'] = self.ymin
-        group['ymax'] = self.ymax
+        group['ymax'] = self.ymax if self.ymax else 1.0
         group['zmin'] = self.zmin
-        group['zmax'] = self.zmax
+        group['zmax'] = self.zmax if self.zmax else 1.0
         return parent_group
 
     @classmethod
@@ -1812,15 +1794,13 @@ class SFFBoundingBox(SFFType):
 class SFFGlobalExternalReferences(SFFExternalReferences):
     """Container for global external references"""
     gds_type = sff.globalExternalReferencesType
-    ref = "global_external_reference"
     repr_string = "SFFGlobalExternalReference(<list_of_{}_external_references>)"
     repr_args = ('len()',)
 
 
-# class SFFGlobalExternalReferences(SFFListType, SFFType):
+# class SFFGlobalExternalReferences(SFFListType):
 #     """Container for global external references"""
 #     gds_type = sff.globalExternalReferencesType
-#     ref = "global_external_reference"
 #     repr_string = "Global external reference list with {} reference(s)"
 #     repr_args = ('len()',)
 #     iter_attr = ('ref', SFFExternalReference)
@@ -1868,11 +1848,12 @@ class SFFGlobalExternalReferences(SFFExternalReferences):
 #             elif not isinstance(index, int):
 #                 raise SFFTypeError(index, int)
 
+
 class SFFSegmentation(SFFType):
     """Adapter class to make using the output of ``generateDS`` easier to use"""
     gds_type = sff.segmentation
-    ref = "Segmentation"
-    repr_string = ""
+    repr_string = "SFFSegmentation(name={})"
+    repr_args = ('name',)
 
     # attributes
     name = SFFAttribute('name', help="the name of this segmentation")
@@ -1957,14 +1938,25 @@ class SFFSegmentation(SFFType):
             group = parent_group.create_group(name)
         else:
             group = parent_group
-        group['name'] = self.name if self.name else ''
+        group['name'] = self.name if self.name else ""
         group['version'] = self.version
+        if self.primary_descriptor is None:
+            print_date("Invalid segmentation: primary_descriptor required")
+            return os.EX_DATAERR
         group['primaryDescriptor'] = self.primary_descriptor
         # if we are adding another group then don't set dict style; just return the populated group
+        if self.software is None:
+            self.software = SFFSoftware(
+                name="sfftk",
+                version=SFFTKRW_VERSION,
+            )
         group = self.software.as_hff(group)
+        if self.transforms is None:
+            self.transforms = SFFTransformList()
         group = self.transforms.as_hff(group)
-        if self.bounding_box.xmax:
-            group = self.bounding_box.as_hff(group)
+        if self.bounding_box is None:
+            self.bounding_box = SFFBoundingBox()
+        group = self.bounding_box.as_hff(group)
         if self.global_external_references:
             vl_str = h5py.special_dtype(vlen=str)
             h_gext = group.create_dataset(
@@ -1983,7 +1975,11 @@ class SFFSegmentation(SFFType):
                 h_gext[i] = (
                     g_ext_ref.type, g_ext_ref.other_type, g_ext_ref.value, g_ext_ref.label, g_ext_ref.description)
                 i += 1
+        if self.segments is None:
+            self.segments = SFFSegmentList()
         group = self.segments.as_hff(group)
+        if self.lattices is None:
+            self.lattices = SFFLatticeList()
         group = self.lattices.as_hff(group)
         group['details'] = self.details if self.details else ''
         return parent_group

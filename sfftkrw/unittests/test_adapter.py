@@ -16,9 +16,9 @@ import h5py
 import numpy
 from random_words import RandomWords, LoremIpsum
 
-from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float
+from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_floats
 from ..core import _xrange, _str
-from ..schema import adapter
+from ..schema import adapter, emdb_sff
 
 rw = RandomWords()
 li = LoremIpsum()
@@ -42,21 +42,21 @@ class TestSFFSegmentation(Py23FixTestCase):
             adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
-                data=" ".join(map(str, range(12)))
+                data=numpy.random.rand(3, 4),
             )
         )
         transforms.add_transform(
             adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
-                data=" ".join(map(str, range(12)))
+                data=numpy.random.rand(3, 4)
             )
         )
         transforms.add_transform(
             adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
-                data=" ".join(map(str, range(12)))
+                data=numpy.random.rand(3, 4)
             )
         )
         # bounding_box
@@ -251,6 +251,11 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_create_shapes(self):
         """Test that we can create a segmentation of shapes programmatically"""
         segmentation = adapter.SFFSegmentation()
+        segmentation.software = adapter.SFFSoftware(
+            name=rw.random_word(),
+            version=rw.random_word(),
+            processingDetails=li.get_sentence(),
+        )
         segmentation.primary_descriptor = "shapePrimitiveList"
         transforms = adapter.SFFTransformList()
         segments = adapter.SFFSegmentList()
@@ -542,7 +547,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.segments = segments
         segmentation.transforms = transforms
         # export
-        # segmentation.export(os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'test_shape_segmentation.sff'))
+        segmentation.export(os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'test_shape_segmentation.hff'))
         # assertions
         self.assertEqual(len(segment.shapes), 9)
         self.assertEqual(segment.shapes.num_cones, 4)
@@ -997,7 +1002,7 @@ class TestSFFComplexes(Py23FixTestCase):
     def test_default(self):
         """Test default settings"""
         c = adapter.SFFComplexes()
-        self.assertEqual(c.gds_type, adapter.emdb_sff.complexType)
+        self.assertEqual(c.gds_type, emdb_sff.complexType)
         self.assertEqual(c.ref, "Complexes")
         self.assertEqual(str(c), "Complex list of length 0")
         with self.assertRaises(StopIteration):  # because it's empty
@@ -1096,22 +1101,119 @@ class TestSFFLattice(Py23FixTestCase):
 
     def test_create(self):
         """Test creation of a lattice object"""
-        self.assertEqual(self.lattice.ref, "3D lattice")
-        self.assertEqual(
-            _str(self.lattice),
-            "SFFLattice(mode={}, endianness={}, size={}, start={}, data=<numpy.ndarray>)".format(
-                self.lattice_mode,
-                self.lattice_endianness,
-                self.lattice_size,
-                self.lattice_start,
-            )
+        # self.assertEqual(
+        #     _str(self.lattice),
+        #     """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<numpy.ndarray>)""".format(
+        #         self.lattice_mode,
+        #         self.lattice_endianness,
+        #         self.lattice_size,
+        #         self.lattice_start,
+        #     )
+        # )
+        # self.assertEqual(self.lattice.id, 0)
+        # self.assertEqual(self.lattice.mode, self.lattice_mode)
+        # self.assertEqual(self.lattice.endianness, self.lattice_endianness)
+        # self.assertCountEqual(self.lattice.size.value, self.lattice_data.shape)
+        # self.assertCountEqual(self.lattice.start.value, self.lattice_start.value)
+        # self.assertTrue(self.lattice.is_encoded)
+        # print(self.lattice.data, file=sys.stderr)
+
+    def test_create_init_array(self):
+        """Test that we can create from a numpy array using __init__"""
+        r, c, s = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10), _random_integer(start=2, stop=10)
+        l_mode = 'float64'
+        l_endian = 'little'
+        l_size = adapter.SFFVolumeStructure(rows=r, cols=c, sections=s)
+        l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
+        l_data = numpy.random.rand(r, c, s)
+        l = adapter.SFFLattice(
+            mode=l_mode,
+            endianness=l_endian,
+            size=l_size,
+            start=l_start,
+            data=l_data
         )
-        self.assertEqual(self.lattice.id, 0)
-        self.assertEqual(self.lattice.mode, self.lattice_mode)
-        self.assertEqual(self.lattice.endianness, self.lattice_endianness)
-        self.assertCountEqual(self.lattice.size.value, self.lattice_data.shape)
-        self.assertCountEqual(self.lattice.start.value, self.lattice_start.value)
-        self.assertTrue(self.lattice.is_encoded)
+        self.assertIsInstance(l, adapter.SFFLattice)
+        self.assertEqual(l.mode, l_mode)
+        self.assertEqual(l.endianness, l_endian)
+        self.assertEqual(l.size.voxel_count, r * c * s)
+        self.assertEqual(l.start.value, (0, 0, 0))
+        self.assertEqual(l.data, adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian))
+        self.assertEqual(l.data_array.flatten().tolist(), l_data.flatten().tolist())
+
+    def test_create_init_bytes(self):
+        """Test that we can create from a numpy array using __init__"""
+        r, c, s = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10), _random_integer(start=2,
+                                                                                                        stop=10)
+        l_mode = 'float64'
+        l_endian = 'little'
+        l_size = adapter.SFFVolumeStructure(rows=r, cols=c, sections=s)
+        l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
+        l_data = numpy.random.rand(r, c, s)
+        l_bytes = adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian)
+        l = adapter.SFFLattice(
+            mode=l_mode,
+            endianness=l_endian,
+            size=l_size,
+            start=l_start,
+            data=l_bytes
+        )
+        self.assertIsInstance(l, adapter.SFFLattice)
+        self.assertEqual(l.mode, l_mode)
+        self.assertEqual(l.endianness, l_endian)
+        self.assertEqual(l.size.voxel_count, r * c * s)
+        self.assertEqual(l.start.value, (0, 0, 0))
+        self.assertEqual(l.data, adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian))
+        self.assertEqual(l.data_array.flatten().tolist(), l_data.flatten().tolist())
+
+    def test_create_init_unicode(self):
+        """Test that we can create from a numpy array using __init__"""
+        r, c, s = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10), _random_integer(start=2,
+                                                                                                        stop=10)
+        l_mode = 'float64'
+        l_endian = 'little'
+        l_size = adapter.SFFVolumeStructure(rows=r, cols=c, sections=s)
+        l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
+        l_data = numpy.random.rand(r, c, s)
+        l_bytes = adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian).decode('utf-8')
+        l = adapter.SFFLattice(
+            mode=l_mode,
+            endianness=l_endian,
+            size=l_size,
+            start=l_start,
+            data=l_bytes
+        )
+        self.assertIsInstance(l, adapter.SFFLattice)
+        self.assertEqual(l.mode, l_mode)
+        self.assertEqual(l.endianness, l_endian)
+        self.assertEqual(l.size.voxel_count, r * c * s)
+        self.assertEqual(l.start.value, (0, 0, 0))
+        self.assertEqual(l.data, adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian))
+        self.assertEqual(l.data_array.flatten().tolist(), l_data.flatten().tolist())
+
+
+    def test_create_classmethod(self):
+        """Test that we can create an object using the classmethod"""
+        r, c, s = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10), _random_integer(start=2, stop=10)
+        l_mode = 'float64'
+        l_endian = 'little'
+        l_size = adapter.SFFVolumeStructure(rows=r, cols=c, sections=s)
+        l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
+        l_data = numpy.random.rand(r, c, s)
+        l = adapter.SFFLattice.from_array(
+            mode=l_mode,
+            endianness=l_endian,
+            size=l_size,
+            start=l_start,
+            data=l_data
+        )
+        self.assertIsInstance(l, adapter.SFFLattice)
+        self.assertEqual(l.mode, l_mode)
+        self.assertEqual(l.endianness, l_endian)
+        self.assertEqual(l.size.voxel_count, r * c * s)
+        self.assertEqual(l.start.value, (0, 0, 0))
+        self.assertEqual(l.data, adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian))
+        self.assertEqual(l.data_array.flatten().tolist(), l_data.flatten().tolist())
 
     def test_decode(self):
         """Test that we can decode a lattice"""
@@ -1235,7 +1337,7 @@ class TestSFFSegmentList(Py23FixTestCase):
         for s in S:
             print(s, file=sys.stderr)
         S.add_segment(adapter.SFFSegment.from_gds_type(
-            adapter.emdb_sff.segmentType()
+            emdb_sff.segmentType()
         ))
         for s in S:
             print(s, file=sys.stderr)
@@ -1267,13 +1369,36 @@ class TestSFFSegmentList(Py23FixTestCase):
 #         self.assertTrue(False)
 #
 #
-# class TestSFFTransformationMatrix(Py23FixTestCase):
-#     """Test the SFFTransformationMatrix class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
+class TestSFFTransformationMatrix(Py23FixTestCase):
+    """Test the SFFTransformationMatrix class"""
+
+    def test_create_init(self):
+        """Test creating from __init__"""
+        r, c = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10)
+        _d = _random_floats(r * c)
+        d = " ".join(list(map(_str, _d)))
+        T = adapter.SFFTransformationMatrix(
+            rows=r,
+            cols=c,
+            data=d
+        )
+        self.assertEqual(T.rows, r)
+        self.assertEqual(T.cols, c)
+        self.assertEqual(T.data, d)
+        self.assertEqual(T.data_array.flatten().tolist(), _d)
+
+    def test_create_classmethod(self):
+        """Test default settings"""
+        r, c = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10)
+        t = numpy.random.rand(r, c)
+        d = t.flatten().tolist()
+        T = adapter.SFFTransformationMatrix.from_array(t)
+        self.assertEqual(T.rows, r)
+        self.assertEqual(T.cols, c)
+        self.assertEqual(T.data, " ".join(list(map(_str, d))))
+        self.assertEqual(T.data_array.flatten().tolist(), d)
+
+
 #
 # class TestSFFVertex(Py23FixTestCase):
 #     """Test the SFFVertex class"""
