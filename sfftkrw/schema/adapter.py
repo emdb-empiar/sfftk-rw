@@ -76,7 +76,7 @@ import numpy
 from . import emdb_sff as sff
 from .. import SFFTKRW_VERSION
 from .base import SFFType, SFFAttribute, SFFListType, SFFTypeError, SFFIndexType
-from ..core import _basestring, _decode, _dict, _str, _encode, _bytes, _xrange
+from ..core import _decode, _dict, _str, _encode, _bytes, _xrange
 from ..core.print_tools import print_date
 
 FORMAT_CHARS = {
@@ -168,62 +168,11 @@ class SFFRGBA(SFFType):
 class SFFComplexes(SFFListType):
     """Class that encapsulates complex"""
     gds_type = sff.complexType
-    repr_string = "Complex list of length {}"
-    repr_args = ('len()',)
+    repr_string = "SFFComplexes({})"
+    repr_args = ('list()',)
     iter_attr = ('id', _str)
 
     id = SFFAttribute('id', help="the list of complex ids")
-
-    def set_complexes(self, cs):
-        """Set value to the iterable of complexes
-
-        :param list cs: an iterable of complex accessions
-        """
-        if isinstance(cs, list):
-            self._local.set_id(cs)
-        else:
-            raise SFFTypeError(cs, list)
-
-    def add_complex(self, c):
-        """Add a complex accession to the available complexes
-
-        :param str c: a complex accession
-        """
-        if isinstance(c, _basestring):
-            self._local.add_id(c)
-        else:
-            raise SFFTypeError(c, _basestring)
-
-    def insert_complex_at(self, index, c):
-        """Insert a complex accession at the given index
-
-        :param int index: the index in the iterable of complexes at which to add the new complex accession
-        :param str c: a complex accession
-        """
-        # todo: handle IndexError
-        if isinstance(c, _basestring):
-            self._local.insert_id_at(index, c)
-        else:
-            raise SFFTypeError(c, _basestring)
-
-    def replace_complex_at(self, index, c):
-        """Replace a complex accession at the given index
-
-        :param int index: the index in the iterable of complexes at which to replace the complex accession
-        :param str c: a complex accession
-        """
-        # todo: handle IndexError
-        if isinstance(c, _basestring):
-            self._local.replace_id_at(index, c)
-        else:
-            raise SFFTypeError(c, _basestring)
-
-    def delete_complex_at(self, index):
-        """Delete the complex accession at the given index
-
-        :param int index: index from which to delete the complex accession
-        """
-        del self._local.id[index]
 
     @classmethod
     def from_hff(cls, hff_data):
@@ -237,61 +186,11 @@ class SFFComplexes(SFFListType):
 class SFFMacromolecules(SFFListType):
     """Class that encapsulates macromolecule"""
     gds_type = sff.macromoleculeType
-    repr_string = "Macromolecule list of length {}"
-    repr_args = ("len()",)
+    repr_string = "SFFMacromolecules({})"
+    repr_args = ("list()",)
     # todo: same problem as SFFComplexes
     iter_attr = ('id', str)
     iter_dict = _dict()
-
-    def set_macromolecules(self, ms):
-        """Set the value of macromoleclues to the provided list of macromolecule accessions
-
-        :param list ms: a list of macromolecule accessions
-        """
-        if isinstance(ms, list):
-            self._local.set_id(ms)
-        else:
-            raise SFFTypeError(ms, list)
-
-    def add_macromolecule(self, m):
-        """Add the given macromolecule accession to this container
-
-        :param str m: a macromolecule accession
-        """
-        if isinstance(m, _basestring):
-            self._local.add_id(m)
-
-        else:
-            raise SFFTypeError(m, _basestring)
-
-    def insert_macromolecule_at(self, index, m):
-        """Insert the given macromolecule accession at the specified index bumping all others down the list
-
-        :param int index: the index to insert at
-        :param str m: a macromolecule accession
-        """
-        if isinstance(m, _basestring):
-            self._local.insert_id_at(index, m)
-        else:
-            raise SFFTypeError(m, _basestring)
-
-    def replace_macromolecule_at(self, index, m):
-        """Replace the macromolecule accession at the specified index with the one specified
-
-        :param int index: the index to insert at
-        :param str m: a macromolecule accession
-        """
-        if isinstance(m, _basestring):
-            self._local.replace_id_at(index, m)
-        else:
-            raise SFFTypeError(m, _basestring)
-
-    def delete_at(self, index):
-        """Delete the macromolecule accession at the give index
-
-        :param int index: index of macromolecule accession to delete
-        """
-        del self._local.id[index]
 
     @classmethod
     def from_hff(cls, hff_data):
@@ -305,8 +204,8 @@ class SFFMacromolecules(SFFListType):
 class SFFComplexesAndMacromolecules(SFFType):
     """Complexes and macromolecules"""
     gds_type = sff.macromoleculesAndComplexesType
-    repr_string = "Complexes: {}; Macromolecules: {}"
-    repr_args = ('num_complexes', 'num_macromolecules')
+    repr_string = "SFFComplexesAndMacromolecules(complexes={}, macromolecules={})"
+    repr_args = ('complexes', 'macromolecules')
 
     # attributes
     complexes = SFFAttribute('complex', sff_type=SFFComplexes, help="a list of complex accessions")
@@ -498,6 +397,26 @@ class SFFBiologicalAnnotation(SFFType):
                 i += 1
         return parent_group
 
+    def as_json(self):
+        bio_ann = _dict()
+        bio_ann['name'] = self.name if self.name is not None else None
+        bio_ann['description'] = str(
+            self.description) if self.description is not None else None
+        bio_ann['numberOfInstances'] = self.number_of_instances if self.number_of_instances is not None else None
+        bio_ann['externalReferences'] = list()
+        if self.external_references:
+            for extref in self.external_references:
+                bio_ann['externalReferences'].append(
+                    {
+                        'type': extref.type,
+                        'otherType': extref.other_type,
+                        'value': extref.value,
+                        'label': extref.label,
+                        'description': extref.description,
+                    }
+                )
+        return bio_ann
+
     @classmethod
     def from_hff(cls, hff_data):
         """Return an SFFType object given an HDF5 object"""
@@ -611,7 +530,7 @@ class SFFVolumeIndex(SFFVolume):
 class SFFLattice(SFFIndexType):
     """Class representing 3D """
     gds_type = sff.latticeType
-    repr_string = "SFFLattice(mode={}, endianness={}, size={}, start={}, data=<numpy.ndarray>)"
+    repr_string = "SFFLattice(mode={}, endianness={}, size={}, start={}, data=<bytes>)"
     repr_args = ('mode', 'endianness', 'size', 'start')
     lattice_id = 0
 
@@ -654,8 +573,12 @@ class SFFLattice(SFFIndexType):
         :type data: :py:class:`numpy.ndarray`
         :param size: the size of the lattice as a :py:class:`SFFVolumeStructure` object
         :type size: :py:class:`SFFVolumeStructure`
+        :param start: the values of the corner voxel
+        :type start: :py:class:`SFFVolumeIndex`
         :param str mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
         :param str endianness: byte ordering: ``little`` (default) or ``big``
+        :return: a :py:class:`SFFLattice` object
+        :rtype: :py:class:`SFFLattice`
         """
         # assertions
         r, c, s = data.shape
@@ -677,17 +600,36 @@ class SFFLattice(SFFIndexType):
         return self._data
 
     @classmethod
-    def from_bytes(cls):
-        return None
+    def from_bytes(cls, byte_seq, size, mode='uint32', endianness='little',
+                   start=SFFVolumeIndex(rows=0, cols=0, sections=0)):
+        """Create a :py:class:`SFFLattice` object using a bytes object
 
-    # @property
-    # def is_encoded(self):
-    #     """Tells whether the data in the lattice is encoded or not"""
-    #     if isinstance(self.data, _bytes):
-    #         return True
-    #     return False
+        :param byte_seq: the data as a base64-encoded, zipped sequence; can be bytes or unicode
+        :type byte_seq: tuple[bytes, str]
+        :param size: the size of the lattice as a :py:class:`SFFVolumeStructure` object
+        :type size: :py:class:`SFFVolumeStructure`
+        :param start: the values of the corner voxel
+        :type start: :py:class:`SFFVolumeIndex`
+        :param str mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
+        :param str endianness: byte ordering: ``little`` (default) or ``big``
+        :return: a :py:class:`SFFLattice` object
+        :rtype: :py:class:`SFFLattice`
+        """
+        try:
+            assert isinstance(size, SFFVolumeStructure)
+        except AssertionError:
+            raise SFFTypeError(size, SFFVolumeStructure)
+        if isinstance(byte_seq, _str):  # if unicode convert to bytes
+            _encode(byte_seq, 'ASCII')
+        obj = cls(
+            mode=mode,
+            endianness=endianness,
+            size=size,
+            start=start,
+            data=byte_seq,
+        )
+        return obj
 
-    # todo: change from private to public method
     @staticmethod
     def _encode(array, mode='uint32', endianness='little', **kwargs):
         """Encode a :py:class:`numpy.ndarray` as a base64-encoded, zipped byte sequence
@@ -706,30 +648,6 @@ class SFFLattice(SFFIndexType):
         bin64 = base64.b64encode(binzip)
         del binzip
         return bin64
-
-    # def encode(self):
-    #     """Encode the numpy array provided in the initialiser
-    #
-    #     Flatten -> Pack -> Zip -> Base64 encode
-    #     """
-    #     try:
-    #         assert isinstance(self.data, numpy.ndarray)
-    #     except AssertionError as a:
-    #         print_date("Cannot encode data of type {}".format(type(self.data)))
-    #         sys.exit(os.EX_DATAERR)
-    #     format_string = "{}{}{}".format(ENDIANNESS[self.endianness], self.size.voxel_count, FORMAT_CHARS[self.mode])
-    #     try:
-    #         binpack = struct.pack(format_string, *self.data.flat)
-    #         # del binlist
-    #         self.data = None
-    #         binzip = zlib.compress(binpack)
-    #         del binpack
-    #         bin64 = base64.b64encode(binzip)
-    #         del binzip
-    #         self.data = bin64
-    #     except MemoryError:
-    #         print_date("Out of memory exception. Please rerun with more memory.")
-    #         self.data = None
 
     @staticmethod
     def _decode(bin64, size, mode='uint32', endianness='little', **kwargs):
@@ -751,32 +669,6 @@ class SFFLattice(SFFIndexType):
         data = numpy.array(bindata).reshape(*size.value[::-1])
         del bindata
         return data
-
-    def decode(self):
-        """Decode the data for processing
-
-        Base64 decode -> Unzip -> Unpack -> Reshape
-        """
-        binzip = base64.b64decode(self.data)
-        self.data = None
-        binpack = zlib.decompress(binzip)
-        del binzip
-        _count = self.size.voxel_count
-        bindata = struct.unpack("{}{}{}".format(ENDIANNESS[self.endianness], _count, FORMAT_CHARS[self.mode]), binpack)
-        del binpack
-        self.data = numpy.array(bindata).reshape(*self.size.value[::-1])
-        del bindata
-        # self.data = numpy.frombuffer(zlib.decompress(binzip)).reshape(*self.size.value)
-        # del binzip
-
-    @property
-    def is_binary(self):
-        """Quick check to see whether the 3D volume is binary or not"""
-        voxel_values = set(self.data.flatten().tolist()).difference({0})
-        if len(voxel_values) == 1:
-            return True
-        else:
-            return False
 
     def as_hff(self, parent_group, name="{}"):
         """Return the data of this object as an HDF5 group in the given parent group"""
@@ -1330,7 +1222,6 @@ class SFFSegment(SFFIndexType):
     repr_args = ('id', 'parentID', 'biological_annotation', 'colour')
     segment_id = 1
     segment_parentID = 0
-
     index_attr = 'segment_id'
     start_at = 1
 
@@ -1466,6 +1357,31 @@ class SFFSegment(SFFIndexType):
             group = self.volume.as_hff(group)
         return parent_group
 
+    def as_json(self):
+        """Format this segment as JSON"""
+        seg_data = _dict()
+        seg_data['id'] = int(self.id)
+        seg_data['parentID'] = int(self.parentID)
+        if self.biological_annotation is not None:
+            seg_data['biologicalAnnotation'] = self.biological_annotation.as_json()
+        if self.complexes_and_macromolecules:
+            complexes = list()
+            for _complex in self.complexes_and_macromolecules.complexes:
+                complexes.append(_complex)
+            macromolecules = list()
+            for macromolecule in self.complexes_and_macromolecules.macromolecules:
+                macromolecules.append(macromolecule)
+            seg_data['complexesAndMacromolecules'] = {
+                'complexes': complexes,
+                'macromolecules': macromolecules,
+            }
+        seg_data['colour'] = tuple(map(float, self.colour.value))
+        if self.meshes:
+            seg_data['meshList'] = len(self.meshes)
+        if self.shapes:
+            seg_data['shapePrimitiveList'] = len(self.shapes)
+        return seg_data
+
     @classmethod
     def from_hff(cls, hff_data):
         """Return an SFFType object given an HDF5 object"""
@@ -1494,7 +1410,6 @@ class SFFSegmentList(SFFListType):
     repr_string = "SFFSegmentList({})"
     repr_args = ('list()',)
     iter_attr = ('segment', SFFSegment)
-    iter_dict = _dict()
 
     # def __init__(self, *args, **kwargs):
     #     # reset id
@@ -1537,8 +1452,8 @@ class SFFTransformationMatrix(SFFIndexType):
     """Transformation matrix transform"""
     gds_type = sff.transformationMatrixType
     gds_tag_name = "transformationMatrix"
-    repr_string = "SFFTransformationMatrix(rows={}, cols={}, data={})"
-    repr_args = ('rows', 'cols', 'data_array')
+    repr_string = "SFFTransformationMatrix(id={}, rows={}, cols={}, data={})"
+    repr_args = ('id', 'rows', 'cols', 'data')
     transform_id = 0
     index_attr = 'transform_id'
 
@@ -1557,8 +1472,10 @@ class SFFTransformationMatrix(SFFIndexType):
                 kwargs['data'] = SFFTransformationMatrix.stringify(kwargs['data'])
             elif isinstance(kwargs['data'], _str):
                 # make numpy array from string
-                self._data = numpy.array(list(map(float, kwargs['data'].split(' ')))).reshape(kwargs['rows'],
-                                                                                              kwargs['cols'])
+                self._data = numpy.array(list(map(float, kwargs['data'].split(' ')))).reshape(
+                    kwargs['rows'],
+                    kwargs['cols']
+                )
         super(SFFTransformationMatrix, self).__init__(*args, **kwargs)
 
     @classmethod
@@ -1585,20 +1502,22 @@ class SFFTransformationMatrix(SFFIndexType):
 
     @property
     def data_array(self):
+        if not hasattr(self, '_data'):
+            # make numpy array from string
+            self._data = self._data = numpy.array(list(map(float, self.data.split(' ')))).reshape(
+                self.rows,
+                self.cols
+            )
         return self._data
 
 
 class SFFTransformList(SFFListType):
     """Container for transforms"""
     gds_type = sff.transformListType
-    repr_string = "List of transforms"
+    repr_string = "SFFTransformList({})"
+    repr_args = ('list()',)
     iter_attr = ('transform', SFFTransformationMatrix)
     iter_dict = _dict()
-
-    def __init__(self, *args, **kwargs):
-        # a new container of transforms needs the transform ID reset
-        SFFTransformationMatrix.reset_id()
-        super(SFFTransformList, self).__init__(*args, **kwargs)
 
     @property
     def transformation_matrix_count(self):
@@ -1735,6 +1654,13 @@ class SFFSoftware(SFFType):
         if self.processing_details:
             group['processingDetails'] = self.processing_details
         return parent_group
+
+    def as_json(self):
+        return {
+            'name': self.name if self.name else '',
+            'version': _str(self.version) if self.version else '',
+            'processingDetails': self.processing_details if self.processing_details else None
+        }
 
     @classmethod
     def from_hff(cls, hff_data):
@@ -2034,11 +1960,17 @@ class SFFSegmentation(SFFType):
         # can be simplified
         sff_data['name'] = self.name
         sff_data['version'] = self.version
-        sff_data['software'] = {
-            'name': self.software.name,
-            'version': self.software.version,
-            'processingDetails': self.software.processing_details if self.software.processing_details is not None else None,
-        }
+        if self.software is None:
+            self.software = SFFSoftware(
+                name='sfftk',
+                version=SFFTKRW_VERSION,
+            )
+        sff_data['software'] = self.software.as_json()
+        # sff_data['software'] = {
+        #     'name': self.software.name,
+        #     'version': self.software.version,
+        #     'processingDetails': self.software.processing_details if self.software.processing_details is not None else None,
+        # }
         sff_data['primaryDescriptor'] = self.primary_descriptor
         if self.details is not None:
             sff_data['details'] = _decode(self.details, 'utf-8')
@@ -2054,59 +1986,20 @@ class SFFSegmentation(SFFType):
             'zmax': self.bounding_box.zmax,
         }
         sff_data['boundingBox'] = bounding_box
-        global_external_references = list()
-        for gextref in self.global_external_references:
-            global_external_references.append({
-                'type': gextref.type,
-                'otherType': gextref.other_type,
-                'value': gextref.value,
-                'label': gextref.label,
-                'description': gextref.description
-            })
-        sff_data['globalExternalReferences'] = global_external_references
+        if self.global_external_references:
+            global_external_references = list()
+            for gextref in self.global_external_references:
+                global_external_references.append({
+                    'type': gextref.type,
+                    'otherType': gextref.other_type,
+                    'value': gextref.value,
+                    'label': gextref.label,
+                    'description': gextref.description
+                })
+            sff_data['globalExternalReferences'] = global_external_references
         sff_data['segments'] = list()
         for segment in self.segments:
-            seg_data = _dict()
-            seg_data['id'] = int(segment.id)
-            seg_data['parentID'] = int(segment.parentID)
-            bio_ann = _dict()
-            bio_ann[
-                'name'] = segment.biological_annotation.name if segment.biological_annotation.name is not None else None
-            bio_ann['description'] = str(
-                segment.biological_annotation.description) if segment.biological_annotation.description is not None else None
-            bio_ann[
-                'numberOfInstances'] = segment.biological_annotation.number_of_instances if segment.biological_annotation.number_of_instances is not None else None
-
-            bio_ann['externalReferences'] = list()
-            if segment.biological_annotation.external_references:
-                for extref in segment.biological_annotation.external_references:
-                    bio_ann['externalReferences'].append(
-                        {
-                            'type': extref.type,
-                            'otherType': extref.other_type,
-                            'value': extref.value,
-                            'label': extref.label,
-                            'description': extref.description,
-                        }
-                    )
-            seg_data['biologicalAnnotation'] = bio_ann
-            if segment.complexes_and_macromolecules:
-                complexes = list()
-                for _complex in segment.complexes_and_macromolecules.complexes:
-                    complexes.append(_complex)
-                macromolecules = list()
-                for macromolecule in segment.complexes_and_macromolecules.macromolecules:
-                    macromolecules.append(macromolecule)
-                seg_data['complexesAndMacromolecules'] = {
-                    'complexes': complexes,
-                    'macromolecules': macromolecules,
-                }
-            seg_data['colour'] = tuple(map(float, segment.colour.value))
-            if segment.meshes:
-                seg_data['meshList'] = len(segment.meshes)
-            if segment.shapes:
-                seg_data['shapePrimitiveList'] = len(segment.shapes)
-            sff_data['segments'].append(seg_data)
+            sff_data['segments'].append(segment.as_json())
         # write to f
         with f:
             import json

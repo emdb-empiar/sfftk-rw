@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function
 
+import sys
+
 """
 ========================
 sfftkrw.schema.base
@@ -241,16 +243,16 @@ class SFFType(object):
         if self.gds_type:
             # restructure kwargs of type SFF* to their gds_type equivalents
             _kwargs = _dict()
+            # remove `new_obj` from kwargs
+            if 'new_obj' in kwargs:
+                del kwargs['new_obj']
             for k in kwargs:
                 if isinstance(kwargs[k], SFFType):
                     _kwargs[k] = kwargs[k]._local
-                # todo: keep an eye open for this
-                # fixme: 'new_obj' should not crop up as a kwarg
-                elif k == 'new_obj':
-                    continue
                 else:
                     _kwargs[k] = kwargs[k]
             self._local = self.gds_type(*args, **_kwargs)  # 1 and #3 - SFFType from (*a, **kw)
+            # todo: consider putting the version in every object so that we can do migrations
             # ensure that the version is copied without requiring user intervention
             if isinstance(self._local, sff.segmentation):
                 self.version = self._local.schemaVersion
@@ -274,8 +276,6 @@ class SFFType(object):
             raise SFFTypeError(inst, cls)
         return obj
 
-    # def __repr__(self):
-    #     return self.ref
     def __str__(self):
         return repr(self)
 
@@ -434,7 +434,6 @@ class SFFIndexType(SFFType):
             # only set the `index_attr` to None if `new_obj=False`
             if not kwargs['new_obj']:
                 setattr(self, self.index_attr, None)
-            del kwargs['new_obj']
         super(SFFIndexType, self).__init__(*args, **kwargs)
         # fixme: adds `vID` and `PID` to segments ?! (harmless bug)
         # id
@@ -458,6 +457,17 @@ class SFFIndexType(SFFType):
         """Reset the `index_attr` attribute to its starting value"""
         setattr(cls, cls.index_attr, cls.start_at)
 
+    @classmethod
+    def from_gds_type(cls, inst=None):
+        if isinstance(inst, cls.gds_type):
+            obj = cls(new_obj=False)
+            obj._local = inst
+        elif inst is None:
+            obj = inst
+        else:
+            raise SFFTypeError(inst, cls)
+        return obj
+
 
 class SFFListType(SFFType):
     """Mixin to confer list-like behaviour"""
@@ -474,28 +484,44 @@ class SFFListType(SFFType):
     we return individual subclass instances from a `SFFShapePrimitiveList`.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __new__(cls, new_obj=True, *args, **kwargs):
         # make sure `iter_attr` is not empty
         try:
-            assert self.iter_attr
+            assert cls.iter_attr
         except AssertionError:
-            raise ValueError("attribute 'iter_attr' in {} cannot be empty".format(self))
+            raise ValueError("attribute 'iter_attr' in {} cannot be empty".format(cls))
         # make sure `iter_attr` consists of a string and a class
         try:
-            assert isinstance(self.iter_attr[0], _str)
+            assert isinstance(cls.iter_attr[0], _str)
         except AssertionError:
-            raise SFFTypeError(self.iter_attr[0], _str)
+            raise SFFTypeError(cls.iter_attr[0], _str)
         try:
-            assert issubclass(self.iter_attr[1], SFFType) or self.iter_attr[1] == _str or self.iter_attr[1] == int
+            assert issubclass(cls.iter_attr[1], SFFType) or cls.iter_attr[1] == _str or cls.iter_attr[1] == int
         except AssertionError:
-            raise SFFTypeError(self.iter_attr[1], SFFType)
-        # reset ID only if `self.iter_attr` is an `SFFType` subclass
-        if issubclass(self.iter_attr[1], SFFType):
-            self.iter_attr[1].reset_id()
+            raise SFFTypeError(cls.iter_attr[1], SFFType)
+        # print(kwargs, file=sys.stderr)
+        if new_obj:
+            # reset ID only if `cls.iter_attr` is an `SFFType` subclass
+            if issubclass(cls.iter_attr[1], SFFType):
+                cls.iter_attr[1].reset_id()
+        obj = super(SFFListType, cls).__new__(cls)
+        return obj
+
+    def __init__(self, *args, **kwargs):
+        self._id_dict = _dict()
         super(SFFListType, self).__init__(*args, **kwargs)
-        # initialise the list of IDs
-        self._id_list = list()
-        self._id_dict = dict()
+
+    @classmethod
+    def from_gds_type(cls, inst=None):
+        if isinstance(inst, cls.gds_type):
+            obj = cls(new_obj=False)
+            obj._local = inst
+            obj._update_dict()
+        elif inst is None:
+            obj = inst
+        else:
+            raise SFFTypeError(inst, cls)
+        return obj
 
     def _cast(self, instance):
         """Private method used in conjunction with `sibling_classes`.
@@ -667,6 +693,12 @@ class SFFListType(SFFType):
     def _del_from_dict(self, k):
         """Private method that removes from the convenience dictionary"""
         del self._id_dict[k]
+
+    def _update_dict(self):
+        iter_name, iter_type = self.iter_attr
+        if iter_type not in [_str, int] and issubclass(iter_type, SFFType):
+            self._id_dict.update({i.id: i for i in self if i.id is not None})
+
 
     def get_by_id(self, id):
         """A convenience dictionary to retrieve contained objects by ID

@@ -7,7 +7,6 @@ from __future__ import print_function
 
 import os
 import random
-import sys
 import tempfile
 
 from random_words import RandomWords, LoremIpsum
@@ -95,7 +94,7 @@ class TestSFFType(Py23FixTestCase):
         # correct assessment of length: prints out a string with the correct len() value
         c = adapter.SFFComplexes()
         c.set_complexes(rw.random_words(count=10))
-        self.assertRegex(str(c), ".*10.*")
+        self.assertRegex(_str(c), r"SFFComplexes\(\[.*\]\)")
         # plain string: prints the plain string
         v = adapter.SFFThreeDVolume()
         self.assertEqual(str(v), "3D formatted segment")
@@ -198,8 +197,6 @@ class TestSFFType(Py23FixTestCase):
             _S == _S
 
 
-
-
 class TestSFFIndexType(Py23FixTestCase):
     """Test the indexing mixin class `SFFIndexType"""
 
@@ -209,6 +206,20 @@ class TestSFFIndexType(Py23FixTestCase):
         adapter.SFFShape.shape_id = 0
         adapter.SFFVertex.vertex_id = 0
         adapter.SFFPolygon.polygon_id = 0
+
+    def test_create_from_gds_type(self):
+        """Test creating an `SFFIndexType` subclass object from a gds type"""
+        # segment
+        _s = emdb_sff.segmentType()
+        s = adapter.SFFSegment.from_gds_type(_s)
+        self.assertIsNone(s.id)
+        _t = emdb_sff.segmentType(id=10)
+        t = adapter.SFFSegment.from_gds_type(_t)
+        self.assertEqual(t.id, 10)
+        u = adapter.SFFSegment.from_gds_type(None)
+        self.assertIsNone(u)
+        with self.assertRaises(adapter.SFFTypeError):
+            adapter.SFFSegment.from_gds_type([])
 
     def test_explicit_set_id(self):
         """Test that we can explicitly set ID apart from incrementing"""
@@ -370,6 +381,35 @@ class TestSFFIndexType(Py23FixTestCase):
 
 class TestSFFListType(Py23FixTestCase):
     """Test the iteration mixin class `SFFListType`"""
+
+    def test_create_from_gds_type(self):
+        """Test create from a gds_type"""
+        # empty list
+        _S = emdb_sff.segmentListType()
+        S = adapter.SFFSegmentList.from_gds_type(_S)
+        self.assertEqual(len(S), 0)
+        # populated list; no segment IDS
+        _T = emdb_sff.segmentListType()
+        _no_items = _random_integer(start=2, stop=10)
+        [_T.add_segment(emdb_sff.segmentType()) for _ in _xrange(_no_items)]
+        T = adapter.SFFSegmentList.from_gds_type(_T)
+        self.assertEqual(len(T), _no_items)
+        # populated list; with segment IDS
+        _U = emdb_sff.segmentListType()
+        [_U.add_segment(emdb_sff.segmentType(id=i)) for i in _xrange(1, _no_items + 1)]
+        U = adapter.SFFSegmentList.from_gds_type(_U)
+        self.assertEqual(len(U), _no_items)
+        self.assertEqual(len(U._id_dict), _no_items)
+
+    # def test_create_from_list(self):
+    #     """Test that we can create a `SFFListType` object from a literal list of contained objects"""
+    #     # segments
+    #     _no_items = _random_integer(start=2, stop=10)
+    #     _S = [adapter.SFFSegment() for _ in _xrange(_no_items)]
+    #     S = adapter.SFFSegmentList.from_list(_S)
+    #     self.assertEqual(len(S), _no_items)
+    #     self.assertEqual(len(S._id_dict), _no_items)
+    #     self.assertIsInstance(S.get_by_id(1), adapter.SFFSegment)
 
     def test_length(self):
         """Test that we can evaluate length"""
@@ -971,12 +1011,34 @@ class TestSFFListType(Py23FixTestCase):
             S.append(adapter.SFFSegment(id=1))
         # nothing with key 'None'
 
+    def test_get_from_segmentation(self):
+        """Test that we can get by ID from the top level
+
+        - segmentation.
+        """
+        # create a segmentation
+        S = adapter.SFFSegmentation(name='my segmentation')
+        # set the segments attribute
+        S.segments = adapter.SFFSegmentList()
+        s = adapter.SFFSegment()
+        # add a segment
+        S.segments.append(s)
+        s_get = S.segments.get_by_id(1)
+        self.assertEqual(s.id, 1)
+        self.assertEqual(s_get.id, 1)
+        self.assertEqual(len(S.segments), 1)
+        s_index = S.segments[0]
+        self.assertEqual(s_index.id, 1)
+        self.assertEqual(s_get.id, 1)
+        self.assertEqual(len(S.segments), 1)
+
 
 class TestSFFAttribute(Py23FixTestCase):
     """Test the attribute descriptor class"""
 
     def test_default(self):
         """Test default settings"""
+
         class _Colour(adapter.SFFType):
             gds_type = emdb_sff.rgbaType
             r = base.SFFAttribute('red', help='red colour')
@@ -996,12 +1058,11 @@ class TestSFFAttribute(Py23FixTestCase):
 
     def test_error(self):
         """Test that we get an exception on setting wrong type"""
+
         class _Segmentation(adapter.SFFType):
             gds_type = emdb_sff.segmentation
             s = base.SFFAttribute('software', sff_type=adapter.SFFSoftware)
+
         _S = _Segmentation()
         with self.assertRaises(base.SFFTypeError):
             _S.s = adapter.SFFSegment()
-
-
-

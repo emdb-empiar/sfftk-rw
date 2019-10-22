@@ -18,7 +18,7 @@ from random_words import RandomWords, LoremIpsum
 
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_floats
 from ..core import _xrange, _str
-from ..schema import adapter, emdb_sff
+from ..schema import adapter, emdb_sff, base
 
 rw = RandomWords()
 li = LoremIpsum()
@@ -38,21 +38,21 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.primary_descriptor = "threeDVolume"
         # transforms
         transforms = adapter.SFFTransformList()
-        transforms.add_transform(
+        transforms.append(
             adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=numpy.random.rand(3, 4),
             )
         )
-        transforms.add_transform(
+        transforms.append(
             adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=numpy.random.rand(3, 4)
             )
         )
-        transforms.add_transform(
+        transforms.append(
             adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
@@ -71,7 +71,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         # lattice container
         lattices = adapter.SFFLatticeList()
         # lattice 1
-        binlist = numpy.array([random.randint(0, 5) for i in _xrange(20 * 20 * 20)])
+        binlist = numpy.array([random.randint(0, 5) for i in _xrange(20 * 20 * 20)]).reshape(20, 20, 20)
         lattice = adapter.SFFLattice(
             mode='uint32',
             endianness='little',
@@ -79,9 +79,9 @@ class TestSFFSegmentation(Py23FixTestCase):
             start=adapter.SFFVolumeIndex(cols=0, rows=0, sections=0),
             data=binlist,
         )
-        lattices.add_lattice(lattice)
+        lattices.append(lattice)
         # lattice 2
-        binlist2 = numpy.array([random.random() * 100 for i in _xrange(30 * 40 * 50)])
+        binlist2 = numpy.array([random.random() * 100 for i in _xrange(30 * 40 * 50)]).reshape(30, 40, 50)
         lattice2 = adapter.SFFLattice(
             mode='float32',
             endianness='big',
@@ -89,7 +89,7 @@ class TestSFFSegmentation(Py23FixTestCase):
             start=adapter.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
             data=binlist2,
         )
-        lattices.add_lattice(lattice2)
+        lattices.append(lattice2)
         # segments
         segments = adapter.SFFSegmentList()
         # segment one
@@ -99,13 +99,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             latticeId=0,
             value=vol1_value,
         )
-        segment.colour = adapter.SFFRGBA(
-            red=random.random(),
-            green=random.random(),
-            blue=random.random(),
-            alpha=random.random()
-        )
-        segments.add_segment(segment)
+        segment.colour = adapter.SFFRGBA(random_colour=True)
+        segments.append(segment)
         # segment two
         segment = adapter.SFFSegment()
         vol2_value = 37.1
@@ -113,14 +108,9 @@ class TestSFFSegmentation(Py23FixTestCase):
             latticeId=1,
             value=vol2_value
         )
-        segment.colour = adapter.SFFRGBA(
-            red=random.random(),
-            green=random.random(),
-            blue=random.random(),
-            alpha=random.random()
-        )
+        segment.colour = adapter.SFFRGBA(random_colour=True)
         # add segment to segments
-        segments.add_segment(segment)
+        segments.append(segment)
         segmentation.transforms = transforms
         segmentation.segments = segments
         segmentation.lattices = lattices
@@ -132,21 +122,21 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.primary_descriptor = "threeDVolume"
         # transforms
         transforms = adapter.SFFTransformList()
-        transforms.add_transform(
+        transforms.append(
             adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=" ".join(map(str, range(12)))
             )
         )
-        transforms.add_transform(
+        transforms.append(
             adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
                 data=" ".join(map(str, range(12)))
             )
         )
-        transforms.add_transform(
+        transforms.append(
             adapter.SFFTransformationMatrix(
                 rows=3,
                 cols=4,
@@ -165,7 +155,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         # lattice container
         lattices = adapter.SFFLatticeList()
         # lattice 1
-        binlist = numpy.array([random.randint(0, 5) for i in _xrange(20 * 20 * 20)])
+        binlist = numpy.array([random.randint(0, 5) for i in _xrange(20 * 20 * 20)]).reshape(20, 20, 20)
         lattice = adapter.SFFLattice(
             mode='uint32',
             endianness='little',
@@ -173,9 +163,9 @@ class TestSFFSegmentation(Py23FixTestCase):
             start=adapter.SFFVolumeIndex(cols=0, rows=0, sections=0),
             data=binlist,
         )
-        lattices.add_lattice(lattice)
+        lattices.append(lattice)
         # lattice 2
-        binlist2 = numpy.array([random.random() * 100 for i in _xrange(30 * 40 * 50)])
+        binlist2 = numpy.array([random.random() * 100 for i in _xrange(30 * 40 * 50)]).reshape(30, 40, 50)
         lattice2 = adapter.SFFLattice(
             mode='float32',
             endianness='big',
@@ -183,7 +173,7 @@ class TestSFFSegmentation(Py23FixTestCase):
             start=adapter.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
             data=binlist2,
         )
-        lattices.add_lattice(lattice2)
+        lattices.append(lattice2)
         # segments
         segments = adapter.SFFSegmentList()
         # segment one
@@ -193,7 +183,7 @@ class TestSFFSegmentation(Py23FixTestCase):
             latticeId=0,
             value=vol1_value,
         )
-        segments.add_segment(segment)
+        segments.append(segment)
         # segment two
         segment = adapter.SFFSegment()
         vol2_value = 37.1
@@ -202,7 +192,7 @@ class TestSFFSegmentation(Py23FixTestCase):
             value=vol2_value
         )
         # add segment to segments
-        segments.add_segment(segment)
+        segments.append(segment)
         segmentation.transforms = transforms
         segmentation.segments = segments
         segmentation.lattices = lattices
@@ -267,8 +257,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
@@ -280,8 +270,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
@@ -293,8 +283,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
@@ -306,8 +296,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCuboid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
@@ -320,8 +310,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCuboid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
@@ -334,35 +324,35 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
+        transforms.append(transform)
         cylinder = adapter.SFFCylinder(
             height=_random_float() * 100,
             diameter=_random_float() * 100,
             transformId=transform.id,
         )
-        shapes.add_shape(cylinder)
+        shapes.append(cylinder)
         transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
+        transforms.append(transform)
         ellipsoid = adapter.SFFEllipsoid(
             x=_random_float() * 100,
             y=_random_float() * 100,
             z=_random_float() * 100,
             transformId=transform.id,
         )
-        shapes.add_shape(ellipsoid)
+        shapes.append(ellipsoid)
         transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
+        transforms.append(transform)
         ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
                                           transformId=transform.id, )
-        shapes.add_shape(ellipsoid2)
+        shapes.append(ellipsoid2)
         print('cylinder.id', cylinder.id, file=sys.stderr)
         cylinder = adapter.SFFCylinder(
             height=_random_float() * 100,
@@ -407,8 +397,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
@@ -416,7 +406,7 @@ class TestSFFSegmentation(Py23FixTestCase):
             )
         )
         segment.shapes = shapes
-        segments.add_segment(segment)
+        segments.append(segment)
         # more shapes
         segment = adapter.SFFSegment()
         # shapes
@@ -426,8 +416,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
@@ -439,8 +429,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
@@ -452,8 +442,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
@@ -465,8 +455,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCuboid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
@@ -479,8 +469,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCuboid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
@@ -493,8 +483,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCylinder(
                 height=_random_float() * 100,
                 diameter=_random_float() * 100,
@@ -506,8 +496,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFEllipsoid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
@@ -520,8 +510,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFEllipsoid(
                 x=_random_float() * 100,
                 y=_random_float() * 100,
@@ -534,8 +524,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             cols=4,
             data=" ".join(map(str, range(12))),
         )
-        transforms.add_transform(transform)
-        shapes.add_shape(
+        transforms.append(transform)
+        shapes.append(
             adapter.SFFCone(
                 height=_random_float() * 100,
                 bottomRadius=_random_float() * 100,
@@ -543,7 +533,7 @@ class TestSFFSegmentation(Py23FixTestCase):
             )
         )
         segment.shapes = shapes
-        segments.add_segment(segment)
+        segments.append(segment)
         segmentation.segments = segments
         segmentation.transforms = transforms
         # export
@@ -578,7 +568,7 @@ class TestSFFSegmentation(Py23FixTestCase):
                     _random_integer(1, 1000)
                 ))
             )
-            vertices1.add_vertex(vertex)
+            vertices1.append(vertex)
         polygons1 = adapter.SFFPolygonList()
         no_polygons1 = _random_integer(stop=100)
         for i in _xrange(no_polygons1):
@@ -586,7 +576,7 @@ class TestSFFSegmentation(Py23FixTestCase):
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
-            polygons1.add_polygon(polygon)
+            polygons1.append(polygon)
         mesh.vertices = vertices1
         mesh.polygons = polygons1
         vertices2 = adapter.SFFVertexList()
@@ -595,7 +585,7 @@ class TestSFFSegmentation(Py23FixTestCase):
             vertex = adapter.SFFVertex()
             vertex.point = tuple(map(float, (
                 _random_integer(1, 1000), _random_integer(1, 1000), _random_integer(1, 1000))))
-            vertices2.add_vertex(vertex)
+            vertices2.append(vertex)
         polygons2 = adapter.SFFPolygonList()
         no_polygons2 = _random_integer(stop=100)
         for i in _xrange(no_polygons2):
@@ -603,13 +593,13 @@ class TestSFFSegmentation(Py23FixTestCase):
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
-            polygons2.add_polygon(polygon)
+            polygons2.append(polygon)
         mesh2.vertices = vertices2
         mesh2.polygons = polygons2
-        meshes.add_mesh(mesh)
-        meshes.add_mesh(mesh2)
+        meshes.append(mesh)
+        meshes.append(mesh2)
         segment.meshes = meshes
-        segments.add_segment(segment)
+        segments.append(segment)
         # segment two
         segment = adapter.SFFSegment()
         # mesh
@@ -626,7 +616,7 @@ class TestSFFSegmentation(Py23FixTestCase):
                     _random_integer(1, 1000)
                 ))
             )
-            vertices3.add_vertex(vertex)
+            vertices3.append(vertex)
         polygons3 = adapter.SFFPolygonList()
         no_polygons3 = _random_integer(stop=100)
         for i in _xrange(no_polygons3):
@@ -634,12 +624,12 @@ class TestSFFSegmentation(Py23FixTestCase):
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
             polygon.add_vertex(random.choice(range(_random_integer())))
-            polygons3.add_polygon(polygon)
+            polygons3.append(polygon)
         mesh.vertices = vertices3
         mesh.polygons = polygons3
-        meshes.add_mesh(mesh)
+        meshes.append(mesh)
         segment.meshes = meshes
-        segments.add_segment(segment)
+        segments.append(segment)
         segmentation.segments = segments
         # export
         # segmentation.export(os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'test_mesh_segmentation.sff'))
@@ -671,14 +661,14 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.details = "Details"
         # global external references
         segmentation.global_external_references = adapter.SFFGlobalExternalReferences()
-        segmentation.global_external_references.add_external_reference(
+        segmentation.global_external_references.append(
             adapter.SFFExternalReference(
                 type='one',
                 otherType='two',
                 value='three'
             )
         )
-        segmentation.global_external_references.add_external_reference(
+        segmentation.global_external_references.append(
             adapter.SFFExternalReference(
                 type='four',
                 otherType='five',
@@ -692,19 +682,19 @@ class TestSFFSegmentation(Py23FixTestCase):
         biol_ann.description = "Some description"
         # external refs
         biol_ann.external_references = adapter.SFFExternalReferences()
-        biol_ann.external_references.add_external_reference(
+        biol_ann.external_references.append(
             adapter.SFFExternalReference(
                 type="sldjflj",
                 value="doieaik"
             )
         )
-        biol_ann.external_references.add_external_reference(
+        biol_ann.external_references.append(
             adapter.SFFExternalReference(
                 type="sljd;f",
                 value="20ijalf"
             )
         )
-        biol_ann.external_references.add_external_reference(
+        biol_ann.external_references.append(
             adapter.SFFExternalReference(
                 type="lsdjlsd",
                 otherType="lsjfd;sd",
@@ -717,19 +707,19 @@ class TestSFFSegmentation(Py23FixTestCase):
         # complexes
         comp_mac = adapter.SFFComplexesAndMacromolecules()
         comp = adapter.SFFComplexes()
-        comp.add_complex(str(_random_integer(1, 1000)))
-        comp.add_complex(str(_random_integer(1, 1000)))
-        comp.add_complex(str(_random_integer(1, 1000)))
-        comp.add_complex(str(_random_integer(1, 1000)))
-        comp.add_complex(str(_random_integer(1, 1000)))
+        comp.append(str(_random_integer(1, 1000)))
+        comp.append(str(_random_integer(1, 1000)))
+        comp.append(str(_random_integer(1, 1000)))
+        comp.append(str(_random_integer(1, 1000)))
+        comp.append(str(_random_integer(1, 1000)))
         # macromolecules
         macr = adapter.SFFMacromolecules()
-        macr.add_macromolecule(str(_random_integer(1, 1000)))
-        macr.add_macromolecule(str(_random_integer(1, 1000)))
-        macr.add_macromolecule(str(_random_integer(1, 1000)))
-        macr.add_macromolecule(str(_random_integer(1, 1000)))
-        macr.add_macromolecule(str(_random_integer(1, 1000)))
-        macr.add_macromolecule(str(_random_integer(1, 1000)))
+        macr.append(str(_random_integer(1, 1000)))
+        macr.append(str(_random_integer(1, 1000)))
+        macr.append(str(_random_integer(1, 1000)))
+        macr.append(str(_random_integer(1, 1000)))
+        macr.append(str(_random_integer(1, 1000)))
+        macr.append(str(_random_integer(1, 1000)))
         comp_mac.complexes = comp
         comp_mac.macromolecules = macr
         segment.complexes_and_macromolecules = comp_mac
@@ -740,7 +730,7 @@ class TestSFFSegmentation(Py23FixTestCase):
             blue=1,
             alpha=0
         )
-        segmentation.segments.add_segment(segment)
+        segmentation.segments.append(segment)
         # export
         # segmentation.export(os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'test_annotated_segmentation.sff'))
         # assertions
@@ -787,11 +777,11 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation = adapter.SFFSegmentation()
         segmentation.segments = adapter.SFFSegmentList()
         segment = adapter.SFFSegment()
-        segmentation.segments.add_segment(segment)
+        segmentation.segments.append(segment)
         # segmentation two
         segmentation2 = adapter.SFFSegmentation()
         segmentation2.segments = adapter.SFFSegmentList()
-        segmentation2.segments.add_segment(adapter.SFFSegment())
+        segmentation2.segments.append(adapter.SFFSegment())
         # assertions
         self.assertEqual(segmentation.segments[0].id, segmentation2.segments[0].id)
         # segment two :: mainly to test that ids of mesh, contour, polygon, segment, shape, vertex reset
@@ -809,11 +799,11 @@ class TestSFFSegmentation(Py23FixTestCase):
         """Test that transform ids work correctly"""
         transforms = adapter.SFFTransformList()
         matrix = adapter.SFFTransformationMatrix(rows=3, cols=3, data=' '.join(map(str, range(9))))
-        transforms.add_transform(matrix)
+        transforms.append(matrix)
 
         transforms2 = adapter.SFFTransformList()
         matrix2 = adapter.SFFTransformationMatrix(rows=3, cols=3, data=' '.join(map(str, range(9))))
-        transforms2.add_transform(matrix2)
+        transforms2.append(matrix2)
 
         self.assertIsNotNone(transforms[0].id)
         self.assertEqual(transforms[0].id, transforms2[0].id)
@@ -838,7 +828,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_read_hff(self):
         """Read from HDF5 (.hff) file"""
         hff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.hff')
-        segmentation = adapter.SFFSegmentation(hff_file)
+        segmentation = adapter.SFFSegmentation.from_file(hff_file)
         # assertions
         self.assertEqual(segmentation.name, "Segger Segmentation")
         self.assertTrue(len(segmentation.version) > 0)
@@ -850,7 +840,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_read_json(self):
         """Read from JSON (.json) file"""
         json_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.json')
-        segmentation = adapter.SFFSegmentation(json_file)
+        segmentation = adapter.SFFSegmentation.from_file(json_file)
         # assertions
         self.assertEqual(segmentation.name, "Segger Segmentation")
         self.assertTrue(len(segmentation.version) > 0)
@@ -1003,32 +993,54 @@ class TestSFFComplexes(Py23FixTestCase):
         """Test default settings"""
         c = adapter.SFFComplexes()
         self.assertEqual(c.gds_type, emdb_sff.complexType)
-        self.assertEqual(c.ref, "Complexes")
-        self.assertEqual(str(c), "Complex list of length 0")
+        self.assertRegex(_str(c), r"SFFComplexes\(\[.*\]\)")
         with self.assertRaises(StopIteration):  # because it's empty
             next(iter(c))
-
-    def test_set_complexes(self):
-        """Test that we can set complexes"""
-
-    # test_set_complexes
-    # test_add_complexe
-    # test_insert_complex_at
-    # test_replace_complex_at
-    # test_delete_complex_at
+        c.append(rw.random_word())
+        self.assertEqual(len(c), 1)
+        c.append(rw.random_word())
+        self.assertEqual(len(c), 2)
+        c.clear()
+        self.assertEqual(len(c), 0)
 
 
-# class TestSFFMacromolecules(Py23FixTestCase):
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFComplexesAndMacromolecules(Py23FixTestCase):
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
+class TestSFFMacromolecules(Py23FixTestCase):
+    def test_default(self):
+        """Test default settings"""
+        m = adapter.SFFMacromolecules()
+        self.assertRegex(_str(m), r"SFFMacromolecules\(\[.*\]\)")
+        with self.assertRaises(StopIteration):
+            next(iter(m))
+        m.append(rw.random_word())
+        self.assertEqual(len(m), 1)
+        m.append(rw.random_word())
+        self.assertEqual(len(m), 2)
+        m.clear()
+        self.assertEqual(len(m), 0)
+
+
+class TestSFFComplexesAndMacromolecules(Py23FixTestCase):
+    def test_default(self):
+        """Test default settings"""
+        C = adapter.SFFComplexesAndMacromolecules()
+        self.assertIsNone(C.complexes)
+        self.assertIsNone(C.macromolecules)
+        self.assertRegex(_str(C),
+                         "SFFComplexesAndMacromolecules\(complexes=None, macromolecules=None\)")
+        c = adapter.SFFComplexes()
+        _no_items = _random_integer(start=2, stop=10)
+        [c.append(rw.random_word()) for _ in _xrange(_no_items)]
+        C.complexes = c
+        m = adapter.SFFMacromolecules()
+        [m.append(rw.random_word()) for _ in _xrange(_no_items)]
+        C.macromolecules = m
+        self.assertEqual(len(C.complexes), _no_items)
+        self.assertEqual(len(C.macromolecules), _no_items)
+        self.assertRegex(_str(C),
+                         "SFFComplexesAndMacromolecules\(complexes=SFFComplexes\(.*\), macromolecules=SFFMacromolecules\(.*\)\)")
+        print(C, file=sys.stderr)
+
+
 #
 # class TestSFFExternalReference(Py23FixTestCase):
 #     def test_default(self):
@@ -1079,147 +1091,162 @@ class TestSFFVolumeStructure(Py23FixTestCase):
 
 
 class TestSFFLattice(Py23FixTestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.lattice_size = adapter.SFFVolumeStructure(
-            cols=10, rows=10, sections=10,
-        )
-        cls.lattice_endianness = 'little'
-        cls.lattice_mode = 'uint32'
-        cls.lattice_start = adapter.SFFVolumeIndex(cols=0, rows=0, sections=0)
-        data_ = numpy.array(range(1000), dtype=numpy.uint32).reshape((10, 10, 10))  # data
-        numpy.random.shuffle(data_)  # shuffle in place
-        cls.lattice_data = data_
-        lattices = adapter.SFFLatticeList()  # to reset lattice_id
-        cls.lattice = adapter.SFFLattice(
-            mode=cls.lattice_mode,
-            endianness=cls.lattice_endianness,
-            size=cls.lattice_size,
-            start=cls.lattice_start,
-            data=cls.lattice_data
-        )
+    def setUp(self):
+        self.r, self.c, self.s = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10), _random_integer(
+            start=2, stop=10)
+        self.l_mode = 'float64'
+        self.l_endian = 'little'
+        self.l_size = adapter.SFFVolumeStructure(rows=self.r, cols=self.c, sections=self.s)
+        self.l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
+        self.l_data = numpy.random.rand(self.r, self.c, self.s)
+        self.l_bytes = adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian)
+        self.l_unicode = self.l_bytes.decode('utf-8')
 
-    def test_create(self):
-        """Test creation of a lattice object"""
-        # self.assertEqual(
-        #     _str(self.lattice),
-        #     """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<numpy.ndarray>)""".format(
-        #         self.lattice_mode,
-        #         self.lattice_endianness,
-        #         self.lattice_size,
-        #         self.lattice_start,
-        #     )
-        # )
-        # self.assertEqual(self.lattice.id, 0)
-        # self.assertEqual(self.lattice.mode, self.lattice_mode)
-        # self.assertEqual(self.lattice.endianness, self.lattice_endianness)
-        # self.assertCountEqual(self.lattice.size.value, self.lattice_data.shape)
-        # self.assertCountEqual(self.lattice.start.value, self.lattice_start.value)
-        # self.assertTrue(self.lattice.is_encoded)
-        # print(self.lattice.data, file=sys.stderr)
+    def tearDown(self):
+        adapter.SFFLattice.reset_id()
 
     def test_create_init_array(self):
         """Test that we can create from a numpy array using __init__"""
-        r, c, s = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10), _random_integer(start=2, stop=10)
-        l_mode = 'float64'
-        l_endian = 'little'
-        l_size = adapter.SFFVolumeStructure(rows=r, cols=c, sections=s)
-        l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
-        l_data = numpy.random.rand(r, c, s)
         l = adapter.SFFLattice(
-            mode=l_mode,
-            endianness=l_endian,
-            size=l_size,
-            start=l_start,
-            data=l_data
+            mode=self.l_mode,
+            endianness=self.l_endian,
+            size=self.l_size,
+            start=self.l_start,
+            data=self.l_data
         )
         self.assertIsInstance(l, adapter.SFFLattice)
-        self.assertEqual(l.mode, l_mode)
-        self.assertEqual(l.endianness, l_endian)
-        self.assertEqual(l.size.voxel_count, r * c * s)
+        self.assertEqual(l.id, 0)
+        self.assertEqual(l.mode, self.l_mode)
+        self.assertEqual(l.endianness, self.l_endian)
+        self.assertEqual(l.size.voxel_count, self.r * self.c * self.s)
         self.assertEqual(l.start.value, (0, 0, 0))
-        self.assertEqual(l.data, adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian))
-        self.assertEqual(l.data_array.flatten().tolist(), l_data.flatten().tolist())
+        self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
+        self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
+        self.assertEqual(
+            _str(l),
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+                self.l_mode,
+                self.l_endian,
+                _str(self.l_size),
+                _str(self.l_start),
+            )
+        )
 
     def test_create_init_bytes(self):
-        """Test that we can create from a numpy array using __init__"""
-        r, c, s = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10), _random_integer(start=2,
-                                                                                                        stop=10)
-        l_mode = 'float64'
-        l_endian = 'little'
-        l_size = adapter.SFFVolumeStructure(rows=r, cols=c, sections=s)
-        l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
-        l_data = numpy.random.rand(r, c, s)
-        l_bytes = adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian)
+        """Test that we can create from bytes using __init__"""
         l = adapter.SFFLattice(
-            mode=l_mode,
-            endianness=l_endian,
-            size=l_size,
-            start=l_start,
-            data=l_bytes
+            mode=self.l_mode,
+            endianness=self.l_endian,
+            size=self.l_size,
+            start=self.l_start,
+            data=self.l_bytes
         )
         self.assertIsInstance(l, adapter.SFFLattice)
-        self.assertEqual(l.mode, l_mode)
-        self.assertEqual(l.endianness, l_endian)
-        self.assertEqual(l.size.voxel_count, r * c * s)
+        self.assertEqual(l.id, 0)
+        self.assertEqual(l.mode, self.l_mode)
+        self.assertEqual(l.endianness, self.l_endian)
+        self.assertEqual(l.size.voxel_count, self.r * self.c * self.s)
         self.assertEqual(l.start.value, (0, 0, 0))
-        self.assertEqual(l.data, adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian))
-        self.assertEqual(l.data_array.flatten().tolist(), l_data.flatten().tolist())
+        self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
+        self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
+        self.assertEqual(
+            _str(l),
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+                self.l_mode,
+                self.l_endian,
+                _str(self.l_size),
+                _str(self.l_start),
+            )
+        )
 
     def test_create_init_unicode(self):
-        """Test that we can create from a numpy array using __init__"""
-        r, c, s = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10), _random_integer(start=2,
-                                                                                                        stop=10)
-        l_mode = 'float64'
-        l_endian = 'little'
-        l_size = adapter.SFFVolumeStructure(rows=r, cols=c, sections=s)
-        l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
-        l_data = numpy.random.rand(r, c, s)
-        l_bytes = adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian).decode('utf-8')
+        """Test that we can create from unicode using __init__"""
         l = adapter.SFFLattice(
-            mode=l_mode,
-            endianness=l_endian,
-            size=l_size,
-            start=l_start,
-            data=l_bytes
+            mode=self.l_mode,
+            endianness=self.l_endian,
+            size=self.l_size,
+            start=self.l_start,
+            data=self.l_unicode
         )
         self.assertIsInstance(l, adapter.SFFLattice)
-        self.assertEqual(l.mode, l_mode)
-        self.assertEqual(l.endianness, l_endian)
-        self.assertEqual(l.size.voxel_count, r * c * s)
+        self.assertEqual(l.id, 0)
+        self.assertEqual(l.mode, self.l_mode)
+        self.assertEqual(l.endianness, self.l_endian)
+        self.assertEqual(l.size.voxel_count, self.r * self.c * self.s)
         self.assertEqual(l.start.value, (0, 0, 0))
-        self.assertEqual(l.data, adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian))
-        self.assertEqual(l.data_array.flatten().tolist(), l_data.flatten().tolist())
+        self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
+        self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
+        self.assertEqual(
+            _str(l),
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+                self.l_mode,
+                self.l_endian,
+                _str(self.l_size),
+                _str(self.l_start),
+            )
+        )
 
-
-    def test_create_classmethod(self):
+    def test_create_classmethod_array(self):
         """Test that we can create an object using the classmethod"""
-        r, c, s = _random_integer(start=2, stop=10), _random_integer(start=2, stop=10), _random_integer(start=2, stop=10)
-        l_mode = 'float64'
-        l_endian = 'little'
-        l_size = adapter.SFFVolumeStructure(rows=r, cols=c, sections=s)
-        l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
-        l_data = numpy.random.rand(r, c, s)
         l = adapter.SFFLattice.from_array(
-            mode=l_mode,
-            endianness=l_endian,
-            size=l_size,
-            start=l_start,
-            data=l_data
+            mode=self.l_mode,
+            endianness=self.l_endian,
+            size=self.l_size,
+            start=self.l_start,
+            data=self.l_data
         )
         self.assertIsInstance(l, adapter.SFFLattice)
-        self.assertEqual(l.mode, l_mode)
-        self.assertEqual(l.endianness, l_endian)
-        self.assertEqual(l.size.voxel_count, r * c * s)
+        self.assertEqual(l.id, 0)
+        self.assertEqual(l.mode, self.l_mode)
+        self.assertEqual(l.endianness, self.l_endian)
+        self.assertEqual(l.size.voxel_count, self.r * self.c * self.s)
         self.assertEqual(l.start.value, (0, 0, 0))
-        self.assertEqual(l.data, adapter.SFFLattice._encode(l_data, mode=l_mode, endianness=l_endian))
-        self.assertEqual(l.data_array.flatten().tolist(), l_data.flatten().tolist())
+        self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
+        self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
+        self.assertEqual(
+            _str(l),
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+                self.l_mode,
+                self.l_endian,
+                _str(self.l_size),
+                _str(self.l_start),
+            )
+        )
 
-    def test_decode(self):
-        """Test that we can decode a lattice"""
-        self.lattice.decode()
-        self.assertCountEqual(self.lattice.data.flatten(), self.lattice_data.flatten())
-        self.assertFalse(self.lattice.is_encoded)
+    def test_create_classmethod_bytes(self):
+        """Test that we can create an object using the classmethod"""
+        l = adapter.SFFLattice.from_bytes(
+            self.l_bytes,
+            self.l_size,
+            mode=self.l_mode,
+            endianness=self.l_endian,
+            start=self.l_start,
+        )
+        self.assertIsInstance(l, adapter.SFFLattice)
+        self.assertEqual(l.id, 0)
+        self.assertEqual(l.mode, self.l_mode)
+        self.assertEqual(l.endianness, self.l_endian)
+        self.assertEqual(l.size.voxel_count, self.r * self.c * self.s)
+        self.assertEqual(l.start.value, (0, 0, 0))
+        self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
+        self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
+        self.assertEqual(
+            _str(l),
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+                self.l_mode,
+                self.l_endian,
+                _str(self.l_size),
+                _str(self.l_start),
+            )
+        )
+        with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
+            l = adapter.SFFLattice.from_bytes(
+                self.l_bytes,
+                (self.r, self.c, self.s),
+                mode=self.l_mode,
+                endianness=self.l_endian,
+                start=self.l_start,
+            )
 
 
 # class TestSFFMesh(Py23FixTestCase):
@@ -1324,19 +1351,19 @@ class TestSFFSegmentList(Py23FixTestCase):
     def test_iterate(self):
         """Test default settings"""
         S = adapter.SFFSegmentList()
-        S.add_segment(adapter.SFFSegment())
-        S.add_segment(adapter.SFFSegment())
-        S.add_segment(adapter.SFFSegment())
-        S.add_segment(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
         for s in S:
             print(s.id, file=sys.stderr)
-        S.add_segment(adapter.SFFSegment())
-        S.add_segment(adapter.SFFSegment())
-        S.add_segment(adapter.SFFSegment())
-        S.add_segment(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
+        S.append(adapter.SFFSegment())
         for s in S:
             print(s, file=sys.stderr)
-        S.add_segment(adapter.SFFSegment.from_gds_type(
+        S.append(adapter.SFFSegment.from_gds_type(
             emdb_sff.segmentType()
         ))
         for s in S:
@@ -1397,6 +1424,20 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
         self.assertEqual(T.cols, c)
         self.assertEqual(T.data, " ".join(list(map(_str, d))))
         self.assertEqual(T.data_array.flatten().tolist(), d)
+
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        r, c = _random_integer(start=3, stop=10), _random_integer(start=3, stop=10)
+        _data = numpy.random.rand(r, c)
+        __data = " ".join(map(_str, _data.flatten().tolist()))
+        self.assertIsInstance(__data, _str)
+        _t = emdb_sff.transformationMatrixType(
+            id=0,
+            rows=r, cols=c,
+            data=__data
+        )
+        t = adapter.SFFTransformationMatrix.from_gds_type(_t)
+        self.assertTrue(hasattr(t, 'data_array'))
 
 
 #
