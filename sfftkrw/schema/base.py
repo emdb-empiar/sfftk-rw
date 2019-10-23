@@ -37,6 +37,7 @@ TBA
 """
 import numbers
 import os
+import re
 
 import h5py
 
@@ -45,6 +46,8 @@ from ..core import _dict, _str
 from ..core.print_tools import print_date
 from ..schema import emdb_sff as sff
 
+
+match_var_stop = re.compile(r"(?P<var>\w+)\[\:(?P<stop>\d*)\]")
 
 class SFFTypeError(Exception):
     """`SFFTypeError` exception"""
@@ -294,6 +297,11 @@ class SFFType(object):
                             _repr_args.append(len(self))
                         elif arg == 'list()':
                             _repr_args.append(list(self))
+                        elif match_var_stop.match(arg):
+                            mo = match_var_stop.match(arg)
+                            var = mo.group('var')
+                            stop = int(mo.group('stop'))
+                            _repr_args.append(getattr(self, var)[:stop] + b"...")
                         else:
                             _repr_args.append(getattr(self, arg, None))
                     # quote strings

@@ -258,8 +258,8 @@ class SFFComplexesAndMacromolecules(SFFType):
 class SFFExternalReference(SFFIndexType):
     """Class that encapsulates an external reference"""
     gds_type = sff.externalReferenceType
-    repr_string = "Reference: {}; {}; {}"
-    repr_args = ('type', 'other_type', 'value')
+    repr_string = "SFFExternalReference(type={}, otherType={}, value={}, label={}, description={})"
+    repr_args = ('type', 'other_type', 'value', 'label', 'description')
     ref_id = 0
     index_attr = 'ref_id'
 
@@ -279,68 +279,79 @@ class SFFExternalReference(SFFIndexType):
             del kwargs['type']
         super(SFFExternalReference, self).__init__(*args, **kwargs)
 
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        attrs = ['type', 'other_type', 'value', 'label', 'description']
+        return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
+
 
 class SFFExternalReferences(SFFListType):
     """Container for external references"""
     gds_type = sff.externalReferencesType
-    repr_string = "External references list with {} reference(s)"
-    repr_args = ('len()',)
+    repr_string = "SFFExternalReferences({})"
+    repr_args = ('list()',)
     iter_attr = ('ref', SFFExternalReference)
     iter_dict = _dict()
 
-    # methods
-    def add_external_reference(self, e_r):
-        """Add the specified external reference object to this container
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        return all(list(map(lambda v: v[0] == v[1], zip(self, other))))
 
-        :param e_r: an external reference object
-        :type e_r: :py:class:`SFFExternalReference`
-        """
-        if isinstance(e_r, SFFExternalReference):
-            self._local.add_ref(e_r._local)
-        else:
-            raise SFFTypeError(e_r, SFFExternalReference)
-
-    def insert_external_reference(self, e_r, index):
-        """Insert the specified external reference object at the specified index
-
-        :param e_r: an external reference object
-        :type e_r: :py:class:`SFFExternalReference`
-        :param int index: the index to insert to; bumps all other external references down the list
-        """
-        # todo: catch IndexError
-        if isinstance(e_r, SFFExternalReference) and isinstance(index, int):
-            self._local.insert_ref_at(index, e_r._local)
-        else:
-            if not isinstance(e_r, SFFExternalReference):
-                raise SFFTypeError(e_r, SFFExternalReference)
-            elif not isinstance(index, int):
-                raise SFFTypeError(index, int)
-
-    def replace_external_reference(self, e_r, index):
-        """Replace the external reference at ``index`` with the specified external reference
-
-        :param e_r: an external reference object
-        :type e_r: :py:class:`SFFExternalReference`
-        :param int index: the index to replace at
-        """
-        if isinstance(e_r, SFFExternalReference) and isinstance(index, int):
-            self._local.replace_ref_at(index, e_r._local)
-        else:
-            if not isinstance(e_r, SFFExternalReference):
-                raise SFFTypeError(e_r, SFFExternalReference)
-            elif not isinstance(index, int):
-                raise SFFTypeError(index, int)
+    # # methods
+    # def add_external_reference(self, e_r):
+    #     """Add the specified external reference object to this container
+    #
+    #     :param e_r: an external reference object
+    #     :type e_r: :py:class:`SFFExternalReference`
+    #     """
+    #     if isinstance(e_r, SFFExternalReference):
+    #         self._local.add_ref(e_r._local)
+    #     else:
+    #         raise SFFTypeError(e_r, SFFExternalReference)
+    #
+    # def insert_external_reference(self, e_r, index):
+    #     """Insert the specified external reference object at the specified index
+    #
+    #     :param e_r: an external reference object
+    #     :type e_r: :py:class:`SFFExternalReference`
+    #     :param int index: the index to insert to; bumps all other external references down the list
+    #     """
+    #     # todo: catch IndexError
+    #     if isinstance(e_r, SFFExternalReference) and isinstance(index, int):
+    #         self._local.insert_ref_at(index, e_r._local)
+    #     else:
+    #         if not isinstance(e_r, SFFExternalReference):
+    #             raise SFFTypeError(e_r, SFFExternalReference)
+    #         elif not isinstance(index, int):
+    #             raise SFFTypeError(index, int)
+    #
+    # def replace_external_reference(self, e_r, index):
+    #     """Replace the external reference at ``index`` with the specified external reference
+    #
+    #     :param e_r: an external reference object
+    #     :type e_r: :py:class:`SFFExternalReference`
+    #     :param int index: the index to replace at
+    #     """
+    #     if isinstance(e_r, SFFExternalReference) and isinstance(index, int):
+    #         self._local.replace_ref_at(index, e_r._local)
+    #     else:
+    #         if not isinstance(e_r, SFFExternalReference):
+    #             raise SFFTypeError(e_r, SFFExternalReference)
+    #         elif not isinstance(index, int):
+    #             raise SFFTypeError(index, int)
 
 
 class SFFBiologicalAnnotation(SFFType):
     """Biological annotation"""
     gds_type = sff.biologicalAnnotationType
-    repr_string = """SFFBiologicalAnnotation(
-    \r\t\tname={}, 
-    \r\t\tdescription={}
-    \r\t)"""
-    # repr_args = ('num_external_references',)
-    repr_args = ('name', 'description')
+    repr_string = """SFFBiologicalAnnotation(name={}, description={}, numberOfInstances={}, externalReferences={})"""
+    repr_args = ('name', 'description', 'number_of_instances', 'external_references')
 
     # attributes
     name = SFFAttribute('name', help="the name of this segment")
@@ -362,6 +373,14 @@ class SFFBiologicalAnnotation(SFFType):
     else:
         def __nonzero__(self):
             return self._boolean_test()
+
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        attrs = ['name', 'description', 'external_references', 'number_of_instances']
+        return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
 
     @property
     def num_external_references(self):
@@ -439,12 +458,21 @@ class SFFBiologicalAnnotation(SFFType):
 class SFFThreeDVolume(SFFType):
     """Class representing segments described using a 3D volume"""
     gds_type = sff.threeDVolumeType
-    repr_string = "3D formatted segment"
+    repr_string = "SFFThreeDVolume(latticeId={}, value={}, transformId={})"
+    repr_args = ('lattice_id', 'value', 'transform_id')
 
     # attributes
     lattice_id = SFFAttribute('latticeId', help="the ID of the lattice that has the data for this 3D volume")
     value = SFFAttribute('value', help="the voxel values associated with this 3D volume")
     transform_id = SFFAttribute('transformId', help="a transform applied to this 3D volume [optional]")
+
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        attrs = ['lattice_id', 'value', 'transform_id']
+        return all(list(map(getattr(self, a) == getattr(other, a), attrs)))
 
     def _boolean_test(self):
         if self.value is None:
@@ -522,6 +550,8 @@ class SFFVolumeStructure(SFFVolume):
 
 
 class SFFVolumeIndex(SFFVolume):
+    """Class representing volume indices"""
+    # todo: implement an iterator to increment indices correctly
     gds_type = sff.volumeIndexType
     repr_string = "SFFVolumeIndex(cols={}, rows={}, sections={})"
     repr_args = ('cols', 'rows', 'sections')
@@ -530,8 +560,8 @@ class SFFVolumeIndex(SFFVolume):
 class SFFLattice(SFFIndexType):
     """Class representing 3D """
     gds_type = sff.latticeType
-    repr_string = "SFFLattice(mode={}, endianness={}, size={}, start={}, data=<bytes>)"
-    repr_args = ('mode', 'endianness', 'size', 'start')
+    repr_string = "SFFLattice(mode={}, endianness={}, size={}, start={}, data={})"
+    repr_args = ('mode', 'endianness', 'size', 'start', 'data[:100]')
     lattice_id = 0
 
     index_attr = 'lattice_id'
@@ -597,6 +627,15 @@ class SFFLattice(SFFIndexType):
 
     @property
     def data_array(self):
+        if not hasattr(self, '_data'):
+            # make numpy from bytes
+            self._data = SFFLattice._decode(
+                self.data,
+                size=self.size,
+                mode=self.mode,
+                endiannes=self.endianness,
+                start=self.start
+            )
         return self._data
 
     @classmethod
@@ -664,7 +703,10 @@ class SFFLattice(SFFIndexType):
         binpack = zlib.decompress(binzip)
         del binzip
         _count = size.voxel_count
-        bindata = struct.unpack("{}{}{}".format(ENDIANNESS[endianness], _count, FORMAT_CHARS[mode]), binpack)
+        _len = len(binpack)
+        endianness_ = ENDIANNESS[endianness]
+        format_char = FORMAT_CHARS[mode]
+        bindata = struct.unpack("{}{}{}".format(endianness_, _count, format_char), binpack)
         del binpack
         data = numpy.array(bindata).reshape(*size.value[::-1])
         del bindata
@@ -918,8 +960,8 @@ class SFFShapePrimitiveList(SFFListType):
 class SFFVertex(SFFIndexType):
     """Single vertex"""
     gds_type = sff.vertexType
-    repr_string = "{} vertex {}: ({}, {}, {})"
-    repr_args = ('designation', 'vID', 'x', 'y', 'z')
+    repr_string = "SFFVertex(vID={}, designation={}, x={}, y={}, z={})"
+    repr_args = ('id', 'designation', 'x', 'y', 'z')
     vertex_id = 0
     index_attr = 'vertex_id'
 
@@ -946,56 +988,77 @@ class SFFVertex(SFFIndexType):
         else:
             raise SFFTypeError(p, tuple)
 
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        attrs = ['x', 'y', 'z']
+        return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
 
-class SFFPolygon(SFFIndexType):
+class SFFPolygon(SFFListType, SFFIndexType):
     """Single polygon"""
     gds_type = sff.polygonType
-    repr_string = "Polygon {}"
-    repr_args = ('PID',)
+    repr_string = "SFFPolygon(PID={}, v={})"
+    repr_args = ('id', 'vertices')
     iter_attr = ('v', int)
     polygon_id = 0
-    iter_dict = _dict()
     index_attr = 'polygon_id'
 
     # attributes
     # fixme: rename `PID` to `id` for simplicity in schema
     id = SFFAttribute('PID', help="the ID for this polygon")
+    vertices = SFFAttribute('v', help="the list of vertices")
+
+    # @property
+    # def vertex_ids(self):
+    #     """An iterable of vertex IDs of this polygon"""
+    #     return [v for v in self]
 
     @property
     def vertex_ids(self):
-        """An iterable of vertex IDs of this polygon"""
-        return [v for v in self]
+        return self.get_ids()
 
-    def add_vertex(self, v):
-        """Add the vertex ID to this polygon
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        return self.vertices == other.vertices
 
-        :param int v: a vertex ID
-        """
-        if isinstance(v, int):
-            self._local.add_v(v)
-        else:
-            raise SFFTypeError(v, int)
+    # def add_vertex(self, v):
+    #     """Add the vertex ID to this polygon
+    #
+    #     :param int v: a vertex ID
+    #     """
+    #     if isinstance(v, int):
+    #         self._local.add_v(v)
+    #     else:
+    #         raise SFFTypeError(v, int)
 
 
 class SFFVertexList(SFFListType):
     """List of vertices"""
     gds_type = sff.vertexListType
+    repr_string = "SFFVertexList({})"
+    repr_args = ('list()', )
     iter_attr = ('v', SFFVertex)
 
     def __init__(self, *args, **kwargs):
         super(SFFVertexList, self).__init__(*args, **kwargs)
         self._vertex_dict = {v.vID: v for v in map(SFFVertex.from_gds_type, self._local.v)}
 
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        return all(list(map(lambda v: v[0] == v[1], zip(self, other))))
+
     @property
     def num_vertices(self):
         """The number of vertices in this vertex container"""
         return len(self)
-
-    def __str__(self):
-        return "Vertex dict with {} vertices".format(len(self))
-
-    def __len__(self):
-        return len(self._local.v)
 
     # fixme: should use __iter__ in `SFFListType` parent class
     # def __iter__(self):
@@ -1045,13 +1108,20 @@ class SFFVertexList(SFFListType):
 class SFFPolygonList(SFFListType):
     """List of polygons"""
     gds_type = sff.polygonListType
-    repr_string = "Polygon list with {} polygons"
-    repr_args = ('len()',)
+    repr_string = "SFFPolygonList({})"
+    repr_args = ('list()',)
     iter_attr = ('P', SFFPolygon)
 
     def __init__(self, *args, **kwargs):
         super(SFFPolygonList, self).__init__(*args, **kwargs)
         self._polygon_dict = {P.PID: P for P in list(map(SFFPolygon, self._local.P))}
+
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        return all(list(map(lambda v: v[0] == v[1], zip(self, other))))
 
     @property
     def num_polygons(self):
@@ -1099,7 +1169,7 @@ class SFFPolygonList(SFFListType):
 class SFFMesh(SFFIndexType):
     """Single mesh"""
     gds_type = sff.meshType
-    repr_string = "Mesh {} with {} and {}"
+    repr_string = "SFFMesh(id={}, vertexList={}, polygonList={})"
     repr_args = ('id', 'vertices', 'polygons')
     mesh_id = 0
     index_attr = 'mesh_id'
@@ -1121,6 +1191,14 @@ class SFFMesh(SFFIndexType):
     def num_polygons(self):
         """The number of polygons in this mesh"""
         return len(self.polygons)
+
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        attrs = ['vertices', 'polygons', 'transform_id']
+        return all(list(map(getattr(self, a) == getattr(other, a), attrs)))
 
     @classmethod
     def from_hff(cls, hff_data):
@@ -1213,12 +1291,7 @@ class SFFMeshList(SFFListType):
 class SFFSegment(SFFIndexType):
     """Class that encapsulates segment data"""
     gds_type = sff.segmentType
-    repr_string = """SFFSegment(
-    \r\tid={}, parentID={}, 
-    \r\tbiologicalAnnotation={},
-    \r\tcolour={}
-    \r)
-    """
+    repr_string = """SFFSegment(id={}, parentID={}, biologicalAnnotation={}, colour={})"""
     repr_args = ('id', 'parentID', 'biological_annotation', 'colour')
     segment_id = 1
     segment_parentID = 0
@@ -1504,7 +1577,7 @@ class SFFTransformationMatrix(SFFIndexType):
     def data_array(self):
         if not hasattr(self, '_data'):
             # make numpy array from string
-            self._data = self._data = numpy.array(list(map(float, self.data.split(' ')))).reshape(
+            self._data = numpy.array(list(map(float, self.data.split(' ')))).reshape(
                 self.rows,
                 self.cols
             )

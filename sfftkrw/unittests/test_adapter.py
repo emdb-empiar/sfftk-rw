@@ -1041,53 +1041,352 @@ class TestSFFComplexesAndMacromolecules(Py23FixTestCase):
         print(C, file=sys.stderr)
 
 
-#
-# class TestSFFExternalReference(Py23FixTestCase):
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFExternalReferences(Py23FixTestCase):
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFBiologicalAnnotation(Py23FixTestCase):
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFThreeDVolume(Py23FixTestCase):
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFVolume(Py23FixTestCase):
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-class TestSFFVolumeStructure(Py23FixTestCase):
+class TestSFFExternalReference(Py23FixTestCase):
+    def setUp(self):
+        self.i = _random_integer()
+        self.t = rw.random_word()
+        self.o = rw.random_word()
+        self.v = rw.random_word()
+        self.l = " ".join(rw.random_words(count=3))
+        self.d = li.get_sentence()
+
     def test_default(self):
         """Test default settings"""
-        vs = adapter.SFFVolumeStructure(cols=10, rows=20, sections=30)
+        e = adapter.SFFExternalReference(
+            type=self.t,
+            otherType=self.o,
+            value=self.v,
+            label=self.l,
+            description=self.d
+        )
+        self.assertEqual(e.id, 0)
+        self.assertEqual(e.type, self.t)
+        self.assertEqual(e.other_type, self.o)
+        self.assertEqual(e.value, self.v)
+        self.assertEqual(e.label, self.l)
+        self.assertEqual(e.description, self.d)
+        self.assertEqual(
+            _str(e),
+            """SFFExternalReference(type="{}", otherType="{}", value="{}", label="{}", description="{}")""".format(
+                self.t, self.o, self.v, self.l, self.d
+            )
+        )
+
+    def test_from_gds_type(self):
+        """Test that we can instantiate from gds_type"""
+        _e = emdb_sff.externalReferenceType(
+            id=self.i,
+            type_=self.t,
+            otherType=self.o,
+            value=self.v,
+            label=self.l,
+            description=self.d,
+        )
+        e = adapter.SFFExternalReference.from_gds_type(_e)
+        self.assertEqual(e.id, self.i)
+        self.assertEqual(e.type, self.t)
+        self.assertEqual(e.other_type, self.o)
+        self.assertEqual(e.value, self.v)
+        self.assertEqual(e.label, self.l)
+        self.assertEqual(e.description, self.d)
+        self.assertEqual(
+            _str(e),
+            """SFFExternalReference(type="{}", otherType="{}", value="{}", label="{}", description="{}")""".format(
+                self.t, self.o, self.v, self.l, self.d
+            )
+        )
+
+
+class TestSFFExternalReferences(Py23FixTestCase):
+    def setUp(self):
+        self._no_items = _random_integer(start=2, stop=10)
+        self.ii = list(_xrange(self._no_items))
+        self.tt = [rw.random_word() for _ in _xrange(self._no_items)]
+        self.oo = [rw.random_word() for _ in _xrange(self._no_items)]
+        self.vv = [rw.random_word() for _ in _xrange(self._no_items)]
+        self.ll = [" ".join(rw.random_words(count=3)) for _ in _xrange(self._no_items)]
+        self.dd = [li.get_sentence() for _ in _xrange(self._no_items)]
+
+    def tearDown(self):
+        adapter.SFFExternalReference.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        ee = [adapter.SFFExternalReference(
+            type=self.tt[i],
+            otherType=self.oo[i],
+            value=self.vv[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        E = adapter.SFFExternalReferences()
+        [E.append(e) for e in ee]
+        # str
+        self.assertRegex(
+            _str(E),
+            r"""SFFExternalReferences\(\[.*\]\)"""
+        )
+        # length
+        self.assertEqual(len(E), self._no_items)
+        # get
+        e = E[self._no_items - 1]
+        self.assertIsInstance(e, adapter.SFFExternalReference)
+        self.assertEqual(e.id, self._no_items - 1)
+        self.assertEqual(e.type, self.tt[self._no_items - 1])
+        self.assertEqual(e.other_type, self.oo[self._no_items - 1])
+        self.assertEqual(e.value, self.vv[self._no_items - 1])
+        self.assertEqual(e.label, self.ll[self._no_items - 1])
+        self.assertEqual(e.description, self.dd[self._no_items - 1])
+        # get_ids
+        e_ids = E.get_ids()
+        self.assertEqual(len(e_ids), self._no_items)
+        # get_by_ids
+        e_id = random.choice(list(e_ids))
+        e = E.get_by_id(e_id)
+        self.assertIsInstance(e, adapter.SFFExternalReference)
+        self.assertEqual(e.id, e_id)
+        self.assertEqual(e.type, self.tt[e_id])
+        self.assertEqual(e.other_type, self.oo[e_id])
+        self.assertEqual(e.value, self.vv[e_id])
+        self.assertEqual(e.label, self.ll[e_id])
+        self.assertEqual(e.description, self.dd[e_id])
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _ee = [emdb_sff.externalReferenceType(
+            id=self.ii[i],
+            type_=self.tt[i],
+            otherType=self.oo[i],
+            value=self.vv[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        _E = emdb_sff.externalReferencesType()
+        _E.set_ref(_ee)
+        E = adapter.SFFExternalReferences.from_gds_type(_E)
+        # str
+        self.assertRegex(
+            _str(E),
+            r"""SFFExternalReferences\(\[.*\]\)"""
+        )
+        # length
+        self.assertEqual(len(E), self._no_items)
+        # get
+        e = E[self._no_items - 1]
+        self.assertIsInstance(e, adapter.SFFExternalReference)
+        self.assertEqual(e.id, self._no_items - 1)
+        self.assertEqual(e.type, self.tt[self._no_items - 1])
+        self.assertEqual(e.other_type, self.oo[self._no_items - 1])
+        self.assertEqual(e.value, self.vv[self._no_items - 1])
+        self.assertEqual(e.label, self.ll[self._no_items - 1])
+        self.assertEqual(e.description, self.dd[self._no_items - 1])
+        # get_ids
+        e_ids = E.get_ids()
+        self.assertEqual(len(e_ids), self._no_items)
+        # get_by_ids
+        e_id = random.choice(list(e_ids))
+        e = E.get_by_id(e_id)
+        self.assertIsInstance(e, adapter.SFFExternalReference)
+        self.assertEqual(e.id, e_id)
+        self.assertEqual(e.type, self.tt[e_id])
+        self.assertEqual(e.other_type, self.oo[e_id])
+        self.assertEqual(e.value, self.vv[e_id])
+        self.assertEqual(e.label, self.ll[e_id])
+        self.assertEqual(e.description, self.dd[e_id])
+
+
+class TestSFFBiologicalAnnotation(Py23FixTestCase):
+    def setUp(self):
+        self.name = " ".join(rw.random_words(count=3))
+        self.description = li.get_sentence()
+        self._no_items = _random_integer(start=2, stop=10)
+        self.ii = list(_xrange(self._no_items))
+        self.tt = [rw.random_word() for _ in _xrange(self._no_items)]
+        self.oo = [rw.random_word() for _ in _xrange(self._no_items)]
+        self.vv = [rw.random_word() for _ in _xrange(self._no_items)]
+        self.ll = [" ".join(rw.random_words(count=3)) for _ in _xrange(self._no_items)]
+        self.dd = [li.get_sentence() for _ in _xrange(self._no_items)]
+        self.ee = [adapter.SFFExternalReference(
+            type=self.tt[i],
+            otherType=self.oo[i],
+            value=self.vv[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        self._ee = [emdb_sff.externalReferenceType(
+            type_=self.tt[i],
+            otherType=self.oo[i],
+            value=self.vv[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        E = adapter.SFFExternalReferences()
+        [E.append(e) for e in self.ee]
+        _E = emdb_sff.externalReferencesType()
+        _E.set_ref(self._ee)
+        self.external_references = E
+        self._external_references = _E
+        self.no = _random_integer()
+
+    def test_default(self):
+        """Test default settings"""
+        b = adapter.SFFBiologicalAnnotation(
+            name=self.name,
+            description=self.description,
+            externalReferences=self.external_references,
+            numberOfInstances=self.no,
+        )
+        print(b, file=sys.stderr)
+        self.assertRegex(
+            _str(b),
+            r"""SFFBiologicalAnnotation\(""" \
+            r"""name="{}", description="{}", """ \
+            r"""numberOfInstances={}, """ \
+            r"""externalReferences=SFFExternalReferences\(\[.*\]\)\)""".format(
+                self.name,
+                self.description,
+                self.no
+            )
+        )
+        self.assertEqual(b.name, self.name)
+        self.assertEqual(b.description, self.description)
+        self.assertEqual(b.number_of_instances, self.no)
+        self.assertEqual(b.external_references, self.external_references)
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from a gds_type"""
+        _b = emdb_sff.biologicalAnnotationType(
+            name=self.name,
+            description=self.description,
+            numberOfInstances=self.no,
+            externalReferences=self._external_references
+        )
+        b = adapter.SFFBiologicalAnnotation.from_gds_type(_b)
+        self.assertRegex(
+            _str(b),
+            r"""SFFBiologicalAnnotation\(""" \
+            r"""name="{}", description="{}", """ \
+            r"""numberOfInstances={}, """ \
+            r"""externalReferences=SFFExternalReferences\(\[.*\]\)\)""".format(
+                self.name,
+                self.description,
+                self.no
+            )
+        )
+        self.assertEqual(b.name, self.name)
+        self.assertEqual(b.description, self.description)
+        self.assertEqual(b.number_of_instances, self.no)
+        self.assertEqual(b.external_references, self.external_references)
+
+
+class TestSFFThreeDVolume(Py23FixTestCase):
+    def setUp(self):
+        self.lattice_id = _random_integer()
+        self.value = _random_integer()
+        self.transform_id = _random_integer()
+
+    def test_default(self):
+        """Test default settings"""
+        v = adapter.SFFThreeDVolume(
+            latticeId=self.lattice_id,
+            value=self.value,
+            transformId=self.transform_id,
+        )
+        self.assertEqual(
+            _str(v),
+            """SFFThreeDVolume(latticeId={}, value={}, transformId={})""".format(
+                self.lattice_id,
+                self.value,
+                self.transform_id
+            )
+        )
+        self.assertEqual(v.lattice_id, self.lattice_id)
+        self.assertEqual(v.value, self.value)
+        self.assertEqual(v.transform_id, self.transform_id)
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from a gds_type"""
+        _v = emdb_sff.threeDVolumeType(
+            latticeId=self.lattice_id,
+            value=self.value,
+            transformId=self.transform_id
+        )
+        v = adapter.SFFThreeDVolume.from_gds_type(_v)
+        self.assertEqual(
+            _str(v),
+            """SFFThreeDVolume(latticeId={}, value={}, transformId={})""".format(
+                self.lattice_id,
+                self.value,
+                self.transform_id
+            )
+        )
+        self.assertEqual(v.lattice_id, self.lattice_id)
+        self.assertEqual(v.value, self.value)
+        self.assertEqual(v.transform_id, self.transform_id)
+
+
+class TestSFFVolumeStructure(Py23FixTestCase):
+    def setUp(self):
+        self.cols = _random_integer()
+        self.rows = _random_integer()
+        self.sections = _random_integer()
+
+    def test_default(self):
+        """Test default settings"""
+        vs = adapter.SFFVolumeStructure(cols=self.cols, rows=self.rows, sections=self.sections)
         self.assertRegex(_str(vs), r"SFFVolumeStructure\(cols.*rows.*sections.*\)")
-        self.assertEqual(vs.cols, 10)
-        self.assertEqual(vs.rows, 20)
-        self.assertEqual(vs.sections, 30)
-        self.assertEqual(vs.voxel_count, 10 * 20 * 30)
+        self.assertEqual(vs.cols, self.cols)
+        self.assertEqual(vs.rows, self.rows)
+        self.assertEqual(vs.sections, self.sections)
+        self.assertEqual(vs.voxel_count, self.cols * self.rows * self.sections)
+
+    def test_get_set_value(self):
+        """Test the .value attribute"""
+        vs = adapter.SFFVolumeStructure(cols=self.cols, rows=self.rows, sections=self.sections)
+        self.assertEqual(vs.cols, self.cols)
+        self.assertEqual(vs.rows, self.rows)
+        self.assertEqual(vs.sections, self.sections)
+        self.assertEqual(vs.value, (self.cols, self.rows, self.sections))
+        _c, _r, _s = _random_integer(), _random_integer(), _random_integer()
+        vs.value = _c, _r, _s
+        self.assertEqual(vs.value, (_c, _r, _s))
+        self.assertEqual(vs.cols, _c)
+        self.assertEqual(vs.rows, _r)
+        self.assertEqual(vs.sections, _s)
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from a gds_type"""
+        _vs = emdb_sff.volumeStructureType(cols=self.cols, rows=self.rows, sections=self.sections)
+        vs = adapter.SFFVolumeStructure.from_gds_type(_vs)
+        self.assertRegex(_str(vs), r"SFFVolumeStructure\(cols.*rows.*sections.*\)")
+        self.assertEqual(vs.cols, self.cols)
+        self.assertEqual(vs.rows, self.rows)
+        self.assertEqual(vs.sections, self.sections)
+        self.assertEqual(vs.voxel_count, self.cols * self.rows * self.sections)
 
 
-#
-# class TestSFFVolumeIndex(Py23FixTestCase):
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
+class TestSFFVolumeIndex(Py23FixTestCase):
+    def setUp(self):
+        self.cols = _random_integer()
+        self.rows = _random_integer()
+        self.sections = _random_integer()
+
+    def test_default(self):
+        """Test default settings"""
+        vi = adapter.SFFVolumeIndex(cols=self.cols, rows=self.rows, sections=self.sections)
+        self.assertRegex(_str(vi), r"SFFVolumeIndex\(cols.*rows.*sections.*\)")
+        self.assertEqual(vi.cols, self.cols)
+        self.assertEqual(vi.rows, self.rows)
+        self.assertEqual(vi.sections, self.sections)
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from a gds_type"""
+        _vi = emdb_sff.volumeIndexType(cols=self.cols, rows=self.rows, sections=self.sections)
+        vi = adapter.SFFVolumeIndex.from_gds_type(_vi)
+        self.assertRegex(_str(vi), r"SFFVolumeIndex\(cols.*rows.*sections.*\)")
+        self.assertEqual(vi.cols, self.cols)
+        self.assertEqual(vi.rows, self.rows)
+        self.assertEqual(vi.sections, self.sections)
 
 
 class TestSFFLattice(Py23FixTestCase):
@@ -1124,11 +1423,12 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
         self.assertEqual(
             _str(l),
-            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data={})""".format(
                 self.l_mode,
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
+                l.data[:100] + b"..."
             )
         )
 
@@ -1151,11 +1451,12 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
         self.assertEqual(
             _str(l),
-            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data={})""".format(
                 self.l_mode,
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
+                l.data[:100] + b"..."
             )
         )
 
@@ -1178,11 +1479,12 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
         self.assertEqual(
             _str(l),
-            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data={})""".format(
                 self.l_mode,
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
+                l.data[:100] + b"..."
             )
         )
 
@@ -1205,11 +1507,12 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
         self.assertEqual(
             _str(l),
-            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data={})""".format(
                 self.l_mode,
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
+                l.data[:100] + b"..."
             )
         )
 
@@ -1232,11 +1535,12 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
         self.assertEqual(
             _str(l),
-            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data=<bytes>)""".format(
+            """SFFLattice(mode="{}", endianness="{}", size={}, start={}, data={})""".format(
                 self.l_mode,
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
+                l.data[:100] + b"..."
             )
         )
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
@@ -1248,14 +1552,98 @@ class TestSFFLattice(Py23FixTestCase):
                 start=self.l_start,
             )
 
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        r, c, s = _random_integer(start=3, stop=10), _random_integer(start=3, stop=10), _random_integer(start=3,
+                                                                                                        stop=10)
+        _data = numpy.random.randint(low=0, high=100, size=(r, c, s))
+        mode_ = 'uint8'
+        _bytes = adapter.SFFLattice._encode(_data, endianness='big', mode=mode_)
+        _l = emdb_sff.latticeType(
+            mode=mode_,
+            endianness='big',
+            size=emdb_sff.volumeStructureType(cols=c, rows=r, sections=s),
+            start=emdb_sff.volumeIndexType(cols=0, rows=0, sections=0),
+            data=_bytes
+        )
+        l = adapter.SFFLattice.from_gds_type(_l)
+        self.assertTrue(hasattr(l, 'data_array'))
 
-# class TestSFFMesh(Py23FixTestCase):
-#     """Test the SFFMesh class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
+
+class TestSFFMesh(Py23FixTestCase):
+    """Test the SFFMesh class"""
+
+    def setUp(self):
+        self._no_vertices = _random_integer(start=2, stop=20)
+        self._no_polygons = _random_integer(start=2, stop=20)
+        self._vertices = emdb_sff.vertexListType()
+        self._vertices.set_v([
+            emdb_sff.vertexType(
+                vID=i,
+                x=_random_float(10),
+                y=_random_float(10),
+                z=_random_float(10),
+            ) for i in _xrange(self._no_vertices)
+        ])
+        self.vertices = adapter.SFFVertexList.from_gds_type(self._vertices)
+        # self.vertices = adapter.SFFVertexList()
+        # [self.vertices.append(
+        #     adapter.SFFVertex(
+        #         x=_random_float(10),
+        #         y=_random_float(10),
+        #         z=_random_float(10),
+        #     )
+        # ) for _ in _xrange(self._no_vertices)]
+        self._polygons = emdb_sff.polygonListType()
+        self._polygons.set_P([
+            emdb_sff.polygonType(
+                PID=i,
+                v=[
+                    _random_integer(start=2, stop=20),
+                    _random_integer(start=2, stop=20),
+                    _random_integer(start=2, stop=20),
+                ]
+            ) for i in _xrange(self._no_polygons)])
+        # self.polygons = adapter.SFFPolygonList()
+        # [self.polygons.append(
+        #     adapter.SFFPolygon(
+        #         v=[
+        #             _random_integer(start=2, stop=20),
+        #             _random_integer(start=2, stop=20),
+        #             _random_integer(start=2, stop=20),
+        #         ]
+        #     )
+        #
+        # ) for _ in _xrange(self._no_polygons)]
+        self.polygons = adapter.SFFPolygonList.from_gds_type(self._polygons)
+
+    def tearDown(self):
+        adapter.SFFMesh.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        m = adapter.SFFMesh(vertexList=self.vertices, polygonList=self.polygons)
+        self.assertRegex(
+            _str(m),
+            r"""SFFMesh\(id=\d+, vertexList=SFFVertexList\(\[.*\]\), polygonList=SFFPolygonList\(\[.*\]\)\)"""
+        )
+        self.assertEqual(m.id, 0)
+        self.assertEqual(m.vertices, self.vertices)
+        self.assertEqual(m.polygons, self.polygons)
+
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        _m = emdb_sff.meshType(vertexList=self._vertices, polygonList=self._polygons)
+        m = adapter.SFFMesh.from_gds_type(_m)
+        print(m, file=sys.stderr)
+        self.assertRegex(
+            _str(m),
+            r"""SFFMesh\(id=\d+, vertexList=SFFVertexList\(\[.*\]\), polygonList=SFFPolygonList\(\[.*\]\)\)"""
+        )
+        self.assertEqual(m.vertices, self.vertices)
+        self.assertEqual(m.polygons, self.polygons)
+
+
 #
 # class TestSFFMeshList(Py23FixTestCase):
 #     """Test the SFFMeshList class"""
