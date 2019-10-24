@@ -227,9 +227,6 @@ class SFFType(object):
     - `list()` fills the `{}` with a list of contained objects. 
     """
 
-    # iter_attr = ()
-    # iter_dict = None  # previously was _dict()
-
     def __init__(self, *args, **kwargs):
         """Base initialiser
 

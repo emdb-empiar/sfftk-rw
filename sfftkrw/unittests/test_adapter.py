@@ -8,6 +8,7 @@ from __future__ import print_function
 import json
 import os
 import random
+import re
 import sys
 import tempfile
 import unittest
@@ -573,9 +574,9 @@ class TestSFFSegmentation(Py23FixTestCase):
         no_polygons1 = _random_integer(stop=100)
         for i in _xrange(no_polygons1):
             polygon = adapter.SFFPolygon()
-            polygon.add_vertex(random.choice(range(_random_integer())))
-            polygon.add_vertex(random.choice(range(_random_integer())))
-            polygon.add_vertex(random.choice(range(_random_integer())))
+            polygon.append(random.choice(range(_random_integer())))
+            polygon.append(random.choice(range(_random_integer())))
+            polygon.append(random.choice(range(_random_integer())))
             polygons1.append(polygon)
         mesh.vertices = vertices1
         mesh.polygons = polygons1
@@ -590,9 +591,9 @@ class TestSFFSegmentation(Py23FixTestCase):
         no_polygons2 = _random_integer(stop=100)
         for i in _xrange(no_polygons2):
             polygon = adapter.SFFPolygon()
-            polygon.add_vertex(random.choice(range(_random_integer())))
-            polygon.add_vertex(random.choice(range(_random_integer())))
-            polygon.add_vertex(random.choice(range(_random_integer())))
+            polygon.append(random.choice(range(_random_integer())))
+            polygon.append(random.choice(range(_random_integer())))
+            polygon.append(random.choice(range(_random_integer())))
             polygons2.append(polygon)
         mesh2.vertices = vertices2
         mesh2.polygons = polygons2
@@ -621,9 +622,9 @@ class TestSFFSegmentation(Py23FixTestCase):
         no_polygons3 = _random_integer(stop=100)
         for i in _xrange(no_polygons3):
             polygon = adapter.SFFPolygon()
-            polygon.add_vertex(random.choice(range(_random_integer())))
-            polygon.add_vertex(random.choice(range(_random_integer())))
-            polygon.add_vertex(random.choice(range(_random_integer())))
+            polygon.append(random.choice(range(_random_integer())))
+            polygon.append(random.choice(range(_random_integer())))
+            polygon.append(random.choice(range(_random_integer())))
             polygons3.append(polygon)
         mesh.vertices = vertices3
         mesh.polygons = polygons3
@@ -1586,14 +1587,6 @@ class TestSFFMesh(Py23FixTestCase):
             ) for i in _xrange(self._no_vertices)
         ])
         self.vertices = adapter.SFFVertexList.from_gds_type(self._vertices)
-        # self.vertices = adapter.SFFVertexList()
-        # [self.vertices.append(
-        #     adapter.SFFVertex(
-        #         x=_random_float(10),
-        #         y=_random_float(10),
-        #         z=_random_float(10),
-        #     )
-        # ) for _ in _xrange(self._no_vertices)]
         self._polygons = emdb_sff.polygonListType()
         self._polygons.set_P([
             emdb_sff.polygonType(
@@ -1604,17 +1597,6 @@ class TestSFFMesh(Py23FixTestCase):
                     _random_integer(start=2, stop=20),
                 ]
             ) for i in _xrange(self._no_polygons)])
-        # self.polygons = adapter.SFFPolygonList()
-        # [self.polygons.append(
-        #     adapter.SFFPolygon(
-        #         v=[
-        #             _random_integer(start=2, stop=20),
-        #             _random_integer(start=2, stop=20),
-        #             _random_integer(start=2, stop=20),
-        #         ]
-        #     )
-        #
-        # ) for _ in _xrange(self._no_polygons)]
         self.polygons = adapter.SFFPolygonList.from_gds_type(self._polygons)
 
     def tearDown(self):
@@ -1625,7 +1607,7 @@ class TestSFFMesh(Py23FixTestCase):
         m = adapter.SFFMesh(vertexList=self.vertices, polygonList=self.polygons)
         self.assertRegex(
             _str(m),
-            r"""SFFMesh\(id=\d+, vertexList=SFFVertexList\(\[.*\]\), polygonList=SFFPolygonList\(\[.*\]\)\)"""
+            r"""SFFMesh\(id=(\d+|None), vertexList=SFFVertexList\(\[.*\]\), polygonList=SFFPolygonList\(\[.*\]\)\)"""
         )
         self.assertEqual(m.id, 0)
         self.assertEqual(m.vertices, self.vertices)
@@ -1635,80 +1617,541 @@ class TestSFFMesh(Py23FixTestCase):
         """Test that all attributes exists when we start with a gds_type"""
         _m = emdb_sff.meshType(vertexList=self._vertices, polygonList=self._polygons)
         m = adapter.SFFMesh.from_gds_type(_m)
-        print(m, file=sys.stderr)
         self.assertRegex(
             _str(m),
-            r"""SFFMesh\(id=\d+, vertexList=SFFVertexList\(\[.*\]\), polygonList=SFFPolygonList\(\[.*\]\)\)"""
+            r"""SFFMesh\(id=(\d+|None), vertexList=SFFVertexList\(\[.*\]\), polygonList=SFFPolygonList\(\[.*\]\)\)"""
         )
+        self.assertIsNone(m.id)
         self.assertEqual(m.vertices, self.vertices)
         self.assertEqual(m.polygons, self.polygons)
 
 
-#
-# class TestSFFMeshList(Py23FixTestCase):
-#     """Test the SFFMeshList class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFBoundingBox(Py23FixTestCase):
-#     """Test the SFFBoundingBox class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFCone(Py23FixTestCase):
-#     """Test the SFFCone class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFCuboid(Py23FixTestCase):
-#     """Test the SFFCuboid class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFCylinder(Py23FixTestCase):
-#     """Test the SFFCylinder class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFEllipsoid(Py23FixTestCase):
-#     """Test the SFFEllipsoid class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFGlobalExternalReferences(Py23FixTestCase):
-#     """Test the SFFGlobalExternalReferences class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFLatticeList(Py23FixTestCase):
-#     """Test the SFFLatticeList class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
+class TestSFFMeshList(Py23FixTestCase):
+    """Test the SFFMeshList class"""
+
+    @staticmethod
+    def generate_sff_data(no_verts=_random_integer(start=2, stop=20), no_polys=_random_integer(start=2, stop=20)):
+        vertices = adapter.SFFVertexList()
+        [vertices.append(
+            adapter.SFFVertex(
+                x=_random_float(10),
+                y=_random_float(10),
+                z=_random_float(10),
+            )
+        ) for _ in _xrange(no_verts)]
+        polygons = adapter.SFFPolygonList()
+        [polygons.append(
+            adapter.SFFPolygon(
+                v=[
+                    _random_integer(start=2, stop=20),
+                    _random_integer(start=2, stop=20),
+                    _random_integer(start=2, stop=20)
+                ]
+            )
+        ) for _ in _xrange(no_polys)]
+        return vertices, polygons
+
+    @staticmethod
+    def generate_gds_data(no_verts=_random_integer(start=2, stop=20), no_polys=_random_integer(start=2, stop=20)):
+        vertices = emdb_sff.vertexListType()
+        vertices.set_v([
+            emdb_sff.vertexType(
+                x=_random_float(10),
+                y=_random_float(10),
+                z=_random_float(10),
+            ) for _ in _xrange(no_verts)]
+        )
+        polygons = emdb_sff.polygonListType()
+        polygons.set_P([
+            emdb_sff.polygonType(
+                v=[
+                    _random_integer(start=2, stop=20),
+                    _random_integer(start=2, stop=20),
+                    _random_integer(start=2, stop=20)
+                ]
+            ) for _ in _xrange(no_polys)]
+        )
+        return vertices, polygons
+
+    def test_default(self):
+        """Test default settings"""
+        _no_items = _random_integer(start=2, stop=10)
+        M = adapter.SFFMeshList()
+        for _ in _xrange(_no_items):
+            vs, ps = TestSFFMeshList.generate_sff_data()
+            M.append(adapter.SFFMesh(vertexList=vs, polygonList=ps))
+        self.assertRegex(
+            _str(M),
+            r"""SFFMeshList\(\[.*\]\)"""
+        )
+        self.assertEqual(len(M), _no_items)
+        self.assertEqual(list(M.get_ids()), list(_xrange(_no_items)))
+        m_id = random.choice(list(M.get_ids()))
+        m = M.get_by_id(m_id)
+        self.assertIsInstance(m, adapter.SFFMesh)
+        self.assertEqual(m.id, m_id)
+        self.assertTrue(len(m.vertices) > 0)
+        self.assertTrue(len(m.polygons) > 0)
+
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        _no_items = _random_integer(start=2, stop=10)
+        _M = emdb_sff.meshListType()
+        for i in _xrange(_no_items):
+            vs, ps = TestSFFMeshList.generate_gds_data()
+            _M.add_mesh(emdb_sff.meshType(id=i, vertexList=vs, polygonList=ps))
+        M = adapter.SFFMeshList.from_gds_type(_M)
+        self.assertRegex(
+            _str(M),
+            r"""SFFMeshList\(\[.*\]\)"""
+        )
+        self.assertEqual(len(M), _no_items)
+        self.assertEqual(list(M.get_ids()), list(_xrange(_no_items)))
+        m_id = random.choice(list(M.get_ids()))
+        m = M.get_by_id(m_id)
+        self.assertIsInstance(m, adapter.SFFMesh)
+        self.assertEqual(m.id, m_id)
+        self.assertTrue(len(m.vertices) > 0)
+        self.assertTrue(len(m.polygons) > 0)
+
+
+class TestSFFBoundingBox(Py23FixTestCase):
+    """Test the SFFBoundingBox class"""
+
+    def test_default(self):
+        """Test default settings"""
+        B = adapter.SFFBoundingBox()
+        self.assertRegex(
+            _str(B),
+            r"""SFFBoundingBox\(xmin={}, xmax={}, ymin={}, ymax={}, zmin={}, zmax={}\)""".format(
+                B.xmin, B.xmax,
+                B.ymin, B.ymax,
+                B.zmin, B.zmax,
+            )
+        )
+        self.assertEqual(B.xmin, 0)
+        self.assertIsNone(B.xmax)
+        self.assertEqual(B.ymin, 0)
+        self.assertIsNone(B.ymax)
+        self.assertEqual(B.zmin, 0)
+        self.assertIsNone(B.zmax)
+        _xmin = _random_float(1)
+        _xmax = _random_float(1000)
+        _ymin = _random_float(1)
+        _ymax = _random_float(1000)
+        _zmin = _random_float(1)
+        _zmax = _random_float(1000)
+        B = adapter.SFFBoundingBox(
+            xmin=_xmin,
+            xmax=_xmax,
+            ymin=_ymin,
+            ymax=_ymax,
+            zmin=_zmin,
+            zmax=_zmax,
+        )
+        self.assertEqual(B.xmin, _xmin)
+        self.assertEqual(B.xmax, _xmax)
+        self.assertEqual(B.ymin, _ymin)
+        self.assertEqual(B.ymax, _ymax)
+        self.assertEqual(B.zmin, _zmin)
+        self.assertEqual(B.zmax, _zmax)
+
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        _B = emdb_sff.boundingBoxType()
+        B = adapter.SFFBoundingBox.from_gds_type(_B)
+        self.assertRegex(
+            _str(B),
+            r"""SFFBoundingBox\(xmin={}, xmax={}, ymin={}, ymax={}, zmin={}, zmax={}\)""".format(
+                B.xmin, B.xmax,
+                B.ymin, B.ymax,
+                B.zmin, B.zmax,
+            )
+        )
+        self.assertEqual(B.xmin, 0)
+        self.assertIsNone(B.xmax)
+        self.assertEqual(B.ymin, 0)
+        self.assertIsNone(B.ymax)
+        self.assertEqual(B.zmin, 0)
+        self.assertIsNone(B.zmax)
+        _xmin = _random_float(1)
+        _xmax = _random_float(1000)
+        _ymin = _random_float(1)
+        _ymax = _random_float(1000)
+        _zmin = _random_float(1)
+        _zmax = _random_float(1000)
+        _B = emdb_sff.boundingBoxType(
+            xmin=_xmin,
+            xmax=_xmax,
+            ymin=_ymin,
+            ymax=_ymax,
+            zmin=_zmin,
+            zmax=_zmax,
+        )
+        B = adapter.SFFBoundingBox.from_gds_type(_B)
+        self.assertEqual(B.xmin, _xmin)
+        self.assertEqual(B.xmax, _xmax)
+        self.assertEqual(B.ymin, _ymin)
+        self.assertEqual(B.ymax, _ymax)
+        self.assertEqual(B.zmin, _zmin)
+        self.assertEqual(B.zmax, _zmax)
+
+
+class TestSFFCone(Py23FixTestCase):
+    """Test the SFFCone class"""
+
+    def tearDown(self):
+        adapter.SFFShape.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        C = adapter.SFFCone()
+        self.assertRegex(
+            _str(C),
+            r"""SFFCone\(id={}, height={}, bottomRadius={}\)""".format(
+                0, None, None
+            )
+        )
+        _height, _bottom_radius = _random_float(10), _random_float(10)
+        C = adapter.SFFCone(
+            height=_height, bottomRadius=_bottom_radius
+        )
+        self.assertRegex(
+            _str(C),
+            r"""SFFCone\(id={}, height={}, bottomRadius={}\)""".format(
+                1, _height, _bottom_radius
+            )
+        )
+        self.assertEqual(C.id, 1)  # the second one we have created
+        self.assertEqual(C.height, _height)
+        self.assertEqual(C.bottom_radius, _bottom_radius)
+
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        _C = emdb_sff.cone()
+        C = adapter.SFFCone.from_gds_type(_C)
+        self.assertRegex(
+            _str(C),
+            r"""SFFCone\(id={}, height={}, bottomRadius={}\)""".format(
+                None, None, None
+            )
+        )
+        _height, _bottom_radius = _random_float(10), _random_float(10)
+        _C = emdb_sff.cone(
+            height=_height, bottomRadius=_bottom_radius
+        )
+        C = adapter.SFFCone.from_gds_type(_C)
+        self.assertRegex(
+            _str(C),
+            r"""SFFCone\(id={}, height={}, bottomRadius={}\)""".format(
+                None, _height, _bottom_radius
+            )
+        )
+        self.assertIsNone(C.id)
+        self.assertEqual(C.height, _height)
+        self.assertEqual(C.bottom_radius, _bottom_radius)
+
+
+class TestSFFCuboid(Py23FixTestCase):
+    """Test the SFFCuboid class"""
+
+    def tearDown(self):
+        adapter.SFFShape.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        C = adapter.SFFCuboid()
+        self.assertRegex(
+            _str(C),
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}\)""".format(
+                0, None, None, None
+            )
+        )
+        _x, _y, _z = _random_float(10), _random_float(10), _random_float(10)
+        C = adapter.SFFCuboid(x=_x, y=_y, z=_z)
+        self.assertRegex(
+            _str(C),
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}\)""".format(
+                1, _x, _y, _z
+            )
+        )
+        self.assertEqual(C.id, 1)  # the second one we have created
+        self.assertEqual(C.x, _x)
+        self.assertEqual(C.y, _y)
+        self.assertEqual(C.z, _z)
+
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        _C = emdb_sff.cuboid()
+        C = adapter.SFFCuboid.from_gds_type(_C)
+        self.assertRegex(
+            _str(C),
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}\)""".format(
+                None, None, None, None
+            )
+        )
+        _x, _y, _z = _random_float(10), _random_float(10), _random_float(10)
+        _C = emdb_sff.cuboid(x=_x, y=_y, z=_z)
+        C = adapter.SFFCuboid.from_gds_type(_C)
+        self.assertRegex(
+            _str(C),
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}\)""".format(
+                None, _x, _y, _z
+            )
+        )
+        self.assertEqual(C.x, _x)
+        self.assertEqual(C.y, _y)
+        self.assertEqual(C.z, _z)
+
+
+class TestSFFCylinder(Py23FixTestCase):
+    """Test the SFFCylinder class"""
+
+    def tearDown(self):
+        adapter.SFFShape.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        C = adapter.SFFCylinder()
+        self.assertRegex(
+            _str(C),
+            r"""SFFCylinder\(id={}, height={}, diameter={}\)""".format(
+                0, None, None
+            )
+        )
+        _height, _diameter = _random_float(10), _random_float(10)
+        C = adapter.SFFCylinder(
+            height=_height, diameter=_diameter
+        )
+        self.assertRegex(
+            _str(C),
+            r"""SFFCylinder\(id={}, height={}, diameter={}\)""".format(
+                1, _height, _diameter
+            )
+        )
+        self.assertEqual(C.id, 1)  # the second one we have created
+        self.assertEqual(C.height, _height)
+        self.assertEqual(C.diameter, _diameter)
+
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        _C = emdb_sff.cylinder()
+        C = adapter.SFFCylinder.from_gds_type(_C)
+        self.assertRegex(
+            _str(C),
+            r"""SFFCylinder\(id={}, height={}, diameter={}\)""".format(
+                None, None, None
+            )
+        )
+        _height, _diameter = _random_float(10), _random_float(10)
+        _C = emdb_sff.cylinder(
+            height=_height, diameter=_diameter
+        )
+        C = adapter.SFFCylinder.from_gds_type(_C)
+        self.assertRegex(
+            _str(C),
+            r"""SFFCylinder\(id={}, height={}, diameter={}\)""".format(
+                None, _height, _diameter
+            )
+        )
+        self.assertIsNone(C.id)
+        self.assertEqual(C.height, _height)
+        self.assertEqual(C.diameter, _diameter)
+
+
+class TestSFFEllipsoid(Py23FixTestCase):
+    """Test the SFFEllipsoid class"""
+
+    def tearDown(self):
+        adapter.SFFShape.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        E = adapter.SFFEllipsoid()
+        self.assertRegex(
+            _str(E),
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}\)""".format(
+                0, None, None, None
+            )
+        )
+        _x, _y, _z = _random_float(10), _random_float(10), _random_float(10)
+        E = adapter.SFFEllipsoid(x=_x, y=_y, z=_z)
+        self.assertRegex(
+            _str(E),
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}\)""".format(
+                1, _x, _y, _z
+            )
+        )
+        self.assertEqual(E.id, 1)  # the second one we have created
+        self.assertEqual(E.x, _x)
+        self.assertEqual(E.y, _y)
+        self.assertEqual(E.z, _z)
+
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        _C = emdb_sff.ellipsoid()
+        C = adapter.SFFEllipsoid.from_gds_type(_C)
+        self.assertRegex(
+            _str(C),
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}\)""".format(
+                None, None, None, None
+            )
+        )
+        _x, _y, _z = _random_float(10), _random_float(10), _random_float(10)
+        _C = emdb_sff.ellipsoid(x=_x, y=_y, z=_z)
+        C = adapter.SFFEllipsoid.from_gds_type(_C)
+        self.assertRegex(
+            _str(C),
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}\)""".format(
+                None, _x, _y, _z
+            )
+        )
+        self.assertEqual(C.x, _x)
+        self.assertEqual(C.y, _y)
+        self.assertEqual(C.z, _z)
+
+
+class TestSFFGlobalExternalReferences(Py23FixTestCase):
+    """Test the SFFGlobalExternalReferences class"""
+
+    def setUp(self):
+        self._no_items = _random_integer(start=2, stop=10)
+        self.ii = list(_xrange(self._no_items))
+        self.tt = [rw.random_word() for _ in _xrange(self._no_items)]
+        self.oo = [rw.random_word() for _ in _xrange(self._no_items)]
+        self.vv = [rw.random_word() for _ in _xrange(self._no_items)]
+        self.ll = [" ".join(rw.random_words(count=3)) for _ in _xrange(self._no_items)]
+        self.dd = [li.get_sentence() for _ in _xrange(self._no_items)]
+
+    def tearDown(self):
+        adapter.SFFExternalReference.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        ee = [adapter.SFFExternalReference(
+            type=self.tt[i],
+            otherType=self.oo[i],
+            value=self.vv[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        G = adapter.SFFGlobalExternalReferences()
+        [G.append(e) for e in ee]
+        # str
+        self.assertRegex(
+            _str(G),
+            r"""SFFGlobalExternalReferences\(\[.*\]\)"""
+        )
+        # length
+        self.assertEqual(len(G), self._no_items)
+        # get
+        e = G[self._no_items - 1]
+        self.assertIsInstance(e, adapter.SFFExternalReference)
+        self.assertEqual(e.id, self._no_items - 1)
+        self.assertEqual(e.type, self.tt[self._no_items - 1])
+        self.assertEqual(e.other_type, self.oo[self._no_items - 1])
+        self.assertEqual(e.value, self.vv[self._no_items - 1])
+        self.assertEqual(e.label, self.ll[self._no_items - 1])
+        self.assertEqual(e.description, self.dd[self._no_items - 1])
+        # get_ids
+        e_ids = G.get_ids()
+        self.assertEqual(len(e_ids), self._no_items)
+        # get_by_ids
+        e_id = random.choice(list(e_ids))
+        e = G.get_by_id(e_id)
+        self.assertIsInstance(e, adapter.SFFExternalReference)
+        self.assertEqual(e.id, e_id)
+        self.assertEqual(e.type, self.tt[e_id])
+        self.assertEqual(e.other_type, self.oo[e_id])
+        self.assertEqual(e.value, self.vv[e_id])
+        self.assertEqual(e.label, self.ll[e_id])
+        self.assertEqual(e.description, self.dd[e_id])
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _ee = [emdb_sff.externalReferenceType(
+            id=self.ii[i],
+            type_=self.tt[i],
+            otherType=self.oo[i],
+            value=self.vv[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        _G = emdb_sff.globalExternalReferencesType()
+        _G.set_ref(_ee)
+        G = adapter.SFFGlobalExternalReferences.from_gds_type(_G)
+        # str
+        self.assertRegex(
+            _str(G),
+            r"""SFFGlobalExternalReferences\(\[.*\]\)"""
+        )
+        # length
+        self.assertEqual(len(G), self._no_items)
+        # get
+        e = G[self._no_items - 1]
+        self.assertIsInstance(e, adapter.SFFExternalReference)
+        self.assertEqual(e.id, self._no_items - 1)
+        self.assertEqual(e.type, self.tt[self._no_items - 1])
+        self.assertEqual(e.other_type, self.oo[self._no_items - 1])
+        self.assertEqual(e.value, self.vv[self._no_items - 1])
+        self.assertEqual(e.label, self.ll[self._no_items - 1])
+        self.assertEqual(e.description, self.dd[self._no_items - 1])
+        # get_ids
+        e_ids = G.get_ids()
+        self.assertEqual(len(e_ids), self._no_items)
+        # get_by_ids
+        e_id = random.choice(list(e_ids))
+        e = G.get_by_id(e_id)
+        self.assertIsInstance(e, adapter.SFFExternalReference)
+        self.assertEqual(e.id, e_id)
+        self.assertEqual(e.type, self.tt[e_id])
+        self.assertEqual(e.other_type, self.oo[e_id])
+        self.assertEqual(e.value, self.vv[e_id])
+        self.assertEqual(e.label, self.ll[e_id])
+        self.assertEqual(e.description, self.dd[e_id])
+
+
+class TestSFFLatticeList(Py23FixTestCase):
+    """Test the SFFLatticeList class"""
+
+    @staticmethod
+    def generate_sff_data(
+            rows=_random_integer(start=10, stop=20),
+            cols=_random_integer(start=10, stop=20),
+            sections=_random_integer(start=10, stop=20)
+    ):
+        mode = random.choice(list(adapter.FORMAT_CHARS.keys()))
+        endianness = random.choice(list(adapter.ENDIANNESS.keys()))
+        size = adapter.SFFVolumeStructure(rows=rows, cols=cols, sections=sections)
+        start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
+        if re.match(r".*int.*", mode):
+            data = numpy.random.randint(0, 100, size=(rows, cols, sections))
+        elif re.match(r".*float.*", mode):
+            data = numpy.random.rand(rows, cols, sections)
+        return mode, endianness, size, start, data
+
+
+    def test_default(self):
+        """Test default settings"""
+        L = adapter.SFFLatticeList()
+        self.assertRegex(
+            _str(L),
+            r"""SFFLatticeList\(\[.*\]\)"""
+        )
+        self.assertEqual(len(L), 0)
+        _no_items = _random_integer(start=2, stop=5)
+        _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_sff_data()
+        [L.append(
+            adapter.SFFLattice(
+                mode=_mode,
+                endianness=_endianness,
+                size=_size,
+                start=_start,
+                data=_data
+            )
+        ) for _ in _xrange(_no_items)]
+        print(L, file=sys.stderr)
+
 # class TestSFFPolygon(Py23FixTestCase):
 #     """Test the SFFPolygon class"""
 #
