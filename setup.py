@@ -61,7 +61,7 @@ if sys.version_info[0] > 2:
         classifiers=SFFTKRW_CLASSIFIERS,
         entry_points={
             'console_scripts': [
-                'sff-rw = sfftkrw.sffrw:main',
+                'sfr = sfftkrw.sffrw:main',
             ]
         },
     )

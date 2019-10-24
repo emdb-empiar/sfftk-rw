@@ -189,16 +189,10 @@ def main():
         elif args == os.EX_OK:  # e.g. show version has no error but has no handler either
             return os.EX_OK
         # subcommands
-        if args.subcommand == 'prep':
-            return handle_prep(args)
-        elif args.subcommand == 'convert':
+        if args.subcommand == 'convert':
             return handle_convert(args)
-        elif args.subcommand == 'notes':
-            return handle_notes(args)
         elif args.subcommand == "view":
             return handle_view(args)
-        elif args.subcommand == "config":
-            return handle_config(args)
         elif args.subcommand == "tests":
             return handle_tests(args)
 
