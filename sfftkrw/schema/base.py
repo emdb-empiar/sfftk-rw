@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function
 
-import sys
-
 """
 ========================
 sfftkrw.schema.base
@@ -46,8 +44,8 @@ from ..core import _dict, _str
 from ..core.print_tools import print_date
 from ..schema import emdb_sff as sff
 
+_match_var_stop = re.compile(r"(?P<var>\w+)\[\:(?P<stop>\d*)\]")
 
-match_var_stop = re.compile(r"(?P<var>\w+)\[\:(?P<stop>\d*)\]")
 
 class SFFTypeError(Exception):
     """`SFFTypeError` exception"""
@@ -227,6 +225,10 @@ class SFFType(object):
     - `list()` fills the `{}` with a list of contained objects. 
     """
 
+    def __new__(cls, new_obj=True, *args, **kwargs):
+        """Matching constructor signature for subclasses"""
+        return super(SFFType, cls).__new__(cls)
+
     def __init__(self, *args, **kwargs):
         """Base initialiser
 
@@ -294,8 +296,8 @@ class SFFType(object):
                             _repr_args.append(len(self))
                         elif arg == 'list()':
                             _repr_args.append(list(self))
-                        elif match_var_stop.match(arg):
-                            mo = match_var_stop.match(arg)
+                        elif _match_var_stop.match(arg):
+                            mo = _match_var_stop.match(arg)
                             var = mo.group('var')
                             stop = int(mo.group('stop'))
                             _repr_args.append(getattr(self, var)[:stop] + b"...")
@@ -509,7 +511,7 @@ class SFFListType(SFFType):
             # reset ID only if `cls.iter_attr` is an `SFFType` subclass
             if issubclass(cls.iter_attr[1], SFFType):
                 cls.iter_attr[1].reset_id()
-        obj = super(SFFListType, cls).__new__(cls)
+        obj = super(SFFListType, cls).__new__(cls, new_obj=new_obj, *args, **kwargs)
         return obj
 
     def __init__(self, *args, **kwargs):
@@ -692,8 +694,8 @@ class SFFListType(SFFType):
         """Private method that adds to the convenience dictionary"""
         if k in self._id_dict:
             raise KeyError("item with ID={} already present".format(k))
-        self._id_dict[k] = v
-        # self._id_dict = {item.id: item._local for item in self}
+        elif k is not None:
+            self._id_dict[k] = v
 
     def _del_from_dict(self, k):
         """Private method that removes from the convenience dictionary"""
@@ -703,7 +705,6 @@ class SFFListType(SFFType):
         iter_name, iter_type = self.iter_attr
         if iter_type not in [_str, int] and issubclass(iter_type, SFFType):
             self._id_dict.update({i.id: i for i in self if i.id is not None})
-
 
     def get_by_id(self, id):
         """A convenience dictionary to retrieve contained objects by ID

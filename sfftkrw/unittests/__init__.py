@@ -17,13 +17,31 @@ TEST_DATA_PATH = os.path.join(BASE_DIR, 'test_data')
 
 
 # helper functions
-def _random_integer(start=1, stop=1000): return random.randint(start, stop)
+def _random_integer(start=1, stop=1000):
+    try:
+        assert stop > start
+    except AssertionError:
+        raise ValueError("`stop` should be greater than `start`")
+    return random.randint(start, stop)
 
 
-def _random_float(multiplier=1): return random.random() * multiplier
+def _random_float(multiplier=1):
+    try:
+        assert multiplier != 0
+    except AssertionError:
+        raise ValueError("`multiplier` should never be 0")
+    return random.random() * multiplier
 
 
 def _random_integers(count=10, start=1, stop=1000, as_string=False, sep=' '):
+    try:
+        assert stop > start
+    except AssertionError:
+        raise ValueError("`stop` should be greater than `start`")
+    try:
+        assert count > 0
+    except AssertionError:
+        raise ValueError("`count` should be greater than 0")
     if as_string:
         return sep.join(map(str, [_random_integer(start=start, stop=stop) for _ in _xrange(count)]))
     else:
@@ -31,6 +49,14 @@ def _random_integers(count=10, start=1, stop=1000, as_string=False, sep=' '):
 
 
 def _random_floats(count=10, multiplier=1):
+    try:
+        assert multiplier != 0
+    except AssertionError:
+        raise ValueError("`multiplier` should never be 0")
+    try:
+        assert count > 0
+    except AssertionError:
+        raise ValueError("`count` should be greater than 0")
     return [_random_float(multiplier=multiplier) for _ in _xrange(count)]
 
 

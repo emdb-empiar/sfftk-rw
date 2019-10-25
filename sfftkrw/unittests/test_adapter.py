@@ -17,8 +17,8 @@ import h5py
 import numpy
 from random_words import RandomWords, LoremIpsum
 
-from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_floats
-from ..core import _xrange, _str
+from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_floats, _random_integers
+from ..core import _xrange, _str, _bytes
 from ..schema import adapter, emdb_sff, base
 
 rw = RandomWords()
@@ -116,6 +116,9 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.segments = segments
         segmentation.lattices = lattices
         cls.segmentation = segmentation
+
+    def tearDown(self):
+        adapter.SFFPolygon.reset_id()
 
     def test_create_3D(self):
         """Create an SFFSegmentation object with 3D volume segmentation from scratch"""
@@ -354,45 +357,34 @@ class TestSFFSegmentation(Py23FixTestCase):
         ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
                                           transformId=transform.id, )
         shapes.append(ellipsoid2)
-        print('cylinder.id', cylinder.id, file=sys.stderr)
         cylinder = adapter.SFFCylinder(
             height=_random_float() * 100,
             diameter=_random_float() * 100,
             transformId=transform.id,
         )
-        print('cylinder.id', cylinder.id, file=sys.stderr)
         cylinder = adapter.SFFCylinder(
             height=_random_float() * 100,
             diameter=_random_float() * 100,
             transformId=transform.id,
         )
-        print('cylinder.id', cylinder.id, file=sys.stderr)
         cylinder = adapter.SFFCylinder(
             height=_random_float() * 100,
             diameter=_random_float() * 100,
             transformId=transform.id,
         )
-        print('cylinder.id', cylinder.id, file=sys.stderr)
         cylinder = adapter.SFFCylinder(
             height=_random_float() * 100,
             diameter=_random_float() * 100,
             transformId=transform.id,
         )
-        print('cylinder.id', cylinder.id, file=sys.stderr)
-        print('ellipsoid.id', ellipsoid.id, file=sys.stderr)
-        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
         ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
                                           transformId=transform.id, )
-        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
         ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
                                           transformId=transform.id, )
-        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
         ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
                                           transformId=transform.id, )
-        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
         ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
                                           transformId=transform.id, )
-        print('ellipsoid2.id', ellipsoid2.id, file=sys.stderr)
         transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
@@ -1039,7 +1031,6 @@ class TestSFFComplexesAndMacromolecules(Py23FixTestCase):
         self.assertEqual(len(C.macromolecules), _no_items)
         self.assertRegex(_str(C),
                          "SFFComplexesAndMacromolecules\(complexes=SFFComplexes\(.*\), macromolecules=SFFMacromolecules\(.*\)\)")
-        print(C, file=sys.stderr)
 
 
 class TestSFFExternalReference(Py23FixTestCase):
@@ -1237,7 +1228,6 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
             externalReferences=self.external_references,
             numberOfInstances=self.no,
         )
-        print(b, file=sys.stderr)
         self.assertRegex(
             _str(b),
             r"""SFFBiologicalAnnotation\(""" \
@@ -1601,6 +1591,8 @@ class TestSFFMesh(Py23FixTestCase):
 
     def tearDown(self):
         adapter.SFFMesh.reset_id()
+        adapter.SFFPolygon.reset_id()
+        adapter.SFFVertex.reset_id()
 
     def test_default(self):
         """Test default settings"""
@@ -1628,6 +1620,11 @@ class TestSFFMesh(Py23FixTestCase):
 
 class TestSFFMeshList(Py23FixTestCase):
     """Test the SFFMeshList class"""
+
+    def tearDown(self):
+        adapter.SFFMesh.reset_id()
+        adapter.SFFPolygon.reset_id()
+        adapter.SFFVertex.reset_id()
 
     @staticmethod
     def generate_sff_data(no_verts=_random_integer(start=2, stop=20), no_polys=_random_integer(start=2, stop=20)):
@@ -2130,6 +2127,22 @@ class TestSFFLatticeList(Py23FixTestCase):
             data = numpy.random.rand(rows, cols, sections)
         return mode, endianness, size, start, data
 
+    @staticmethod
+    def generate_gds_data(
+            rows=_random_integer(start=10, stop=20),
+            cols=_random_integer(start=10, stop=20),
+            sections=_random_integer(start=10, stop=20)
+    ):
+        mode = random.choice(list(adapter.FORMAT_CHARS.keys()))
+        endianness = random.choice(list(adapter.ENDIANNESS.keys()))
+        size = emdb_sff.volumeStructureType(rows=rows, cols=cols, sections=sections)
+        start = emdb_sff.volumeIndexType(rows=0, cols=0, sections=0)
+        if re.match(r".*int.*", mode):
+            _data = numpy.random.randint(0, 100, size=(rows, cols, sections))
+        elif re.match(r".*float.*", mode):
+            _data = numpy.random.rand(rows, cols, sections)
+        data = adapter.SFFLattice._encode(_data, mode=mode, endianness=endianness)
+        return mode, endianness, size, start, data
 
     def test_default(self):
         """Test default settings"""
@@ -2140,93 +2153,668 @@ class TestSFFLatticeList(Py23FixTestCase):
         )
         self.assertEqual(len(L), 0)
         _no_items = _random_integer(start=2, stop=5)
-        _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_sff_data()
-        [L.append(
-            adapter.SFFLattice(
-                mode=_mode,
-                endianness=_endianness,
-                size=_size,
-                start=_start,
-                data=_data
+        for _ in _xrange(_no_items):
+            _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_sff_data()
+            L.append(
+                adapter.SFFLattice(
+                    mode=_mode,
+                    endianness=_endianness,
+                    size=_size,
+                    start=_start,
+                    data=_data
+                )
             )
-        ) for _ in _xrange(_no_items)]
-        print(L, file=sys.stderr)
+        self.assertRegex(
+            _str(L),
+            r"""SFFLatticeList\(\[SFFLattice\(.*\]\)"""
+        )
+        self.assertEqual(len(L), _no_items)
+        self.assertEqual(list(L.get_ids()), list(_xrange(_no_items)))
+        l_id = random.choice(list(L.get_ids()))
+        l = L.get_by_id(l_id)
+        self.assertIsInstance(l, adapter.SFFLattice)
+        self.assertEqual(l.id, l_id)
+        self.assertIn(l.mode, list(adapter.FORMAT_CHARS.keys()))
+        self.assertIn(l.endianness, list(adapter.ENDIANNESS.keys()))
+        self.assertIsInstance(l.size, adapter.SFFVolumeStructure)
+        self.assertIsInstance(l.start, adapter.SFFVolumeIndex)
+        self.assertIsInstance(l.data, _bytes)
+        self.assertIsInstance(l.data_array, numpy.ndarray)
+        self.assertTrue(len(l.data) > 0)
 
-# class TestSFFPolygon(Py23FixTestCase):
-#     """Test the SFFPolygon class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFPolygonList(Py23FixTestCase):
-#     """Test the SFFPolygonList class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFSegment(Py23FixTestCase):
-#     """Test the SFFSegment class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _L = emdb_sff.latticeListType()
+        _no_items = _random_integer(start=2, stop=5)
+        _l = list()
+        for i in _xrange(_no_items):
+            _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_gds_data()
+            _l.append(
+                emdb_sff.latticeType(
+                    id=i,
+                    mode=_mode,
+                    endianness=_endianness,
+                    size=_size,
+                    start=_start,
+                    data=_data
+                )
+            )
+        _L.set_lattice(_l)
+        L = adapter.SFFLatticeList.from_gds_type(_L)
+        self.assertRegex(
+            _str(L),
+            r"""SFFLatticeList\(\[SFFLattice\(.*\]\)"""
+        )
+        self.assertEqual(len(L), _no_items)
+        self.assertEqual(list(L.get_ids()), list(_xrange(_no_items)))
+        l_id = random.choice(list(L.get_ids()))
+        l = L.get_by_id(l_id)
+        self.assertIsInstance(l, adapter.SFFLattice)
+        self.assertEqual(l.id, l_id)
+        self.assertIn(l.mode, list(adapter.FORMAT_CHARS.keys()))
+        self.assertIn(l.endianness, list(adapter.ENDIANNESS.keys()))
+        self.assertIsInstance(l.size, adapter.SFFVolumeStructure)
+        self.assertIsInstance(l.start, adapter.SFFVolumeIndex)
+        self.assertIsInstance(l.data, _bytes)
+        self.assertIsInstance(l.data_array, numpy.ndarray)
+        self.assertTrue(len(l.data) > 0)
+
+
+class TestSFFPolygon(Py23FixTestCase):
+    """Test the SFFPolygon class"""
+
+    def tearDown(self):
+        adapter.SFFPolygon.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        p = adapter.SFFPolygon()
+        self.assertRegex(
+            _str(p),
+            r"""SFFPolygon\(PID={}, v=\[\]\)""".format(
+                0, None
+            )
+        )
+        self.assertEqual(len(p), 0)
+        self.assertEqual(p.id, 0)
+        self.assertEqual(p.vertices, list())
+        # set in constructor
+        _v = [
+            _random_integer(start=2, stop=20),
+            _random_integer(start=2, stop=20),
+            _random_integer(start=2, stop=20),
+        ]
+        p = adapter.SFFPolygon(
+            v=_v
+        )
+        self.assertRegex(
+            _str(p),
+            r"""SFFPolygon\(PID={}, v=\[.*\]\)""".format(1)
+        )
+        self.assertEqual(p.id, 1)
+        self.assertEqual(p.vertices, _v)
+        # direct setting
+        p = adapter.SFFPolygon()
+        _v = [
+            _random_integer(start=2, stop=20),
+            _random_integer(start=2, stop=20),
+            _random_integer(start=2, stop=20),
+        ]
+        p.vertices = _v
+        self.assertRegex(
+            _str(p),
+            r"""SFFPolygon\(PID={}, v=\[.*\]\)""".format(2)
+        )
+        self.assertEqual(p.id, 2)
+        self.assertEqual(p.vertices, _v)
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _p = emdb_sff.polygonType()
+        p = adapter.SFFPolygon.from_gds_type(_p)
+        self.assertRegex(
+            _str(p),
+            r"""SFFPolygon\(PID={}, v=\[\]\)""".format(None)
+        )
+        self.assertEqual(len(p), 0)
+        self.assertIsNone(p.id)
+        self.assertEqual(p.vertices, list())
+        # set in constructor
+        _v = [
+            _random_integer(start=2, stop=20),
+            _random_integer(start=2, stop=20),
+            _random_integer(start=2, stop=20),
+        ]
+        _PID = _random_integer()
+        _p = emdb_sff.polygonType(
+            PID=_PID,
+            v=_v
+        )
+        p = adapter.SFFPolygon.from_gds_type(_p)
+        self.assertRegex(
+            _str(p),
+            r"""SFFPolygon\(PID={}, v=\[.*\]\)""".format(_PID)
+        )
+        self.assertEqual(p.id, _PID)
+        self.assertEqual(p.vertices, _v)
+        # direct setting
+        p = adapter.SFFPolygon()
+        _v = [
+            _random_integer(start=2, stop=20),
+            _random_integer(start=2, stop=20),
+            _random_integer(start=2, stop=20),
+        ]
+        p.vertices = _v
+        self.assertRegex(
+            _str(p),
+            r"""SFFPolygon\(PID={}, v=\[.*\]\)""".format(0)
+        )
+        self.assertEqual(p.id, 0)
+        self.assertEqual(p.vertices, _v)
+
+
+class TestSFFPolygonList(Py23FixTestCase):
+    """Test the SFFPolygonList class"""
+
+    def tearDown(self):
+        adapter.SFFPolygon.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        # empty list
+        P = adapter.SFFPolygonList()
+        self.assertRegex(
+            _str(P),
+            r"""SFFPolygonList\(\[\]\)"""
+        )
+        self.assertEqual(len(P), 0)
+        self.assertEqual(list(P.get_ids()), list())
+        # populated
+        _no_items = _random_integer(start=2, stop=10)
+        P = adapter.SFFPolygonList()
+        for _ in _xrange(_no_items):
+            P.append(adapter.SFFPolygon(v=[
+                _random_integer(start=2, stop=20),
+                _random_integer(start=2, stop=20),
+                _random_integer(start=2, stop=20),
+            ])
+            )
+        self.assertRegex(
+            _str(P),
+            r"""SFFPolygonList\(\[.*\]\)"""
+        )
+        self.assertEqual(len(P), _no_items)
+        self.assertEqual(list(P.get_ids()), list(_xrange(_no_items)))
+        p_id = random.choice(list(P.get_ids()))
+        p = P.get_by_id(p_id)
+        self.assertIsInstance(p, adapter.SFFPolygon)
+        self.assertEqual(p.id, p_id)
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        # empty list
+        _P = emdb_sff.polygonListType()
+        P = adapter.SFFPolygonList.from_gds_type(_P)
+        self.assertRegex(
+            _str(P),
+            r"""SFFPolygonList\(\[\]\)"""
+        )
+        self.assertEqual(len(P), 0)
+        self.assertEqual(list(P.get_ids()), list())
+        # populated
+        _no_items = _random_integer(start=2, stop=10)
+        _P = emdb_sff.polygonListType()
+        _P.set_P([
+            emdb_sff.polygonType(
+                PID=i,
+                v=[
+                    _random_integer(start=2, stop=20),
+                    _random_integer(start=2, stop=20),
+                    _random_integer(start=2, stop=20),
+                ]
+            ) for i in _xrange(_no_items)]
+        )
+        P = adapter.SFFPolygonList.from_gds_type(_P)
+        self.assertRegex(
+            _str(P),
+            r"""SFFPolygonList\(\[.*\]\)"""
+        )
+        self.assertEqual(len(P), _no_items)
+        self.assertEqual(list(P.get_ids()), list(_xrange(_no_items)))
+        p_id = random.choice(list(P.get_ids()))
+        p = P.get_by_id(p_id)
+        self.assertIsInstance(p, adapter.SFFPolygon)
+        self.assertEqual(p.id, p_id)
+
+
+class TestSFFSegment(Py23FixTestCase):
+    """Test the SFFSegment class"""
+
+    def tearDown(self):
+        adapter.SFFSegment.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        s = adapter.SFFSegment()
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id=1, parentID=0, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)"""
+        )
+        # change ID
+        _id = _random_integer()
+        s = adapter.SFFSegment(id=_id)
+        self.assertEqual(s.id, _id)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id={}, parentID=0, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(_id)
+        )
+        # change parent_id
+        _parent_id = _random_integer()
+        s = adapter.SFFSegment(parentID=_parent_id)
+        self.assertEqual(s.id, _id + 1)  # we have an increment from the previous set value
+        self.assertEqual(s.parent_id, _parent_id)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+                _id + 1,
+                _parent_id
+            )
+        )
+        # change biological_annotation
+        B = adapter.SFFBiologicalAnnotation(
+            name=" ".join(rw.random_words(count=3)),
+            description=li.get_sentence(),
+        )
+        s = adapter.SFFSegment(biologicalAnnotation=B)
+        self.assertEqual(s.id, _id + 2)  # we have an increment from the previous set value
+        self.assertEqual(s.biological_annotation, B)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation={}, colour=None, """
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+                _id + 2,
+                0,
+                _str(B).replace("(", "\(").replace(")", "\)")
+            )
+        )
+        # change colour
+        R = adapter.SFFRGBA(random_colour=True)
+        s = adapter.SFFSegment(colour=R)
+        self.assertEqual(s.id, _id + 3)  # we have an increment from the previous set value
+        self.assertEqual(s.colour, R)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour={}, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+                _id + 3,
+                0,
+                _str(R).replace("(", "\(").replace(")", "\)")
+            )
+        )
+        # 3D volume
+        _l = _random_integer(start=0)
+        _v = _random_integer()
+        _t = _random_integer(start=0)
+        V = adapter.SFFThreeDVolume(
+            latticeId=_l,
+            value=_v,
+            transformId=_t
+        )
+        s = adapter.SFFSegment(threeDVolume=V)
+        self.assertEqual(s.id, _id + 4)
+        self.assertEqual(s.volume, V)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume={}, meshList=None, shapePrimitiveList=None\)""".format(
+                _id + 4,
+                0,
+                _str(V).replace("(", "\(").replace(")", "\)")
+            )
+        )
+        # meshes
+        M = adapter.SFFMeshList()
+        s = adapter.SFFSegment(meshList=M)
+        self.assertEqual(s.id, _id + 5)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[.*\]\), shapePrimitiveList=None\)""".format(
+                _id + 5,
+                0,
+            )
+        )
+        # shapes
+        S = adapter.SFFShapePrimitiveList()
+        s = adapter.SFFSegment(shapePrimitiveList=S)
+        self.assertEqual(s.id, _id + 6)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+                _id + 6,
+                0,
+            )
+        )
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _s = emdb_sff.segmentType()
+        s = adapter.SFFSegment.from_gds_type(_s)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)"""
+        )
+        # change ID
+        _id = _random_integer()
+        _s = emdb_sff.segmentType(id=_id)
+        s = adapter.SFFSegment.from_gds_type(_s)
+        self.assertEqual(s.id, _id)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id={}, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(_id)
+        )
+        # change parent_id
+        _parent_id = _random_integer()
+        _s = emdb_sff.segmentType(parentID=_parent_id)
+        s = adapter.SFFSegment.from_gds_type(_s)
+        self.assertIsNone(s.id)
+        self.assertEqual(s.parent_id, _parent_id)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+                None,
+                _parent_id
+            )
+        )
+        # change biological_annotation
+        _B = emdb_sff.biologicalAnnotationType(
+            name=" ".join(rw.random_words(count=3)),
+            description=li.get_sentence(),
+        )
+        _s = emdb_sff.segmentType(biologicalAnnotation=_B)
+        s = adapter.SFFSegment.from_gds_type(_s)
+        self.assertIsNone(s.id)
+        B = adapter.SFFBiologicalAnnotation.from_gds_type(_B)
+        self.assertEqual(s.biological_annotation, B)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation={}, colour=None, """
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+                _str(B).replace("(", "\(").replace(")", "\)")
+            )
+        )
+        # change colour
+        _R = emdb_sff.rgbaType(red=_random_float(), green=_random_float(), blue=_random_float())
+        R = adapter.SFFRGBA.from_gds_type(_R)
+        _s = emdb_sff.segmentType(colour=_R)
+        s = adapter.SFFSegment.from_gds_type(_s)
+        self.assertIsNone(s.id)
+        self.assertEqual(s.colour, R)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour={}, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+                _str(R).replace("(", "\(").replace(")", "\)")
+            )
+        )
+        # 3D volume
+        _l = _random_integer(start=0)
+        _v = _random_integer()
+        _t = _random_integer(start=0)
+        _V = emdb_sff.threeDVolumeType(
+            latticeId=_l,
+            value=_v,
+            transformId=_t
+        )
+        V = adapter.SFFThreeDVolume.from_gds_type(_V)
+        _s = emdb_sff.segmentType(threeDVolume=_V)
+        s = adapter.SFFSegment.from_gds_type(_s)
+        self.assertIsNone(s.id)
+        self.assertEqual(s.volume, V)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume={}, meshList=None, shapePrimitiveList=None\)""".format(
+                _str(V).replace("(", "\(").replace(")", "\)")
+            )
+        )
+        # meshes
+        _M = emdb_sff.meshListType()
+        M = adapter.SFFMeshList.from_gds_type(_M)
+        _s = emdb_sff.segmentType(meshList=_M)
+        s = adapter.SFFSegment.from_gds_type(_s)
+        self.assertIsNone(s.id)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[.*\]\), shapePrimitiveList=None\)"""
+        )
+        # shapes
+        _S = emdb_sff.shapePrimitiveListType()
+        S = adapter.SFFShapePrimitiveList.from_gds_type(_S)
+        _s = emdb_sff.segmentType(shapePrimitiveList=_S)
+        s = adapter.SFFSegment.from_gds_type(_s)
+        self.assertIsNone(s.id)
+        self.assertRegex(
+            _str(s),
+            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""threeDVolume=None, meshList=None, shapePrimitiveList=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+            )
+        )
+
+
 class TestSFFSegmentList(Py23FixTestCase):
     """Test the SFFSegmentList class"""
 
-    def test_iterate(self):
+    def test_default(self):
         """Test default settings"""
         S = adapter.SFFSegmentList()
-        S.append(adapter.SFFSegment())
-        S.append(adapter.SFFSegment())
-        S.append(adapter.SFFSegment())
-        S.append(adapter.SFFSegment())
-        for s in S:
-            print(s.id, file=sys.stderr)
-        S.append(adapter.SFFSegment())
-        S.append(adapter.SFFSegment())
-        S.append(adapter.SFFSegment())
-        S.append(adapter.SFFSegment())
-        for s in S:
-            print(s, file=sys.stderr)
+        _no_items = _random_integer(start=2, stop=10)
+        [S.append(adapter.SFFSegment()) for _ in _xrange(_no_items)]
+        self.assertRegex(
+            _str(S),
+            r"""SFFSegmentList\(\[SFFSegment\(.*\)\]\)"""
+        )
+        self.assertEqual(len(S), _no_items)
+        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
+        # adding a segment without ID does not change the number of IDs (because it has ID=None)
         S.append(adapter.SFFSegment.from_gds_type(
             emdb_sff.segmentType()
         ))
-        for s in S:
-            print(s, file=sys.stderr)
-        # self.assertTrue(False)
+        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
+        # exception when trying to overwrite an ID in `_id_dict`
+        with self.assertRaisesRegex(KeyError, r".*already present.*"):
+            S.append(adapter.SFFSegment.from_gds_type((
+                emdb_sff.segmentType(id=1)
+            )))
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _S = emdb_sff.segmentListType()
+        _no_items = _random_integer(start=2, stop=10)
+        _S.set_segment([
+            emdb_sff.segmentType(
+                id=i,
+            ) for i in _xrange(1, _no_items + 1)]
+        )
+        S = adapter.SFFSegmentList.from_gds_type(_S)
+        self.assertRegex(
+            _str(S),
+            r"""SFFSegmentList\(\[SFFSegment\(.*\)\]\)"""
+        )
+        self.assertEqual(len(S), _no_items)
+        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
 
 
-#
-# class TestSFFShape(Py23FixTestCase):
-#     """Test the SFFShape class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFShapePrimitiveList(Py23FixTestCase):
-#     """Test the SFFShapePrimitiveList class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFSoftware(Py23FixTestCase):
-#     """Test the SFFSoftware class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
+class TestSFFShapePrimitiveList(Py23FixTestCase):
+    """Test the SFFShapePrimitiveList class"""
+
+    def tearDown(self):
+        adapter.SFFShape.reset_id()
+
+    @staticmethod
+    def get_sff_shapes(counts=_random_integers(count=4, start=2, stop=10)):
+        no_cones, no_cuboids, no_cylinders, no_ellipsoids = counts
+        cones = [adapter.SFFCone(
+            height=_random_float(10),
+            bottomRadius=_random_float(10),
+        ) for _ in _xrange(no_cones)]
+        cuboids = [
+            adapter.SFFCuboid(
+                x=_random_float(10),
+                y=_random_float(10),
+                z=_random_float(10),
+            ) for _ in _xrange(no_cuboids)]
+        cylinders = [
+            adapter.SFFCylinder(
+                height=_random_float(10),
+                diameter=_random_float(10),
+            ) for _ in _xrange(no_cylinders)]
+        ellipsoids = [
+            adapter.SFFEllipsoid(
+                x=_random_float(10),
+                y=_random_float(10),
+                z=_random_float(10),
+            )
+        ]
+        return cones, cuboids, cylinders, ellipsoids
+
+    @staticmethod
+    def get_gds_shapes(counts=_random_integers(count=4, start=2, stop=10)):
+        no_cones, no_cuboids, no_cylinders, no_ellipsoids = counts
+        cones = [emdb_sff.cone(
+            height=_random_float(10),
+            bottomRadius=_random_float(10),
+        ) for _ in _xrange(no_cones)]
+        cuboids = [
+            emdb_sff.cuboid(
+                x=_random_float(10),
+                y=_random_float(10),
+                z=_random_float(10),
+            ) for _ in _xrange(no_cuboids)]
+        cylinders = [
+            emdb_sff.cylinder(
+                height=_random_float(10),
+                diameter=_random_float(10),
+            ) for _ in _xrange(no_cylinders)]
+        ellipsoids = [
+            emdb_sff.ellipsoid(
+                x=_random_float(10),
+                y=_random_float(10),
+                z=_random_float(10),
+            )
+        ]
+        return cones, cuboids, cylinders, ellipsoids
+
+    def test_default(self):
+        """Test default settings"""
+        S = adapter.SFFShapePrimitiveList()
+        cones, cuboids, cylinders, ellipsoids = TestSFFShapePrimitiveList.get_sff_shapes()
+        [S.append(c) for c in cones]
+        [S.append(c) for c in cuboids]
+        [S.append(c) for c in cylinders]
+        [S.append(c) for c in ellipsoids]
+        self.assertRegex(
+            _str(S),
+            r"""SFFShapePrimitiveList\(\[.*\]\)"""
+        )
+        total_shapes = len(cones) + len(cuboids) + len(cylinders) + len(ellipsoids)
+        self.assertEqual(len(S), total_shapes)
+        self.assertEqual(list(S.get_ids()), list(_xrange(total_shapes)))
+        s_id = random.choice(list(_xrange(total_shapes)))
+        s = S.get_by_id(s_id)
+        self.assertIsInstance(s, (adapter.SFFCone, adapter.SFFCuboid, adapter.SFFCylinder, adapter.SFFEllipsoid))
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _S = emdb_sff.shapePrimitiveListType()
+        cones, cuboids, cylinders, ellipsoids = TestSFFShapePrimitiveList.get_gds_shapes()
+        [_S.add_shapePrimitive(c) for c in cones]
+        [_S.add_shapePrimitive(c) for c in cuboids]
+        [_S.add_shapePrimitive(c) for c in cylinders]
+        [_S.add_shapePrimitive(c) for c in ellipsoids]
+        S = adapter.SFFShapePrimitiveList.from_gds_type(_S)
+        self.assertRegex(
+            _str(S),
+            r"""SFFShapePrimitiveList\(\[.*\]\)"""
+        )
+        total_shapes = len(cones) + len(cuboids) + len(cylinders) + len(ellipsoids)
+        self.assertEqual(len(S), total_shapes)
+        self.assertEqual(list(S.get_ids()), list())
+        s_id = random.choice(list(_xrange(total_shapes)))
+        s = S[s_id]
+        self.assertIsInstance(s, (adapter.SFFCone, adapter.SFFCuboid, adapter.SFFCylinder, adapter.SFFEllipsoid))
+
+
+class TestSFFSoftware(Py23FixTestCase):
+    """Test the SFFSoftware class"""
+
+    def test_default(self):
+        """Test default settings"""
+        S = adapter.SFFSoftware()
+        self.assertRegex(
+            _str(S),
+            r"""SFFSoftware\(name={}, version={}, processingDetails={}\)""".format(
+                None, None, None
+            )
+        )
+        self.assertIsNone(S.name)
+        self.assertIsNone(S.version)
+        self.assertIsNone(S.processing_details)
+        name = rw.random_word()
+        version = rw.random_word()
+        processing_details = li.get_sentences(sentences=_random_integer(start=2, stop=5))
+        S = adapter.SFFSoftware(
+            name=name,
+            version=version,
+            processingDetails=processing_details
+        )
+        self.assertRegex(
+            _str(S),
+            r"""SFFSoftware\(name=".+", version=".+", processingDetails=".+"\)"""
+        )
+        self.assertEqual(S.name, name)
+        self.assertEqual(S.version, version)
+        self.assertEqual(S.processing_details, processing_details)
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _S = emdb_sff.softwareType()
+        S = adapter.SFFSoftware.from_gds_type(_S)
+        self.assertRegex(
+            _str(S),
+            r"""SFFSoftware\(name={}, version={}, processingDetails={}\)""".format(
+                None, None, None
+            )
+        )
+        self.assertIsNone(S.name)
+        self.assertIsNone(S.version)
+        self.assertIsNone(S.processing_details)
+        name = rw.random_word()
+        version = rw.random_word()
+        processing_details = li.get_sentences(sentences=_random_integer(start=2, stop=5))
+        _S = emdb_sff.softwareType(
+            name=name,
+            version=version,
+            processingDetails=processing_details
+        )
+        S = adapter.SFFSoftware.from_gds_type(_S)
+        self.assertRegex(
+            _str(S),
+            r"""SFFSoftware\(name=".+", version=".+", processingDetails=".+"\)"""
+        )
+        self.assertEqual(S.name, name)
+        self.assertEqual(S.version, version)
+        self.assertEqual(S.processing_details, processing_details)
+
+
 class TestSFFTransformationMatrix(Py23FixTestCase):
     """Test the SFFTransformationMatrix class"""
 
@@ -2271,21 +2859,143 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
         self.assertTrue(hasattr(t, 'data_array'))
 
 
-#
-# class TestSFFVertex(Py23FixTestCase):
-#     """Test the SFFVertex class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
-#
-#
-# class TestSFFVertexList(Py23FixTestCase):
-#     """Test the SFFVertexList class"""
-#
-#     def test_default(self):
-#         """Test default settings"""
-#         self.assertTrue(False)
+class TestSFFVertex(Py23FixTestCase):
+    """Test the SFFVertex class"""
+
+    def tearDown(self):
+        adapter.SFFVertex.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        v = adapter.SFFVertex()
+        self.assertRegex(
+            _str(v),
+            r"""SFFVertex\(vID=0, designation="surface", x=None, y=None, z=None\)"""
+        )
+        self.assertEqual(v.id, 0)
+        self.assertEqual(v.designation, "surface")
+        self.assertIsNone(v.x)
+        self.assertIsNone(v.y)
+        self.assertIsNone(v.z)
+        self.assertEqual(v.point, (None, None, None))
+        # with values
+        x = _random_float(10)
+        y = _random_float(10)
+        z = _random_float(10)
+        v = adapter.SFFVertex(designation="normal", x=x, y=y, z=z)
+        self.assertRegex(
+            _str(v),
+            r"""SFFVertex\(vID=1, designation="normal", x={}, y={}, z={}\)""".format(
+                x, y, z
+            )
+        )
+        self.assertEqual(v.id, 1)
+        self.assertEqual(v.designation, "normal")
+        self.assertEqual(v.x, x)
+        self.assertEqual(v.y, y)
+        self.assertEqual(v.z, z)
+        self.assertEqual(v.point, (x, y, z))
+        # set point directly
+        x = _random_float(10)
+        y = _random_float(10)
+        z = _random_float(10)
+        v.point = x, y, z
+        self.assertEqual(v.x, x)
+        self.assertEqual(v.y, y)
+        self.assertEqual(v.z, z)
+        self.assertEqual(v.point, (x, y, z))
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _v = emdb_sff.vertexType()
+        v = adapter.SFFVertex.from_gds_type(_v)
+        self.assertRegex(
+            _str(v),
+            r"""SFFVertex\(vID=None, designation="surface", x=None, y=None, z=None\)"""
+        )
+        self.assertIsNone(v.id)
+        self.assertEqual(v.designation, "surface")
+        self.assertIsNone(v.x)
+        self.assertIsNone(v.y)
+        self.assertIsNone(v.z)
+        self.assertEqual(v.point, (None, None, None))
+        # with values
+        x = _random_float(10)
+        y = _random_float(10)
+        z = _random_float(10)
+        _v = emdb_sff.vertexType(designation="normal", x=x, y=y, z=z)
+        v = adapter.SFFVertex.from_gds_type(_v)
+        self.assertRegex(
+            _str(v),
+            r"""SFFVertex\(vID=None, designation="normal", x={}, y={}, z={}\)""".format(
+                x, y, z
+            )
+        )
+        self.assertIsNone(v.id)
+        self.assertEqual(v.designation, "normal")
+        self.assertEqual(v.x, x)
+        self.assertEqual(v.y, y)
+        self.assertEqual(v.z, z)
+        self.assertEqual(v.point, (x, y, z))
+
+
+class TestSFFVertexList(Py23FixTestCase):
+    """Test the SFFVertexList class"""
+
+    def test_default(self):
+        """Test default settings"""
+        V = adapter.SFFVertexList()
+        self.assertRegex(
+            _str(V),
+            r"""SFFVertexList\(\[.*\]\)"""
+        )
+        self.assertEqual(len(V), 0)
+        self.assertEqual(list(V.get_ids()), list())
+        no_items = _random_integer(start=2, stop=10)
+        [V.append(
+            adapter.SFFVertex(
+                x=_random_float(10),
+                y=_random_float(10),
+                z=_random_float(10),
+            )
+        ) for _ in _xrange(no_items)]
+        self.assertEqual(len(V), no_items)
+        self.assertEqual(list(V.get_ids()), list(_xrange(no_items)))
+        v_id = random.choice(list(_xrange(no_items)))
+        v = V.get_by_id(v_id)
+        self.assertIsInstance(v, adapter.SFFVertex)
+        self.assertEqual(v.id, v_id)
+        self.assertIsNotNone(v.x)
+        self.assertIsNotNone(v.y)
+        self.assertIsNotNone(v.z)
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _V = emdb_sff.vertexListType()
+        V = adapter.SFFVertexList.from_gds_type(_V)
+        self.assertRegex(
+            _str(V),
+            r"""SFFVertexList\(\[.*\]\)"""
+        )
+        self.assertEqual(len(V), 0)
+        self.assertEqual(list(V.get_ids()), list())
+        no_items = _random_integer(start=2, stop=10)
+        _V.set_v([
+            emdb_sff.vertexType(
+                x=_random_float(10),
+                y=_random_float(10),
+                z=_random_float(10),
+            ) for _ in _xrange(no_items)])
+        V = adapter.SFFVertexList.from_gds_type(_V)
+        self.assertEqual(len(V), no_items)
+        self.assertEqual(list(V.get_ids()), list())
+        v_id = random.choice(list(_xrange(no_items)))
+        v = V[v_id]
+        self.assertIsInstance(v, adapter.SFFVertex)
+        self.assertIsNone(v.id)
+        self.assertIsNotNone(v.x)
+        self.assertIsNotNone(v.y)
+        self.assertIsNotNone(v.z)
 
 
 if __name__ == "__main__":

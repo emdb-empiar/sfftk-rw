@@ -24,9 +24,9 @@ class TestSFFTypeError(Py23FixTestCase):
 
     def test_default(self):
         """Test default operation"""
-        c = adapter.SFFComplexes()
-        with self.assertRaisesRegex(base.SFFTypeError, r".*?list.*?"):
-            c.set_complexes('complexes')
+        c = adapter.SFFComplexesAndMacromolecules()
+        with self.assertRaisesRegex(base.SFFTypeError, r".*?is not object of type.*?"):
+            c.complexes = 'complexes'
 
     def test_message(self):
         """Test error raised with message"""
@@ -93,11 +93,11 @@ class TestSFFType(Py23FixTestCase):
         self.assertRegex(_str(c), r"SFFRGBA\(red=\d\.\d+.*\)")
         # correct assessment of length: prints out a string with the correct len() value
         c = adapter.SFFComplexes()
-        c.set_complexes(rw.random_words(count=10))
+        c.id = rw.random_words(count=10)
         self.assertRegex(_str(c), r"SFFComplexes\(\[.*\]\)")
         # plain string: prints the plain string
         v = adapter.SFFThreeDVolume()
-        self.assertEqual(str(v), "3D formatted segment")
+        self.assertRegex(_str(v), r"""SFFThreeDVolume\(latticeId=None, value=None, transformId=None\)""")
 
         # repr_str is missing: prints out the output of type
         class _RGBA(adapter.SFFRGBA):
@@ -289,6 +289,9 @@ class TestSFFIndexType(Py23FixTestCase):
         self.assertIsNone(s.id)
         s = adapter.SFFSegment.from_gds_type(emdb_sff.segmentType(id=37))
         self.assertIsNotNone(s.id)
+        self.assertEqual(adapter.SFFSegment.segment_id, 1)
+        s = adapter.SFFSegment.from_gds_type(emdb_sff.segmentType(id=38))
+        self.assertEqual(adapter.SFFSegment.segment_id, 1)
 
     def test_reset_id(self):
         """Test that we can reset the ID"""
@@ -449,7 +452,7 @@ class TestSFFListType(Py23FixTestCase):
         # complexes
         c = adapter.SFFComplexes()
         words = rw.random_words(count=3)
-        c.set_complexes(words)
+        c.ids = words
         self.assertEqual(next(iter(c)), words[0])
         # vertices
         V = adapter.SFFVertexList()
@@ -937,6 +940,9 @@ class TestSFFListType(Py23FixTestCase):
         S = adapter.SFFSegmentList()
         _no_items = _random_integer(start=1, stop=10)
         [S.append(adapter.SFFSegment()) for _ in _xrange(_no_items)]
+        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
+        # appending item from gds does not change length of ID list
+        S.append(adapter.SFFSegment.from_gds_type(emdb_sff.segmentType()))
         self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
         # complexes
         C = adapter.SFFComplexes()
