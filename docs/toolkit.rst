@@ -2,81 +2,40 @@
 EMDB-SFF Read/Write Toolkit (``sfftk-rw``)
 ========================================================
 
-.. image:: https://badge.fury.io/py/sfftk.svg
-    :target: https://badge.fury.io/py/sfftk
-
-.. image:: https://img.shields.io/pypi/pyversions/sfftk
-    :alt: PyPI - Python Version
-
-.. image:: https://travis-ci.org/emdb-empiar/sfftk.svg?branch=master
-    :target: https://travis-ci.org/emdb-empiar/sfftk
-
-.. image:: https://coveralls.io/repos/github/emdb-empiar/sfftk/badge.svg?branch=master
-    :target: https://coveralls.io/github/emdb-empiar/sfftk?branch=master
-
-.. image:: https://readthedocs.org/projects/sfftk/badge/?version=latest
-    :target: http://sfftk.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
 .. note::
 
-   Looking for a graphical aid to using ``sfftk``? Try out the online version: the `Segmentation Annotation Tool <https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/>`_.
+    Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the ``sfftk`` package.
 
 .. contents::
 
 Introduction
 ============
 
-``sfftk`` is a set of utilities that facilitate creation, conversion and
-modification of `Electron Microscopy Data Bank - Segmentation File Format
+
+``sfftk-rw`` is a Python package that consists of command-line utilities and an API for reading and writing
+`Electron Microscopy Data Bank - Segmentation File Format
 (EMDB-SFF) files <https://github.com/emdb-empiar/sfftk/tree/master/sfftk/test_data/sff>`_.
-EMDB-SFF is an open, community-driven file format to handle annotated
-segmentations and subtomogram averages that facilitates segmentation file
-interchange. It is written in Python and provides both a command-line
-suite of commands and a Python API.
+It is designed to exclusively handle EMDB-SFF files meaning it has few
+dependencies making it easier to integrate into existing applications.
 
-Audience
---------
-
-``sfftk`` is primarily targeted but not restricted to biological electron
-microscopists and developers of image segmentation software.
-
+It is a core dependency for ``sfftk``, which extends it by adding functionality
+to convert various application-specific segmentation file formats to EMDB-SFF.
 
 License
 -------
 
-``sfftk`` is free and open source software released under the terms of the Apache License, Version 2.0. Source code is
-copyright EMBL-European Bioinformatics Institute (EMBL-EBI) 2017.
+``sfftk-rw`` is free and open source software released under the terms of the Apache License, Version 2.0. Source code is
+copyright EMBL-European Bioinformatics Institute (EMBL-EBI) 2019.
 
 Data Model
 ----------
 
-``sfftk`` is built to handle EMDB-SFF files. The corresponding schema
+The corresponding schema
 (``v0.7.0.dev0``) may be obtained at `http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html
 <http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html>`_.
 Changes to the schema are welcome for discussion at the *Segmentation Working Group*
 at `https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg
 <https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg>`_.
-
-.. _supported_formats:
-
-Supported Formats
------------------
-
-The following file formats are currently supported (in alphabetical order of
-extensions):
-
--  Amira Mesh (.am)
-
--  CCP4 Masks (.map)
-
--  IMOD (.mod)
-
--  Segger (.seg)
-
--  Stereolithography (.stl)
-
--  Amira HyperSurface (.surf)
 
 Contact
 -------
@@ -88,12 +47,12 @@ Any questions or comments should be addressed to
 Publications
 ------------
 
-The following articles should be cited whenever ``sfftk`` is used in a
+The following articles should be cited whenever ``sfftk-rw`` is used in a
 publication:
 
 .. note::
 
-	Article to be added
+    Article in preparation
 
 The EMDB-SFF data model is the result of various community consultations which
 are published in the following articles:
@@ -107,8 +66,8 @@ are published in the following articles:
 Getting Started
 ===============
 
-Obtaining and Installing ``sfftk``
-----------------------------------
+Obtaining and Installing ``sfftk-rw``
+-------------------------------------
 
 Dependencies
 ~~~~~~~~~~~~
@@ -123,25 +82,18 @@ that may be needed is ``numpy`` which can be installed with
 PyPI
 ~~~~
 
-``sfftk`` is available on PyPI meaning that all that one needs to do is run:
+``sfftk-rw`` is available on PyPI meaning that all that one needs to do is run:
 
 .. code:: bash
 
-    pip install sfftk
+    pip install sfftk-rwk
 
 Source
 ~~~~~~
 
-The ``sfftk`` source is available from Github `https://github.com/emdb-empiar/sfftk <https://github.com/emdb-empiar/sfftk>`_.
+The ``sfftk-rw`` source is available from Github `https://github.com/emdb-empiar/sfftk <https://github.com/emdb-empiar/sfftk>`_.
 
-Features
-========
 
-``sfftk`` has two principal functions:
-
-- `convert` application-specific segmentation file format (AS-SFF) files to EMDB-SFF;
-
-- `annotate` EMDB-SFF files against known ontologies.
 
 Conversion
 ----------
@@ -151,56 +103,34 @@ command.
 
 .. code:: bash
 
-    sff convert file.am -o file.sff
+    sfr convert file.am -o file.sff
 
 For a full description of how to perform conversion, please see the
 `guide to format conversion <https://sfftk.readthedocs.io/en/latest/converting.html>`_.
 
-Annotation
+Viewing
 ----------
 
-Annotation is performed using the ``notes`` utility on EMDB-SFF files.
 
-.. code:: bash
-
-    sff notes show -H file.sff
-
-``sfftk`` provides a simple set of tools to allow `viewing, searching and
-modifying annotations` associated with the segmentation and individual
-segments. The added annotations should be either from a public ontology or be
-an accession from a public database.
-
-See the `guide to annotating segmentations <https://sfftk.readthedocs.io/en/latest/annotating.html>`_ for a full
-treatment.
 
 Miscellaneous
 -------------
 
-``sfftk`` may also be used for several miscellaneous operations such as:
+``sfftk-rw`` may also be used for several miscellaneous operations such as:
 
 -  `Viewing segmentation metadata <https://sfftk.readthedocs.io/en/latest/misc.html#viewing-file-metadata>`_
 
--  `Prepping segmentations <https://sfftk.readthedocs.io/en/latest/misc.html#prepping-segmentation-files>`_ before conversion to EMDB-SFF
-
--  `Setting configurations <https://sfftk.readthedocs.io/en/latest/misc.html#setting-configurations>`_ that affect how ``sfftk`` works
 
 -  `Running unit tests <https://sfftk.readthedocs.io/en/latest/misc.html#running-unit-tests>`_  with the ``tests`` command
 
 More information on this can be found in the `guide to miscellaneous operations <https://sfftk.readthedocs.io/en/latest/misc.html>`_.
 
-Developing with ``sfftk``
--------------------------
+Developing with ``sfftk-rw``
+----------------------------
 
-``sfftk`` is developed as a set of decoupled packages providing the various
+``sfftk-rw`` is developed as a set of decoupled packages providing the various
 functionality. The main classes involved are found in the ``sfftk.schema package``.
 Please see `full API <http://sfftk.readthedocs.io/en/latest/sfftk.html>`_.
 There is also a `guide to developing with sfftk <https://sfftk.readthedocs.io/en/latest/developing.html>`_ which
 provides useful instructions.
 
-Extending ``sfftk``
--------------------
-
-``sfftk`` has built with extensibility in mind. It is anticipated that most
-extension will take the form of supporting additional file formats. Please
-read the `guide to extending sfftk <https://sfftk.readthedocs.io/en/latest/extending.html>`_ to learn how to do
-this.

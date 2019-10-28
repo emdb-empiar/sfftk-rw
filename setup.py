@@ -12,9 +12,9 @@ with open(u'README.rst') as f:
 SFFTKRW_NAME = u"sfftkrw"
 SFFTKRW_AUTHOR = u"Paul K. Korir, PhD"
 SFFTKRW_AUTHOR_EMAIL = u"pkorir@ebi.ac.uk, paul.korir@gmail.com"
-SFFTKRW_DESCRIPTION = u"Toolkit for working with EMDB-SFF and other segmentation file formats"
+SFFTKRW_DESCRIPTION = u"Toolkit for reading and writing EMDB-SFF files"
 SFFTKRW_DESCRIPTION_CONTENT_TYPE = u'text/x-rst; charset=UTF-8'
-SFFTKRW_URL = u"http://sfftk.readthedocs.io/en/latest/index.html"
+SFFTKRW_URL = u"http://sfftkrw.readthedocs.io/en/latest/index.html"
 SFFTKRW_LICENSE = u"Apache License"
 SFFTKRW_KEYWORDS = u"EMDB-SFF, SFF, segmentation"
 SFFTKRW_CLASSIFIERS = [
@@ -32,8 +32,8 @@ SFFTKRW_CLASSIFIERS = [
     u"Programming Language :: Python :: 2",
     u"Programming Language :: Python :: 2.7",
     u"Programming Language :: Python :: 3",
-    # u"Programming Language :: Python :: 3.5",
-    # u"Programming Language :: Python :: 3.6",
+    u"Programming Language :: Python :: 3.5",
+    u"Programming Language :: Python :: 3.6",
     u"Programming Language :: Python :: 3.7",
     u"Topic :: Software Development :: Libraries :: Python Modules",
     u"Topic :: Terminals",
