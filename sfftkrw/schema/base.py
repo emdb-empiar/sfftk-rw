@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function
 
-"""
+import sys
+
+u"""
 ========================
 sfftkrw.schema.base
 ========================
@@ -40,7 +42,7 @@ import re
 import h5py
 
 from .. import VALID_EXTENSIONS
-from ..core import _dict, _str
+from ..core import _dict, _str, _encode, _decode, _bytes
 from ..core.print_tools import print_date
 from ..schema import emdb_sff as sff
 
@@ -57,9 +59,9 @@ class SFFTypeError(Exception):
 
     def __str__(self):
         if self.message is None:
-            return repr("'{}' is not object of type {}".format(self.instance, self.klass))
+            return repr(u"'{}' is not object of type {}".format(self.instance, self.klass))
         else:
-            return repr("'{}' is not object of type {}: {}".format(self.instance, self.klass, self.message))
+            return repr(u"'{}' is not object of type {}: {}".format(self.instance, self.klass, self.message))
 
 
 # fixme: correct documentation
@@ -203,18 +205,18 @@ class SFFType(object):
                 T[15]
     """
     gds_type = None
-    """The generateDS class which this `SFFType` subclass adapts"""
+    u"""The generateDS class which this `SFFType` subclass adapts"""
     gds_tag_name = None
-    """The literal tag name in XML output. Should only changed in cases where several types are an extension of
+    u"""The literal tag name in XML output. Should only changed in cases where several types are an extension of
         a single type in which case all types appear in the XML with the name of their parent. Most classes
         will not need this set."""
     repr_string = ""
-    """The representational string with or without arguments
+    u"""The representational string with or without arguments
     
     arguments are provided using the `repr_args` attribute
     """
     repr_args = ()
-    """A tuple of strings each of which is an attribute that can be 
+    u"""A tuple of strings each of which is an attribute that can be 
     referenced for a value to put into the `repr_string`
     
     For example to have the representational string "SFFSegment(id=33)"
@@ -246,8 +248,8 @@ class SFFType(object):
             # restructure kwargs of type SFF* to their gds_type equivalents
             _kwargs = _dict()
             # remove `new_obj` from kwargs
-            if 'new_obj' in kwargs:
-                del kwargs['new_obj']
+            if u'new_obj' in kwargs:
+                del kwargs[u'new_obj']
             for k in kwargs:
                 if isinstance(kwargs[k], SFFType):
                     _kwargs[k] = kwargs[k]._local
@@ -259,7 +261,7 @@ class SFFType(object):
             if isinstance(self._local, sff.segmentation):
                 self.version = self._local.schemaVersion
         else:
-            raise ValueError("attribute 'gds_type' cannot be 'None'")
+            raise ValueError(u"attribute 'gds_type' cannot be 'None'")
         # if we have a name for the XML output tag we set it here
         self._local.original_tagname_ = self.gds_tag_name
 
@@ -289,12 +291,12 @@ class SFFType(object):
         if self.repr_string:
             if self.repr_args:
                 assert isinstance(self.repr_args, tuple)
-                if len(self.repr_args) == self.repr_string.count('{}'):
+                if len(self.repr_args) == self.repr_string.count(u'{}'):
                     _repr_args = list()
                     for arg in self.repr_args:
-                        if arg == 'len()':
+                        if arg == u'len()':
                             _repr_args.append(len(self))
-                        elif arg == 'list()':
+                        elif arg == u'list()':
                             _repr_args.append(list(self))
                         elif _match_var_stop.match(arg):
                             mo = _match_var_stop.match(arg)
@@ -304,14 +306,22 @@ class SFFType(object):
                         else:
                             _repr_args.append(getattr(self, arg, None))
                     # quote strings
-                    repr_args = list(map(lambda r: "\"{}\"".format(r) if isinstance(r, _str) else r, _repr_args))
+                    repr_args = list()
+                    for r in _repr_args:
+                        if isinstance(r, _str): # or isinstance(r, _bytes):
+                            repr_args.append(u"\"{}\"".format(_decode(r, u'utf-8')))
+                        elif isinstance(r, _bytes):
+                            repr_args.append(u"\"{}\"".format(r))
+                        else:
+                            repr_args.append(r)
+                    # repr_args = list(map(lambda r: "\"{}\"".format(r) if isinstance(r, _str) else r, _repr_args))
                     return self.repr_string.format(*repr_args)
                 else:
-                    raise ValueError("Unmatched number of '{}' and args in repr_args")
+                    raise ValueError(u"Unmatched number of '{}' and args in repr_args")
             else:
                 return self.repr_string
         else:
-            return str(type(self))
+            return _str(type(self))
 
     def __eq__(self, other):
         raise NotImplementedError  # by default; force explicit comparison
@@ -329,24 +339,24 @@ class SFFType(object):
         try:
             assert fn_ext in VALID_EXTENSIONS
         except AssertionError:
-            print_date("Invalid filename: extension should be one of {}: {}".format(
+            print_date(_encode(u"Invalid filename: extension should be one of {}: {}".format(
                 ", ".join(VALID_EXTENSIONS),
                 fn,
-            ))
+            ), u'utf-8'))
             return os.EX_DATAERR
-        if fn_ext == 'sff':
-            with open(fn, 'w') as f:
+        if fn_ext == u'sff':
+            with open(fn, u'w') as f:
                 # write version and encoding
-                version = _kwargs.get('version') if 'version' in _kwargs else "1.0"
-                encoding = _kwargs.get('encoding') if 'encoding' in _kwargs else "UTF-8"
-                f.write('<?xml version="{}" encoding="{}"?>\n'.format(version, encoding))
+                version = _kwargs.get(u'version') if u'version' in _kwargs else u"1.0"
+                encoding = _kwargs.get(u'encoding') if u'encoding' in _kwargs else u"UTF-8"
+                f.write(u'<?xml version="{}" encoding="{}"?>\n'.format(version, encoding))
                 # always export from the root
                 self._local.export(f, 0, *_args, **_kwargs)
-        elif fn_ext == 'hff':
-            with h5py.File(fn, 'w') as f:
+        elif fn_ext == u'hff':
+            with h5py.File(fn, u'w') as f:
                 self.as_hff(f, *_args, **_kwargs)
-        elif fn_ext == 'json':
-            with open(fn, 'w') as f:
+        elif fn_ext == u'json':
+            with open(fn, u'w') as f:
                 self.as_json(f, *_args, **_kwargs)
         return os.EX_OK
 
@@ -368,13 +378,13 @@ class SFFType(object):
 class SFFIndexType(SFFType):
     """Mixin to handle object IDs"""
     index_attr = ""
-    """the name of the attribute on the class which will be treated as the ID"""
+    u"""the name of the attribute on the class which will be treated as the ID"""
     increment_by = 1
-    """by default we increment by 1"""
+    u"""by default we increment by 1"""
     start_at = 0
-    """used when resetting `index_attr` attribute"""
+    u"""used when resetting `index_attr` attribute"""
     index_in_super = False
-    """when an index is applied to a set of subclasses we set `index_in_super` to True"""
+    u"""when an index is applied to a set of subclasses we set `index_in_super` to True"""
 
     @staticmethod
     def update_index(cls, obj, current, **kwargs):
@@ -389,12 +399,12 @@ class SFFIndexType(SFFType):
         # set the index on the instance
         setattr(obj, cls.index_attr, current)
         # update the index
-        if 'id' in kwargs:
-            next = kwargs['id'] + cls.increment_by
-        elif 'vID' in kwargs:
-            next = kwargs['vID'] + cls.increment_by
-        elif 'PID' in kwargs:
-            next = kwargs['PID'] + cls.increment_by
+        if u'id' in kwargs:
+            next = kwargs[u'id'] + cls.increment_by
+        elif u'vID' in kwargs:
+            next = kwargs[u'vID'] + cls.increment_by
+        elif u'PID' in kwargs:
+            next = kwargs[u'PID'] + cls.increment_by
         else:
             next = current + cls.increment_by
         return next
@@ -404,12 +414,12 @@ class SFFIndexType(SFFType):
         try:
             assert cls.index_attr
         except AssertionError:
-            raise SFFTypeError(cls.index_attr, str, 'subclasses must provide an index attribute')
+            raise SFFTypeError(cls.index_attr, str, u'subclasses must provide an index attribute')
         # make sure there is an attribute with the value of the `index_attr` string
         try:
             assert hasattr(cls, cls.index_attr)
         except AssertionError:
-            raise AttributeError("'{}' is missing a class variable '{}'".format(cls, cls.index_attr))
+            raise AttributeError(u"'{}' is missing a class variable '{}'".format(cls, cls.index_attr))
         # make sure the `index_attr` attribute is set to an integer
         try:
             assert isinstance(getattr(cls, cls.index_attr), numbers.Integral)
@@ -423,9 +433,9 @@ class SFFIndexType(SFFType):
             # if the index is in the superclass
             if obj.index_in_super:
                 try:
-                    assert hasattr(cls, 'update_counter')
+                    assert hasattr(cls, u'update_counter')
                 except AssertionError:
-                    raise AttributeError("{} superclass does not have an 'update_counter' classmethod".format(cls))
+                    raise AttributeError(u"{} superclass does not have an 'update_counter' classmethod".format(cls))
                 next = SFFIndexType.update_index(cls, obj, current, **kwargs)
                 # update the index attr
                 cls.update_counter(next)
@@ -437,25 +447,25 @@ class SFFIndexType(SFFType):
 
     def __init__(self, *args, **kwargs):
         # we don't want the `new_obj` kwarg to propagate so we terminate it here
-        if 'new_obj' in kwargs:
+        if u'new_obj' in kwargs:
             # only set the `index_attr` to None if `new_obj=False`
-            if not kwargs['new_obj']:
+            if not kwargs[u'new_obj']:
                 setattr(self, self.index_attr, None)
         super(SFFIndexType, self).__init__(*args, **kwargs)
         # fixme: adds `vID` and `PID` to segments ?! (harmless bug)
         # id
-        if 'id' in kwargs:
-            self._local.id = kwargs['id']
+        if u'id' in kwargs:
+            self._local.id = kwargs[u'id']
         else:
             self._local.id = getattr(self, self.index_attr)
         # vID: vertices
-        if 'vID' in kwargs:
-            self._local.vID = kwargs['vID']
+        if u'vID' in kwargs:
+            self._local.vID = kwargs[u'vID']
         else:
             self._local.vID = getattr(self, self.index_attr)
         # PID: polygons
-        if 'PID' in kwargs:
-            self._local.PID = kwargs['PID']
+        if u'PID' in kwargs:
+            self._local.PID = kwargs[u'PID']
         else:
             self._local.PID = getattr(self, self.index_attr)
 
@@ -479,10 +489,10 @@ class SFFIndexType(SFFType):
 class SFFListType(SFFType):
     """Mixin to confer list-like behaviour"""
     iter_attr = None
-    """the name of the attribute in the `generateDS` class that we iterate over together with 
+    u"""the name of the attribute in the `generateDS` class that we iterate over together with 
     the `SFFType` subclass to cast each received object to"""
     sibling_classes = []
-    """a list of pairs of classes which are all subclasses of some convenience class
+    u"""a list of pairs of classes which are all subclasses of some convenience class
     
     For example: `SFFShape` is the parent of `SFFCone`, `SFFCuboid`, `SFFCylinder` and `SFFEllipsoid`.
     This is because the ``SFFShape` class manages a continuous set of IDs for the different
@@ -496,7 +506,7 @@ class SFFListType(SFFType):
         try:
             assert cls.iter_attr
         except AssertionError:
-            raise ValueError("attribute 'iter_attr' in {} cannot be empty".format(cls))
+            raise ValueError(u"attribute 'iter_attr' in {} cannot be empty".format(cls))
         # make sure `iter_attr` consists of a string and a class
         try:
             assert isinstance(cls.iter_attr[0], _str)
@@ -586,7 +596,7 @@ class SFFListType(SFFType):
         elif iter_type in [_str, int] and (isinstance(value, _str) or isinstance(value, int)):
             cont[index] = value
         else:
-            raise SFFTypeError(value, iter_type, "or int or str")
+            raise SFFTypeError(value, iter_type, u"or int or str")
 
     def __delitem__(self, index):
         iter_name, _ = self.iter_attr
@@ -594,7 +604,7 @@ class SFFListType(SFFType):
         cont = getattr(self._local, iter_name)
         sff_item = self[index]
         del cont[index]
-        if hasattr(sff_item, 'id'):
+        if hasattr(sff_item, u'id'):
             self._del_from_dict(sff_item.id)
 
     def append(self, item):
@@ -607,13 +617,16 @@ class SFFListType(SFFType):
         elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
             cont.append(item)
         else:
-            raise SFFTypeError(item, SFFType, "or int or str")
+            raise SFFTypeError(item, SFFType, u"or int or str")
 
     def clear(self):
         """Remove all items"""
         iter_name, _ = self.iter_attr
         cont = getattr(self._local, iter_name)
-        cont.clear()
+        if sys.version_info[0] > 2:
+            cont.clear()
+        else:
+            del cont[:]
         self._id_dict.clear()
 
     def copy(self):
@@ -647,7 +660,7 @@ class SFFListType(SFFType):
         elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
             cont.insert(index, item)
         else:
-            raise SFFTypeError(item, SFFType, "or int or str")
+            raise SFFTypeError(item, SFFType, u"or int or str")
 
     def pop(self, index=-1):
         """Remove and return the indexed (default: last) item"""
@@ -675,7 +688,7 @@ class SFFListType(SFFType):
         elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
             cont.remove(item)
         else:
-            raise SFFTypeError(item, SFFType, "or int or str")
+            raise SFFTypeError(item, SFFType, u"or int or str")
 
     def reverse(self):
         """Reverses the items in place"""
@@ -693,7 +706,7 @@ class SFFListType(SFFType):
     def _add_to_dict(self, k, v):
         """Private method that adds to the convenience dictionary"""
         if k in self._id_dict:
-            raise KeyError("item with ID={} already present".format(k))
+            raise KeyError(u"item with ID={} already present".format(k))
         elif k is not None:
             self._id_dict[k] = v
 
@@ -729,7 +742,8 @@ class SFFAttribute(object):
         defines a ``_local`` attribute (defined from the ``gds_type`` class attribute, which points to
         the ``emdb_sff`` object.
 
-        :param str name: which ``emdb_sff`` attribute to get the data from
+        :param name: which ``emdb_sff`` attribute to get the data from
+        :type name: bytes or unicode
         :param sff_type: class of attribute (default: None - standard Python types like int, str, float)
         """
         self._name = name

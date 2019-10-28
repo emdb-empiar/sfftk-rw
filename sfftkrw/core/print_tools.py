@@ -55,7 +55,7 @@ def get_printable_ascii_string(B):
     :return ascii_b: the maximal ASCII prefix
     :rtype: bytes
     """
-    B = _encode(B, 'utf-8')
+    B = _encode(B, u'utf-8')
     printables = list(map(ord, string.printable))
     index = len(B) - 1
     if sys.version_info[0] > 2:
@@ -89,7 +89,7 @@ def print_static(print_string, stream=sys.stderr, incl_date=True):
         assert isinstance(print_string, _basestring)
     except AssertionError:
         raise ValueError(u"input should be subclass of basestring: str or unicode")
-    print_string = _decode(print_string, 'utf-8')
+    print_string = _decode(print_string, u'utf-8')
     if incl_date:
         print(u"\r{}\t{}".format(time.ctime(time.time()), print_string), file=stream, end='')
     else:

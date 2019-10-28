@@ -20,7 +20,7 @@ def get_path(D, path):
     try:
         assert map(hash, path)
     except TypeError:
-        raise TypeError('path should be an iterable of hashables')
+        raise TypeError(u'path should be an iterable of hashables')
 
     item = D
     for p in path:
@@ -40,7 +40,7 @@ def rgba_to_hex(rgba, channels=3):
     try:
         assert channels in [3, 4]  # you can only return 3 or 4 channels
     except AssertionError:
-        raise ValueError("keyword 'channels' can only be 3 or 4")
+        raise ValueError(u"keyword 'channels' can only be 3 or 4")
     min_channel_value = 0.0
     max_channel_value = 1.0
     if len(rgba) == 4:
@@ -53,7 +53,7 @@ def rgba_to_hex(rgba, channels=3):
             b < min_channel_value or b > max_channel_value or \
             a < min_channel_value or a > max_channel_value:
         raise ValueError(
-            'values of rgba should be [{}-{}] (inclusive)'.format(
+            u'values of rgba should be [{}-{}] (inclusive)'.format(
                 min_channel_value,
                 max_channel_value
             )
@@ -61,13 +61,13 @@ def rgba_to_hex(rgba, channels=3):
     import math
 
     def dd_hex(val):
-        _, hex_val = hex(int(math.floor(val * 255))).split('x')
+        _, hex_val = hex(int(math.floor(val * 255))).split(u'x')
         if len(hex_val) == 1:
-            hex_val = '0' + hex_val
+            hex_val = u'0' + hex_val
         return hex_val
 
     if channels == 3:
-        hex_colour = '#' + dd_hex(r) + dd_hex(g) + dd_hex(b)
+        hex_colour = u'#' + dd_hex(r) + dd_hex(g) + dd_hex(b)
     elif channels == 4:
-        hex_colour = '#' + dd_hex(r) + dd_hex(g) + dd_hex(b) + dd_hex(a)
+        hex_colour = u'#' + dd_hex(r) + dd_hex(g) + dd_hex(b) + dd_hex(a)
     return hex_colour

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function
 
-"""
+u"""
 ========================
 sfftkrw.schema.adapter
 ========================
@@ -24,7 +24,7 @@ Here is an example of how the :py:class:`SFFSegmentation` class is defined using
 .. code:: python
 
     class SFFSegmentation(SFFType):
-        \"""Adapter class to make using the output of ``generateDS`` easier to use\"""
+        \"\"\"Adapter class to make using the output of ``generateDS`` easier to use\"\"\"
         gds_type = sff.segmentation
         repr_string = "SFFSegmentation(...)"
 
@@ -80,38 +80,38 @@ from ..core import _decode, _dict, _str, _encode, _bytes, _xrange
 from ..core.print_tools import print_date
 
 FORMAT_CHARS = {
-    'int8': 'b',
-    'uint8': 'B',
-    'int16': 'h',
-    'uint16': 'H',
-    'int32': 'i',
-    'uint32': 'I',
-    'int64': 'q',
-    'uint64': 'Q',
-    'float32': 'f',
-    'float64': 'd',
+    u'int8': u'b',
+    u'uint8': u'B',
+    u'int16': u'h',
+    u'uint16': u'H',
+    u'int32': u'i',
+    u'uint32': u'I',
+    u'int64': u'q',
+    u'uint64': u'Q',
+    u'float32': u'f',
+    u'float64': u'd',
 }
 
 ENDIANNESS = {
-    'little': '<',
-    'big': '>',
+    u'little': u'<',
+    u'big': u'>',
 }
 
 # ensure that we can read/write encoded data
-sff.ExternalEncoding = "utf-8"
+sff.ExternalEncoding = u"utf-8"
 
 
 class SFFRGBA(SFFType):
     """RGBA colour"""
     gds_type = sff.rgbaType
-    repr_string = "SFFRGBA(red={}, green={}, blue={}, alpha={})"
-    repr_args = ('red', 'green', 'blue', 'alpha')
+    repr_string = u"SFFRGBA(red={}, green={}, blue={}, alpha={})"
+    repr_args = (u'red', u'green', u'blue', u'alpha')
 
     # attributes
-    red = SFFAttribute('red', help="red channel")
-    green = SFFAttribute('green', help="green channel")
-    blue = SFFAttribute('blue', help="blue channel")
-    alpha = SFFAttribute('alpha', help="alpha (opacity) channel")
+    red = SFFAttribute(u'red', help=u"red channel")
+    green = SFFAttribute(u'green', help=u"green channel")
+    blue = SFFAttribute(u'blue', help=u"blue channel")
+    alpha = SFFAttribute(u'alpha', help=u"alpha (opacity) channel")
 
     def __init__(self, random_colour=False, *args, **kwargs):
         """
@@ -153,12 +153,12 @@ class SFFRGBA(SFFType):
         def __nonzero__(self):
             return self._boolean_test()
 
-    def as_hff(self, parent_group, name="colour"):
+    def as_hff(self, parent_group, name=u"colour"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         parent_group[name] = self.value
         # group = parent_group.create_group(name)
-        # group['rgba'] = self.value
+        # group[u'rgba'] = self.value
         return parent_group
 
     @classmethod
@@ -167,7 +167,7 @@ class SFFRGBA(SFFType):
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
         # r = SFFRGBA()
-        obj.value = hff_data['colour'][()]
+        obj.value = hff_data[u'colour'][()]
         # obj.rgba = r
         return obj
 
@@ -175,51 +175,51 @@ class SFFRGBA(SFFType):
 class SFFComplexes(SFFListType):
     """Class that encapsulates complex"""
     gds_type = sff.complexType
-    repr_string = "SFFComplexes({})"
-    repr_args = ('list()',)
-    iter_attr = ('id', _str)
+    repr_string = u"SFFComplexes({})"
+    repr_args = (u'list()',)
+    iter_attr = (u'id', _str)
 
     # fixme: without an `sff_type` attribute we can set the ids attribute to anything!
-    ids = SFFAttribute('id', help="the list of complex ids")
+    ids = SFFAttribute(u'id', help=u"the list of complex ids")
 
     @classmethod
     def from_hff(cls, hff_data):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Dataset)
         obj = cls()
-        [obj.append(_decode(_, 'utf-8')) for _ in hff_data]
+        [obj.append(_decode(_, u'utf-8')) for _ in hff_data]
         return obj
 
 
 class SFFMacromolecules(SFFListType):
     """Class that encapsulates macromolecule"""
     gds_type = sff.macromoleculeType
-    repr_string = "SFFMacromolecules({})"
-    repr_args = ("list()",)
+    repr_string = u"SFFMacromolecules({})"
+    repr_args = (u"list()",)
     # todo: same problem as SFFComplexes
-    iter_attr = ('id', str)
+    iter_attr = (u'id', _str)
 
-    ids = SFFAttribute('id', help="the list of macromolecule ids")
+    ids = SFFAttribute(u'id', help=u"the list of macromolecule ids")
 
     @classmethod
     def from_hff(cls, hff_data):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Dataset)
         obj = cls()
-        [obj.append(_decode(_, 'utf-8')) for _ in hff_data]
+        [obj.append(_decode(_, u'utf-8')) for _ in hff_data]
         return obj
 
 
 class SFFComplexesAndMacromolecules(SFFType):
     """Complexes and macromolecules"""
     gds_type = sff.macromoleculesAndComplexesType
-    repr_string = "SFFComplexesAndMacromolecules(complexes={}, macromolecules={})"
-    repr_args = ('complexes', 'macromolecules')
+    repr_string = u"SFFComplexesAndMacromolecules(complexes={}, macromolecules={})"
+    repr_args = (u'complexes', u'macromolecules')
 
     # attributes
-    complexes = SFFAttribute('complex', sff_type=SFFComplexes, help="a list of complex accessions")
-    macromolecules = SFFAttribute('macromolecule', sff_type=SFFMacromolecules,
-                                  help="a list of macromolecule accessions")
+    complexes = SFFAttribute(u'complex', sff_type=SFFComplexes, help=u"a list of complex accessions")
+    macromolecules = SFFAttribute(u'macromolecule', sff_type=SFFMacromolecules,
+                                  help=u"a list of macromolecule accessions")
 
     @property
     def num_complexes(self):
@@ -242,14 +242,14 @@ class SFFComplexesAndMacromolecules(SFFType):
         def __nonzero__(self):
             return self._boolean_test()
 
-    def as_hff(self, parent_group, name="complexesAndMacromolecules"):
+    def as_hff(self, parent_group, name=u"complexesAndMacromolecules"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
         if self.complexes:
-            group['complexes'] = self.complexes
+            group[u'complexes'] = self.complexes
         if self.macromolecules:
-            group['macromolecules'] = self.macromolecules
+            group[u'macromolecules'] = self.macromolecules
         return parent_group
 
     @classmethod
@@ -257,35 +257,35 @@ class SFFComplexesAndMacromolecules(SFFType):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
-        if "complexes" in hff_data:
-            obj.complexes = SFFComplexes.from_hff(hff_data['complexes'])
-        if "macromolecules" in hff_data:
-            obj.macromolecules = SFFMacromolecules.from_hff(hff_data['macromolecules'])
+        if u"complexes" in hff_data:
+            obj.complexes = SFFComplexes.from_hff(hff_data[u'complexes'])
+        if u"macromolecules" in hff_data:
+            obj.macromolecules = SFFMacromolecules.from_hff(hff_data[u'macromolecules'])
         return obj
 
 
 class SFFExternalReference(SFFIndexType):
     """Class that encapsulates an external reference"""
     gds_type = sff.externalReferenceType
-    repr_string = "SFFExternalReference(type={}, otherType={}, value={}, label={}, description={})"
-    repr_args = ('type', 'other_type', 'value', 'label', 'description')
+    repr_string = u"SFFExternalReference(type={}, otherType={}, value={}, label={}, description={})"
+    repr_args = (u'type', u'other_type', u'value', u'label', u'description')
     ref_id = 0
-    index_attr = 'ref_id'
+    index_attr = u'ref_id'
 
     # attributes
-    id = SFFAttribute('id', help="this external reference's ID")
-    type = SFFAttribute('type_', help="the ontology/archive name")
-    other_type = SFFAttribute('otherType', help="a URL/IRI where data for this external reference may be obtained")
-    value = SFFAttribute('value', help="the accession for this external reference")
-    label = SFFAttribute('label', help="a short description of this external reference")
-    description = SFFAttribute('description', help="a long description of this external reference")
+    id = SFFAttribute(u'id', help=u"this external reference's ID")
+    type = SFFAttribute(u'type_', help=u"the ontology/archive name")
+    other_type = SFFAttribute(u'otherType', help=u"a URL/IRI where data for this external reference may be obtained")
+    value = SFFAttribute(u'value', help=u"the accession for this external reference")
+    label = SFFAttribute(u'label', help=u"a short description of this external reference")
+    description = SFFAttribute(u'description', help=u"a long description of this external reference")
 
     # methods
     def __init__(self, *args, **kwargs):
         # remap kwargs
-        if 'type' in kwargs:
-            kwargs['type_'] = kwargs['type']
-            del kwargs['type']
+        if u'type' in kwargs:
+            kwargs[u'type_'] = kwargs[u'type']
+            del kwargs[u'type']
         super(SFFExternalReference, self).__init__(*args, **kwargs)
 
     def __eq__(self, other):
@@ -293,16 +293,16 @@ class SFFExternalReference(SFFIndexType):
             assert isinstance(other, type(self))
         except AssertionError:
             raise SFFTypeError(other, type(self))
-        attrs = ['type', 'other_type', 'value', 'label', 'description']
+        attrs = [u'type', u'other_type', u'value', u'label', u'description']
         return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
 
 
 class SFFExternalReferences(SFFListType):
     """Container for external references"""
     gds_type = sff.externalReferencesType
-    repr_string = "SFFExternalReferences({})"
-    repr_args = ('list()',)
-    iter_attr = ('ref', SFFExternalReference)
+    repr_string = u"SFFExternalReferences({})"
+    repr_args = (u'list()',)
+    iter_attr = (u'ref', SFFExternalReference)
 
     def __eq__(self, other):
         try:
@@ -315,15 +315,15 @@ class SFFExternalReferences(SFFListType):
 class SFFBiologicalAnnotation(SFFType):
     """Biological annotation"""
     gds_type = sff.biologicalAnnotationType
-    repr_string = """SFFBiologicalAnnotation(name={}, description={}, numberOfInstances={}, externalReferences={})"""
-    repr_args = ('name', 'description', 'number_of_instances', 'external_references')
+    repr_string = u"""SFFBiologicalAnnotation(name={}, description={}, numberOfInstances={}, externalReferences={})"""
+    repr_args = (u'name', u'description', u'number_of_instances', u'external_references')
 
     # attributes
-    name = SFFAttribute('name', help="the name of this segment")
-    description = SFFAttribute('description', help="a brief description for this segment")
-    external_references = SFFAttribute('externalReferences', sff_type=SFFExternalReferences,
-                                       help="the set of external references")
-    number_of_instances = SFFAttribute('numberOfInstances', help="the number of instances of this segment")
+    name = SFFAttribute(u'name', help=u"the name of this segment")
+    description = SFFAttribute(u'description', help=u"a brief description for this segment")
+    external_references = SFFAttribute(u'externalReferences', sff_type=SFFExternalReferences,
+                                       help=u"the set of external references")
+    number_of_instances = SFFAttribute(u'numberOfInstances', help=u"the number of instances of this segment")
 
     # methods
     def _boolean_test(self):
@@ -344,37 +344,37 @@ class SFFBiologicalAnnotation(SFFType):
             assert isinstance(other, type(self))
         except AssertionError:
             raise SFFTypeError(other, type(self))
-        attrs = ['name', 'description', 'external_references', 'number_of_instances']
+        attrs = [u'name', u'description', u'external_references', u'number_of_instances']
         return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
 
     @property
     def num_external_references(self):
         return len(self.external_references)
 
-    def as_hff(self, parent_group, name="biologicalAnnotation"):
+    def as_hff(self, parent_group, name=u"biologicalAnnotation"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
         if self:
             vl_str = h5py.special_dtype(vlen=_str)
             h_ext = group.create_dataset(
-                "externalReferences",
+                u"externalReferences",
                 (self.num_external_references,),
                 dtype=[
-                    ('type', vl_str),
-                    ('otherType', vl_str),
-                    ('value', vl_str),
-                    ('label', vl_str),
-                    ('description', vl_str),
+                    (u'type', vl_str),
+                    (u'otherType', vl_str),
+                    (u'value', vl_str),
+                    (u'label', vl_str),
+                    (u'description', vl_str),
                 ]
             )
             # description and nubmerOfInstances as attributes
-            group['name'] = self.name if self.name else ''
-            group['description'] = self.description if self.description else ''
+            group[u'name'] = self.name if self.name else ''
+            group[u'description'] = self.description if self.description else ''
             if isinstance(self.number_of_instances, numbers.Integral):
-                group['numberOfInstances'] = self.number_of_instances if self.number_of_instances > 0 else 0
+                group[u'numberOfInstances'] = self.number_of_instances if self.number_of_instances > 0 else 0
             else:
-                group['numberOfInstances'] = 0
+                group[u'numberOfInstances'] = 0
             i = 0
             for extref in self.external_references:
                 h_ext[i] = (extref.type, extref.other_type, extref.value, extref.label, extref.description)
@@ -383,20 +383,20 @@ class SFFBiologicalAnnotation(SFFType):
 
     def as_json(self):
         bio_ann = _dict()
-        bio_ann['name'] = self.name if self.name is not None else None
-        bio_ann['description'] = str(
+        bio_ann[u'name'] = self.name if self.name is not None else None
+        bio_ann[u'description'] = _str(
             self.description) if self.description is not None else None
-        bio_ann['numberOfInstances'] = self.number_of_instances if self.number_of_instances is not None else None
-        bio_ann['externalReferences'] = list()
+        bio_ann[u'numberOfInstances'] = self.number_of_instances if self.number_of_instances is not None else None
+        bio_ann[u'externalReferences'] = list()
         if self.external_references:
             for extref in self.external_references:
-                bio_ann['externalReferences'].append(
+                bio_ann[u'externalReferences'].append(
                     {
-                        'type': extref.type,
-                        'otherType': extref.other_type,
-                        'value': extref.value,
-                        'label': extref.label,
-                        'description': extref.description,
+                        u'type': extref.type,
+                        u'otherType': extref.other_type,
+                        u'value': extref.value,
+                        u'label': extref.label,
+                        u'description': extref.description,
                     }
                 )
         return bio_ann
@@ -406,16 +406,16 @@ class SFFBiologicalAnnotation(SFFType):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
-        if 'name' in hff_data:
-            obj.name = _decode(hff_data['name'][()], 'utf-8')
-        if 'description' in hff_data:
-            obj.description = _decode(hff_data['description'][()], 'utf-8')
-        obj._number_ofi = int(hff_data['numberOfInstances'][()])
-        if "externalReferences" in hff_data:
+        if u'name' in hff_data:
+            obj.name = _decode(hff_data[u'name'][()], u'utf-8')
+        if u'description' in hff_data:
+            obj.description = _decode(hff_data[u'description'][()], u'utf-8')
+        obj._number_ofi = int(hff_data[u'numberOfInstances'][()])
+        if u"externalReferences" in hff_data:
             obj.external_references = SFFExternalReferences()
-            for ref in hff_data['externalReferences']:
+            for ref in hff_data[u'externalReferences']:
                 e = SFFExternalReference()
-                e.type, e.other_type, e.value, e.label, e.description = list(map(lambda r: _decode(r, 'utf-8'), ref))
+                e.type, e.other_type, e.value, e.label, e.description = list(map(lambda r: _decode(r, u'utf-8'), ref))
                 obj.external_references.append(e)
         return obj
 
@@ -423,20 +423,20 @@ class SFFBiologicalAnnotation(SFFType):
 class SFFThreeDVolume(SFFType):
     """Class representing segments described using a 3D volume"""
     gds_type = sff.threeDVolumeType
-    repr_string = "SFFThreeDVolume(latticeId={}, value={}, transformId={})"
-    repr_args = ('lattice_id', 'value', 'transform_id')
+    repr_string = u"SFFThreeDVolume(latticeId={}, value={}, transformId={})"
+    repr_args = (u'lattice_id', u'value', u'transform_id')
 
     # attributes
-    lattice_id = SFFAttribute('latticeId', help="the ID of the lattice that has the data for this 3D volume")
-    value = SFFAttribute('value', help="the voxel values associated with this 3D volume")
-    transform_id = SFFAttribute('transformId', help="a transform applied to this 3D volume [optional]")
+    lattice_id = SFFAttribute(u'latticeId', help=u"the ID of the lattice that has the data for this 3D volume")
+    value = SFFAttribute(u'value', help=u"the voxel values associated with this 3D volume")
+    transform_id = SFFAttribute(u'transformId', help=u"a transform applied to this 3D volume [optional]")
 
     def __eq__(self, other):
         try:
             assert isinstance(other, type(self))
         except AssertionError:
             raise SFFTypeError(other, type(self))
-        attrs = ['lattice_id', 'value', 'transform_id']
+        attrs = [u'lattice_id', u'value', u'transform_id']
         return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
 
     def _boolean_test(self):
@@ -452,14 +452,14 @@ class SFFThreeDVolume(SFFType):
         def __nonzero__(self):
             return self._boolean_test()
 
-    def as_hff(self, parent_group, name="volume"):
+    def as_hff(self, parent_group, name=u"volume"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
-        group['latticeId'] = self.lattice_id
-        group['value'] = self.value
+        group[u'latticeId'] = self.lattice_id
+        group[u'value'] = self.value
         if self.transform_id is not None:
-            group['transformId'] = self.transform_id
+            group[u'transformId'] = self.transform_id
         return parent_group
 
     @classmethod
@@ -467,19 +467,19 @@ class SFFThreeDVolume(SFFType):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
-        obj.lattice_id = hff_data['latticeId'][()]
-        obj.value = hff_data['value'][()]
-        if 'transformId' in hff_data:
-            obj.transform_id = hff_data['transformId'][()]
+        obj.lattice_id = hff_data[u'latticeId'][()]
+        obj.value = hff_data[u'value'][()]
+        if u'transformId' in hff_data:
+            obj.transform_id = hff_data[u'transformId'][()]
         return obj
 
 
 class SFFVolume(SFFType):
     """Class for represention 3-space dimension"""
     # attributes
-    cols = SFFAttribute('cols', help="number of columns")
-    rows = SFFAttribute('rows', help="number of rows")
-    sections = SFFAttribute('sections', help="number of sections (sets of congruent row-column collections)")
+    cols = SFFAttribute(u'cols', help=u"number of columns")
+    rows = SFFAttribute(u'rows', help=u"number of rows")
+    sections = SFFAttribute(u'sections', help=u"number of sections (sets of congruent row-column collections)")
 
     @property
     def value(self):
@@ -490,7 +490,7 @@ class SFFVolume(SFFType):
         if len(value) == 3:
             self.cols, self.rows, self.sections = value
         else:
-            raise SFFTypeError(value, "Iterable", message="should be of length 3")
+            raise SFFTypeError(value, u"Iterable", message=u"should be of length 3")
 
     @classmethod
     def from_hff(cls, hff_data):
@@ -505,8 +505,8 @@ class SFFVolume(SFFType):
 
 class SFFVolumeStructure(SFFVolume):
     gds_type = sff.volumeStructureType
-    repr_string = "SFFVolumeStructure(cols={}, rows={}, sections={})"
-    repr_args = ('cols', 'rows', 'sections')
+    repr_string = u"SFFVolumeStructure(cols={}, rows={}, sections={})"
+    repr_args = (u'cols', u'rows', u'sections')
 
     @property
     def voxel_count(self):
@@ -518,49 +518,49 @@ class SFFVolumeIndex(SFFVolume):
     """Class representing volume indices"""
     # todo: implement an iterator to increment indices correctly
     gds_type = sff.volumeIndexType
-    repr_string = "SFFVolumeIndex(cols={}, rows={}, sections={})"
-    repr_args = ('cols', 'rows', 'sections')
+    repr_string = u"SFFVolumeIndex(cols={}, rows={}, sections={})"
+    repr_args = (u'cols', u'rows', u'sections')
 
 
 class SFFLattice(SFFIndexType):
     """Class representing 3D """
     gds_type = sff.latticeType
-    repr_string = "SFFLattice(mode={}, endianness={}, size={}, start={}, data={})"
-    repr_args = ('mode', 'endianness', 'size', 'start', 'data[:100]')
+    repr_string = u"SFFLattice(mode={}, endianness={}, size={}, start={}, data={})"
+    repr_args = (u'mode', u'endianness', u'size', u'start', u'data[:100]')
     lattice_id = 0
 
-    index_attr = 'lattice_id'
+    index_attr = u'lattice_id'
 
     # attributes
-    id = SFFAttribute('id', help="the ID for this lattice (referenced by 3D volumes)")
-    mode = SFFAttribute('mode',
-                        help="type of data for each voxel; valid values are: int8, uint8, int16, uint16, int32, "
-                             "uint32, int64, uint64, float32, float64")
-    endianness = SFFAttribute('endianness', help="endianness; either 'little' (default) or 'big'")
+    id = SFFAttribute(u'id', help=u"the ID for this lattice (referenced by 3D volumes)")
+    mode = SFFAttribute(u'mode',
+                        help=u"type of data for each voxel; valid values are: int8, uint8, int16, uint16, int32, "
+                             u"uint32, int64, uint64, float32, float64")
+    endianness = SFFAttribute(u'endianness', help=u"endianness; either 'little' (default) or 'big'")
     # todo: redundant to have size and data when size should be inferred from data
-    size = SFFAttribute('size', sff_type=SFFVolumeStructure, help="size of the lattice described using a "
+    size = SFFAttribute(u'size', sff_type=SFFVolumeStructure, help=u"size of the lattice described using a "
                                                                   ":py:class:`sfftkrw.schema.SFFVolumeStructure` object")
-    start = SFFAttribute('start', sff_type=SFFVolumeIndex, help="starting index of the lattices described using a"
+    start = SFFAttribute(u'start', sff_type=SFFVolumeIndex, help=u"starting index of the lattices described using a"
                                                                 ":py:class:`sfftkrw.schema.SFFVolumeIndex` object")
-    data = SFFAttribute('data', help="data provided by a numpy array; the dimensions should correspond with those "
-                                     "specified in the 'size' attribute")
+    data = SFFAttribute(u'data', help=u"data provided by a numpy array; the dimensions should correspond with those "
+                                     u"specified in the 'size' attribute")
 
     def __init__(self, *args, **kwargs):
-        if 'data' in kwargs:
-            if isinstance(kwargs['data'], numpy.ndarray):
-                self._data = kwargs['data']
-                kwargs['data'] = SFFLattice._encode(kwargs['data'], **kwargs)
-            elif isinstance(kwargs['data'], _bytes):
-                self._data = SFFLattice._decode(kwargs['data'], **kwargs)
-            elif isinstance(kwargs['data'], _str):
-                _data = _encode(kwargs['data'], 'ASCII')
+        if u'data' in kwargs:
+            if isinstance(kwargs[u'data'], numpy.ndarray):
+                self._data = kwargs[u'data']
+                kwargs[u'data'] = SFFLattice._encode(kwargs[u'data'], **kwargs)
+            elif isinstance(kwargs[u'data'], _bytes):
+                self._data = SFFLattice._decode(kwargs[u'data'], **kwargs)
+            elif isinstance(kwargs[u'data'], _str):
+                _data = _encode(kwargs[u'data'], u'ASCII')
                 self._data = SFFLattice._decode(_data, **kwargs)
-                kwargs['data'] = _data
+                kwargs[u'data'] = _data
                 del _data
         super(SFFLattice, self).__init__(*args, **kwargs)
 
     @classmethod
-    def from_array(cls, data, size=None, mode='uint32', endianness='little',
+    def from_array(cls, data, size=None, mode=u'uint32', endianness=u'little',
                    start=SFFVolumeIndex(rows=0, cols=0, sections=0)):
         """Create a :py:class:`SFFLattice` object from a numpy array inferring size and assuming certain defaults
 
@@ -570,8 +570,10 @@ class SFFLattice(SFFIndexType):
         :type size: :py:class:`SFFVolumeStructure`
         :param start: the values of the corner voxel
         :type start: :py:class:`SFFVolumeIndex`
-        :param str mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
-        :param str endianness: byte ordering: ``little`` (default) or ``big``
+        :param mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
+        :type mode: bytes or str or unicode
+        :param endianness: byte ordering: ``little`` (default) or ``big``
+        :type endianness: bytes or str or unicode
         :return: a :py:class:`SFFLattice` object
         :rtype: :py:class:`SFFLattice`
         """
@@ -592,7 +594,7 @@ class SFFLattice(SFFIndexType):
 
     @property
     def data_array(self):
-        if not hasattr(self, '_data'):
+        if not hasattr(self, u'_data'):
             # make numpy from bytes
             self._data = SFFLattice._decode(
                 self.data,
@@ -604,18 +606,20 @@ class SFFLattice(SFFIndexType):
         return self._data
 
     @classmethod
-    def from_bytes(cls, byte_seq, size, mode='uint32', endianness='little',
+    def from_bytes(cls, byte_seq, size, mode=u'uint32', endianness=u'little',
                    start=SFFVolumeIndex(rows=0, cols=0, sections=0)):
         """Create a :py:class:`SFFLattice` object using a bytes object
 
         :param byte_seq: the data as a base64-encoded, zipped sequence; can be bytes or unicode
-        :type byte_seq: tuple[bytes, str]
+        :type byte_seq: bytes or unicode
         :param size: the size of the lattice as a :py:class:`SFFVolumeStructure` object
         :type size: :py:class:`SFFVolumeStructure`
         :param start: the values of the corner voxel
         :type start: :py:class:`SFFVolumeIndex`
-        :param str mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
-        :param str endianness: byte ordering: ``little`` (default) or ``big``
+        :param mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
+        :type mode: bytes or str or unicode
+        :param endianness: byte ordering: ``little`` (default) or ``big``
+        :type endianness: bytes or str or unicode
         :return: a :py:class:`SFFLattice` object
         :rtype: :py:class:`SFFLattice`
         """
@@ -624,7 +628,7 @@ class SFFLattice(SFFIndexType):
         except AssertionError:
             raise SFFTypeError(size, SFFVolumeStructure)
         if isinstance(byte_seq, _str):  # if unicode convert to bytes
-            _encode(byte_seq, 'ASCII')
+            _encode(byte_seq, u'ASCII')
         obj = cls(
             mode=mode,
             endianness=endianness,
@@ -635,7 +639,7 @@ class SFFLattice(SFFIndexType):
         return obj
 
     @staticmethod
-    def _encode(array, mode='uint32', endianness='little', **kwargs):
+    def _encode(array, mode=u'uint32', endianness=u'little', **kwargs):
         """Encode a :py:class:`numpy.ndarray` as a base64-encoded, zipped byte sequence
 
         :param array: a :py:class:`numpy.ndarray` array
@@ -654,7 +658,7 @@ class SFFLattice(SFFIndexType):
         return bin64
 
     @staticmethod
-    def _decode(bin64, size, mode='uint32', endianness='little', **kwargs):
+    def _decode(bin64, size, mode=u'uint32', endianness=u'little', **kwargs):
         """Decode a base64-encoded, zipped byte sequence to a numpy array
 
         :param bin64: the base64-encoded zipped bytes
@@ -677,28 +681,28 @@ class SFFLattice(SFFIndexType):
         del bindata
         return data
 
-    def as_hff(self, parent_group, name="{}"):
+    def as_hff(self, parent_group, name=u"{}"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name.format(self.id))
-        group['mode'] = _decode(self.mode, 'utf-8')
-        group['endianness'] = _decode(self.endianness, 'utf-8')
-        group['size'] = self.size.value
-        group['start'] = self.start.value
-        group['data'] = self.data
+        group[u'mode'] = _decode(self.mode, u'utf-8')
+        group[u'endianness'] = _decode(self.endianness, u'utf-8')
+        group[u'size'] = self.size.value
+        group[u'start'] = self.start.value
+        group[u'data'] = self.data
         return parent_group
 
     @classmethod
     def from_hff(cls, hff_data):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
-        mode_ = _decode(hff_data['mode'][()], 'utf-8')
+        mode_ = _decode(hff_data[u'mode'][()], u'utf-8')
         obj = cls(
             mode=mode_,
-            endianness=_decode(hff_data['endianness'][()], 'utf-8'),
-            size=SFFVolumeStructure.from_hff(hff_data['size']),
-            start=SFFVolumeIndex.from_hff(hff_data['start']),
-            data=_decode(hff_data['data'][()], 'utf-8'),
+            endianness=_decode(hff_data[u'endianness'][()], u'utf-8'),
+            size=SFFVolumeStructure.from_hff(hff_data[u'size']),
+            start=SFFVolumeIndex.from_hff(hff_data[u'start']),
+            data=_decode(hff_data[u'data'][()], u'utf-8'),
         )
         return obj
 
@@ -706,11 +710,11 @@ class SFFLattice(SFFIndexType):
 class SFFLatticeList(SFFListType):
     """A container for lattice objects"""
     gds_type = sff.latticeListType
-    repr_string = "SFFLatticeList({})"
-    repr_args = ("list()",)
-    iter_attr = ('lattice', SFFLattice)
+    repr_string = u"SFFLatticeList({})"
+    repr_args = (u"list()",)
+    iter_attr = (u'lattice', SFFLattice)
 
-    def as_hff(self, parent_group, name='lattices'):
+    def as_hff(self, parent_group, name=u'lattices'):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
@@ -733,15 +737,15 @@ class SFFLatticeList(SFFListType):
 class SFFShape(SFFIndexType):
     """Base shape class"""
     # repr_string = "{} {}"
-    # repr_args = ('ref', 'id')
+    # repr_args = (u'ref', u'id')
     shape_id = 0
-    index_attr = 'shape_id'
+    index_attr = u'shape_id'
     index_in_super = True
 
     # attributes
-    id = SFFAttribute('id', help="the ID of this shape")
-    transform_id = SFFAttribute('transformId', help="the transform applied to this shape to position it in the space")
-    attribute = SFFAttribute('attribute', help="extra attribute information e.g. 'FOM'")
+    id = SFFAttribute(u'id', help=u"the ID of this shape")
+    transform_id = SFFAttribute(u'transformId', help=u"the transform applied to this shape to position it in the space")
+    attribute = SFFAttribute(u'attribute', help=u"extra attribute information e.g. 'FOM'")
 
     @classmethod
     def update_counter(cls, value):
@@ -757,59 +761,59 @@ class SFFShape(SFFIndexType):
 class SFFCone(SFFShape):
     """Cone shape class"""
     gds_type = sff.cone
-    gds_tag_name = "cone"
-    repr_string = "SFFCone(id={}, height={}, bottomRadius={})"
-    repr_args = ('id', 'height', 'bottom_radius')
+    gds_tag_name = u"cone"
+    repr_string = u"SFFCone(id={}, height={}, bottomRadius={})"
+    repr_args = (u'id', u'height', u'bottom_radius')
 
     # attributes
-    height = SFFAttribute('height', help="cone height")
-    bottom_radius = SFFAttribute('bottomRadius', help="cone bottom radius")
+    height = SFFAttribute(u'height', help=u"cone height")
+    bottom_radius = SFFAttribute(u'bottomRadius', help=u"cone bottom radius")
 
 
 class SFFCuboid(SFFShape):
     """Cuboid shape class"""
     gds_type = sff.cuboid
-    gds_tag_name = "cuboid"
-    repr_string = "SFFCuboid(id={}, x={}, y={}, z={})"
-    repr_args = ('id', 'x', 'y', 'z')
+    gds_tag_name = u"cuboid"
+    repr_string = u"SFFCuboid(id={}, x={}, y={}, z={})"
+    repr_args = (u'id', u'x', u'y', u'z')
 
     # attributes
-    x = SFFAttribute('x', help="length in x")
-    y = SFFAttribute('y', help="length in y")
-    z = SFFAttribute('z', help="length in z")
+    x = SFFAttribute(u'x', help=u"length in x")
+    y = SFFAttribute(u'y', help=u"length in y")
+    z = SFFAttribute(u'z', help=u"length in z")
 
 
 class SFFCylinder(SFFShape):
     """Cylinder shape class"""
     gds_type = sff.cylinder
-    gds_tag_name = "cylinder"
-    repr_string = "SFFCylinder(id={}, height={}, diameter={})"
-    repr_args = ('id', 'height', 'diameter')
+    gds_tag_name = u"cylinder"
+    repr_string = u"SFFCylinder(id={}, height={}, diameter={})"
+    repr_args = (u'id', u'height', u'diameter')
 
     # attributes
-    height = SFFAttribute('height', help="cylinder height")
-    diameter = SFFAttribute('diameter', help="cylinder diameter")
+    height = SFFAttribute(u'height', help=u"cylinder height")
+    diameter = SFFAttribute(u'diameter', help=u"cylinder diameter")
 
 
 class SFFEllipsoid(SFFShape):
     """Ellipsoid shape class"""
     gds_type = sff.ellipsoid
-    gds_tag_name = "ellipsoid"
-    repr_string = "SFFEllipsoid(id={}, x={}, y={}, z={})"
-    repr_args = ('id', 'x', 'y', 'z')
+    gds_tag_name = u"ellipsoid"
+    repr_string = u"SFFEllipsoid(id={}, x={}, y={}, z={})"
+    repr_args = (u'id', u'x', u'y', u'z')
 
     # attributes
-    x = SFFAttribute('x', help="length in x")
-    y = SFFAttribute('y', help="length in y")
-    z = SFFAttribute('z', help="length in z")
+    x = SFFAttribute(u'x', help=u"length in x")
+    y = SFFAttribute(u'y', help=u"length in y")
+    z = SFFAttribute(u'z', help=u"length in z")
 
 
 class SFFShapePrimitiveList(SFFListType):
     """Container for shapes"""
     gds_type = sff.shapePrimitiveListType
-    repr_string = "SFFShapePrimitiveList({})"
-    repr_args = ('list()',)
-    iter_attr = ('shapePrimitive', SFFShape)
+    repr_string = u"SFFShapePrimitiveList({})"
+    repr_args = (u'list()',)
+    iter_attr = (u'shapePrimitive', SFFShape)
     sibling_classes = [
         (sff.cone, SFFCone),
         (sff.cuboid, SFFCuboid),
@@ -849,47 +853,47 @@ class SFFShapePrimitiveList(SFFListType):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
-        if "ellipsoids" in hff_data:
-            for ellipsoid in hff_data["ellipsoids"]:
+        if u"ellipsoids" in hff_data:
+            for ellipsoid in hff_data[u"ellipsoids"]:
                 e = SFFEllipsoid()
-                e.id = int(ellipsoid['id'])
-                e.x = float(ellipsoid['x'])
-                e.y = float(ellipsoid['y'])
-                e.z = float(ellipsoid['z'])
-                e.transform_id = int(ellipsoid['transformId'])
-                if not numpy.isnan(ellipsoid['attribute']):
-                    e.attribute = float(ellipsoid['attribute'])
+                e.id = int(ellipsoid[u'id'])
+                e.x = float(ellipsoid[u'x'])
+                e.y = float(ellipsoid[u'y'])
+                e.z = float(ellipsoid[u'z'])
+                e.transform_id = int(ellipsoid[u'transformId'])
+                if not numpy.isnan(ellipsoid[u'attribute']):
+                    e.attribute = float(ellipsoid[u'attribute'])
                 obj.append(e)
-        if "cones" in hff_data:
-            for cone in hff_data["cones"]:
+        if u"cones" in hff_data:
+            for cone in hff_data[u"cones"]:
                 c = SFFCone()
-                c.id = int(cone['id'])
-                c.bottom_radius = float(cone['bottomRadius'])
-                c.height = float(cone['height'])
-                c.transform_id = int(cone['transformId'])
-                if not numpy.isnan(cone['attribute']):
-                    c.attribute = float(cone['attribute'])
+                c.id = int(cone[u'id'])
+                c.bottom_radius = float(cone[u'bottomRadius'])
+                c.height = float(cone[u'height'])
+                c.transform_id = int(cone[u'transformId'])
+                if not numpy.isnan(cone[u'attribute']):
+                    c.attribute = float(cone[u'attribute'])
                 obj.append(c)
-        if "cuboids" in hff_data:
-            for cuboid in hff_data["cuboids"]:
+        if u"cuboids" in hff_data:
+            for cuboid in hff_data[u"cuboids"]:
                 c = SFFCuboid()
-                c.id = int(cuboid['id'])
-                c.x = float(cuboid['x'])
-                c.y = float(cuboid['y'])
-                c.z = float(cuboid['z'])
-                c.transform_id = int(cuboid['transformId'])
-                if not numpy.isnan(cuboid['attribute']):
-                    c.attribute = float(cuboid['attribute'])
+                c.id = int(cuboid[u'id'])
+                c.x = float(cuboid[u'x'])
+                c.y = float(cuboid[u'y'])
+                c.z = float(cuboid[u'z'])
+                c.transform_id = int(cuboid[u'transformId'])
+                if not numpy.isnan(cuboid[u'attribute']):
+                    c.attribute = float(cuboid[u'attribute'])
                 obj.append(c)
-        if "cylinders" in hff_data:
-            for cylinder in hff_data["cylinders"]:
+        if u"cylinders" in hff_data:
+            for cylinder in hff_data[u"cylinders"]:
                 c = SFFCylinder()
-                c.id = int(cylinder['id'])
-                c.height = float(cylinder['height'])
-                c.diameter = float(cylinder['diameter'])
-                c.transform_id = int(cylinder['transformId'])
-                if not numpy.isnan(cylinder['attribute']):
-                    c.attribute = float(cylinder['attribute'])
+                c.id = int(cylinder[u'id'])
+                c.height = float(cylinder[u'height'])
+                c.diameter = float(cylinder[u'diameter'])
+                c.transform_id = int(cylinder[u'transformId'])
+                if not numpy.isnan(cylinder[u'attribute']):
+                    c.attribute = float(cylinder[u'attribute'])
                 obj.append(c)
         return obj
 
@@ -897,18 +901,18 @@ class SFFShapePrimitiveList(SFFListType):
 class SFFVertex(SFFIndexType):
     """Single vertex"""
     gds_type = sff.vertexType
-    repr_string = "SFFVertex(vID={}, designation={}, x={}, y={}, z={})"
-    repr_args = ('id', 'designation', 'x', 'y', 'z')
+    repr_string = u"SFFVertex(vID={}, designation={}, x={}, y={}, z={})"
+    repr_args = (u'id', u'designation', u'x', u'y', u'z')
     vertex_id = 0
-    index_attr = 'vertex_id'
+    index_attr = u'vertex_id'
 
     # attributes
     # fixme: rename `vID` to `id` for simplicity in schema
-    id = SFFAttribute('vID', help="vertex ID; referenced by polygons")
-    designation = SFFAttribute('designation', help="type of vertex ('surface' (default) or 'normal')")
-    x = SFFAttribute('x', help="x co-ordinate")
-    y = SFFAttribute('y', help="y co-ordinate")
-    z = SFFAttribute('z', help="z co-ordinate")
+    id = SFFAttribute(u'vID', help=u"vertex ID; referenced by polygons")
+    designation = SFFAttribute(u'designation', help=u"type of vertex ('surface' (default) or 'normal')")
+    x = SFFAttribute(u'x', help=u"x co-ordinate")
+    y = SFFAttribute(u'y', help=u"y co-ordinate")
+    z = SFFAttribute(u'z', help=u"z co-ordinate")
 
     @property
     def point(self):
@@ -921,7 +925,7 @@ class SFFVertex(SFFIndexType):
             if len(p) == 3:
                 self.x, self.y, self.z = p
             else:
-                raise TypeError("point does not have three values")
+                raise TypeError(u"point does not have three values")
         else:
             raise SFFTypeError(p, tuple)
 
@@ -930,23 +934,23 @@ class SFFVertex(SFFIndexType):
             assert isinstance(other, type(self))
         except AssertionError:
             raise SFFTypeError(other, type(self))
-        attrs = ['x', 'y', 'z']
+        attrs = [u'x', u'y', u'z']
         return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
 
 
 class SFFPolygon(SFFListType, SFFIndexType):
     """Single polygon"""
     gds_type = sff.polygonType
-    repr_string = "SFFPolygon(PID={}, v={})"
-    repr_args = ('id', 'vertices')
-    iter_attr = ('v', int)
+    repr_string = u"SFFPolygon(PID={}, v={})"
+    repr_args = (u'id', u'vertices')
+    iter_attr = (u'v', int)
     polygon_id = 0
-    index_attr = 'polygon_id'
+    index_attr = u'polygon_id'
 
     # attributes
     # fixme: rename `PID` to `id` for simplicity in schema
-    id = SFFAttribute('PID', help="the ID for this polygon")
-    vertices = SFFAttribute('v', help="the list of vertices")
+    id = SFFAttribute(u'PID', help=u"the ID for this polygon")
+    vertices = SFFAttribute(u'v', help=u"the list of vertices")
 
     def __eq__(self, other):
         try:
@@ -959,9 +963,9 @@ class SFFPolygon(SFFListType, SFFIndexType):
 class SFFVertexList(SFFListType):
     """List of vertices"""
     gds_type = sff.vertexListType
-    repr_string = "SFFVertexList({})"
-    repr_args = ('list()',)
-    iter_attr = ('v', SFFVertex)
+    repr_string = u"SFFVertexList({})"
+    repr_args = (u'list()',)
+    iter_attr = (u'v', SFFVertex)
 
     def __init__(self, *args, **kwargs):
         super(SFFVertexList, self).__init__(*args, **kwargs)
@@ -992,11 +996,11 @@ class SFFVertexList(SFFListType):
         for vertex in hff_data:
             obj.append(
                 SFFVertex(
-                    vID=vertex['vID'],
-                    designation=vertex['designation'],
-                    x=float(vertex['x']),
-                    y=float(vertex['y']),
-                    z=float(vertex['z'])
+                    vID=vertex[u'vID'],
+                    designation=vertex[u'designation'],
+                    x=float(vertex[u'x']),
+                    y=float(vertex[u'y']),
+                    z=float(vertex[u'z'])
                 )
             )
         return obj
@@ -1005,9 +1009,9 @@ class SFFVertexList(SFFListType):
 class SFFPolygonList(SFFListType):
     """List of polygons"""
     gds_type = sff.polygonListType
-    repr_string = "SFFPolygonList({})"
-    repr_args = ('list()',)
-    iter_attr = ('P', SFFPolygon)
+    repr_string = u"SFFPolygonList({})"
+    repr_args = (u'list()',)
+    iter_attr = (u'P', SFFPolygon)
 
     def __init__(self, *args, **kwargs):
         super(SFFPolygonList, self).__init__(*args, **kwargs)
@@ -1037,8 +1041,8 @@ class SFFPolygonList(SFFListType):
         obj = cls()
         for polygon in hff_data:
             P = SFFPolygon()
-            P.PID = int(polygon['PID'])
-            [P.append(int(_)) for _ in polygon['v']]
+            P.PID = int(polygon[u'PID'])
+            [P.append(int(_)) for _ in polygon[u'v']]
             obj.append(P)
         return obj
 
@@ -1046,18 +1050,18 @@ class SFFPolygonList(SFFListType):
 class SFFMesh(SFFIndexType):
     """Single mesh"""
     gds_type = sff.meshType
-    repr_string = "SFFMesh(id={}, vertexList={}, polygonList={})"
-    repr_args = ('id', 'vertices', 'polygons')
+    repr_string = u"SFFMesh(id={}, vertexList={}, polygonList={})"
+    repr_args = (u'id', u'vertices', u'polygons')
     mesh_id = 0
-    index_attr = 'mesh_id'
+    index_attr = u'mesh_id'
 
     # attributes
-    id = SFFAttribute('id')
-    vertices = SFFAttribute('vertexList', sff_type=SFFVertexList,
-                            help="a list of vertices (object of class :py:class:`sfftkrw.schema.SFFVertexList`)")
-    polygons = SFFAttribute('polygonList', sff_type=SFFPolygonList,
-                            help="a list of derived polygons (object of class :py:class:`sfftkrw.schema.SFFPolygonList`)")
-    transform_id = SFFAttribute('transformId', help="a transform applied to the mesh")
+    id = SFFAttribute(u'id')
+    vertices = SFFAttribute(u'vertexList', sff_type=SFFVertexList,
+                            help=u"a list of vertices (object of class :py:class:`sfftkrw.schema.SFFVertexList`)")
+    polygons = SFFAttribute(u'polygonList', sff_type=SFFPolygonList,
+                            help=u"a list of derived polygons (object of class :py:class:`sfftkrw.schema.SFFPolygonList`)")
+    transform_id = SFFAttribute(u'transformId', help=u"a transform applied to the mesh")
 
     @property
     def num_vertices(self):
@@ -1074,7 +1078,7 @@ class SFFMesh(SFFIndexType):
             assert isinstance(other, type(self))
         except AssertionError:
             raise SFFTypeError(other, type(self))
-        attrs = ['vertices', 'polygons', 'transform_id']
+        attrs = [u'vertices', u'polygons', u'transform_id']
         return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
 
     @classmethod
@@ -1082,40 +1086,39 @@ class SFFMesh(SFFIndexType):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
-        obj.vertices = SFFVertexList.from_hff(hff_data['vertices'])
-        obj.polygons = SFFPolygonList.from_hff(hff_data['polygons'])
+        obj.vertices = SFFVertexList.from_hff(hff_data[u'vertices'])
+        obj.polygons = SFFPolygonList.from_hff(hff_data[u'polygons'])
         return obj
 
 
 class SFFMeshList(SFFListType):
     """Mesh list representation"""
     gds_type = sff.meshListType
-    repr_string = "SFFMeshList({})"
-    repr_args = ('list()',)
-    iter_attr = ('mesh', SFFMesh)
+    repr_string = u"SFFMeshList({})"
+    repr_args = (u'list()',)
+    iter_attr = (u'mesh', SFFMesh)
 
-    def as_hff(self, parent_group, name="meshes"):
+    def as_hff(self, parent_group, name=u"meshes"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
         # structures
-        vlen_str = h5py.special_dtype(vlen=str)
-        vertex_array = h5py.special_dtype(vlen=numpy.dtype('u4'))  # create a variable-length for vertices
+        vlen_str = h5py.special_dtype(vlen=_str)
+        vertex_array = h5py.special_dtype(vlen=numpy.dtype(u'u4'))  # create a variable-length for vertices
         for mesh in self:
             # /sff/segments/1/meshes/0 - mesh 0
-            h_mesh = group.create_group("{}".format(mesh.id))
+            h_mesh = group.create_group(u"{}".format(mesh.id))
             # /sff/segments/1/meshes/0/vertices
             h_v = h_mesh.create_dataset(
-                "vertices",
+                u"vertices",
                 (mesh.num_vertices,),
                 dtype=[
-                    ('vID', 'u8'),
-                    ('designation', vlen_str),
-                    ('x', 'f4'),
-                    ('y', 'f4'),
-                    ('z', 'f4'),
+                    (u'vID', u'u8'),
+                    (u'designation', vlen_str),
+                    (u'x', u'f4'),
+                    (u'y', u'f4'),
+                    (u'z', u'f4'),
                 ],
-                #                 compression="gzip",
             )
             # load vertex data
             i = 0
@@ -1124,11 +1127,11 @@ class SFFMeshList(SFFListType):
                 i += 1
             # /sff/segments/1/meshes/0/polygons
             h_P = h_mesh.create_dataset(
-                "polygons",
+                u"polygons",
                 (mesh.num_polygons,),
                 dtype=[
-                    ('PID', 'u8'),
-                    ('v', vertex_array),
+                    (u'PID', u'u8'),
+                    (u'v', vertex_array),
                 ],
             )
             #  load polygon data
@@ -1137,7 +1140,7 @@ class SFFMeshList(SFFListType):
                 h_P[j] = (polygon.PID, numpy.array(polygon.vertex_ids))
                 j += 1
             if mesh.transform_id:
-                h_mesh["transformId"] = mesh.transform_id
+                h_mesh[u"transformId"] = mesh.transform_id
         return parent_group
 
     @classmethod
@@ -1146,7 +1149,7 @@ class SFFMeshList(SFFListType):
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
         for mesh_id in hff_data:
-            M = SFFMesh.from_hff(hff_data["{}".format(mesh_id)])
+            M = SFFMesh.from_hff(hff_data[u"{}".format(mesh_id)])
             M.id = int(mesh_id)
             obj.append(M)
         return obj
@@ -1155,50 +1158,50 @@ class SFFMeshList(SFFListType):
 class SFFSegment(SFFIndexType):
     """Class that encapsulates segment data"""
     gds_type = sff.segmentType
-    repr_string = """SFFSegment(id={}, parentID={}, biologicalAnnotation={}, colour={}, threeDVolume={}, meshList={}, shapePrimitiveList={})"""
-    repr_args = ('id', 'parent_id', 'biological_annotation', 'colour', 'volume', 'meshes', 'shapes')
+    repr_string = u"""SFFSegment(id={}, parentID={}, biologicalAnnotation={}, colour={}, threeDVolume={}, meshList={}, shapePrimitiveList={})"""
+    repr_args = (u'id', u'parent_id', u'biological_annotation', u'colour', u'volume', u'meshes', u'shapes')
     segment_id = 1
     segment_parentID = 0
-    index_attr = 'segment_id'
+    index_attr = u'segment_id'
     start_at = 1
 
     # attributes
     id = SFFAttribute(
-        'id',
-        help="the ID for this segment; segment IDs begin at 1 with the value of 0 implying the segmentation "
-             "i.e. all segments are children of the root segment (the segmentation)"
+        u'id',
+        help=u"the ID for this segment; segment IDs begin at 1 with the value of 0 implying the segmentation "
+             u"i.e. all segments are children of the root segment (the segmentation)"
     )
     parent_id = SFFAttribute(
-        'parentID',
-        help="the ID for the segment that contains this segment; defaults to 0 (the whole segmentation)"
+        u'parentID',
+        help=u"the ID for the segment that contains this segment; defaults to 0 (the whole segmentation)"
     )
-    biological_annotation = SFFAttribute('biologicalAnnotation', sff_type=SFFBiologicalAnnotation,
-                                         help="the biological annotation for this segment; described using a :py:class:`sfftkrw.schema.SFFBiologicalAnnotation` object")
-    complexes_and_macromolecules = SFFAttribute('complexesAndMacromolecules', sff_type=SFFComplexesAndMacromolecules,
-                                                help="the complexes and macromolecules associated with this segment; described using a :py:class:`sfftkrw.schema.SFFComplexesAndMacromolecules` object")
-    colour = SFFAttribute('colour', sff_type=SFFRGBA,
-                          help="this segments colour; described using a :py:class:`sfftkrw.schema.SFFRGBA` object")
-    meshes = SFFAttribute('meshList', sff_type=SFFMeshList,
-                          help="the list of meshes (if any) that describe this segment; a :py:class:`sfftkrw.schema.SFFMeshList` object")
-    volume = SFFAttribute('threeDVolume', sff_type=SFFThreeDVolume,
-                          help="the 3D volume (if any) that describes this segment; a :py:class:`sfftkrw.schema.SFFThreeDVolume` object ")
-    shapes = SFFAttribute('shapePrimitiveList', sff_type=SFFShapePrimitiveList,
-                          help="the list of shape primitives that describe this segment; a :py:class:`sfftkrw.schema.SFFShapePrimitiveList` object")
+    biological_annotation = SFFAttribute(u'biologicalAnnotation', sff_type=SFFBiologicalAnnotation,
+                                         help=u"the biological annotation for this segment; described using a :py:class:`sfftkrw.schema.SFFBiologicalAnnotation` object")
+    complexes_and_macromolecules = SFFAttribute(u'complexesAndMacromolecules', sff_type=SFFComplexesAndMacromolecules,
+                                                help=u"the complexes and macromolecules associated with this segment; described using a :py:class:`sfftkrw.schema.SFFComplexesAndMacromolecules` object")
+    colour = SFFAttribute(u'colour', sff_type=SFFRGBA,
+                          help=u"this segments colour; described using a :py:class:`sfftkrw.schema.SFFRGBA` object")
+    meshes = SFFAttribute(u'meshList', sff_type=SFFMeshList,
+                          help=u"the list of meshes (if any) that describe this segment; a :py:class:`sfftkrw.schema.SFFMeshList` object")
+    volume = SFFAttribute(u'threeDVolume', sff_type=SFFThreeDVolume,
+                          help=u"the 3D volume (if any) that describes this segment; a :py:class:`sfftkrw.schema.SFFThreeDVolume` object ")
+    shapes = SFFAttribute(u'shapePrimitiveList', sff_type=SFFShapePrimitiveList,
+                          help=u"the list of shape primitives that describe this segment; a :py:class:`sfftkrw.schema.SFFShapePrimitiveList` object")
 
     def __init__(self, *args, **kwargs):
         super(SFFSegment, self).__init__(*args, **kwargs)
         # parentID
         # unlink segment_id, parentID is not managed by `SFFIndexType`
-        if 'parentID' in kwargs:
-            self._local.parentID = kwargs['parentID']
+        if u'parentID' in kwargs:
+            self._local.parentID = kwargs[u'parentID']
         else:
             self._local.parentID = self.segment_parentID
 
-    def as_hff(self, parent_group, name="{}"):
+    def as_hff(self, parent_group, name=u"{}"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name.format(self.id))
-        group['parentID'] = self.parent_id
+        group[u'parentID'] = self.parent_id
         # add annotation data
         if self.biological_annotation:
             group = self.biological_annotation.as_hff(group)
@@ -1211,54 +1214,54 @@ class SFFSegment(SFFIndexType):
             group = self.meshes.as_hff(group)
         if self.shapes:
             # /sff/segments/1/shapes
-            h_shapes = group.create_group("shapes")
+            h_shapes = group.create_group(u"shapes")
             # /sff/segments/1/shapes/ellipsoids
             h_ell = h_shapes.create_dataset(
-                "ellipsoids",
+                u"ellipsoids",
                 (self.shapes.num_ellipsoids,),
                 dtype=[
-                    ('id', 'u4'),
-                    ('x', 'f4'),
-                    ('y', 'f4'),
-                    ('z', 'f4'),
-                    ('transformId', 'u4'),
-                    ('attribute', 'f4'),
+                    (u'id', u'u4'),
+                    (u'x', u'f4'),
+                    (u'y', u'f4'),
+                    (u'z', u'f4'),
+                    (u'transformId', u'u4'),
+                    (u'attribute', u'f4'),
                 ]
             )
             h_cub = h_shapes.create_dataset(
-                "cuboids",
+                u"cuboids",
                 (self.shapes.num_cuboids,),
                 dtype=[
-                    ('id', 'u4'),
-                    ('x', 'f4'),
-                    ('y', 'f4'),
-                    ('z', 'f4'),
-                    ('transformId', 'u4'),
-                    ('attribute', 'f4'),
+                    (u'id', u'u4'),
+                    (u'x', u'f4'),
+                    (u'y', u'f4'),
+                    (u'z', u'f4'),
+                    (u'transformId', u'u4'),
+                    (u'attribute', u'f4'),
                 ]
             )
 
             h_cyl = h_shapes.create_dataset(
-                "cylinders",
+                u"cylinders",
                 (self.shapes.num_cylinders,),
                 dtype=[
-                    ('id', 'u4'),
-                    ('height', 'f4'),
-                    ('diameter', 'f4'),
-                    ('transformId', 'u4'),
-                    ('attribute', 'f4'),
+                    (u'id', u'u4'),
+                    (u'height', u'f4'),
+                    (u'diameter', u'f4'),
+                    (u'transformId', u'u4'),
+                    (u'attribute', u'f4'),
                 ]
             )
 
             h_con = h_shapes.create_dataset(
-                "cones",
+                u"cones",
                 (self.shapes.num_cones,),
                 dtype=[
-                    ('id', 'u4'),
-                    ('height', 'f4'),
-                    ('bottomRadius', 'f4'),
-                    ('transformId', 'u4'),
-                    ('attribute', 'f4'),
+                    (u'id', u'u4'),
+                    (u'height', u'f4'),
+                    (u'bottomRadius', u'f4'),
+                    (u'transformId', u'u4'),
+                    (u'attribute', u'f4'),
                 ]
             )
             i = 0  # ellipsoid
@@ -1267,24 +1270,24 @@ class SFFSegment(SFFIndexType):
             m = 0  # cone
             # n = 0 # subtomogram average
             for shape in self.shapes:
-                if shape.gds_type == sff.ellipsoid:  # "ellipsoid":
+                if shape.gds_type == sff.ellipsoid:  # u"ellipsoid":
                     h_ell[i] = (shape.id, shape.x, shape.y, shape.z, shape.transform_id,
-                                shape.attribute if hasattr(shape, 'attribute') else None)
+                                shape.attribute if hasattr(shape, u'attribute') else None)
                     i += 1
-                elif shape.gds_type == sff.cuboid:  # "cuboid":
+                elif shape.gds_type == sff.cuboid:  # u"cuboid":
                     h_cub[j] = (shape.id, shape.x, shape.y, shape.z, shape.transform_id,
-                                shape.attribute if hasattr(shape, 'attribute') else None)
+                                shape.attribute if hasattr(shape, u'attribute') else None)
                     j += 1
-                elif shape.gds_type == sff.cylinder:  # "cylinder":
+                elif shape.gds_type == sff.cylinder:  # u"cylinder":
                     h_cyl[k] = (shape.id, shape.height, shape.diameter, shape.transform_id,
-                                shape.attribute if hasattr(shape, 'attribute') else None)
+                                shape.attribute if hasattr(shape, u'attribute') else None)
                     k += 1
-                elif shape.gds_type == sff.cone:  # "cone":
+                elif shape.gds_type == sff.cone:  # u"cone":
                     h_con[m] = (shape.id, shape.height, shape.bottom_radius, shape.transform_id,
-                                shape.attribute if hasattr(shape, 'attribute') else None)
+                                shape.attribute if hasattr(shape, u'attribute') else None)
                     m += 1
-                # elif shape.gds_type == sff.threeDVolume: # "Subtomogram average":
-                #     warn("Unimplemented portion")
+                # elif shape.gds_type == sff.threeDVolume: # u"Subtomogram average":
+                #     warn(u"Unimplemented portion")
         if self.volume:
             # /sff/segments/1/volume
             group = self.volume.as_hff(group)
@@ -1293,10 +1296,10 @@ class SFFSegment(SFFIndexType):
     def as_json(self):
         """Format this segment as JSON"""
         seg_data = _dict()
-        seg_data['id'] = int(self.id)
-        seg_data['parentID'] = int(self.parent_id)
+        seg_data[u'id'] = int(self.id)
+        seg_data[u'parentID'] = int(self.parent_id)
         if self.biological_annotation is not None:
-            seg_data['biologicalAnnotation'] = self.biological_annotation.as_json()
+            seg_data[u'biologicalAnnotation'] = self.biological_annotation.as_json()
         if self.complexes_and_macromolecules:
             complexes = list()
             for _complex in self.complexes_and_macromolecules.complexes:
@@ -1304,15 +1307,15 @@ class SFFSegment(SFFIndexType):
             macromolecules = list()
             for macromolecule in self.complexes_and_macromolecules.macromolecules:
                 macromolecules.append(macromolecule)
-            seg_data['complexesAndMacromolecules'] = {
-                'complexes': complexes,
-                'macromolecules': macromolecules,
+            seg_data[u'complexesAndMacromolecules'] = {
+                u'complexes': complexes,
+                u'macromolecules': macromolecules,
             }
-        seg_data['colour'] = tuple(map(float, self.colour.value))
+        seg_data[u'colour'] = tuple(map(float, self.colour.value))
         if self.meshes:
-            seg_data['meshList'] = len(self.meshes)
+            seg_data[u'meshList'] = len(self.meshes)
         if self.shapes:
-            seg_data['shapePrimitiveList'] = len(self.shapes)
+            seg_data[u'shapePrimitiveList'] = len(self.shapes)
         return seg_data
 
     @classmethod
@@ -1320,31 +1323,31 @@ class SFFSegment(SFFIndexType):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
-        obj.parentID = int(hff_data['parentID'][()])
-        if "biologicalAnnotation" in hff_data:
-            obj.biological_annotation = SFFBiologicalAnnotation.from_hff(hff_data["biologicalAnnotation"])
-        if "complexesAndMacromolecules" in hff_data:
+        obj.parentID = int(hff_data[u'parentID'][()])
+        if u"biologicalAnnotation" in hff_data:
+            obj.biological_annotation = SFFBiologicalAnnotation.from_hff(hff_data[u"biologicalAnnotation"])
+        if u"complexesAndMacromolecules" in hff_data:
             obj.complexes_and_macromolecules = SFFComplexesAndMacromolecules.from_hff(
-                hff_data["complexesAndMacromolecules"])
-        if "colour" in hff_data:
+                hff_data[u"complexesAndMacromolecules"])
+        if u"colour" in hff_data:
             obj.colour = SFFRGBA.from_hff(hff_data)
-        if "meshes" in hff_data:
-            obj.meshes = SFFMeshList.from_hff(hff_data["meshes"])
-        if "shapes" in hff_data:
-            obj.shapes = SFFShapePrimitiveList.from_hff(hff_data["shapes"])
-        if "volume" in hff_data:
-            obj.volume = SFFThreeDVolume.from_hff(hff_data["volume"])
+        if u"meshes" in hff_data:
+            obj.meshes = SFFMeshList.from_hff(hff_data[u"meshes"])
+        if u"shapes" in hff_data:
+            obj.shapes = SFFShapePrimitiveList.from_hff(hff_data[u"shapes"])
+        if u"volume" in hff_data:
+            obj.volume = SFFThreeDVolume.from_hff(hff_data[u"volume"])
         return obj
 
 
 class SFFSegmentList(SFFListType):
     """Container for segments"""
     gds_type = sff.segmentListType
-    repr_string = "SFFSegmentList({})"
-    repr_args = ('list()',)
-    iter_attr = ('segment', SFFSegment)
+    repr_string = u"SFFSegmentList({})"
+    repr_args = (u'list()',)
+    iter_attr = (u'segment', SFFSegment)
 
-    def as_hff(self, parent_group, name="segments"):
+    def as_hff(self, parent_group, name=u"segments"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
@@ -1367,30 +1370,30 @@ class SFFSegmentList(SFFListType):
 class SFFTransformationMatrix(SFFIndexType):
     """Transformation matrix transform"""
     gds_type = sff.transformationMatrixType
-    gds_tag_name = "transformationMatrix"
-    repr_string = "SFFTransformationMatrix(id={}, rows={}, cols={}, data={})"
-    repr_args = ('id', 'rows', 'cols', 'data')
+    gds_tag_name = u"transformationMatrix"
+    repr_string = u"SFFTransformationMatrix(id={}, rows={}, cols={}, data={})"
+    repr_args = (u'id', u'rows', u'cols', u'data')
     transform_id = 0
-    index_attr = 'transform_id'
+    index_attr = u'transform_id'
 
     # attributes
-    id = SFFAttribute('id', help="an ID for this transform")
-    rows = SFFAttribute('rows', help="the number of rows in this matrix")
-    cols = SFFAttribute('cols', help="the number of columns in this matrix")
-    data = SFFAttribute('data', help="a string sequence by row of the data in this matrix")
+    id = SFFAttribute(u'id', help=u"an ID for this transform")
+    rows = SFFAttribute(u'rows', help=u"the number of rows in this matrix")
+    cols = SFFAttribute(u'cols', help=u"the number of columns in this matrix")
+    data = SFFAttribute(u'data', help=u"a string sequence by row of the data in this matrix")
 
     # todo: work with numpy arrays transparently
     def __init__(self, *args, **kwargs):
-        if 'data' in kwargs:
-            if isinstance(kwargs['data'], numpy.ndarray):
-                self._data = kwargs['data']
+        if u'data' in kwargs:
+            if isinstance(kwargs[u'data'], numpy.ndarray):
+                self._data = kwargs[u'data']
                 # make string from numpy array
-                kwargs['data'] = SFFTransformationMatrix.stringify(kwargs['data'])
-            elif isinstance(kwargs['data'], _str):
+                kwargs[u'data'] = SFFTransformationMatrix.stringify(kwargs[u'data'])
+            elif isinstance(kwargs[u'data'], _str):
                 # make numpy array from string
-                self._data = numpy.array(list(map(float, kwargs['data'].split(' ')))).reshape(
-                    kwargs['rows'],
-                    kwargs['cols']
+                self._data = numpy.array(list(map(float, kwargs[u'data'].split(' ')))).reshape(
+                    kwargs[u'rows'],
+                    kwargs[u'cols']
                 )
         super(SFFTransformationMatrix, self).__init__(*args, **kwargs)
 
@@ -1414,11 +1417,11 @@ class SFFTransformationMatrix(SFFIndexType):
     @staticmethod
     def stringify(array):
         """Convert a """
-        return " ".join(list(map(str, array.flatten().tolist())))
+        return u" ".join(list(map(_str, array.flatten().tolist())))
 
     @property
     def data_array(self):
-        if not hasattr(self, '_data'):
+        if not hasattr(self, u'_data'):
             # make numpy array from string
             self._data = numpy.array(list(map(float, self.data.split(' ')))).reshape(
                 self.rows,
@@ -1430,9 +1433,9 @@ class SFFTransformationMatrix(SFFIndexType):
 class SFFTransformList(SFFListType):
     """Container for transforms"""
     gds_type = sff.transformListType
-    repr_string = "SFFTransformList({})"
-    repr_args = ('list()',)
-    iter_attr = ('transform', SFFTransformationMatrix)
+    repr_string = u"SFFTransformList({})"
+    repr_args = (u'list()',)
+    iter_attr = (u'transform', SFFTransformationMatrix)
 
     @property
     def num_tranformation_matrices(self):
@@ -1460,7 +1463,7 @@ class SFFTransformList(SFFListType):
                     break
         return transformation_matrices_similar, rows, cols
 
-    def as_hff(self, parent_group, name="transforms"):
+    def as_hff(self, parent_group, name=u"transforms"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
@@ -1474,35 +1477,35 @@ class SFFTransformList(SFFListType):
         if self.num_tranformation_matrices:
             if transformation_matrices_similar:
                 h_tM = group.create_dataset(
-                    "transformationMatrix",
+                    u"transformationMatrix",
                     (self.num_tranformation_matrices,),
                     dtype=[
-                        ('id', 'u4'),
-                        ('rows', 'u1'),
-                        ('cols', 'u1'),
-                        ('data', 'f4', (rows, cols)),
+                        (u'id', u'u4'),
+                        (u'rows', u'u1'),
+                        (u'cols', u'u1'),
+                        (u'data', u'f4', (rows, cols)),
                     ]
                 )
             else:
-                h_tM = group.create_group("transformationMatrix")
+                h_tM = group.create_group(u"transformationMatrix")
         i = 0  # h_tM index
         j = 0  # h_cEA index
         k = 0  # h_vVR index
         for transform in self:
-            if transform.gds_type == sff.transformationMatrixType:  # "transformation_matrix":
+            if transform.gds_type == sff.transformationMatrixType:  # u"transformation_matrix":
                 if transformation_matrices_similar:
                     h_tM[i] = (transform.id, transform.rows, transform.cols, transform.data_array)
                     i += 1
                 else:
                     rows_, cols_ = transform.data_array.shape
                     tM = h_tM.create_dataset(
-                        "{}".format(transform.id),
+                        u"{}".format(transform.id),
                         (1,),
                         dtype=[
-                            ('id', 'u4'),
-                            ('rows', 'u1'),
-                            ('cols', 'u1'),
-                            ('data', 'f4', (rows_, cols_)),
+                            (u'id', u'u4'),
+                            (u'rows', u'u1'),
+                            (u'cols', u'u1'),
+                            (u'data', u'f4', (rows_, cols_)),
                         ]
                     )
                     tM[0] = (transform.id, transform.rows, transform.cols, transform.data_array)
@@ -1514,17 +1517,17 @@ class SFFTransformList(SFFListType):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
-        if "transformationMatrix" in hff_data:
-            for _transform in hff_data['transformationMatrix']:
-                if isinstance(hff_data['transformationMatrix'], h5py.Group):
-                    transform = hff_data['transformationMatrix'][_transform][0]
+        if u"transformationMatrix" in hff_data:
+            for _transform in hff_data[u'transformationMatrix']:
+                if isinstance(hff_data[u'transformationMatrix'], h5py.Group):
+                    transform = hff_data[u'transformationMatrix'][_transform][0]
                 else:
                     transform = _transform
                 T = SFFTransformationMatrix()
-                T.id = transform['id']
-                T.rows = transform['rows']
-                T.cols = transform['cols']
-                T.data = " ".join(map(str, transform['data'].flatten()))
+                T.id = transform[u'id']
+                T.rows = transform[u'rows']
+                T.cols = transform[u'cols']
+                T.data = u" ".join(map(_str, transform[u'data'].flatten()))
                 obj.append(T)
         return obj
 
@@ -1546,30 +1549,30 @@ class SFFSoftware(SFFType):
         Details of how the segmentation was produced
     """
     gds_type = sff.softwareType
-    repr_string = "SFFSoftware(name={}, version={}, processingDetails={})"
-    repr_args = ('name', 'version', 'processing_details')
+    repr_string = u"SFFSoftware(name={}, version={}, processingDetails={})"
+    repr_args = (u'name', u'version', u'processing_details')
 
     # attributes
-    name = SFFAttribute('name', help="the software/programme's name")
-    version = SFFAttribute('version', help="the version used")
-    processing_details = SFFAttribute('processingDetails',
-                                      help="a description of how the data was processed to produce the segmentation")
+    name = SFFAttribute(u'name', help=u"the software/programmeu's name")
+    version = SFFAttribute(u'version', help=u"the version used")
+    processing_details = SFFAttribute(u'processingDetails',
+                                      help=u"a description of how the data was processed to produce the segmentation")
 
-    def as_hff(self, parent_group, name="software"):
+    def as_hff(self, parent_group, name=u"software"):
         """Return the data of this object as an HDF5 group in the given parent group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
-        group['name'] = self.name if self.name else ''
-        group['version'] = _str(self.version) if self.version else ''
+        group[u'name'] = self.name if self.name else ''
+        group[u'version'] = _str(self.version) if self.version else ''
         if self.processing_details:
-            group['processingDetails'] = self.processing_details
+            group[u'processingDetails'] = self.processing_details
         return parent_group
 
     def as_json(self):
         return {
-            'name': self.name if self.name else '',
-            'version': _str(self.version) if self.version else '',
-            'processingDetails': self.processing_details if self.processing_details else None
+            u'name': self.name if self.name else '',
+            u'version': _str(self.version) if self.version else '',
+            u'processingDetails': self.processing_details if self.processing_details else None
         }
 
     @classmethod
@@ -1577,10 +1580,10 @@ class SFFSoftware(SFFType):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
-        obj.name = _decode(hff_data['name'][()], 'utf-8')
-        obj.version = _decode(hff_data['version'][()], 'utf-8')
-        if 'processingDetails' in hff_data:
-            obj.processing_details = _decode(hff_data['processingDetails'][()], 'utf-8')
+        obj.name = _decode(hff_data[u'name'][()], u'utf-8')
+        obj.version = _decode(hff_data[u'version'][()], u'utf-8')
+        if u'processingDetails' in hff_data:
+            obj.processing_details = _decode(hff_data[u'processingDetails'][()], u'utf-8')
         return obj
 
 
@@ -1588,28 +1591,28 @@ class SFFBoundingBox(SFFType):
     """Dimensions of bounding box"""
     #  config
     gds_type = sff.boundingBoxType
-    repr_string = "SFFBoundingBox(xmin={}, xmax={}, ymin={}, ymax={}, zmin={}, zmax={})"
-    repr_args = ('xmin', 'xmax', 'ymin', 'ymax', 'zmin', 'zmax')
+    repr_string = u"SFFBoundingBox(xmin={}, xmax={}, ymin={}, ymax={}, zmin={}, zmax={})"
+    repr_args = (u'xmin', u'xmax', u'ymin', u'ymax', u'zmin', u'zmax')
 
     # attributes
-    xmin = SFFAttribute('xmin', help="minimum x co-ordinate value")
-    xmax = SFFAttribute('xmax', help="maximum x co-ordinate value")
-    ymin = SFFAttribute('ymin', help="minimum y co-ordinate value")
-    ymax = SFFAttribute('ymax', help="maximum y co-ordinate value")
-    zmin = SFFAttribute('zmin', help="minimum z co-ordinate value")
-    zmax = SFFAttribute('zmax', help="maximum z co-ordinate value")
+    xmin = SFFAttribute(u'xmin', help=u"minimum x co-ordinate value")
+    xmax = SFFAttribute(u'xmax', help=u"maximum x co-ordinate value")
+    ymin = SFFAttribute(u'ymin', help=u"minimum y co-ordinate value")
+    ymax = SFFAttribute(u'ymax', help=u"maximum y co-ordinate value")
+    zmin = SFFAttribute(u'zmin', help=u"minimum z co-ordinate value")
+    zmax = SFFAttribute(u'zmax', help=u"maximum z co-ordinate value")
 
     # methods
-    def as_hff(self, parent_group, name="boundingBox"):
+    def as_hff(self, parent_group, name=u"boundingBox"):
         """Bounding box as HDF5 group"""
         assert isinstance(parent_group, h5py.Group)
         group = parent_group.create_group(name)
-        group['xmin'] = self.xmin
-        group['xmax'] = self.xmax if self.xmax else 1.0
-        group['ymin'] = self.ymin
-        group['ymax'] = self.ymax if self.ymax else 1.0
-        group['zmin'] = self.zmin
-        group['zmax'] = self.zmax if self.zmax else 1.0
+        group[u'xmin'] = self.xmin
+        group[u'xmax'] = self.xmax if self.xmax else 1.0
+        group[u'ymin'] = self.ymin
+        group[u'ymax'] = self.ymax if self.ymax else 1.0
+        group[u'zmin'] = self.zmin
+        group[u'zmax'] = self.zmax if self.zmax else 1.0
         return parent_group
 
     @classmethod
@@ -1617,70 +1620,70 @@ class SFFBoundingBox(SFFType):
         """Bounding box from HDF5 group"""
         assert isinstance(hff_data, h5py.Group)
         obj = cls()
-        obj.xmin = hff_data['xmin'][()]
-        obj.xmax = hff_data['xmax'][()]
-        obj.ymin = hff_data['ymin'][()]
-        obj.ymax = hff_data['ymax'][()]
-        obj.zmin = hff_data['zmin'][()]
-        obj.zmax = hff_data['zmax'][()]
+        obj.xmin = hff_data[u'xmin'][()]
+        obj.xmax = hff_data[u'xmax'][()]
+        obj.ymin = hff_data[u'ymin'][()]
+        obj.ymax = hff_data[u'ymax'][()]
+        obj.zmin = hff_data[u'zmin'][()]
+        obj.zmax = hff_data[u'zmax'][()]
         return obj
 
 
 class SFFGlobalExternalReferences(SFFExternalReferences):
     """Container for global external references"""
     gds_type = sff.globalExternalReferencesType
-    repr_string = "SFFGlobalExternalReferences({})"
-    repr_args = ('list()',)
+    repr_string = u"SFFGlobalExternalReferences({})"
+    repr_args = (u'list()',)
 
 
 class SFFSegmentation(SFFType):
     """Adapter class to make using the output of ``generateDS`` easier to use"""
     gds_type = sff.segmentation
-    repr_string = "SFFSegmentation(name={})"
-    repr_args = ('name',)
+    repr_string = u"SFFSegmentation(name={})"
+    repr_args = (u'name',)
 
     # attributes
-    name = SFFAttribute('name', help="the name of this segmentation")
-    version = SFFAttribute('version', help="EMDB-SFF version")
+    name = SFFAttribute(u'name', help=u"the name of this segmentation")
+    version = SFFAttribute(u'version', help=u"EMDB-SFF version")
     software = SFFAttribute(
-        'software',
+        u'software',
         sff_type=SFFSoftware,
-        help="the software details used to generate this segmentationa :py:class:`sfftkrw.schema.SFFSoftware` object"
+        help=u"the software details used to generate this segmentationa :py:class:`sfftkrw.schema.SFFSoftware` object"
     )
     primary_descriptor = SFFAttribute(
-        'primaryDescriptor',
-        help="the main type of representation used for this segmentation; "
-             "can be one of 'meshList', 'shapePrimitiveList' or 'threeDVolume'"
+        u'primaryDescriptor',
+        help=u"the main type of representation used for this segmentation; "
+             u"can be one of 'meshList', 'shapePrimitiveList' or 'threeDVolume'"
     )
     transforms = SFFAttribute(
-        'transformList',
+        u'transformList',
         sff_type=SFFTransformList,
-        help="a list of transforms; a :py:class:`sfftkrw.schema.SFFTransformList` object"
+        help=u"a list of transforms; a :py:class:`sfftkrw.schema.SFFTransformList` object"
     )
     bounding_box = SFFAttribute(
-        'boundingBox',
+        u'boundingBox',
         sff_type=SFFBoundingBox,
-        help="the bounding box in which the segmentation sits; a :py:class:`sfftkrw.schema.SFFBoundingBox` object"
+        help=u"the bounding box in which the segmentation sits; a :py:class:`sfftkrw.schema.SFFBoundingBox` object"
     )
     global_external_references = SFFAttribute(
-        'globalExternalReferences',
+        u'globalExternalReferences',
         sff_type=SFFGlobalExternalReferences,
-        help="a list of external references that apply to the whole segmentation (global); "
-             "a :py:class:`sfftkrw.schema.SFFGlobalExternalReferences` object"
+        help=u"a list of external references that apply to the whole segmentation (global); "
+             u"a :py:class:`sfftkrw.schema.SFFGlobalExternalReferences` object"
     )
     segments = SFFAttribute(
-        'segmentList',
+        u'segmentList',
         sff_type=SFFSegmentList,
-        help="the list of annotated segments; a :py:class:`sfftkrw.schema.SFFSegmentList` object"
+        help=u"the list of annotated segments; a :py:class:`sfftkrw.schema.SFFSegmentList` object"
     )
     lattices = SFFAttribute(
-        'latticeList',
+        u'latticeList',
         sff_type=SFFLatticeList,
-        help="the list of lattices (if any) containing 3D volumes referred to; "
-             "a :py:class:`sfftkrw.schema.SFFLatticeList` object"
+        help=u"the list of lattices (if any) containing 3D volumes referred to; "
+             u"a :py:class:`sfftkrw.schema.SFFLatticeList` object"
     )
     details = SFFAttribute(
-        'details', help="any other details about this segmentation (free text)")
+        u'details', help=u"any other details about this segmentation (free text)")
 
     @classmethod
     def from_file(cls, fn):
@@ -1697,15 +1700,15 @@ class SFFSegmentation(SFFType):
             try:
                 seg._local = sff.parse(fn, silence=True)
             except IOError:
-                print_date("File {} not found".format(fn))
+                print_date(_encode(u"File {} not found".format(fn), u'utf-8'))
                 sys.exit(os.EX_IOERR)
         elif re.match(r'.*\.hff$', fn, re.IGNORECASE):
-            with h5py.File(fn, 'r') as h:
+            with h5py.File(fn, u'r') as h:
                 seg._local = seg.from_hff(h)._local
         elif re.match(r'.*\.json$', fn, re.IGNORECASE):
             seg._local = seg.from_json(fn)._local
         else:
-            print_date("Invalid EMDB-SFF file name: {}".format(fn))
+            print_date(_encode(u"Invalid EMDB-SFF file name: {}".format(fn), u'utf-8'))
             sys.exit(os.EX_USAGE)
         return seg
 
@@ -1722,16 +1725,16 @@ class SFFSegmentation(SFFType):
             group = parent_group.create_group(name)
         else:
             group = parent_group
-        group['name'] = self.name if self.name else ""
-        group['version'] = self.version
+        group[u'name'] = self.name if self.name else ""
+        group[u'version'] = self.version
         if self.primary_descriptor is None:
-            print_date("Invalid segmentation: primary_descriptor required")
+            print_date(_encode(u"Invalid segmentation: primary_descriptor required", u'utf-8'))
             return os.EX_DATAERR
-        group['primaryDescriptor'] = self.primary_descriptor
-        # if we are adding another group then don't set dict style; just return the populated group
+        group[u'primaryDescriptor'] = self.primary_descriptor
+        # if we are adding another group then donu't set dict style; just return the populated group
         if self.software is None:
             self.software = SFFSoftware(
-                name="sfftk",
+                name=u"sfftk",
                 version=SFFTKRW_VERSION,
             )
         group = self.software.as_hff(group)
@@ -1742,16 +1745,16 @@ class SFFSegmentation(SFFType):
             self.bounding_box = SFFBoundingBox()
         group = self.bounding_box.as_hff(group)
         if self.global_external_references:
-            vl_str = h5py.special_dtype(vlen=str)
+            vl_str = h5py.special_dtype(vlen=_str)
             h_gext = group.create_dataset(
-                "globalExternalReferences",
+                u"globalExternalReferences",
                 (self.num_global_external_references,),
                 dtype=[
-                    ('type', vl_str),
-                    ('otherType', vl_str),
-                    ('value', vl_str),
-                    ('label', vl_str),
-                    ('description', vl_str),
+                    (u'type', vl_str),
+                    (u'otherType', vl_str),
+                    (u'value', vl_str),
+                    (u'label', vl_str),
+                    (u'description', vl_str),
                 ]
             )
             i = 0
@@ -1765,7 +1768,7 @@ class SFFSegmentation(SFFType):
         if self.lattices is None:
             self.lattices = SFFLatticeList()
         group = self.lattices.as_hff(group)
-        group['details'] = self.details if self.details else ''
+        group[u'details'] = self.details if self.details else ''
         return parent_group
 
     @classmethod
@@ -1780,27 +1783,29 @@ class SFFSegmentation(SFFType):
         assert isinstance(hff_data, h5py.File)
         obj = cls()
         try:
-            obj.name = _decode(hff_data['name'][()], 'utf-8')
+            obj.name = _decode(hff_data[u'name'][()], u'utf-8')
         except KeyError:
-            print_date('Segmentation name not found. Please check that {} is a valid EMDB-SFF file'.format(
+            print_date(_encode(u'Segmentation name not found. Please check that {} is a valid EMDB-SFF file'.format(
                 hff_data.filename
-            ))
+            ), u'utf-8'))
             sys.exit(os.EX_DATAERR)
-        obj.version = _decode(hff_data['version'][()], 'utf-8')
-        obj.software = SFFSoftware.from_hff(hff_data['software'])
-        obj.transforms = SFFTransformList.from_hff(hff_data['transforms'])
-        obj.primary_descriptor = _decode(hff_data['primaryDescriptor'][()], 'utf-8')
-        if 'boundingBox' in hff_data:
-            obj.bounding_box = SFFBoundingBox.from_hff(hff_data['boundingBox'])
-        if "globalExternalReferences" in hff_data:
+        obj.version = _decode(hff_data[u'version'][()], u'utf-8')
+        obj.software = SFFSoftware.from_hff(hff_data[u'software'])
+        obj.transforms = SFFTransformList.from_hff(hff_data[u'transforms'])
+        obj.primary_descriptor = _decode(hff_data[u'primaryDescriptor'][()], u'utf-8')
+        if u'boundingBox' in hff_data:
+            obj.bounding_box = SFFBoundingBox.from_hff(hff_data[u'boundingBox'])
+        else:
+            obj.bounding_box = SFFBoundingBox()
+        if u"globalExternalReferences" in hff_data:
             obj.global_external_references = SFFGlobalExternalReferences()
-            for gref in hff_data['globalExternalReferences']:
+            for gref in hff_data[u'globalExternalReferences']:
                 g = SFFExternalReference()
-                g.type, g.other_type, g.value, g.label, g.description = list(map(lambda g: _decode(g, 'utf-8'), gref))
+                g.type, g.other_type, g.value, g.label, g.description = list(map(lambda g: _decode(g, u'utf-8'), gref))
                 obj.global_external_references.append(g)
-        obj.segments = SFFSegmentList.from_hff(hff_data['segments'])
-        obj.lattices = SFFLatticeList.from_hff(hff_data['lattices'])
-        obj.details = hff_data['details'][()]
+        obj.segments = SFFSegmentList.from_hff(hff_data[u'segments'])
+        obj.lattices = SFFLatticeList.from_hff(hff_data[u'lattices'])
+        obj.details = hff_data[u'details'][()]
         return obj
 
     def as_json(self, f, sort_keys=True, indent_width=2):
@@ -1811,53 +1816,51 @@ class SFFSegmentation(SFFType):
         :param bool sort_keys: whether (default) or not to sort keys in the dictionaries
         :param int indent_width: indent width (default: 2)
         """
-        """
-        :TODO: also extract geometrical data
-        """
+        # todo: also extract geometrical data
         sff_data = _dict()
         # can be simplified
-        sff_data['name'] = self.name
-        sff_data['version'] = self.version
+        sff_data[u'name'] = self.name
+        sff_data[u'version'] = self.version
         if self.software is None:
             self.software = SFFSoftware(
-                name='sfftk',
+                name=u'sfftk',
                 version=SFFTKRW_VERSION,
             )
-        sff_data['software'] = self.software.as_json()
-        # sff_data['software'] = {
-        #     'name': self.software.name,
-        #     'version': self.software.version,
-        #     'processingDetails': self.software.processing_details if self.software.processing_details is not None else None,
+        sff_data[u'software'] = self.software.as_json()
+        # sff_data[u'software'] = {
+        #     u'name': self.software.name,
+        #     u'version': self.software.version,
+        #     u'processingDetails': self.software.processing_details if self.software.processing_details is not None else None,
         # }
-        sff_data['primaryDescriptor'] = self.primary_descriptor
+        sff_data[u'primaryDescriptor'] = self.primary_descriptor
         if self.details is not None:
-            sff_data['details'] = _decode(self.details, 'utf-8')
+            sff_data[u'details'] = _decode(self.details, u'utf-8')
         else:
-            sff_data['details'] = None
-        sff_data['transforms'] = list()
+            sff_data[u'details'] = None
+        sff_data[u'transforms'] = list()
         bounding_box = {
-            'xmin': self.bounding_box.xmin,
-            'xmax': self.bounding_box.xmax,
-            'ymin': self.bounding_box.ymin,
-            'ymax': self.bounding_box.ymax,
-            'zmin': self.bounding_box.zmin,
-            'zmax': self.bounding_box.zmax,
+            u'xmin': self.bounding_box.xmin,
+            u'xmax': self.bounding_box.xmax,
+            u'ymin': self.bounding_box.ymin,
+            u'ymax': self.bounding_box.ymax,
+            u'zmin': self.bounding_box.zmin,
+            u'zmax': self.bounding_box.zmax,
         }
-        sff_data['boundingBox'] = bounding_box
+        sff_data[u'boundingBox'] = bounding_box
         if self.global_external_references:
             global_external_references = list()
             for gextref in self.global_external_references:
                 global_external_references.append({
-                    'type': gextref.type,
-                    'otherType': gextref.other_type,
-                    'value': gextref.value,
-                    'label': gextref.label,
-                    'description': gextref.description
+                    u'type': gextref.type,
+                    u'otherType': gextref.other_type,
+                    u'value': gextref.value,
+                    u'label': gextref.label,
+                    u'description': gextref.description
                 })
-            sff_data['globalExternalReferences'] = global_external_references
-        sff_data['segments'] = list()
+            sff_data[u'globalExternalReferences'] = global_external_references
+        sff_data[u'segments'] = list()
         for segment in self.segments:
-            sff_data['segments'].append(segment.as_json())
+            sff_data[u'segments'].append(segment.as_json())
         # write to f
         with f:
             import json
@@ -1877,84 +1880,84 @@ class SFFSegmentation(SFFType):
             J = json.load(j)
         sff_seg = cls()
         # header
-        sff_seg.name = J['name']
-        sff_seg.version = J['version']
+        sff_seg.name = J[u'name']
+        sff_seg.version = J[u'version']
         sff_seg.software = SFFSoftware(
-            name=J['software']['name'],
-            version=J['software']['version'],
-            processingDetails=J['software']['processingDetails'],
+            name=J[u'software'][u'name'],
+            version=J[u'software'][u'version'],
+            processingDetails=J[u'software'][u'processingDetails'],
         )
-        sff_seg.primary_descriptor = J['primaryDescriptor']
-        if 'boundingBox' in J:
+        sff_seg.primary_descriptor = J[u'primaryDescriptor']
+        if u'boundingBox' in J:
             sff_seg.bounding_box = SFFBoundingBox(
-                xmin=J['boundingBox']['xmin'],
-                xmax=J['boundingBox']['xmax'],
-                ymin=J['boundingBox']['ymin'],
-                ymax=J['boundingBox']['ymax'],
-                zmin=J['boundingBox']['zmin'],
-                zmax=J['boundingBox']['zmax'],
+                xmin=J[u'boundingBox'][u'xmin'],
+                xmax=J[u'boundingBox'][u'xmax'],
+                ymin=J[u'boundingBox'][u'ymin'],
+                ymax=J[u'boundingBox'][u'ymax'],
+                zmin=J[u'boundingBox'][u'zmin'],
+                zmax=J[u'boundingBox'][u'zmax'],
             )
-        if 'globalExternalReferences' in J:
+        if u'globalExternalReferences' in J:
             sff_seg.global_external_references = SFFGlobalExternalReferences()
-            for gextref in J['globalExternalReferences']:
+            for gextref in J[u'globalExternalReferences']:
                 try:
-                    label = gextref['label']
+                    label = gextref[u'label']
                 except KeyError:
                     label = None
                 try:
-                    description = gextref['description']
+                    description = gextref[u'description']
                 except KeyError:
                     description = None
                 sff_seg.global_external_references.append(
                     SFFExternalReference(
-                        type=gextref['type'],
-                        otherType=gextref['otherType'],
-                        value=gextref['value'],
+                        type=gextref[u'type'],
+                        otherType=gextref[u'otherType'],
+                        value=gextref[u'value'],
                         label=label,
                         description=description,
                     )
                 )
         # segments
         segments = SFFSegmentList()
-        for s in J['segments']:
-            r, g, b, a = s['colour']
+        for s in J[u'segments']:
+            r, g, b, a = s[u'colour']
             segment = SFFSegment()
-            segment.id = s['id']
-            segment.parentID = s['parentID']
-            if 'biologicalAnnotation' in s:
+            segment.id = s[u'id']
+            segment.parentID = s[u'parentID']
+            if u'biologicalAnnotation' in s:
                 biological_annotation = SFFBiologicalAnnotation()
-                biological_annotation.name = s['biologicalAnnotation']['name']
-                biological_annotation.description = s['biologicalAnnotation']['description']
-                biological_annotation.number_of_instances = s['biologicalAnnotation']['numberOfInstances']
-                if 'externalReferences' in s['biologicalAnnotation']:
+                biological_annotation.name = s[u'biologicalAnnotation'][u'name']
+                biological_annotation.description = s[u'biologicalAnnotation'][u'description']
+                biological_annotation.number_of_instances = s[u'biologicalAnnotation'][u'numberOfInstances']
+                if u'externalReferences' in s[u'biologicalAnnotation']:
                     biological_annotation.external_references = SFFExternalReferences()
-                    for ext_ref in s['biologicalAnnotation']['externalReferences']:
+                    for ext_ref in s[u'biologicalAnnotation'][u'externalReferences']:
                         try:
-                            label = ext_ref['label']
+                            label = ext_ref[u'label']
                         except KeyError:
                             label = None
                         try:
-                            description = ext_ref['description']
+                            description = ext_ref[u'description']
                         except KeyError:
                             description = None
                         external_reference = SFFExternalReference(
-                            type=ext_ref['type'],
-                            otherType=ext_ref['otherType'],
-                            value=ext_ref['value'],
+                            type=ext_ref[u'type'],
+                            otherType=ext_ref[u'otherType'],
+                            value=ext_ref[u'value'],
                             label=label,
                             description=description,
                         )
                         biological_annotation.external_references.append(external_reference)
                 segment.biological_annotation = biological_annotation
-            if 'complexesAndMacromolecules' in s:
+            if u'complexesAndMacromolecules' in s:
                 complexes_and_macromolecules = SFFComplexesAndMacromolecules()
-                if 'complexes' in s['complexesAndMacromolecules']:
+                if u'complexes' in s[u'complexesAndMacromolecules']:
                     complexes = SFFComplexes()
-                    complexes.ids = s['complexesAndMacromolecules']['complexes']
+                    complexes.ids = s[u'complexesAndMacromolecules'][u'complexes']
                     complexes_and_macromolecules.complexes = complexes
-                if 'macromolecules' in s['complexesAndMacromolecules']:
+                if u'macromolecules' in s[u'complexesAndMacromolecules']:
                     macromolecules = SFFMacromolecules()
-                    macromolecules.ids = s['complexesAndMacromolecules']['macromolecules']
+                    macromolecules.ids = s[u'complexesAndMacromolecules'][u'macromolecules']
                     complexes_and_macromolecules.macromolecules = macromolecules
                 segment.complexes_and_macromolecules = complexes_and_macromolecules
             segment.colour = SFFRGBA(
@@ -1964,21 +1967,21 @@ class SFFSegmentation(SFFType):
                 alpha=a,
             )
             # in order for sff notes to work with JSON there should be an empty geom
-            if 'meshList' in s:
+            if u'meshList' in s:
                 segment.meshes = SFFMeshList()
-                for _ in _xrange(s['meshList']):
+                for _ in _xrange(s[u'meshList']):
                     segment.meshes.append(SFFMesh())
-            if 'threeDVolume' in s:
+            if u'threeDVolume' in s:
                 # fixme: invalid model
                 segment.volume = SFFThreeDVolume()
-            if 'shapePrimitiveList' in s:
+            if u'shapePrimitiveList' in s:
                 segment.shapes = SFFShapePrimitiveList()
-                for _ in _xrange(s['shapePrimitiveList']):
+                for _ in _xrange(s[u'shapePrimitiveList']):
                     segment.shapes.append(SFFEllipsoid())
             segments.append(segment)
         sff_seg.segments = segments
         # details
-        sff_seg.details = J['details']
+        sff_seg.details = J[u'details']
         return sff_seg
 
     # todo: the following methods should be moved to sfftk from sfftk-rw
@@ -1991,7 +1994,7 @@ class SFFSegmentation(SFFType):
         try:
             assert isinstance(other_seg, SFFSegmentation)
         except AssertionError:
-            print_date("Invalid type for other_seg: {}".format(type(other_seg)))
+            print_date(_encode(u"Invalid type for other_seg: {}".format(type(other_seg)), u'utf-8'))
             sys.exit(os.EX_DATAERR)
         # global data
         self.name = other_seg.name

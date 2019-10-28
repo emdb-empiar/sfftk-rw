@@ -12,7 +12,7 @@ import os
 import re
 import sys
 
-from . import schema
+from .schema.adapter import SFFSegmentation
 from .core.print_tools import print_date
 
 __author__ = "Paul K. Korir, PhD"
@@ -34,17 +34,17 @@ def handle_convert(args):  # @UnusedVariable
     if re.match(r'.*\.sff$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFf (XML) file {}".format(args.from_file))
-        seg = schema.SFFSegmentation(args.from_file)
+        seg = SFFSegmentation.from_file(args.from_file)
     elif re.match(r'.*\.hff$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (HDF5) file {}".format(args.from_file))
-        seg = schema.SFFSegmentation(args.from_file)
+        seg = SFFSegmentation.from_file(args.from_file)
         if args.verbose:
             print_date("Created SFFSegmentation object")
     elif re.match(r'.*\.json$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (JSON) file {}".format(args.from_file))
-        seg = schema.SFFSegmentation(args.from_file)
+        seg = SFFSegmentation.from_file(args.from_file)
         if args.verbose:
             print_date("Created SFFSegmentation object")
     else:
@@ -73,7 +73,7 @@ def handle_view(args):  # @UnusedVariable
     :return int status: status
     """
     if re.match(r'.*\.sff$', args.from_file, re.IGNORECASE):
-        seg = schema.SFFSegmentation.from_file(args.from_file)
+        seg = SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
         print("EMDB-SFF Segmentation version {}".format(seg.version))
         print("Segmentation name: {}".format(seg.name))
@@ -82,7 +82,7 @@ def handle_view(args):  # @UnusedVariable
         print("No. of segments: {}".format(len(seg.segments)))
         print("*" * 50)
     elif re.match(r'.*\.hff$', args.from_file, re.IGNORECASE):
-        seg = schema.SFFSegmentation.from_file(args.from_file)
+        seg = SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
         print("EMDB-SFF Segmentation version {}".format(seg.version))
         print("Segmentation name: {}".format(seg.name))
@@ -91,7 +91,7 @@ def handle_view(args):  # @UnusedVariable
         print("No. of segments: {}".format(len(seg.segments)))
         print("*" * 50)
     elif re.match(r'.*\.json$', args.from_file, re.IGNORECASE):
-        seg = schema.SFFSegmentation.from_file(args.from_file)
+        seg = SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
         print("EMDB-SFF Segmentation version {}".format(seg.version))
         print("Segmentation name: {}".format(seg.name))
