@@ -282,6 +282,7 @@ class TestCoreParserTests(Py23FixTestCase):
         args = parse_args("tests all", use_shlex=True)
         self.assertEqual(args.subcommand, 'tests')
         self.assertCountEqual(args.tool, ['all'])
+        self.assertFalse(args.dry_run)
 
     def test_tests_one_tool(self):
         """Test that with any tool we get proper tool"""
@@ -330,6 +331,11 @@ class TestCoreParserTests(Py23FixTestCase):
         v2 = -_random_integer(start=0)
         args = parse_args("tests all -v {}".format(v2), use_shlex=True)
         self.assertEqual(args, os.EX_USAGE)
+
+    def test_dry_run(self):
+        """Test that we can set the `dry-run` argument"""
+        args = parse_args(u"tests all --dry-run", use_shlex=True)
+        self.assertTrue(args.dry_run)
 
 
 class TestCoreUtils(Py23FixTestCase):

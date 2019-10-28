@@ -113,7 +113,9 @@ def _module_test_runner(mod, args):
     """
     import unittest
     suite = unittest.TestLoader().loadTestsFromModule(mod)
-    unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
+    print_date(u"Found {} test cases in the suite...".format(suite.countTestCases()))
+    if not args.dry_run:
+        unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
     return os.EX_OK
 
 
@@ -126,7 +128,9 @@ def _testcase_test_runner(tc, args):
     """
     import unittest
     suite = unittest.TestLoader().loadTestsFromTestCase(tc)
-    unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
+    print_date(u"Found {} test cases in the suite...".format(suite.countTestCases()))
+    if not args.dry_run:
+        unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
     return os.EX_OK
 
 
@@ -139,7 +143,9 @@ def _discover_test_runner(path, args, top_level_dir=None):
     """
     import unittest
     suite = unittest.TestLoader().discover(path, top_level_dir=top_level_dir)
-    unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
+    print_date(u"Found {} test cases in the suite...".format(suite.countTestCases()))
+    if not args.dry_run:
+        unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
     return os.EX_OK
 
 
@@ -167,15 +173,6 @@ def handle_tests(args):
             from .unittests import test_base, test_adapter
             _module_test_runner(test_base, args)
             _module_test_runner(test_adapter, args)
-        if 'formats' in args.tool:
-            from .unittests import test_formats
-            _module_test_runner(test_formats, args)
-        if 'readers' in args.tool:
-            from .unittests import test_readers
-            _module_test_runner(test_readers, args)
-        if 'notes' in args.tool:
-            from .unittests import test_notes
-            _module_test_runner(test_notes, args)
     return os.EX_OK
 
 

@@ -14,7 +14,7 @@ import re
 
 from . import _dict_iter_keys
 from .print_tools import print_date
-from ..core import _decode
+from ..core import _decode, _basestring
 
 __author__ = 'Paul K. Korir, PhD'
 __email__ = 'pkorir@ebi.ac.uk, paul.korir@gmail.com'
@@ -184,6 +184,9 @@ tests_parser.add_argument('tool', nargs='+', help=test_help)
 tests_parser.add_argument('-v', '--verbosity', default=1, type=int,
                           help="set verbosity; valid values: %s [default: 0]" % ", ".join(map(str, verbosity_range)))
 
+tests_parser.add_argument('--dry-run', default=False, action='store_true',
+                          help='do not run tests [default: False]')
+
 
 # parser function
 def parse_args(_args, use_shlex=False):
@@ -197,14 +200,14 @@ def parse_args(_args, use_shlex=False):
     assume correct argument values and can concentrate on functionality.
 
     :param list _args: list of arguments (``use_shlex=False``); string of arguments (``use_shlex=True``)
-    :type _args: list or str
+    :type _args: list or str or unicode
     :param bool use_shlex: treat ``_args`` as a string instead for parsing using ``shlex`` lib
     :return: parsed arguments
     :rtype: :py:class:`argparse.Namespace`
     """
     if use_shlex:  # if we treat _args as a command string for shlex to process
         try:
-            assert isinstance(_args, str)
+            assert isinstance(_args, _basestring)
         except AssertionError:
             return os.EX_USAGE
         import shlex

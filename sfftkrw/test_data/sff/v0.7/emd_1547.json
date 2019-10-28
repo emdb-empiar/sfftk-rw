@@ -1,0 +1,535 @@
+{
+  "boundingBox": {
+    "xmax": null,
+    "xmin": 0.0,
+    "ymax": null,
+    "ymin": 0.0,
+    "zmax": null,
+    "zmin": 0.0
+  },
+  "details": "",
+  "globalExternalReferences": [
+    {
+      "description": "A 33 kDa chaperonin that is encoded in the genome of Escherichia coli K-12.",
+      "label": "33 kDa chaperonin (Escherichia coli K-12)",
+      "otherType": "http://purl.obolibrary.org/obo/PR_P0A6Y5",
+      "type": "pr",
+      "value": "PR_P0A6Y5"
+    },
+    {
+      "description": "A 60 kDa chaperonin that is encoded in the genome of Escherichia coli K-12.",
+      "label": "60 kDa chaperonin (Escherichia coli K-12)",
+      "otherType": "http://purl.obolibrary.org/obo/PR_P0A6F5",
+      "type": "pr",
+      "value": "PR_P0A6F5"
+    },
+    {
+      "description": "A 10 kDa chaperonin that is encoded in the genome of Escherichia coli K-12.",
+      "label": "10 kDa chaperonin (Escherichia coli K-12)",
+      "otherType": "http://purl.obolibrary.org/obo/PR_P0A6F9",
+      "type": "pr",
+      "value": "PR_P0A6F9"
+    },
+    {
+      "description": "",
+      "label": "synthetic construct",
+      "otherType": "http://purl.obolibrary.org/obo/NCBITaxon_32630",
+      "type": "ncbitaxon",
+      "value": "NCBITaxon_32630"
+    },
+    {
+      "description": "",
+      "label": "Escherichia virus T4",
+      "otherType": "http://purl.obolibrary.org/obo/NCBITaxon_10665",
+      "type": "ncbitaxon",
+      "value": "NCBITaxon_10665"
+    },
+    {
+      "description": "",
+      "label": "Enterobacteria phage T4 sensu lato",
+      "otherType": "http://purl.obolibrary.org/obo/NCBITaxon_348604",
+      "type": "ncbitaxon",
+      "value": "NCBITaxon_348604"
+    },
+    {
+      "description": "A double-stranded DNA virus that infects bacteria such as E. coli.",
+      "label": "Bacteriophage T4",
+      "otherType": "http://purl.obolibrary.org/obo/NCIT_C14302",
+      "type": "ncit",
+      "value": "NCIT_C14302"
+    },
+    {
+      "description": "Structure of a chaperonin complex with non-native substrate protein gp23",
+      "label": "EMD-1545",
+      "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1545",
+      "type": "EMDB",
+      "value": "EMD-1545"
+    },
+    {
+      "description": "Structure of a chaperonin complex with non-native substrate protein gp23",
+      "label": "EMD-1544",
+      "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1544",
+      "type": "EMDB",
+      "value": "EMD-1544"
+    },
+    {
+      "description": "Structure of GroEL in complex with non-native capsid protein gp23, folding capsid protein gp23, Bacteriophage T4 co-chaperone gp31 and ADPAlF3",
+      "label": "EMD-1548",
+      "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1548",
+      "type": "EMDB",
+      "value": "EMD-1548"
+    },
+    {
+      "description": "Structure of GroEL in complex with Bacteriophage T4 co-chaperone gp31 and ADPAlF3",
+      "label": "EMD-1546",
+      "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1546",
+      "type": "EMDB",
+      "value": "EMD-1546"
+    },
+    {
+      "description": "A common, gram negative gut bacterium that has been studied intensively by geneticists because of its small genome size, normal lack of pathogenicity, and ease of growth in the laboratory.",
+      "label": "Escherichia coli",
+      "otherType": "http://purl.obolibrary.org/obo/NCIT_C14206",
+      "type": "ncit",
+      "value": "NCIT_C14206"
+    }
+  ],
+  "name": "EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage T4 co-chaperone gp31 and ADPAlF3",
+  "primaryDescriptor": "threeDVolume",
+  "segments": [
+    {
+      "biologicalAnnotation": {
+        "description": "Tetradecamer of GroEL",
+        "externalReferences": [
+          {
+            "description": "Bacterial chaperonin complex consisting of a heptameric 10kDa chaperonin subunit GroES and a tetradecameric (2x7) 60kDa chaperonin subunit GroEL. The 60kDa subunit possesses ATPase activity while the holo-enzyme is responsible for the correct folding of proteins.",
+            "label": "GroEL-GroES complex",
+            "otherType": "http://purl.obolibrary.org/obo/GO_1990220",
+            "type": "go",
+            "value": "GO_1990220"
+          },
+          {
+            "description": "Escherichia coli",
+            "label": "Crystal structure of apo GroEL",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/1xck",
+            "type": "PDB",
+            "value": "1xck"
+          },
+          {
+            "description": "undefined (Escherichia coli (strain K12))",
+            "label": "CH60_ECOLI",
+            "otherType": "https://www.uniprot.org/uniprot/P0A6F5",
+            "type": "UniProt",
+            "value": "P0A6F5"
+          },
+          {
+            "description": "C-terminal truncated mutant E. coli GroEL",
+            "label": "EMD-8319",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8319",
+            "type": "EMDB",
+            "value": "EMD-8319"
+          },
+          {
+            "description": "Mutant E. coli GroEL (C-terminal truncated) bound with PepQ",
+            "label": "EMD-8318",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8318",
+            "type": "EMDB",
+            "value": "EMD-8318"
+          },
+          {
+            "description": "Wild-type E. coli GroEL",
+            "label": "EMD-8317",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8317",
+            "type": "EMDB",
+            "value": "EMD-8317"
+          },
+          {
+            "description": "Wild-type E. coli GroEL bound with PepQ",
+            "label": "EMD-8316",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8316",
+            "type": "EMDB",
+            "value": "EMD-8316"
+          },
+          {
+            "description": "GroEL using cryoEM",
+            "label": "EMD-8750",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8750",
+            "type": "EMDB",
+            "value": "EMD-8750"
+          },
+          {
+            "description": "CryoEM structure of GroEL",
+            "label": "EMD-6422",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-6422",
+            "type": "EMDB",
+            "value": "EMD-6422"
+          },
+          {
+            "description": "Doughnut-shaped object or surface generated by rotating a circle around an axis that does not intersect the circle; any object that resembles a ring.",
+            "label": "Ring",
+            "otherType": "http://purl.obolibrary.org/obo/NCIT_C61458",
+            "type": "ncit",
+            "value": "NCIT_C61458"
+          },
+          {
+            "description": "The lowest part, side, or surface of something.",
+            "label": "Bottom",
+            "otherType": "http://purl.obolibrary.org/obo/NCIT_C25440",
+            "type": "ncit",
+            "value": "NCIT_C25440"
+          },
+          {
+            "description": "Bacterial chaperonin complex consisting of a heptameric 10kDa chaperonin subunit GroES and a tetradecameric (2x7) 60kDa chaperonin subunit GroEL. The 60kDa subunit possesses ATPase activity while the holo-enzyme is responsible for the correct folding of proteins.",
+            "label": "GroEL-GroES complex",
+            "otherType": "http://purl.obolibrary.org/obo/GO_1990220",
+            "type": "go",
+            "value": "GO_1990220"
+          }
+        ],
+        "name": "GroEL bottom ring (trans)",
+        "numberOfInstances": 1
+      },
+      "colour": [
+        0.914871156215668,
+        0.771943986415863,
+        0.875687658786774,
+        1.0
+      ],
+      "id": 762,
+      "parentID": 0
+    },
+    {
+      "biologicalAnnotation": {
+        "description": "Heptamer of gp31",
+        "externalReferences": [
+          {
+            "description": "Escherichia virus T4",
+            "label": "Bacteriophage T4 isometric capsid",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/5vf3",
+            "type": "PDB",
+            "value": "5vf3"
+          },
+          {
+            "description": "Escherichia virus Lambda",
+            "label": "Crystal structure of antitermination protein Q from bacteriophage lambda. Northeast Structural Genomics Consortium target OR18A.",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/4mo1",
+            "type": "PDB",
+            "value": "4mo1"
+          },
+          {
+            "description": "Escherichia virus T4",
+            "label": "Bacteriophage T4 isometric capsid",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/5vf3",
+            "type": "PDB",
+            "value": "5vf3"
+          },
+          {
+            "description": "undefined (Enterobacteria phage T4 (Bacteriophage T4))",
+            "label": "CAPSH_BPT4",
+            "otherType": "https://www.uniprot.org/uniprot/P04535",
+            "type": "UniProt",
+            "value": "P04535"
+          },
+          {
+            "description": "",
+            "label": "uncultured bacterium gp23",
+            "otherType": "http://purl.obolibrary.org/obo/NCBITaxon_133161",
+            "type": "ncbitaxon",
+            "value": "NCBITaxon_133161"
+          },
+          {
+            "description": "",
+            "label": "Phage gp23",
+            "otherType": "http://purl.obolibrary.org/obo/NCBITaxon_2023329",
+            "type": "ncbitaxon",
+            "value": "NCBITaxon_2023329"
+          },
+          {
+            "description": "Escherichia coli",
+            "label": "GROEL-ADP-gp31 COMPLEX",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/2cgt",
+            "type": "PDB",
+            "value": "2cgt"
+          },
+          {
+            "description": "Escherichia virus T4",
+            "label": "Crystal structure of the T4 Phage SF1B Helicase Dda",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/3upu",
+            "type": "PDB",
+            "value": "3upu"
+          },
+          {
+            "description": "Escherichia virus T4",
+            "label": "GROEL-ADP-gp31 COMPLEX",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/2cgt",
+            "type": "PDB",
+            "value": "2cgt"
+          },
+          {
+            "description": "Escherichia virus T4",
+            "label": "GP31 CO-CHAPERONIN FROM BACTERIOPHAGE T4",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/1g31",
+            "type": "PDB",
+            "value": "1g31"
+          },
+          {
+            "description": "undefined (Enterobacteria phage T4 (Bacteriophage T4))",
+            "label": "Y13C_BPT4",
+            "otherType": "https://www.uniprot.org/uniprot/P17307",
+            "type": "UniProt",
+            "value": "P17307"
+          },
+          {
+            "description": "undefined (Enterobacteria phage T4 (Bacteriophage T4))",
+            "label": "VG31_BPT4",
+            "otherType": "https://www.uniprot.org/uniprot/P17313",
+            "type": "UniProt",
+            "value": "P17313"
+          },
+          {
+            "description": "undefined (Enterobacteria phage T4 (Bacteriophage T4))",
+            "label": "CAPSH_BPT4",
+            "otherType": "https://www.uniprot.org/uniprot/P04535",
+            "type": "UniProt",
+            "value": "P04535"
+          },
+          {
+            "description": "An expanded protein folding cage in the GroEL-gp31 complex.",
+            "label": "EMD-1203",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1203",
+            "type": "EMDB",
+            "value": "EMD-1203"
+          },
+          {
+            "description": "An expanded protein folding cage in the GroEL-gp31 complex.",
+            "label": "EMD-1202",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1202",
+            "type": "EMDB",
+            "value": "EMD-1202"
+          }
+        ],
+        "name": "gp31 cap",
+        "numberOfInstances": 1
+      },
+      "colour": [
+        0.196078434586525,
+        0.196078434586525,
+        0.803921580314636,
+        1.0
+      ],
+      "id": 767,
+      "parentID": 0
+    },
+    {
+      "biologicalAnnotation": {
+        "description": "Monomer",
+        "externalReferences": [
+          {
+            "description": "Escherichia virus T4",
+            "label": "Bacteriophage T4 isometric capsid",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/5vf3",
+            "type": "PDB",
+            "value": "5vf3"
+          },
+          {
+            "description": "Escherichia virus T4",
+            "label": "Bacteriophage T4 capsid vertex protein gp24",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/1yue",
+            "type": "PDB",
+            "value": "1yue"
+          },
+          {
+            "description": "Escherichia virus Lambda",
+            "label": "Crystal structure of antitermination protein Q from bacteriophage lambda. Northeast Structural Genomics Consortium target OR18A.",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/4mo1",
+            "type": "PDB",
+            "value": "4mo1"
+          },
+          {
+            "description": "Escherichia virus T4",
+            "label": "Bacteriophage T4 isometric capsid",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/5vf3",
+            "type": "PDB",
+            "value": "5vf3"
+          },
+          {
+            "description": "undefined (Escherichia coli)",
+            "label": "A0A1Y2ZJK8_ECOLX",
+            "otherType": "https://www.uniprot.org/uniprot/A0A1Y2ZJK8",
+            "type": "UniProt",
+            "value": "A0A1Y2ZJK8"
+          },
+          {
+            "description": "undefined (Escherichia coli)",
+            "label": "A0A1Y2ZJK8_ECOLX",
+            "otherType": "https://www.uniprot.org/uniprot/A0A1Y2ZJK8",
+            "type": "UniProt",
+            "value": "A0A1Y2ZJK8"
+          },
+          {
+            "description": "Structure of a chaperonin complex with non-native substrate protein gp23",
+            "label": "EMD-1545",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1545",
+            "type": "EMDB",
+            "value": "EMD-1545"
+          },
+          {
+            "description": "Structure of a chaperonin complex with non-native substrate protein gp23",
+            "label": "EMD-1544",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1544",
+            "type": "EMDB",
+            "value": "EMD-1544"
+          },
+          {
+            "description": "Structure of GroEL in complex with non-native capsid protein gp23, folding capsid protein gp23, Bacteriophage T4 co-chaperone gp31 and ADPAlF3",
+            "label": "EMD-1548",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1548",
+            "type": "EMDB",
+            "value": "EMD-1548"
+          },
+          {
+            "description": "",
+            "label": "uncultured bacterium gp23",
+            "otherType": "http://purl.obolibrary.org/obo/NCBITaxon_133161",
+            "type": "ncbitaxon",
+            "value": "NCBITaxon_133161"
+          },
+          {
+            "description": "",
+            "label": "Phage gp23",
+            "otherType": "http://purl.obolibrary.org/obo/NCBITaxon_2023329",
+            "type": "ncbitaxon",
+            "value": "NCBITaxon_2023329"
+          }
+        ],
+        "name": "gp23",
+        "numberOfInstances": 1
+      },
+      "colour": [
+        0.39215686917305,
+        0.584313750267029,
+        0.929411768913269,
+        1.0
+      ],
+      "id": 771,
+      "parentID": 0
+    },
+    {
+      "biologicalAnnotation": {
+        "description": "Tetradecamer of GroEL",
+        "externalReferences": [
+          {
+            "description": "Doughnut-shaped object or surface generated by rotating a circle around an axis that does not intersect the circle; any object that resembles a ring.",
+            "label": "Ring",
+            "otherType": "http://purl.obolibrary.org/obo/NCIT_C61458",
+            "type": "ncit",
+            "value": "NCIT_C61458"
+          },
+          {
+            "description": "The uppermost part, side, or surface of something.",
+            "label": "Top",
+            "otherType": "http://purl.obolibrary.org/obo/NCIT_C62637",
+            "type": "ncit",
+            "value": "NCIT_C62637"
+          },
+          {
+            "description": "Bacterial chaperonin complex consisting of a heptameric 10kDa chaperonin subunit GroES and a tetradecameric (2x7) 60kDa chaperonin subunit GroEL. The 60kDa subunit possesses ATPase activity while the holo-enzyme is responsible for the correct folding of proteins.",
+            "label": "GroEL-GroES complex",
+            "otherType": "http://purl.obolibrary.org/obo/GO_1990220",
+            "type": "go",
+            "value": "GO_1990220"
+          },
+          {
+            "description": "Escherichia coli",
+            "label": "Crystal structure of apo GroEL",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/pdb/1xck",
+            "type": "PDB",
+            "value": "1xck"
+          },
+          {
+            "description": "undefined (Escherichia coli (strain K12))",
+            "label": "CH60_ECOLI",
+            "otherType": "https://www.uniprot.org/uniprot/P0A6F5",
+            "type": "UniProt",
+            "value": "P0A6F5"
+          },
+          {
+            "description": "C-terminal truncated mutant E. coli GroEL",
+            "label": "EMD-8319",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8319",
+            "type": "EMDB",
+            "value": "EMD-8319"
+          },
+          {
+            "description": "Mutant E. coli GroEL (C-terminal truncated) bound with PepQ",
+            "label": "EMD-8318",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8318",
+            "type": "EMDB",
+            "value": "EMD-8318"
+          },
+          {
+            "description": "Wild-type E. coli GroEL",
+            "label": "EMD-8317",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8317",
+            "type": "EMDB",
+            "value": "EMD-8317"
+          },
+          {
+            "description": "Wild-type E. coli GroEL bound with PepQ",
+            "label": "EMD-8316",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8316",
+            "type": "EMDB",
+            "value": "EMD-8316"
+          },
+          {
+            "description": "GroEL using cryoEM",
+            "label": "EMD-8750",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8750",
+            "type": "EMDB",
+            "value": "EMD-8750"
+          },
+          {
+            "description": "CryoEM structure of GroEL",
+            "label": "EMD-6422",
+            "otherType": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-6422",
+            "type": "EMDB",
+            "value": "EMD-6422"
+          }
+        ],
+        "name": "GroEL top ring (cis)",
+        "numberOfInstances": 1
+      },
+      "colour": [
+        0.125490203499794,
+        0.69803923368454,
+        0.666666686534882,
+        1.0
+      ],
+      "id": 775,
+      "parentID": 0
+    },
+    {
+      "biologicalAnnotation": {
+        "description": "",
+        "externalReferences": [],
+        "name": "Artefacts (ignore)",
+        "numberOfInstances": 1
+      },
+      "colour": [
+        1.0,
+        0.498039215803146,
+        0.0,
+        1.0
+      ],
+      "id": 776,
+      "parentID": 0
+    }
+  ],
+  "software": {
+    "name": "Segger (UCSF Chimera)",
+    "processingDetails": "Images were recorded on a 200 kV FEG microscope on photographic film and processed at 2.8 \u00c5/pixel, with final data sets of 30,000 and 35,000 side views of the binary and ternary complexes respectively. A starting model for the binary complex was obtained by angular reconstitution in IMAGIC32, and our previously determined GroEL-ADP-gp31 structure20 was used as a starting model for the ternary complexes. The data sets were sorted into classes showing different substrate features by a combination of MSA and competitive projection matching10, and the atomic structures of the GroEL subunit domains, gp31 and gp24 subunits were docked into the final, asymmetric maps as separate rigid bodies using URO33.",
+    "version": "1.9.7"
+  },
+  "transforms": [],
+  "version": "0.7.0.dev0"
+}

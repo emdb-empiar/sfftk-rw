@@ -115,6 +115,15 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.segments = segments
         segmentation.lattices = lattices
         cls.segmentation = segmentation
+        cls.shape_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_shape_segmentation.hff')
+        cls.volume_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_3d_segmentation.sff')
+        cls.mesh_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_mesh_segmentation.sff')
+
+    @classmethod
+    def tearDownClass(cls):
+        os.remove(cls.shape_file)
+        os.remove(cls.volume_file)
+        os.remove(cls.mesh_file)
 
     def tearDown(self):
         adapter.SFFPolygon.reset_id()
@@ -200,7 +209,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.segments = segments
         segmentation.lattices = lattices
         # export
-        # segmentation.export(os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_3d_segmentation.sff'))
+        segmentation.export(self.volume_file)
         # assertions
         self.assertEqual(segmentation.primary_descriptor, u"threeDVolume")
         self.assertEqual(segmentation.bounding_box.xmin, 0)
@@ -356,34 +365,6 @@ class TestSFFSegmentation(Py23FixTestCase):
         ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
                                           transformId=transform.id, )
         shapes.append(ellipsoid2)
-        cylinder = adapter.SFFCylinder(
-            height=_random_float() * 100,
-            diameter=_random_float() * 100,
-            transformId=transform.id,
-        )
-        cylinder = adapter.SFFCylinder(
-            height=_random_float() * 100,
-            diameter=_random_float() * 100,
-            transformId=transform.id,
-        )
-        cylinder = adapter.SFFCylinder(
-            height=_random_float() * 100,
-            diameter=_random_float() * 100,
-            transformId=transform.id,
-        )
-        cylinder = adapter.SFFCylinder(
-            height=_random_float() * 100,
-            diameter=_random_float() * 100,
-            transformId=transform.id,
-        )
-        ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
-                                          transformId=transform.id, )
-        ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
-                                          transformId=transform.id, )
-        ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
-                                          transformId=transform.id, )
-        ellipsoid2 = adapter.SFFEllipsoid(x=_random_float() * 100, y=_random_float() * 100, z=_random_float() * 100,
-                                          transformId=transform.id, )
         transform = adapter.SFFTransformationMatrix(
             rows=3,
             cols=4,
@@ -529,7 +510,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.segments = segments
         segmentation.transforms = transforms
         # export
-        segmentation.export(os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_shape_segmentation.hff'))
+        segmentation.export(self.shape_file)
         # assertions
         self.assertEqual(len(segment.shapes), 9)
         self.assertEqual(segment.shapes.num_cones, 4)
@@ -624,7 +605,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         segments.append(segment)
         segmentation.segments = segments
         # export
-        # segmentation.export(os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_mesh_segmentation.sff'))
+        segmentation.export(self.mesh_file)
         # assertions
         # segment one
         segment1 = segmentation.segments.get_by_id(1)
@@ -802,44 +783,72 @@ class TestSFFSegmentation(Py23FixTestCase):
 
     def test_read_sff(self):
         """Read from XML (.sff) file"""
-        sff_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1014.sff')
+        sff_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1547.sff')
         segmentation = adapter.SFFSegmentation.from_file(sff_file)
         transform = segmentation.transforms[1]
         # assertions
-        self.assertEqual(segmentation.name, u"Segger Segmentation")
+        self.assertEqual(segmentation.name,
+                         u"EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage "
+                         u"T4 co-chaperone gp31 and ADPAlF3")
         self.assertTrue(len(segmentation.version) > 0)
-        self.assertEqual(segmentation.software.name, u"segger")
-        self.assertEqual(segmentation.software.version, u"2")
-        self.assertEqual(segmentation.software.processing_details, None)
-        self.assertEqual(segmentation.primary_descriptor, u"threeDVolume")
+        self.assertEqual(segmentation.software.name, u"Segger (UCSF Chimera)")
+        self.assertEqual(segmentation.software.version, u"1.9.7")
+        self.assertEqual(
+            segmentation.software.processing_details,
+            u"Images were recorded on a 200 kV FEG microscope on photographic film and processed at 2.8 Å/pixel, with "
+            u"final data sets of 30,000 and 35,000 side views of the binary and ternary complexes respectively. A "
+            u"starting model for the binary complex was obtained by angular reconstitution in IMAGIC32, and our "
+            u"previously determined GroEL-ADP-gp31 structure20 was used as a starting model for the ternary complexes. "
+            u"The data sets were sorted into classes showing different substrate features by a combination of MSA and "
+            u"competitive projection matching10, and the atomic structures of the GroEL subunit domains, gp31 and gp24 "
+            u"subunits were docked into the final, asymmetric maps as separate rigid bodies using URO33.")
         self.assertEqual(transform.rows, 3)
         self.assertEqual(transform.cols, 4)
         self.assertEqual(transform.data,
-                         u"3.3900001049 0.0 0.0 -430.529998779 0.0 3.3900001049 0.0 -430.529998779 0.0 0.0 3.3900001049 -430.529998779")
+                         u"2.8 0.0 0.0 -226.8 0.0 2.8 0.0 -226.8 0.0 0.0 2.8 -226.8")
 
     def test_read_hff(self):
         """Read from HDF5 (.hff) file"""
-        hff_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1014.hff')
+        hff_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1547.hff')
         segmentation = adapter.SFFSegmentation.from_file(hff_file)
         # assertions
-        self.assertEqual(segmentation.name, u"Segger Segmentation")
+        self.assertEqual(segmentation.name,
+                         u"EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage "
+                         u"T4 co-chaperone gp31 and ADPAlF3")
         self.assertTrue(len(segmentation.version) > 0)
-        self.assertEqual(segmentation.software.name, u"segger")
-        self.assertEqual(segmentation.software.version, u"2")
-        self.assertEqual(segmentation.software.processing_details, None)
+        self.assertEqual(segmentation.software.name, u"Segger (UCSF Chimera)")
+        self.assertEqual(segmentation.software.version, u"1.9.7")
+        self.assertEqual(
+            segmentation.software.processing_details,
+            u"Images were recorded on a 200 kV FEG microscope on photographic film and processed at 2.8 Å/pixel, with "
+            u"final data sets of 30,000 and 35,000 side views of the binary and ternary complexes respectively. A "
+            u"starting model for the binary complex was obtained by angular reconstitution in IMAGIC32, and our "
+            u"previously determined GroEL-ADP-gp31 structure20 was used as a starting model for the ternary complexes. "
+            u"The data sets were sorted into classes showing different substrate features by a combination of MSA and "
+            u"competitive projection matching10, and the atomic structures of the GroEL subunit domains, gp31 and gp24 "
+            u"subunits were docked into the final, asymmetric maps as separate rigid bodies using URO33.")
         self.assertEqual(segmentation.primary_descriptor, u"threeDVolume")
 
     def test_read_json(self):
         """Read from JSON (.json) file"""
-        json_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1014.json')
+        json_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1547.json')
         segmentation = adapter.SFFSegmentation.from_file(json_file)
         # assertions
-        self.assertEqual(segmentation.name, u"Segger Segmentation")
+        self.assertEqual(segmentation.name,
+                         u"EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage "
+                         u"T4 co-chaperone gp31 and ADPAlF3")
         self.assertTrue(len(segmentation.version) > 0)
-        self.assertEqual(segmentation.software.name, u"segger")
-        self.assertEqual(segmentation.software.version, u"2")
-        self.assertEqual(segmentation.software.processing_details, None)
-        self.assertEqual(segmentation.primary_descriptor, u"threeDVolume")
+        self.assertEqual(segmentation.software.name, u"Segger (UCSF Chimera)")
+        self.assertEqual(segmentation.software.version, u"1.9.7")
+        self.assertEqual(
+            segmentation.software.processing_details,
+            u"Images were recorded on a 200 kV FEG microscope on photographic film and processed at 2.8 Å/pixel, with "
+            u"final data sets of 30,000 and 35,000 side views of the binary and ternary complexes respectively. A "
+            u"starting model for the binary complex was obtained by angular reconstitution in IMAGIC32, and our "
+            u"previously determined GroEL-ADP-gp31 structure20 was used as a starting model for the ternary complexes. "
+            u"The data sets were sorted into classes showing different substrate features by a combination of MSA and "
+            u"competitive projection matching10, and the atomic structures of the GroEL subunit domains, gp31 and gp24 "
+            u"subunits were docked into the final, asymmetric maps as separate rigid bodies using URO33.")
 
     def test_export_sff(self):
         """Export to an XML (.sff) file"""

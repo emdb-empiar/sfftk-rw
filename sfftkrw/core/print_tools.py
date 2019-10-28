@@ -24,7 +24,7 @@ def print_date(print_string, stream=sys.stderr, newline=True, incl_date=True):
     """Print the given string with date on the given stream
     
     :param print_string: the bytes/str to be printed
-    :type print_string: bytes or str
+    :type print_string: bytes or str or unicode
     :param stream: the stream/file to write to
     :type stream: :py:obj:`sys.stderr` or :py:obj:`sys.stdout`
     :param bool newline: whether (default) or not to add a newline at the end
