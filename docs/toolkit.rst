@@ -4,19 +4,19 @@ EMDB-SFF Read/Write Toolkit (``sfftk-rw``)
 
 .. note::
 
-    Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the ``sfftk`` package.
+    Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the
+    `sfftk package <https://pypi.org/project/sfftk/>`_.
 
 .. contents::
 
 Introduction
 ============
 
-
 ``sfftk-rw`` is a Python package that consists of command-line utilities and an API for reading and writing
 `Electron Microscopy Data Bank - Segmentation File Format
-(EMDB-SFF) files <https://github.com/emdb-empiar/sfftk/tree/master/sfftk/test_data/sff>`_.
-It is designed to exclusively handle EMDB-SFF files meaning it has few
-dependencies making it easier to integrate into existing applications.
+(EMDB-SFF) <https://github.com/emdb-empiar/EMDB-SFF>`_ files.
+It is designed to exclusively handle EMDB-SFF files meaning fewer
+dependencies simplifying integration into existing applications.
 
 It is a core dependency for ``sfftk``, which extends it by adding functionality
 to convert various application-specific segmentation file formats to EMDB-SFF.
@@ -24,14 +24,13 @@ to convert various application-specific segmentation file formats to EMDB-SFF.
 License
 -------
 
-``sfftk-rw`` is free and open source software released under the terms of the Apache License, Version 2.0. Source code is
-copyright EMBL-European Bioinformatics Institute (EMBL-EBI) 2019.
+``sfftk-rw`` is free and open source software released under the terms of the Apache License,
+Version 2.0. Source code is copyright EMBL-European Bioinformatics Institute (EMBL-EBI) 2017.
 
 Data Model
 ----------
 
-The corresponding schema
-(``v0.7.0.dev0``) may be obtained at `http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html
+The corresponding schema may be obtained at `http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html
 <http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html>`_.
 Changes to the schema are welcome for discussion at the *Segmentation Working Group*
 at `https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg
@@ -69,68 +68,84 @@ Getting Started
 Obtaining and Installing ``sfftk-rw``
 -------------------------------------
 
-Dependencies
-~~~~~~~~~~~~
-
-As with any Python software, we recommend installing it in a virtual environment (of your choice). The only dependency
-that may be needed is ``numpy`` which can be installed with
-
-.. code:: bash
-
-    pip install numpy
-
 PyPI
 ~~~~
 
-``sfftk-rw`` is available on PyPI meaning that all that one needs to do is run:
+``sfftk-rw`` is available on PyPI. Simply run:
 
 .. code:: bash
 
-    pip install sfftk-rwk
+    pip install sfftk-rw
 
 Source
 ~~~~~~
 
-The ``sfftk-rw`` source is available from Github `https://github.com/emdb-empiar/sfftk <https://github.com/emdb-empiar/sfftk>`_.
+The ``sfftk-rw`` source is available from Github
+`https://github.com/emdb-empiar/sfftk-rw <https://github.com/emdb-empiar/sfftk-rw>`_.
 
+User Interface
+--------------
 
-
-Conversion
-----------
-
-Segmentation files may be converted to EMDB-SFF files using the ``convert``
-command.
+``sfftk-rw`` is designed a command-line tool with various utilities. Type ``sff`` to see all options;
 
 .. code:: bash
 
-    sfr convert file.am -o file.sff
+    sff
 
-For a full description of how to perform conversion, please see the
-`guide to format conversion <https://sfftk.readthedocs.io/en/latest/converting.html>`_.
+Interconversion
+---------------
+
+As a data model, EMDB-SFF is file format agnostic. However, EMDB-SFF files are currently expressed as either
+XML, HDF5 and JSON (textual annotations only). ``sfftk-rw`` allows interconversion between these formats.
+
+Use the ``convert`` utility to carry out interconversions:
+
+.. code:: bash
+
+    sff convert file.sff
+
+By default all ``sfftk-rw`` converts to XML except when it receives to HDF5.
+
+For a full description of how to perform format interconversion, please see the
+`guide to format interconversion <https://sfftk-rw.readthedocs.io/en/lkatest/converting.html>`_.
 
 Viewing
 ----------
 
+Basic metadata about an EMDB-SFF file may be obtained using the ``view`` utility:
 
+.. code:: bash
 
-Miscellaneous
--------------
+    sff view [options] file.sff
 
-``sfftk-rw`` may also be used for several miscellaneous operations such as:
-
--  `Viewing segmentation metadata <https://sfftk.readthedocs.io/en/latest/misc.html#viewing-file-metadata>`_
-
-
--  `Running unit tests <https://sfftk.readthedocs.io/en/latest/misc.html#running-unit-tests>`_  with the ``tests`` command
-
-More information on this can be found in the `guide to miscellaneous operations <https://sfftk.readthedocs.io/en/latest/misc.html>`_.
 
 Developing with ``sfftk-rw``
 ----------------------------
 
-``sfftk-rw`` is developed as a set of decoupled packages providing the various
-functionality. The main classes involved are found in the ``sfftk.schema package``.
-Please see `full API <http://sfftk.readthedocs.io/en/latest/sfftk.html>`_.
-There is also a `guide to developing with sfftk <https://sfftk.readthedocs.io/en/latest/developing.html>`_ which
-provides useful instructions.
+We have designed ``sfftk-rw`` to be easy to integrate into existing applications but are also open
+for suggestions on how to improve the developer experience. Please consult the `guide to developing
+with sfftk-rw <https://sfftk-rw.readthedocs.io/en/latest/developing.html>`_ or peruse
+the `API documentation <http://sfftk-rw.readthedocs.io/en/latest/sfftk-rw.html>`_.
+
+As a brief example, you can handle EMDB-SFF files using the ``SFFSegmentation`` class:
+
+.. code:: python
+
+    from sfftkrw.schema import adapter
+
+    # read from a file
+    seg = adapter.SFFSegmentation.from_file("file.sff")
+
+    # or create one from scratch
+    seg = adapter.SFFSegmentation()
+    # then create relevant attributes
+    seg.name = "My segmentation"
+    seg.software = adapter.SFFSoftware(
+        name="sfftk-rw",
+        version="0.5.0",
+        processingDetails="Used the command line utility to convert segmentation"
+    )
+
+    # export by specifying the name of the output file for auto format detection
+    seg.export("file.hff") # HDF5
 

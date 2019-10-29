@@ -64,7 +64,7 @@ subparsers = Parser.add_subparsers(
     title='Tools',
     dest='subcommand',
     description='The EMDB-SFF Read/Write Toolkit (sfftk-rw) provides the following tools:',
-    metavar="EMDB-SFF tools"
+    metavar="EMDB-SFF Read/Write Tools"
 )
 
 # =========================================================================
@@ -92,8 +92,9 @@ format_ = {
     'args': ['-f', '--format'],
     'kwargs': {
         # 'default': 'sff',
-        'help': "output file format; valid options are: {} [default: sff]".format(
-            ", ".join(map(lambda x: "{} ({})".format(x[0], x[1]), FORMAT_LIST))
+        'help': "output file format; valid options are: {formats} [default: {default}]".format(
+            default=FORMAT_LIST[0][0],
+            formats=", ".join(map(lambda x: "{} ({})".format(x[0], x[1]), FORMAT_LIST))
         ),
     }
 }
@@ -149,7 +150,7 @@ verbose = {
 # convert subparser
 # =========================================================================
 convert_parser = subparsers.add_parser(
-    'convert', description="Perform conversions to EMDB-SFF", help="converts between EMDB-SFF formats")
+    'convert', description="Perform EMDB-SFF file format interconversions", help="converts between EMDB-SFF formats")
 convert_parser.add_argument('from_file', help="file to convert from")
 convert_parser.add_argument('-t', '--top-level-only', default=False,
                             action='store_true', help="convert only the top-level segments [default: False]")
@@ -251,10 +252,12 @@ def parse_args(_args, use_shlex=False):
             dirname = os.path.dirname(from_file)
             if args.format:
                 try:
-                    assert args.format in map(lambda x: x[0], FORMAT_LIST)
+                    assert args.format in list(map(lambda x: x[0], FORMAT_LIST))
                 except AssertionError:
-                    print_date("Invalid output format: {}; valid values are: {}".format(
-                        args.format, ", ".join(map(lambda x: x[0], FORMAT_LIST))))
+                    print_date("Invalid output format: {invalid}; valid values are: {formats}".format(
+                        invalid=args.format,
+                        formats=", ".join(map(lambda x: x[0], FORMAT_LIST)))
+                    )
                     return os.EX_USAGE
                 fn = ".".join(os.path.basename(from_file).split(
                     '.')[:-1]) + '.{}'.format(args.format)

@@ -41,6 +41,7 @@ SFFTKRW_CLASSIFIERS = [
     u"Topic :: Text Processing :: Markup",
     u"Topic :: Utilities",
 ]
+SFFTKRW_ENTRY_POINT = 'sff'
 if sys.version_info[0] > 2:
     SFFTKRW_INSTALL_REQUIRES = ['numpy', 'h5py>2.7.0', "RandomWords"]
     SFFTKRW_SETUP_REQUIRES = []
@@ -61,7 +62,7 @@ if sys.version_info[0] > 2:
         classifiers=SFFTKRW_CLASSIFIERS,
         entry_points={
             'console_scripts': [
-                'sfr = sfftkrw.sffrw:main',
+                '{} = sfftkrw.sffrw:main'.format(SFFTKRW_ENTRY_POINT),
             ]
         },
     )
@@ -85,7 +86,7 @@ else:
         classifiers=SFFTKRW_CLASSIFIERS,
         entry_points={
             'console_scripts': [
-                'sff-rw = sfftkrw.sffrw:main',
+                '{} = sfftkrw.sffrw:main'.format(SFFTKRW_ENTRY_POINT),
             ]
         },
     )

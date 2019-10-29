@@ -59,7 +59,10 @@ def handle_convert(args):  # @UnusedVariable
     # perform actual export
     status = seg.export(args.output)
     if args.verbose:
-        print_date("Done")
+        if status == os.EX_OK:
+            print_date("Done")
+        else:
+            print_date("Error")
     return status
 
 
