@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to sfftk’s documentation! &mdash; sfftk v0.4.1.dev0 documentation</title>
+  <title>Welcome to sfftk-rw’s documentation! &mdash; sfftkrw v0.5.0.dev0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="EMDB-SFF Toolkit (sfftk)" href="toolkit.html" /> 
+    <link rel="next" title="EMDB-SFF Read/Write Toolkit (sfftk-rw)" href="toolkit.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -49,7 +49,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> sfftk
+            <a href="#" class="icon icon-home"> sfftkrw
           
 
           
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                v0.4
+                v0.5
               </div>
             
           
@@ -84,13 +84,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Converting Files To EMDB-SFF</a></li>
-<li class="toctree-l1"><a class="reference internal" href="annotating.html">Annotating EMDB-SFF Segmentations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending sfftk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sfftk.html">sfftk packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a></li>
 </ul>
 
             
@@ -105,7 +103,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">sfftk</a>
+          <a href="#">sfftkrw</a>
         
       </nav>
 
@@ -136,7 +134,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>Welcome to sfftk’s documentation!</li>
+      <li>Welcome to <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>’s documentation!</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -155,75 +153,47 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-sfftk-s-documentation">
-<h1>Welcome to sfftk’s documentation!<a class="headerlink" href="#welcome-to-sfftk-s-documentation" title="Permalink to this headline">¶</a></h1>
-<a class="reference external image-reference" href="https://badge.fury.io/py/sfftk"><img alt="https://badge.fury.io/py/sfftk.svg" src="https://badge.fury.io/py/sfftk.svg" /></a>
-<a class="reference external image-reference" href="https://travis-ci.org/emdb-empiar/sfftk"><img alt="https://travis-ci.org/emdb-empiar/sfftk.svg?branch=master" src="https://travis-ci.org/emdb-empiar/sfftk.svg?branch=master" /></a>
-<a class="reference external image-reference" href="https://coveralls.io/github/emdb-empiar/sfftk?branch=master"><img alt="https://coveralls.io/repos/github/emdb-empiar/sfftk/badge.svg?branch=master" src="https://coveralls.io/repos/github/emdb-empiar/sfftk/badge.svg?branch=master" /></a>
-<a class="reference external image-reference" href="http://sfftk.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/sfftk/badge/?version=latest" /></a>
+  <div class="section" id="welcome-to-sfftk-rw-s-documentation">
+<h1>Welcome to <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>’s documentation!<a class="headerlink" href="#welcome-to-sfftk-rw-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Looking for a graphical aid to using <code class="docutils literal notranslate"><span class="pre">sfftk</span></code>? Try out the online version: the <a href="https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/" target="_blank">Segmentation Annotation Tool</a>.</p>
+<p>Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the
+<a class="reference external" href="https://pypi.org/project/sfftk/">sfftk package</a>.</p>
 </div>
 </div>
 <div class="section" id="contents">
 <h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk</span></code>)</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="toolkit.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="toolkit.html#getting-started">Getting Started</a></li>
-<li class="toctree-l2"><a class="reference internal" href="toolkit.html#features">Features</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Converting Files To EMDB-SFF</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="converting.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="converting.html#input-formats">Input Formats</a></li>
 <li class="toctree-l2"><a class="reference internal" href="converting.html#output-formats">Output Formats</a></li>
 <li class="toctree-l2"><a class="reference internal" href="converting.html#id3">Verbose Operation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="converting.html#truncating-segments-segger-only">Truncating Segments (Segger Only)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="converting.html#specify-details">Specify Details</a></li>
 <li class="toctree-l2"><a class="reference internal" href="converting.html#changing-the-primary-descriptor">Changing The Primary Descriptor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="converting.html#specifying-configurations-to-use">Specifying Configurations To Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="converting.html#working-with-multifile-segmentations">Working with Multifile Segmentations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="annotating.html">Annotating EMDB-SFF Segmentations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="annotating.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotating.html#finding-notes">Finding Notes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotating.html#viewing-notes">Viewing Notes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotating.html#modifying-notes">Modifying Notes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotating.html#configuration-settings">Configuration Settings</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="misc.html#viewing-sfftk-version">Viewing <code class="docutils literal notranslate"><span class="pre">sfftk</span></code> Version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#viewing-sfftk-rw-version">Viewing <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> Version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc.html#viewing-file-metadata">Viewing File Metadata</a></li>
-<li class="toctree-l2"><a class="reference internal" href="misc.html#prepping-segmentation-files">Prepping Segmentation Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="misc.html#setting-configurations">Setting Configurations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc.html#running-unit-tests">Running Unit Tests</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="developing.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing.html#reading-emdb-sff-files">Reading EMDB-SFF Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing.html#creating-emdb-sff-objects">Creating EMDB-SFF Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing.html#exporting-emdb-sff-objects">Exporting EMDB-SFF Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing.html#navigating-your-way-through-a-segmentation">Navigating Your Way Through A Segmentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developing.html#annotating-emdb-sff-objects">Annotating EMDB-SFF Objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developing.html#reading-application-specific-segmentation-files">Reading Application-Specific Segmentation Files</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending sfftk</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="extending.html#adding-a-segmentation-file-format">Adding A Segmentation File Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extending.html#adding-a-search-resource">Adding A Search Resource</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="sfftk.html">sfftk packages</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="schema.html">sfftk.schema package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="formats.html">sfftk.formats package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="readers.html">sfftk.readers package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notes.html">sfftk.notes package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">sfftk.core package</a></li>
 </ul>
 </li>
@@ -247,7 +217,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="toolkit.html" class="btn btn-neutral float-right" title="EMDB-SFF Toolkit (sfftk)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="toolkit.html" class="btn btn-neutral float-right" title="EMDB-SFF Read/Write Toolkit (sfftk-rw)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>

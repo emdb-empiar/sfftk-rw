@@ -1,7 +1,7 @@
 sfftk packages
 ===============
 
-.. automodule:: sfftk.__init__
+.. automodule:: sfftkrw.__init__
 	:members:
 	:show-inheritance:
 	
@@ -9,7 +9,4 @@ sfftk packages
 	:maxdepth: 2
 	
 	schema
-	formats
-	readers
-	notes
 	core

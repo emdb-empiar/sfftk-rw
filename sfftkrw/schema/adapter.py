@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import division, print_function
-
-u"""
+# adapter.py
+"""
 ========================
 sfftkrw.schema.adapter
 ========================
@@ -60,6 +59,7 @@ positional argument) and an optional keyword argument ``sff_type`` denoting the 
 example, the ``software`` attribute will be of class :py:class:`SFFSoftware`.
 
 """
+from __future__ import division, print_function
 
 import base64
 import numbers

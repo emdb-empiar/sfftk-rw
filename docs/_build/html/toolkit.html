@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>EMDB-SFF Toolkit (sfftk) &mdash; sfftk v0.4.1.dev0 documentation</title>
+  <title>EMDB-SFF Read/Write Toolkit (sfftk-rw) &mdash; sfftkrw v0.5.0.dev0 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Converting Files To EMDB-SFF" href="converting.html" />
-    <link rel="prev" title="Welcome to sfftk’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to sfftk-rw’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sfftk
+            <a href="index.html" class="icon icon-home"> sfftkrw
           
 
           
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v0.4
+                v0.5
               </div>
             
           
@@ -85,41 +85,32 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">EMDB-SFF Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk</span></code>)</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#audience">Audience</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#license">License</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#data-model">Data Model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#supported-formats">Supported Formats</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#contact">Contact</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#publications">Publications</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#obtaining-and-installing-sfftk">Obtaining and Installing <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#obtaining-and-installing-sfftk-rw">Obtaining and Installing <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#pypi">PyPI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#source">Source</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#features">Features</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#conversion">Conversion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#annotation">Annotation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#miscellaneous">Miscellaneous</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#developing-with-sfftk">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#extending-sfftk">Extending <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#user-interface">User Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interconversion">Interconversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewing">Viewing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#developing-with-sfftk-rw">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Converting Files To EMDB-SFF</a></li>
-<li class="toctree-l1"><a class="reference internal" href="annotating.html">Annotating EMDB-SFF Segmentations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending sfftk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sfftk.html">sfftk packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a></li>
 </ul>
 
             
@@ -134,7 +125,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sfftk</a>
+          <a href="index.html">sfftkrw</a>
         
       </nav>
 
@@ -165,7 +156,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>EMDB-SFF Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk</span></code>)</li>
+      <li>EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -184,50 +175,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="emdb-sff-toolkit-sfftk">
-<h1><a class="toc-backref" href="#id2">EMDB-SFF Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk</span></code>)</a><a class="headerlink" href="#emdb-sff-toolkit-sfftk" title="Permalink to this headline">¶</a></h1>
-<a class="reference external image-reference" href="https://badge.fury.io/py/sfftk"><img alt="https://badge.fury.io/py/sfftk.svg" src="https://badge.fury.io/py/sfftk.svg" /></a>
-<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/sfftk" />
-<a class="reference external image-reference" href="https://travis-ci.org/emdb-empiar/sfftk"><img alt="https://travis-ci.org/emdb-empiar/sfftk.svg?branch=master" src="https://travis-ci.org/emdb-empiar/sfftk.svg?branch=master" /></a>
-<a class="reference external image-reference" href="https://coveralls.io/github/emdb-empiar/sfftk?branch=master"><img alt="https://coveralls.io/repos/github/emdb-empiar/sfftk/badge.svg?branch=master" src="https://coveralls.io/repos/github/emdb-empiar/sfftk/badge.svg?branch=master" /></a>
-<a class="reference external image-reference" href="http://sfftk.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/sfftk/badge/?version=latest" /></a>
+  <div class="section" id="emdb-sff-read-write-toolkit-sfftk-rw">
+<h1><a class="toc-backref" href="#id1">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a><a class="headerlink" href="#emdb-sff-read-write-toolkit-sfftk-rw" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Looking for a graphical aid to using <code class="docutils literal notranslate"><span class="pre">sfftk</span></code>? Try out the online version: the <a class="reference external" href="https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/">Segmentation Annotation Tool</a>.</p>
+<p>Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the
+<a class="reference external" href="https://pypi.org/project/sfftk/">sfftk package</a>.</p>
 </div>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#emdb-sff-toolkit-sfftk" id="id2">EMDB-SFF Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk</span></code>)</a></p>
+<li><p><a class="reference internal" href="#emdb-sff-read-write-toolkit-sfftk-rw" id="id1">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a></p>
 <ul>
-<li><p><a class="reference internal" href="#introduction" id="id3">Introduction</a></p>
+<li><p><a class="reference internal" href="#introduction" id="id2">Introduction</a></p>
 <ul>
-<li><p><a class="reference internal" href="#audience" id="id4">Audience</a></p></li>
-<li><p><a class="reference internal" href="#license" id="id5">License</a></p></li>
-<li><p><a class="reference internal" href="#data-model" id="id6">Data Model</a></p></li>
-<li><p><a class="reference internal" href="#supported-formats" id="id7">Supported Formats</a></p></li>
-<li><p><a class="reference internal" href="#contact" id="id8">Contact</a></p></li>
-<li><p><a class="reference internal" href="#publications" id="id9">Publications</a></p></li>
+<li><p><a class="reference internal" href="#license" id="id3">License</a></p></li>
+<li><p><a class="reference internal" href="#data-model" id="id4">Data Model</a></p></li>
+<li><p><a class="reference internal" href="#contact" id="id5">Contact</a></p></li>
+<li><p><a class="reference internal" href="#publications" id="id6">Publications</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#getting-started" id="id10">Getting Started</a></p>
+<li><p><a class="reference internal" href="#getting-started" id="id7">Getting Started</a></p>
 <ul>
-<li><p><a class="reference internal" href="#obtaining-and-installing-sfftk" id="id11">Obtaining and Installing <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></p>
+<li><p><a class="reference internal" href="#obtaining-and-installing-sfftk-rw" id="id8">Obtaining and Installing <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></p>
 <ul>
-<li><p><a class="reference internal" href="#dependencies" id="id12">Dependencies</a></p></li>
-<li><p><a class="reference internal" href="#pypi" id="id13">PyPI</a></p></li>
-<li><p><a class="reference internal" href="#source" id="id14">Source</a></p></li>
+<li><p><a class="reference internal" href="#pypi" id="id9">PyPI</a></p></li>
+<li><p><a class="reference internal" href="#source" id="id10">Source</a></p></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#features" id="id15">Features</a></p>
-<ul>
-<li><p><a class="reference internal" href="#conversion" id="id16">Conversion</a></p></li>
-<li><p><a class="reference internal" href="#annotation" id="id17">Annotation</a></p></li>
-<li><p><a class="reference internal" href="#miscellaneous" id="id18">Miscellaneous</a></p></li>
-<li><p><a class="reference internal" href="#developing-with-sfftk" id="id19">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></p></li>
-<li><p><a class="reference internal" href="#extending-sfftk" id="id20">Extending <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></p></li>
+<li><p><a class="reference internal" href="#user-interface" id="id11">User Interface</a></p></li>
+<li><p><a class="reference internal" href="#interconversion" id="id12">Interconversion</a></p></li>
+<li><p><a class="reference internal" href="#viewing" id="id13">Viewing</a></p></li>
+<li><p><a class="reference internal" href="#developing-with-sfftk-rw" id="id14">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></p></li>
 </ul>
 </li>
 </ul>
@@ -235,57 +214,38 @@
 </ul>
 </div>
 <div class="section" id="introduction">
-<h2><a class="toc-backref" href="#id3">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> is a set of utilities that facilitate creation, conversion and
-modification of <a class="reference external" href="https://github.com/emdb-empiar/sfftk/tree/master/sfftk/test_data/sff">Electron Microscopy Data Bank - Segmentation File Format
-(EMDB-SFF) files</a>.
-EMDB-SFF is an open, community-driven file format to handle annotated
-segmentations and subtomogram averages that facilitates segmentation file
-interchange. It is written in Python and provides both a command-line
-suite of commands and a Python API.</p>
-<div class="section" id="audience">
-<h3><a class="toc-backref" href="#id4">Audience</a><a class="headerlink" href="#audience" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> is primarily targeted but not restricted to biological electron
-microscopists and developers of image segmentation software.</p>
-</div>
+<h2><a class="toc-backref" href="#id2">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> is a Python package that consists of command-line utilities and an API for reading and writing
+<a class="reference external" href="https://github.com/emdb-empiar/EMDB-SFF">Electron Microscopy Data Bank - Segmentation File Format
+(EMDB-SFF)</a> files.
+It is designed to exclusively handle EMDB-SFF files meaning fewer
+dependencies simplifying integration into existing applications.</p>
+<p>It is a core dependency for <code class="docutils literal notranslate"><span class="pre">sfftk</span></code>, which extends it by adding functionality
+to convert various application-specific segmentation file formats to EMDB-SFF.</p>
 <div class="section" id="license">
-<h3><a class="toc-backref" href="#id5">License</a><a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> is free and open source software released under the terms of the Apache License, Version 2.0. Source code is
-copyright EMBL-European Bioinformatics Institute (EMBL-EBI) 2017.</p>
+<h3><a class="toc-backref" href="#id3">License</a><a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> is free and open source software released under the terms of the Apache License,
+Version 2.0. Source code is copyright EMBL-European Bioinformatics Institute (EMBL-EBI) 2017.</p>
 </div>
 <div class="section" id="data-model">
-<h3><a class="toc-backref" href="#id6">Data Model</a><a class="headerlink" href="#data-model" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> is built to handle EMDB-SFF files. The corresponding schema
-(<code class="docutils literal notranslate"><span class="pre">v0.7.0.dev0</span></code>) may be obtained at <a class="reference external" href="http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html">http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html</a>.
+<h3><a class="toc-backref" href="#id4">Data Model</a><a class="headerlink" href="#data-model" title="Permalink to this headline">¶</a></h3>
+<p>The corresponding schema may be obtained at <a class="reference external" href="http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html">http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html</a>.
 Changes to the schema are welcome for discussion at the <em>Segmentation Working Group</em>
 at <a class="reference external" href="https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg">https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg</a>.</p>
 </div>
-<div class="section" id="supported-formats">
-<span id="id1"></span><h3><a class="toc-backref" href="#id7">Supported Formats</a><a class="headerlink" href="#supported-formats" title="Permalink to this headline">¶</a></h3>
-<p>The following file formats are currently supported (in alphabetical order of
-extensions):</p>
-<ul class="simple">
-<li><p>Amira Mesh (.am)</p></li>
-<li><p>CCP4 Masks (.map)</p></li>
-<li><p>IMOD (.mod)</p></li>
-<li><p>Segger (.seg)</p></li>
-<li><p>Stereolithography (.stl)</p></li>
-<li><p>Amira HyperSurface (.surf)</p></li>
-</ul>
-</div>
 <div class="section" id="contact">
-<h3><a class="toc-backref" href="#id8">Contact</a><a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">Contact</a><a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h3>
 <p>Any questions or comments should be addressed to
 <a class="reference external" href="mailto:ardan&#37;&#52;&#48;ebi&#46;ac&#46;uk">ardan<span>&#64;</span>ebi<span>&#46;</span>ac<span>&#46;</span>uk</a> or
 <a class="reference external" href="mailto:pkorir&#37;&#52;&#48;ebi&#46;ac&#46;uk">pkorir<span>&#64;</span>ebi<span>&#46;</span>ac<span>&#46;</span>uk</a>.</p>
 </div>
 <div class="section" id="publications">
-<h3><a class="toc-backref" href="#id9">Publications</a><a class="headerlink" href="#publications" title="Permalink to this headline">¶</a></h3>
-<p>The following articles should be cited whenever <code class="docutils literal notranslate"><span class="pre">sfftk</span></code> is used in a
+<h3><a class="toc-backref" href="#id6">Publications</a><a class="headerlink" href="#publications" title="Permalink to this headline">¶</a></h3>
+<p>The following articles should be cited whenever <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> is used in a
 publication:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Article to be added</p>
+<p>Article in preparation</p>
 </div>
 <p>The EMDB-SFF data model is the result of various community consultations which
 are published in the following articles:</p>
@@ -297,85 +257,74 @@ are published in the following articles:</p>
 </div>
 </div>
 <div class="section" id="getting-started">
-<h2><a class="toc-backref" href="#id10">Getting Started</a><a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="obtaining-and-installing-sfftk">
-<h3><a class="toc-backref" href="#id11">Obtaining and Installing <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a><a class="headerlink" href="#obtaining-and-installing-sfftk" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="dependencies">
-<h4><a class="toc-backref" href="#id12">Dependencies</a><a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h4>
-<p>As with any Python software, we recommend installing it in a virtual environment (of your choice). The only dependency
-that may be needed is <code class="docutils literal notranslate"><span class="pre">numpy</span></code> which can be installed with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install numpy
-</pre></div>
-</div>
-</div>
+<h2><a class="toc-backref" href="#id7">Getting Started</a><a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="obtaining-and-installing-sfftk-rw">
+<h3><a class="toc-backref" href="#id8">Obtaining and Installing <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a><a class="headerlink" href="#obtaining-and-installing-sfftk-rw" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="pypi">
-<h4><a class="toc-backref" href="#id13">PyPI</a><a class="headerlink" href="#pypi" title="Permalink to this headline">¶</a></h4>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> is available on PyPI meaning that all that one needs to do is run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install sfftk
+<h4><a class="toc-backref" href="#id9">PyPI</a><a class="headerlink" href="#pypi" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> is available on PyPI. Simply run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install sfftk-rw
 </pre></div>
 </div>
 </div>
 <div class="section" id="source">
-<h4><a class="toc-backref" href="#id14">Source</a><a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
-<p>The <code class="docutils literal notranslate"><span class="pre">sfftk</span></code> source is available from Github <a class="reference external" href="https://github.com/emdb-empiar/sfftk">https://github.com/emdb-empiar/sfftk</a>.</p>
+<h4><a class="toc-backref" href="#id10">Source</a><a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> source is available from Github
+<a class="reference external" href="https://github.com/emdb-empiar/sfftk-rw">https://github.com/emdb-empiar/sfftk-rw</a>.</p>
 </div>
 </div>
-</div>
-<div class="section" id="features">
-<h2><a class="toc-backref" href="#id15">Features</a><a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> has two principal functions:</p>
-<ul class="simple">
-<li><p><cite>convert</cite> application-specific segmentation file format (AS-SFF) files to EMDB-SFF;</p></li>
-<li><p><cite>annotate</cite> EMDB-SFF files against known ontologies.</p></li>
-</ul>
-<div class="section" id="conversion">
-<h3><a class="toc-backref" href="#id16">Conversion</a><a class="headerlink" href="#conversion" title="Permalink to this headline">¶</a></h3>
-<p>Segmentation files may be converted to EMDB-SFF files using the <code class="docutils literal notranslate"><span class="pre">convert</span></code>
-command.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.am -o file.sff
+<div class="section" id="user-interface">
+<h3><a class="toc-backref" href="#id11">User Interface</a><a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> is designed a command-line tool with various utilities. Type <code class="docutils literal notranslate"><span class="pre">sff</span></code> to see all options;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff
 </pre></div>
 </div>
-<p>For a full description of how to perform conversion, please see the
-<a class="reference external" href="https://sfftk.readthedocs.io/en/latest/converting.html">guide to format conversion</a>.</p>
 </div>
-<div class="section" id="annotation">
-<h3><a class="toc-backref" href="#id17">Annotation</a><a class="headerlink" href="#annotation" title="Permalink to this headline">¶</a></h3>
-<p>Annotation is performed using the <code class="docutils literal notranslate"><span class="pre">notes</span></code> utility on EMDB-SFF files.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff notes show -H file.sff
+<div class="section" id="interconversion">
+<h3><a class="toc-backref" href="#id12">Interconversion</a><a class="headerlink" href="#interconversion" title="Permalink to this headline">¶</a></h3>
+<p>As a data model, EMDB-SFF is file format agnostic. However, EMDB-SFF files are currently expressed as either
+XML, HDF5 and JSON (textual annotations only). <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> allows interconversion between these formats.</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">convert</span></code> utility to carry out interconversions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.sff
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> provides a simple set of tools to allow <cite>viewing, searching and
-modifying annotations</cite> associated with the segmentation and individual
-segments. The added annotations should be either from a public ontology or be
-an accession from a public database.</p>
-<p>See the <a class="reference external" href="https://sfftk.readthedocs.io/en/latest/annotating.html">guide to annotating segmentations</a> for a full
-treatment.</p>
+<p>By default all <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> converts to XML except when it receives to HDF5.</p>
+<p>For a full description of how to perform format interconversion, please see the
+<a class="reference external" href="https://sfftk-rw.readthedocs.io/en/lkatest/converting.html">guide to format interconversion</a>.</p>
 </div>
-<div class="section" id="miscellaneous">
-<h3><a class="toc-backref" href="#id18">Miscellaneous</a><a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> may also be used for several miscellaneous operations such as:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://sfftk.readthedocs.io/en/latest/misc.html#viewing-file-metadata">Viewing segmentation metadata</a></p></li>
-<li><p><a class="reference external" href="https://sfftk.readthedocs.io/en/latest/misc.html#prepping-segmentation-files">Prepping segmentations</a> before conversion to EMDB-SFF</p></li>
-<li><p><a class="reference external" href="https://sfftk.readthedocs.io/en/latest/misc.html#setting-configurations">Setting configurations</a> that affect how <code class="docutils literal notranslate"><span class="pre">sfftk</span></code> works</p></li>
-<li><p><a class="reference external" href="https://sfftk.readthedocs.io/en/latest/misc.html#running-unit-tests">Running unit tests</a>  with the <code class="docutils literal notranslate"><span class="pre">tests</span></code> command</p></li>
-</ul>
-<p>More information on this can be found in the <a class="reference external" href="https://sfftk.readthedocs.io/en/latest/misc.html">guide to miscellaneous operations</a>.</p>
+<div class="section" id="viewing">
+<h3><a class="toc-backref" href="#id13">Viewing</a><a class="headerlink" href="#viewing" title="Permalink to this headline">¶</a></h3>
+<p>Basic metadata about an EMDB-SFF file may be obtained using the <code class="docutils literal notranslate"><span class="pre">view</span></code> utility:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff view <span class="o">[</span>options<span class="o">]</span> file.sff
+</pre></div>
 </div>
-<div class="section" id="developing-with-sfftk">
-<h3><a class="toc-backref" href="#id19">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a><a class="headerlink" href="#developing-with-sfftk" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> is developed as a set of decoupled packages providing the various
-functionality. The main classes involved are found in the <code class="docutils literal notranslate"><span class="pre">sfftk.schema</span> <span class="pre">package</span></code>.
-Please see <a class="reference external" href="http://sfftk.readthedocs.io/en/latest/sfftk.html">full API</a>.
-There is also a <a class="reference external" href="https://sfftk.readthedocs.io/en/latest/developing.html">guide to developing with sfftk</a> which
-provides useful instructions.</p>
 </div>
-<div class="section" id="extending-sfftk">
-<h3><a class="toc-backref" href="#id20">Extending <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a><a class="headerlink" href="#extending-sfftk" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk</span></code> has built with extensibility in mind. It is anticipated that most
-extension will take the form of supporting additional file formats. Please
-read the <a class="reference external" href="https://sfftk.readthedocs.io/en/latest/extending.html">guide to extending sfftk</a> to learn how to do
-this.</p>
+<div class="section" id="developing-with-sfftk-rw">
+<h3><a class="toc-backref" href="#id14">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a><a class="headerlink" href="#developing-with-sfftk-rw" title="Permalink to this headline">¶</a></h3>
+<p>We have designed <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> to be easy to integrate into existing applications but are also open
+for suggestions on how to improve the developer experience. Please consult the <a class="reference external" href="https://sfftk-rw.readthedocs.io/en/latest/developing.html">guide to developing
+with sfftk-rw</a> or peruse
+the <a class="reference external" href="http://sfftk-rw.readthedocs.io/en/latest/sfftk-rw.html">API documentation</a>.</p>
+<p>As a brief example, you can handle EMDB-SFF files using the <code class="docutils literal notranslate"><span class="pre">SFFSegmentation</span></code> class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sfftkrw.schema</span> <span class="kn">import</span> <span class="n">adapter</span>
+
+<span class="c1"># read from a file</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;file.sff&quot;</span><span class="p">)</span>
+
+<span class="c1"># or create one from scratch</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="p">()</span>
+<span class="c1"># then create relevant attributes</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;My segmentation&quot;</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">software</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">SFFSoftware</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sfftk-rw&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">,</span>
+    <span class="n">processingDetails</span><span class="o">=</span><span class="s2">&quot;Used the command line utility to convert segmentation&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># export by specifying the name of the output file for auto format detection</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;file.hff&quot;</span><span class="p">)</span> <span class="c1"># HDF5</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -391,7 +340,7 @@ this.</p>
         <a href="converting.html" class="btn btn-neutral float-right" title="Converting Files To EMDB-SFF" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to sfftk’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to sfftk-rw’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

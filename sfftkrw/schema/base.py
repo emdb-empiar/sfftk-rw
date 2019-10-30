@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import division, print_function
-
-import sys
-
-u"""
+# base.py
+"""
 ========================
 sfftkrw.schema.base
 ========================
@@ -35,6 +32,12 @@ The :py:class:`SFFListType` Base Class
 TBA
 
 """
+from __future__ import division, print_function
+
+
+import sys
+
+
 import numbers
 import os
 import re
@@ -376,7 +379,7 @@ class SFFType(object):
 
 
 class SFFIndexType(SFFType):
-    """Mixin to handle object IDs"""
+    """Subclass to handle object IDs"""
     index_attr = ""
     u"""the name of the attribute on the class which will be treated as the ID"""
     increment_by = 1
@@ -487,19 +490,18 @@ class SFFIndexType(SFFType):
 
 
 class SFFListType(SFFType):
-    """Mixin to confer list-like behaviour"""
+    """Subclass to confer list-like behaviour"""
     iter_attr = None
-    u"""the name of the attribute in the `generateDS` class that we iterate over together with 
+    """the name of the attribute in the `generateDS` class that we iterate over together with 
     the `SFFType` subclass to cast each received object to"""
     sibling_classes = []
-    u"""a list of pairs of classes which are all subclasses of some convenience class
+    """a list of pairs of classes which are all subclasses of some convenience class
     
-    For example: `SFFShape` is the parent of `SFFCone`, `SFFCuboid`, `SFFCylinder` and `SFFEllipsoid`.
-    This is because the ``SFFShape` class manages a continuous set of IDs for the different
-    shapes. However, when we iterate over a `SFFShapePrimitiveList` we can't get a 
-    generic shape; we need individual subclasses. Therefore, this class variable defines how
-    we return individual subclass instances from a `SFFShapePrimitiveList`.
-    """
+    For example: :py:class:`SFFShape` is the parent of :py:class:`SFFCone`, :py:class:`SFFCuboid`, 
+    :py:class:`SFFCylinder` and :py:class:`SFFEllipsoid`. This is because the :py:class:`SFFShape` class manages a 
+    continuous set of IDs for the different shapes. However, when we iterate over a `SFFShapePrimitiveList` 
+    we can't get a generic shape; we need individual subclasses. Therefore, this class variable defines how
+    we return individual subclass instances from a `SFFShapePrimitiveList`."""
 
     def __new__(cls, new_obj=True, *args, **kwargs):
         # make sure `iter_attr` is not empty

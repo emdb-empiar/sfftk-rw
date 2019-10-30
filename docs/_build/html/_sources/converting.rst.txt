@@ -8,7 +8,7 @@ Introduction
 ============
 
 Converting files to use the EMDB-SFF data model is one of the core functions 
-of ``sfftk``. This guide describes in detail how to accomplish conversions.
+of ``sfftk-rw``. This guide describes in detail how to accomplish conversions.
 
 Synopsis
 --------
@@ -66,31 +66,6 @@ displays all conversion options.
 Quick Start
 -----------
 
-Output to XML (Default)
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code:: bash
-
-    sff convert file.seg
-
-Specify Output File
-~~~~~~~~~~~~~~~~~~~
-
-.. code:: bash
-
-    sff convert file.seg -o file.sff
-    sff convert file.seg --output /path/to/output/file.sff
-    sff convert file.seg -o file.hff
-    sff convert file.seg -o file.json # only metadata; no geometrical data
-
-Specify Output Format
-~~~~~~~~~~~~~~~~~~~~~
-
-.. code:: bash
-
-    sff convert file.seg -f hff
-    sff convert file.seg --format hff
-
 EMDB-SFF Format Interconversion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -108,13 +83,6 @@ Verbose Operation
     sff convert -v file.hff
     sff convert --verbose file.hff
 
-Truncate Segments (Segger Only)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code:: bash
-
-    sff convert -t file.seg
-    sff convert --top-level-only file.seg
 
 Set Details
 ~~~~~~~~~~~
@@ -129,15 +97,8 @@ Change Primary Descriptor
 
 .. code:: bash
 
-    sff convert -R contourList file.surf # AmiraHxSurface file
-    sff convert --primary-descriptor contourList file.surf # AmiraHxSurface file
-
-
-Input Formats
-=============
-
-``sfftk`` can convert several segmentation file formats (see
-:ref:`supported_formats`) into EMDB-SFF files.
+    sff convert -R shapePrimitiveList file.sff
+    sff convert --primary-descriptor shapePrimitiveList file.sff
 
 
 .. _output_formats:
@@ -167,24 +128,17 @@ There are two ways to perform conversion:
 Specifying the output path with ``-o/--output`` flag
 ----------------------------------------------------
 
-Conversion is performed as follows:
+Conversion is performed as follows (the output file extension determines the output format):
 
 .. code:: bash
 
-    sff convert file.seg -o file.sff
-    sff convert file.seg --output /path/to/output/file.sff
-
-The output file extension determines the output format i.e.
-
-.. code:: bash
-
-    sff convert file.seg -o file.hff
+    sff convert file.sff -o file.hff
 
 will result in an HDF5 file while
 
 .. code:: bash
 
-    sff convert file.seg --output file.json
+    sff convert file.sff --output file.json
 
 will be a JSON file.
 
@@ -214,7 +168,7 @@ The default format (if none is specified) is ``sff`` (XML).
 
     sff convert file.seg
 
-results in file.sff as output.
+results in ``file.sff`` as output.
 
 EMDB-SFF Format Interconversion
 -------------------------------
@@ -257,32 +211,6 @@ information on the terminal.
     Tue Sep 12 15:30:03 2017 Exporting to file.sff
     Tue Sep 12 15:30:07 2017 Done
 
-Truncating Segments (Segger Only)
-=================================
-
-Segger segmentations include hundreds to thousands of sub-segmentations due to 
-how the algorithm it uses (watershed algorithm) to segment the volume. 
-The segmentations thus form a tree with the root having an ID of zero. 
-Mostly, we are only interested in the children of the root which are in 
-themselves roots of another tree. Specifying this option only transfers the 
-children of the global root into the EMDB-SFF file.
-
-Consider the following tree of segments:
-
-.. image:: converting-01.png
-
-The segmentation contains different levels commencing from the root down, with 
-children segments *contained within* parent segments. Specifying 
-``-t/--top-level-only`` treats only children of the *root* as segments and 
-excludes all others. Therefore, running
-
-.. code:: bash
-
-    sff convert --top-level-only file.seg
-
-on the above will produce an EMDB-SFF file with only three segments. Excluding 
-this option means that the resulting EMDB-SFF file will be relatively large.
-
 Specify Details
 ===============
 
@@ -306,102 +234,7 @@ The EMDB-SFF data model provides for three possible geometrical descriptors:
 `meshes (meshList), shape primitives (shapePrimitiveList)` and 
 `3D volumes (threeDVolume)`.
  
-In some cases, such as with IMOD segmentations, more than one geometrical 
-descriptor may have been specified for the same segmentations.
- 
 The mandatory ``<primaryDescriptor/>`` field specifies the main geometrical
 descriptor to be used when performing conversions and other processing tasks. 
 Only valid values are allowed; otherwise a ``ValueError`` is raised.
-
-The table below shows valid primary descriptors by file type.
-
-+-------------------+-------------------------------------------------------+
-|**File format**    | **Valid primary descriptors**                         |
-+===================+=======================================================+
-|AmiraMesh          | threeDVolume                                          |
-+-------------------+-------------------------------------------------------+
-|AmiraHxSurface     | meshList                                              |
-+-------------------+-------------------------------------------------------+
-|CCP4 masks         | threeDVolume                                          |
-+-------------------+-------------------------------------------------------+
-|IMOD               | meshList (default), shapePrimitiveList                |
-+-------------------+-------------------------------------------------------+
-|Segger             | threeDVolume                                          |
-+-------------------+-------------------------------------------------------+
-|STL                | meshList                                              |
-+-------------------+-------------------------------------------------------+
-
-.. note::
-
-    IMOD files must have a mesh generated using ``imodmesh`` command.
-
-Note that the primary descriptor should only be changed to a value of a 
-geometrical descriptor that is *actually* present in the EMDB-SFF file.
-
-For IMOD files, ``sfftk`` tries to infer which primary descriptor to use. 
-Also, if the primary descriptor is changed, it tries to ensure that a change
-corresponds to the actual file contents.
-
-
-
-Specifying Configurations To Use
-=================================
-
-``sfftk`` makes use of persistent configurations which affect how certain operations
-are performed. There are three types of configurations detailed in the dedicated 
-documentation on configs (see :ref:`configs`) in decreasing order of priority:
-
-- custom configs defined in a ``path/to/sff.conf`` file;
-
-- user configs stored in ``~/.sfftk/sff.conf``;
-
-- shipped configs which will sit with the installed ``sfftk`` package.
-
-Custom configs are invoked using the ``-p/--config-path`` option:
-
-.. code:: bash
-
-    sff convert -p path/to/configs file.seg
-    sff convert --config-path path/to/configs file.seg
-
-User configs are default and require no special flags.
-
-Shipped configs use the ``-b/--shipped-configs`` flag with no arguments:
-
-.. code:: bash
-
-    sff convert -b file.am
-    sff convert --shipped-configs file.am
-
-
-Working with Multifile Segmentations
-====================================
-
-Some of the segmentation file formats supported are designed to hold one segment per file.
-Therefore, representating a complete segmentation will require multiple files.
-
-Currently the following file formats are multifile by design:
-
-* **CCP4 and related files** - these files store segments as a 3D volume with segment region marked by
-  specific voxel values (e.g. ``1`` for *in* segment voxels and ``0`` for the background. Specific file
-  formats have ``.mrc``, ``.map`` and ``.rec``.
-
-* **Stereolithography files** - while it is possible to concatenate several STL files into one,
-  STL files do not contain metadata such as segment colour. Therefore, it is best to handle them as
-  multifiles. STL files have a ``.stl`` extension.
-
-Multifiles utilise the ``-m/--multi-file`` argument followed by all the files each of which should
-specify a single segment.
-
-.. code:: bash
-
-    sff convert -m file1.map file2.map file3.map
-
-The above command will use default options and write an EMDB-SFF file to ``file1.sff``. Alternatively,
-the user should specify the output file
-
-.. code:: bash
-
-    sff convert -m file1.map file2.map file3.map --output file.sff
-
 

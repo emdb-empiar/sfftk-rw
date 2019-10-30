@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; sfftk v0.4.1.dev0 documentation</title>
+  <title>Index &mdash; sfftkrw v0.5.0.dev0 documentation</title>
   
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sfftk
+            <a href="index.html" class="icon icon-home"> sfftkrw
           
 
           
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                v0.4
+                v0.5
               </div>
             
           
@@ -84,13 +84,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Converting Files To EMDB-SFF</a></li>
-<li class="toctree-l1"><a class="reference internal" href="annotating.html">Annotating EMDB-SFF Segmentations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending sfftk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sfftk.html">sfftk packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a></li>
 </ul>
 
             
@@ -105,7 +103,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sfftk</a>
+          <a href="index.html">sfftkrw</a>
         
       </nav>
 
@@ -166,7 +164,6 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
- | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
@@ -175,8 +172,8 @@
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
- | <a href="#W"><strong>W</strong></a>
  | <a href="#X"><strong>X</strong></a>
  | <a href="#Y"><strong>Y</strong></a>
  | <a href="#Z"><strong>Z</strong></a>
@@ -185,131 +182,49 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="notes.html#sfftk.notes.modify.AbstractGlobalNote">AbstractGlobalNote (class in sfftk.notes.modify)</a>
+      <li><a href="core.html#sfftkrw.core.parser.add_args">add_args() (in module sfftkrw.core.parser)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.modify.AbstractNote">AbstractNote (class in sfftk.notes.modify)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFRGBA.alpha">alpha (sfftkrw.schema.adapter.SFFRGBA attribute)</a>
 </li>
-      <li><a href="core.html#sfftk.core.parser.add_args">add_args() (in module sfftk.core.parser)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.append">append() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFComplexes.add_complex">add_complex() (sfftk.schema.SFFComplexes method)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.OBJT.add_cont">add_cont() (sfftk.readers.modreader.OBJT method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReferences.add_externalReference">add_externalReference() (sfftk.schema.SFFExternalReferences method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBiologicalAnnotation.as_hff">as_hff() (sfftkrw.schema.adapter.SFFBiologicalAnnotation method)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFGlobalExternalReferences.add_externalReference">(sfftk.schema.SFFGlobalExternalReferences method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFBoundingBox.as_hff">(sfftkrw.schema.adapter.SFFBoundingBox method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFComplexesAndMacromolecules.as_hff">(sfftkrw.schema.adapter.SFFComplexesAndMacromolecules method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.as_hff">(sfftkrw.schema.adapter.SFFLattice method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFLatticeList.as_hff">(sfftkrw.schema.adapter.SFFLatticeList method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFMeshList.as_hff">(sfftkrw.schema.adapter.SFFMeshList method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFRGBA.as_hff">(sfftkrw.schema.adapter.SFFRGBA method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.as_hff">(sfftkrw.schema.adapter.SFFSegment method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.as_hff">(sfftkrw.schema.adapter.SFFSegmentation method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentList.as_hff">(sfftkrw.schema.adapter.SFFSegmentList method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSoftware.as_hff">(sfftkrw.schema.adapter.SFFSoftware method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFThreeDVolume.as_hff">(sfftkrw.schema.adapter.SFFThreeDVolume method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformList.as_hff">(sfftkrw.schema.adapter.SFFTransformList method)</a>
 </li>
       </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFLatticeList.add_lattice">add_lattice() (sfftk.schema.SFFLatticeList method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFMacromolecules.add_macromolecule">add_macromolecule() (sfftk.schema.SFFMacromolecules method)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.OBJT.add_mesh">add_mesh() (sfftk.readers.modreader.OBJT method)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFMeshList.add_mesh">(sfftk.schema.SFFMeshList method)</a>
-</li>
-      </ul></li>
-      <li><a href="notes.html#sfftk.notes.modify.add_note">add_note() (in module sfftk.notes.modify)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.IMOD.add_objt">add_objt() (sfftk.readers.modreader.IMOD method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFPolygonList.add_polygon">add_polygon() (sfftk.schema.SFFPolygonList method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentList.add_segment">add_segment() (sfftk.schema.SFFSegmentList method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFShapePrimitiveList.add_shape">add_shape() (sfftk.schema.SFFShapePrimitiveList method)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.CONT.add_size">add_size() (sfftk.readers.modreader.CONT method)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.AbstractNote.add_to_segment">add_to_segment() (sfftk.notes.modify.AbstractNote method)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.AbstractGlobalNote.add_to_segmentation">add_to_segmentation() (sfftk.notes.modify.AbstractGlobalNote method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFTransformList.add_transform">add_transform() (sfftk.schema.SFFTransformList method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFPolygon.add_vertex">add_vertex() (sfftk.schema.SFFPolygon method)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFVertexList.add_vertex">(sfftk.schema.SFFVertexList method)</a>
-</li>
-      </ul></li>
-      <li><a href="readers.html#sfftk.readers.modreader.IMOD.add_view">add_view() (sfftk.readers.modreader.IMOD method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFRGBA.alpha">alpha (sfftk.schema.SFFRGBA attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceAnnotation">AmiraHyperSurfaceAnnotation (class in sfftk.formats.surf)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceHeader">AmiraHyperSurfaceHeader (class in sfftk.formats.surf)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceMesh">AmiraHyperSurfaceMesh (class in sfftk.formats.surf)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceSegment">AmiraHyperSurfaceSegment (class in sfftk.formats.surf)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceSegmentation">AmiraHyperSurfaceSegmentation (class in sfftk.formats.surf)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshAnnotation">AmiraMeshAnnotation (class in sfftk.formats.am)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshContours">AmiraMeshContours (class in sfftk.formats.am)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshHeader">AmiraMeshHeader (class in sfftk.formats.am)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshMesh">AmiraMeshMesh (class in sfftk.formats.am)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshSegment">AmiraMeshSegment (class in sfftk.formats.am)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshSegmentation">AmiraMeshSegmentation (class in sfftk.formats.am)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshVolume">AmiraMeshVolume (class in sfftk.formats.am)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshSegment.annotation">annotation() (sfftk.formats.am.AmiraMeshSegment property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.as_json">as_json() (sfftkrw.schema.adapter.SFFSegment method)</a>
 
       <ul>
-        <li><a href="formats.html#sfftk.formats.map.MapSegment.annotation">(sfftk.formats.map.MapSegment property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODSegment.annotation">(sfftk.formats.mod.IMODSegment property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.stl.STLSegment.annotation">(sfftk.formats.stl.STLSegment property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceSegment.annotation">(sfftk.formats.surf.AmiraHyperSurfaceSegment property)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.as_json">(sfftkrw.schema.adapter.SFFSegmentation method)</a>
 </li>
       </ul></li>
-      <li><a href="notes.html#sfftk.notes.modify.ArgsNote">ArgsNote (class in sfftk.notes.modify)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFBiologicalAnnotation.as_hff">as_hff() (sfftk.schema.SFFBiologicalAnnotation method)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFBoundingBox.as_hff">(sfftk.schema.SFFBoundingBox method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFComplexesAndMacromolecules.as_hff">(sfftk.schema.SFFComplexesAndMacromolecules method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFLattice.as_hff">(sfftk.schema.SFFLattice method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFLatticeList.as_hff">(sfftk.schema.SFFLatticeList method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFMeshList.as_hff">(sfftk.schema.SFFMeshList method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFRGBA.as_hff">(sfftk.schema.SFFRGBA method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFSegment.as_hff">(sfftk.schema.SFFSegment method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFSegmentation.as_hff">(sfftk.schema.SFFSegmentation method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFSegmentList.as_hff">(sfftk.schema.SFFSegmentList method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFSoftware.as_hff">(sfftk.schema.SFFSoftware method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFThreeDVolume.as_hff">(sfftk.schema.SFFThreeDVolume method)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFTransformList.as_hff">(sfftk.schema.SFFTransformList method)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.as_json">as_json() (sfftk.schema.SFFSegmentation method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFShape.attribute">attribute (sfftk.schema.SFFShape attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFShape.attribute">attribute (sfftkrw.schema.adapter.SFFShape attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -317,19 +232,15 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="notes.html#sfftk.notes.modify.BaseNote">BaseNote (class in sfftk.notes.modify)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.biological_annotation">biological_annotation (sfftkrw.schema.adapter.SFFSegment attribute)</a>
 </li>
-      <li><a href="core.html#sfftk.core.prep.bin_map">bin_map() (in module sfftk.core.prep)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegment.biologicalAnnotation">biologicalAnnotation (sfftk.schema.SFFSegment attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFRGBA.blue">blue (sfftkrw.schema.adapter.SFFRGBA attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFRGBA.blue">blue (sfftk.schema.SFFRGBA attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFCone.bottom_radius">bottom_radius (sfftkrw.schema.adapter.SFFCone attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFCone.bottomRadius">bottomRadius (sfftk.schema.SFFCone attribute)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.boundingBox">boundingBox (sfftk.schema.SFFSegmentation attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.bounding_box">bounding_box (sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -337,133 +248,27 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="core.html#sfftk.core.parser.check_multi_file_formats">check_multi_file_formats() (in module sfftk.core.parser)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.clear">clear() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFTransformList.check_transformation_matrix_homogeneity">check_transformation_matrix_homogeneity() (sfftk.schema.SFFTransformList method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.clear_annotation">clear_annotation() (sfftkrw.schema.adapter.SFFSegmentation method)</a>
 </li>
-      <li><a href="core.html#sfftk.core.configs.Configs.clear">clear() (sfftk.core.configs.Configs method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.colour">colour (sfftkrw.schema.adapter.SFFSegment attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.clear_annotation">clear_annotation() (sfftk.schema.SFFSegmentation method)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.clear_notes">clear_notes() (in module sfftk.notes.modify)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.CLIP">CLIP (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.CLIP_FLAGS">CLIP_FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegment.colour">colour (sfftk.schema.SFFSegment attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshAnnotation.colour">colour() (sfftk.formats.am.AmiraMeshAnnotation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformationMatrix.cols">cols (sfftkrw.schema.adapter.SFFTransformationMatrix attribute)</a>
 
       <ul>
-        <li><a href="formats.html#sfftk.formats.map.MapAnnotation.colour">(sfftk.formats.map.MapAnnotation property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODAnnotation.colour">(sfftk.formats.mod.IMODAnnotation property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceAnnotation.colour">(sfftk.formats.surf.AmiraHyperSurfaceAnnotation property)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.surfreader.HxSurfSegment.colour">(sfftk.readers.surfreader.HxSurfSegment property)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFTransformationMatrix.cols">cols (sfftk.schema.SFFTransformationMatrix attribute)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFVolume.cols">(sfftk.schema.SFFVolume attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFComplexesAndMacromolecules.complexes">complexes (sfftk.schema.SFFComplexesAndMacromolecules attribute)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegment.complexesAndMacromolecules">complexesAndMacromolecules (sfftk.schema.SFFSegment attribute)</a>
-</li>
-      <li><a href="core.html#sfftk.core.configs.Configs">Configs (class in sfftk.core.configs)</a>
-</li>
-      <li><a href="core.html#sfftk.core.prep.construct_transformation_matrix">construct_transformation_matrix() (in module sfftk.core.prep)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.CONT">CONT (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.CONTOUR_FLAGS">CONTOUR_FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODSegment.contours">contours() (sfftk.formats.mod.IMODSegment property)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshAnnotation.convert">convert() (sfftk.formats.am.AmiraMeshAnnotation method)</a>
-
-      <ul>
-        <li><a href="formats.html#sfftk.formats.am.AmiraMeshContours.convert">(sfftk.formats.am.AmiraMeshContours method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.am.AmiraMeshHeader.convert">(sfftk.formats.am.AmiraMeshHeader method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.am.AmiraMeshMesh.convert">(sfftk.formats.am.AmiraMeshMesh method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.am.AmiraMeshSegment.convert">(sfftk.formats.am.AmiraMeshSegment method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.am.AmiraMeshSegmentation.convert">(sfftk.formats.am.AmiraMeshSegmentation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.am.AmiraMeshVolume.convert">(sfftk.formats.am.AmiraMeshVolume method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.map.MapAnnotation.convert">(sfftk.formats.map.MapAnnotation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.map.MapSegment.convert">(sfftk.formats.map.MapSegment method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.map.MapSegmentation.convert">(sfftk.formats.map.MapSegmentation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODAnnotation.convert">(sfftk.formats.mod.IMODAnnotation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODContours.convert">(sfftk.formats.mod.IMODContours method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODCylinder.convert">(sfftk.formats.mod.IMODCylinder method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODEllipsoid.convert">(sfftk.formats.mod.IMODEllipsoid method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODHeader.convert">(sfftk.formats.mod.IMODHeader method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODMeshes.convert">(sfftk.formats.mod.IMODMeshes method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODSegment.convert">(sfftk.formats.mod.IMODSegment method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODSegmentation.convert">(sfftk.formats.mod.IMODSegmentation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODShape.convert">(sfftk.formats.mod.IMODShape method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODShapes.convert">(sfftk.formats.mod.IMODShapes method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.seg.SeggerAnnotation.convert">(sfftk.formats.seg.SeggerAnnotation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.seg.SeggerSegment.convert">(sfftk.formats.seg.SeggerSegment method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.seg.SeggerSegmentation.convert">(sfftk.formats.seg.SeggerSegmentation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.seg.SeggerVolume.convert">(sfftk.formats.seg.SeggerVolume method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.stl.STLAnnotation.convert">(sfftk.formats.stl.STLAnnotation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.stl.STLHeader.convert">(sfftk.formats.stl.STLHeader method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.stl.STLMesh.convert">(sfftk.formats.stl.STLMesh method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.stl.STLSegment.convert">(sfftk.formats.stl.STLSegment method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.stl.STLSegmentation.convert">(sfftk.formats.stl.STLSegmentation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceAnnotation.convert">(sfftk.formats.surf.AmiraHyperSurfaceAnnotation method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceHeader.convert">(sfftk.formats.surf.AmiraHyperSurfaceHeader method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceMesh.convert">(sfftk.formats.surf.AmiraHyperSurfaceMesh method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceSegment.convert">(sfftk.formats.surf.AmiraHyperSurfaceSegment method)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceSegmentation.convert">(sfftk.formats.surf.AmiraHyperSurfaceSegmentation method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFVolume.cols">(sfftkrw.schema.adapter.SFFVolume attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.copy_annotation">copy_annotation() (sfftk.schema.SFFSegmentation method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFComplexesAndMacromolecules.complexes">complexes (sfftkrw.schema.adapter.SFFComplexesAndMacromolecules attribute)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.modify.copy_notes">copy_notes() (in module sfftk.notes.modify)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.complexes_and_macromolecules">complexes_and_macromolecules (sfftkrw.schema.adapter.SFFSegment attribute)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.modreader.COST">COST (class in sfftk.readers.modreader)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.copy">copy() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.modreader.COST_FLAGS">COST_FLAGS (class in sfftk.readers.modreader)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.copy_annotation">copy_annotation() (sfftkrw.schema.adapter.SFFSegmentation method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -471,57 +276,25 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFLattice.data">data (sfftk.schema.SFFLattice attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.data">data (sfftkrw.schema.adapter.SFFLattice attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFTransformationMatrix.data">(sfftk.schema.SFFTransformationMatrix attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformationMatrix.data">(sfftkrw.schema.adapter.SFFTransformationMatrix attribute)</a>
 </li>
       </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFTransformationMatrix.data_array">data_array() (sfftk.schema.SFFTransformationMatrix property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFLattice.decode">decode() (sfftk.schema.SFFLattice method)</a>
-</li>
-      <li><a href="core.html#sfftk.core.configs.del_configs">del_configs() (in module sfftk.core.configs)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.AbstractNote.del_from_segment">del_from_segment() (sfftk.notes.modify.AbstractNote method)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.AbstractGlobalNote.del_from_segmentation">del_from_segmentation() (sfftk.notes.modify.AbstractGlobalNote method)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.del_note">del_note() (in module sfftk.notes.modify)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFComplexes.delete_at">delete_at() (sfftk.schema.SFFComplexes method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBiologicalAnnotation.description">description (sfftkrw.schema.adapter.SFFBiologicalAnnotation attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFMacromolecules.delete_at">(sfftk.schema.SFFMacromolecules method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFExternalReference.description">(sfftkrw.schema.adapter.SFFExternalReference attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFBiologicalAnnotation.description">description (sfftk.schema.SFFBiologicalAnnotation attribute)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFExternalReference.description">(sfftk.schema.SFFExternalReference attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertex.designation">designation (sfftkrw.schema.adapter.SFFVertex attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshAnnotation.description">description() (sfftk.formats.am.AmiraMeshAnnotation property)</a>
-
-      <ul>
-        <li><a href="formats.html#sfftk.formats.map.MapAnnotation.description">(sfftk.formats.map.MapAnnotation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.details">details (sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 </li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODAnnotation.description">(sfftk.formats.mod.IMODAnnotation property)</a>
-</li>
-      </ul></li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.descriptions">descriptions() (sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFVertex.designation">designation (sfftk.schema.SFFVertex attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODVertex.designation">designation() (sfftk.formats.mod.IMODVertex property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.details">details (sfftk.schema.SFFSegmentation attribute)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFCylinder.diameter">diameter (sfftk.schema.SFFCylinder attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODCylinder.diameter">diameter() (sfftk.formats.mod.IMODCylinder property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFCylinder.diameter">diameter (sfftkrw.schema.adapter.SFFCylinder attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -529,25 +302,15 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="notes.html#sfftk.notes.modify.AbstractNote.edit_in_segment">edit_in_segment() (sfftk.notes.modify.AbstractNote method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.endianness">endianness (sfftkrw.schema.adapter.SFFLattice attribute)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.modify.AbstractGlobalNote.edit_in_segmentation">edit_in_segmentation() (sfftk.notes.modify.AbstractGlobalNote method)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.edit_note">edit_note() (in module sfftk.notes.modify)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFLattice.encode">encode() (sfftk.schema.SFFLattice method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFType.export">export() (sfftkrw.schema.base.SFFType method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFLattice.endianness">endianness (sfftk.schema.SFFLattice attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.extend">extend() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFType.export">export() (sfftk.schema.SFFType method)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.ExternalReference">ExternalReference (class in sfftk.notes.modify)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFBiologicalAnnotation.externalReferences">externalReferences (sfftk.schema.SFFBiologicalAnnotation attribute)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.surfreader.extract_segments">extract_segments() (in module sfftk.readers.surfreader)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBiologicalAnnotation.external_references">external_references (sfftkrw.schema.adapter.SFFBiologicalAnnotation attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -555,69 +318,69 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.file_name">file_name() (sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerHeader.file_path">file_path() (sfftk.formats.seg.SeggerHeader property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.from_array">from_array() (sfftkrw.schema.adapter.SFFLattice class method)</a>
 
       <ul>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.file_path">(sfftk.readers.segreader.SeggerSegmentation property)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformationMatrix.from_array">(sfftkrw.schema.adapter.SFFTransformationMatrix class method)</a>
 </li>
       </ul></li>
-      <li><a href="readers.html#sfftk.readers.modreader.find_chunk_length">find_chunk_length() (in module sfftk.readers.modreader)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.from_bytes">from_bytes() (sfftkrw.schema.adapter.SFFLattice class method)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.mapreader.Map.fix_mask">fix_mask() (sfftk.readers.mapreader.Map method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.from_file">from_file() (sfftkrw.schema.adapter.SFFSegmentation class method)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.modreader.FLAGS">FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.format">format() (sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.format_version">format_version() (sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFBiologicalAnnotation.from_hff">from_hff() (sfftk.schema.SFFBiologicalAnnotation class method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFIndexType.from_gds_type">from_gds_type() (sfftkrw.schema.base.SFFIndexType class method)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFBoundingBox.from_hff">(sfftk.schema.SFFBoundingBox class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.base.SFFListType.from_gds_type">(sfftkrw.schema.base.SFFListType class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFComplexes.from_hff">(sfftk.schema.SFFComplexes class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.base.SFFType.from_gds_type">(sfftkrw.schema.base.SFFType class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFComplexesAndMacromolecules.from_hff">(sfftk.schema.SFFComplexesAndMacromolecules class method)</a>
+      </ul></li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBiologicalAnnotation.from_hff">from_hff() (sfftkrw.schema.adapter.SFFBiologicalAnnotation class method)</a>
+
+      <ul>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFBoundingBox.from_hff">(sfftkrw.schema.adapter.SFFBoundingBox class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFLattice.from_hff">(sfftk.schema.SFFLattice class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFComplexes.from_hff">(sfftkrw.schema.adapter.SFFComplexes class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFLatticeList.from_hff">(sfftk.schema.SFFLatticeList class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFComplexesAndMacromolecules.from_hff">(sfftkrw.schema.adapter.SFFComplexesAndMacromolecules class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFMacromolecules.from_hff">(sfftk.schema.SFFMacromolecules class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.from_hff">(sfftkrw.schema.adapter.SFFLattice class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFMesh.from_hff">(sfftk.schema.SFFMesh class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFLatticeList.from_hff">(sfftkrw.schema.adapter.SFFLatticeList class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFMeshList.from_hff">(sfftk.schema.SFFMeshList class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFMacromolecules.from_hff">(sfftkrw.schema.adapter.SFFMacromolecules class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFPolygonList.from_hff">(sfftk.schema.SFFPolygonList class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFMesh.from_hff">(sfftkrw.schema.adapter.SFFMesh class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFRGBA.from_hff">(sfftk.schema.SFFRGBA class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFMeshList.from_hff">(sfftkrw.schema.adapter.SFFMeshList class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFSegment.from_hff">(sfftk.schema.SFFSegment class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFPolygonList.from_hff">(sfftkrw.schema.adapter.SFFPolygonList class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFSegmentation.from_hff">(sfftk.schema.SFFSegmentation class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFRGBA.from_hff">(sfftkrw.schema.adapter.SFFRGBA class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFSegmentList.from_hff">(sfftk.schema.SFFSegmentList class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.from_hff">(sfftkrw.schema.adapter.SFFSegment class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFShapePrimitiveList.from_hff">(sfftk.schema.SFFShapePrimitiveList class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.from_hff">(sfftkrw.schema.adapter.SFFSegmentation class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFSoftware.from_hff">(sfftk.schema.SFFSoftware class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentList.from_hff">(sfftkrw.schema.adapter.SFFSegmentList class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFThreeDVolume.from_hff">(sfftk.schema.SFFThreeDVolume class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFShapePrimitiveList.from_hff">(sfftkrw.schema.adapter.SFFShapePrimitiveList class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFTransformList.from_hff">(sfftk.schema.SFFTransformList class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSoftware.from_hff">(sfftkrw.schema.adapter.SFFSoftware class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFVertexList.from_hff">(sfftk.schema.SFFVertexList class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFThreeDVolume.from_hff">(sfftkrw.schema.adapter.SFFThreeDVolume class method)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFVolume.from_hff">(sfftk.schema.SFFVolume class method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformList.from_hff">(sfftkrw.schema.adapter.SFFTransformList class method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertexList.from_hff">(sfftkrw.schema.adapter.SFFVertexList class method)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFVolume.from_hff">(sfftkrw.schema.adapter.SFFVolume class method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.from_json">from_json() (sfftk.schema.SFFSegmentation class method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.from_json">from_json() (sfftkrw.schema.adapter.SFFSegmentation class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -625,63 +388,37 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFComplexesAndMacromolecules.gds_type">gds_type (sfftk.schema.SFFComplexesAndMacromolecules attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFType.gds_tag_name">gds_tag_name (sfftkrw.schema.base.SFFType attribute)</a>
+</li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFComplexesAndMacromolecules.gds_type">gds_type (sfftkrw.schema.adapter.SFFComplexesAndMacromolecules attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFCuboid.gds_type">(sfftk.schema.SFFCuboid attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFCuboid.gds_type">(sfftkrw.schema.adapter.SFFCuboid attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFEllipsoid.gds_type">(sfftk.schema.SFFEllipsoid attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFEllipsoid.gds_type">(sfftkrw.schema.adapter.SFFEllipsoid attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFSegment.gds_type">(sfftk.schema.SFFSegment attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.gds_type">(sfftkrw.schema.adapter.SFFSegment attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFSegmentation.gds_type">(sfftk.schema.SFFSegmentation attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.gds_type">(sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFTransformationMatrix.gds_type">(sfftk.schema.SFFTransformationMatrix attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformationMatrix.gds_type">(sfftkrw.schema.adapter.SFFTransformationMatrix attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFType.gds_type">(sfftk.schema.SFFType attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFType.get_by_id">get_by_id() (sfftk.schema.SFFType method)</a>
-</li>
-      <li><a href="core.html#sfftk.core.configs.get_config_file_path">get_config_file_path() (in module sfftk.core.configs)</a>
-</li>
-      <li><a href="core.html#sfftk.core.configs.get_configs">get_configs() (in module sfftk.core.configs)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.amreader.get_data">get_data() (in module sfftk.readers.amreader)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.mapreader.get_data">(in module sfftk.readers.mapreader)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.get_data">(in module sfftk.readers.modreader)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.segreader.get_data">(in module sfftk.readers.segreader)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.stlreader.get_data">(in module sfftk.readers.stlreader)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.surfreader.get_data">(in module sfftk.readers.surfreader)</a>
+        <li><a href="schema.html#sfftkrw.schema.base.SFFType.gds_type">(sfftkrw.schema.base.SFFType attribute)</a>, <a href="schema.html#sfftkrw.schema.base.SFFType.gds_type">[1]</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFType.get_ids">get_ids() (sfftk.schema.SFFType method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.get_by_id">get_by_id() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.get_parent_id">get_parent_id() (sfftk.readers.segreader.SeggerSegmentation method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.get_ids">get_ids() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-      <li><a href="core.html#sfftk.core.utils.get_path">get_path() (in module sfftk.core.utils)</a>
+      <li><a href="core.html#sfftkrw.core.utils.get_path">get_path() (in module sfftkrw.core.utils)</a>
 </li>
-      <li><a href="core.html#sfftk.core.print_tools.get_printable_ascii_string">get_printable_ascii_string() (in module sfftk.core.print_tools)</a>
+      <li><a href="core.html#sfftkrw.core.print_tools.get_printable_ascii_string">get_printable_ascii_string() (in module sfftkrw.core.print_tools)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.get_region_ids">get_region_ids() (sfftk.readers.segreader.SeggerSegmentation method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.global_external_references">global_external_references (sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.segreader.get_root">get_root() (in module sfftk.readers.segreader)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.find.SearchResource.get_url">get_url() (sfftk.notes.find.SearchResource method)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.GlobalArgsNote">GlobalArgsNote (class in sfftk.notes.modify)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.globalExternalReferences">globalExternalReferences (sfftk.schema.SFFSegmentation attribute)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFRGBA.green">green (sfftk.schema.SFFRGBA attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFRGBA.green">green (sfftkrw.schema.adapter.SFFRGBA attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -689,151 +426,69 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="formats.html#sfftk.formats.mod.IMODSegmentation.has_mesh_or_shapes">has_mesh_or_shapes() (sfftk.formats.mod.IMODSegmentation property)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshSegmentation.header">header() (sfftk.formats.am.AmiraMeshSegmentation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFCone.height">height (sfftkrw.schema.adapter.SFFCone attribute)</a>
 
       <ul>
-        <li><a href="formats.html#sfftk.formats.map.MapSegmentation.header">(sfftk.formats.map.MapSegmentation property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODSegmentation.header">(sfftk.formats.mod.IMODSegmentation property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.seg.SeggerSegmentation.header">(sfftk.formats.seg.SeggerSegmentation property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.stl.STLSegmentation.header">(sfftk.formats.stl.STLSegmentation property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceSegmentation.header">(sfftk.formats.surf.AmiraHyperSurfaceSegmentation property)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.header">(sfftk.readers.segreader.SeggerSegmentation property)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFCylinder.height">(sfftkrw.schema.adapter.SFFCylinder attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="notes.html#sfftk.notes.view.HeaderView">HeaderView (class in sfftk.notes.view)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFCone.height">height (sfftk.schema.SFFCone attribute)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFCylinder.height">(sfftk.schema.SFFCylinder attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODCylinder.height">height() (sfftk.formats.mod.IMODCylinder property)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.surfreader.HxSurfSegment">HxSurfSegment (class in sfftk.readers.surfreader)</a>
-</li>
   </ul></td>
 </tr></table>
 
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReference.id">id (sfftk.schema.SFFExternalReference attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFExternalReference.id">id (sfftkrw.schema.adapter.SFFExternalReference attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFLattice.id">(sfftk.schema.SFFLattice attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.id">(sfftkrw.schema.adapter.SFFLattice attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFSegment.id">(sfftk.schema.SFFSegment attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFPolygon.id">(sfftkrw.schema.adapter.SFFPolygon attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFShape.id">(sfftk.schema.SFFShape attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.id">(sfftkrw.schema.adapter.SFFSegment attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFTransformationMatrix.id">(sfftk.schema.SFFTransformationMatrix attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFShape.id">(sfftkrw.schema.adapter.SFFShape attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceSegment.id">id() (sfftk.formats.surf.AmiraHyperSurfaceSegment property)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.surfreader.HxSurfSegment.id">(sfftk.readers.surfreader.HxSurfSegment property)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformationMatrix.id">(sfftkrw.schema.adapter.SFFTransformationMatrix attribute)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertex.id">(sfftkrw.schema.adapter.SFFVertex attribute)</a>
 </li>
       </ul></li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerHeader.ijk_to_xyz_transform">ijk_to_xyz_transform() (sfftk.formats.seg.SeggerHeader property)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.ijk_to_xyz_transform">(sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      </ul></li>
-      <li><a href="readers.html#sfftk.readers.modreader.IMAT">IMAT (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.IMAT_FLAGS">IMAT_FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.IMOD">IMOD (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODAnnotation">IMODAnnotation (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODContours">IMODContours (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODCylinder">IMODCylinder (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODEllipsoid">IMODEllipsoid (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODHeader">IMODHeader (class in sfftk.formats.mod)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="formats.html#sfftk.formats.mod.IMODMesh">IMODMesh (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODMeshes">IMODMeshes (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODSegment">IMODSegment (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODSegmentation">IMODSegmentation (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODShape">IMODShape (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODShapes">IMODShapes (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODVertex">IMODVertex (class in sfftk.formats.mod)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFComplexes.insert_complex_at">insert_complex_at() (sfftk.schema.SFFComplexes method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReferences.insert_externalReference">insert_externalReference() (sfftk.schema.SFFExternalReferences method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFComplexes.ids">ids (sfftkrw.schema.adapter.SFFComplexes attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFGlobalExternalReferences.insert_externalReference">(sfftk.schema.SFFGlobalExternalReferences method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFMacromolecules.ids">(sfftkrw.schema.adapter.SFFMacromolecules attribute)</a>
 </li>
       </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFMacromolecules.insert_macromolecule_at">insert_macromolecule_at() (sfftk.schema.SFFMacromolecules method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFIndexType.increment_by">increment_by (sfftkrw.schema.base.SFFIndexType attribute)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.mapreader.Map.invert">invert() (sfftk.readers.mapreader.Map method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFIndexType.index_attr">index_attr (sfftkrw.schema.base.SFFIndexType attribute)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.modify.ExternalReference.iri">iri() (sfftk.notes.modify.ExternalReference property)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFIndexType.index_in_super">index_in_super (sfftkrw.schema.base.SFFIndexType attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFLattice.is_binary">is_binary() (sfftk.schema.SFFLattice property)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.insert">insert() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFLattice.is_encoded">is_encoded() (sfftk.schema.SFFLattice property)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.find.TableField.is_index">is_index() (sfftk.notes.find.TableField property)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.mapreader.Map.is_mask">is_mask() (sfftk.readers.mapreader.Map property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFType.iter_attr">iter_attr (sfftk.schema.SFFType attribute)</a>
-</li>
-  </ul></td>
-</tr></table>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.iter_attr">iter_attr (sfftkrw.schema.base.SFFListType attribute)</a>
 
-<h2 id="J">J</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="notes.html#sfftk.notes.find.TableField.justify">justify() (sfftk.notes.find.TableField method)</a>
+      <ul>
+        <li><a href="schema.html#sfftkrw.schema.base.SFFType.iter_attr">(sfftkrw.schema.base.SFFType attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReference.label">label (sfftk.schema.SFFExternalReference attribute)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.mapreader.Map.labels">labels() (sfftk.readers.mapreader.Map property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFThreeDVolume.latticeId">latticeId (sfftk.schema.SFFThreeDVolume attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFExternalReference.label">label (sfftkrw.schema.adapter.SFFExternalReference attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.lattices">lattices (sfftk.schema.SFFSegmentation attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFThreeDVolume.lattice_id">lattice_id (sfftkrw.schema.adapter.SFFThreeDVolume attribute)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.view.list_notes">list_notes() (in module sfftk.notes.view)</a>
-</li>
-      <li><a href="core.html#sfftk.core.configs.load_configs">load_configs() (in module sfftk.core.configs)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.lattices">lattices (sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -841,73 +496,15 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFComplexesAndMacromolecules.macromolecules">macromolecules (sfftk.schema.SFFComplexesAndMacromolecules attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFComplexesAndMacromolecules.macromolecules">macromolecules (sfftkrw.schema.adapter.SFFComplexesAndMacromolecules attribute)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.mapreader.Map">Map (class in sfftk.readers.mapreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.map_level">map_level() (sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerHeader.map_path">map_path() (sfftk.formats.seg.SeggerHeader property)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.map_path">(sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      </ul></li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerHeader.map_size">map_size() (sfftk.formats.seg.SeggerHeader property)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.map_size">(sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      </ul></li>
-      <li><a href="formats.html#sfftk.formats.map.MapAnnotation">MapAnnotation (class in sfftk.formats.map)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.map.MapHeader">MapHeader (class in sfftk.formats.map)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.map.MapSegment">MapSegment (class in sfftk.formats.map)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.map.MapSegmentation">MapSegmentation (class in sfftk.formats.map)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.mask">mask() (sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshSegment.material">material() (sfftk.formats.am.AmiraMeshSegment property)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.MCLP">MCLP (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.MCLP_FLAGS">MCLP_FLAGS (class in sfftk.readers.modreader)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.merge_annotation">merge_annotation() (sfftkrw.schema.adapter.SFFSegmentation method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="readers.html#sfftk.readers.modreader.MEPA">MEPA (class in sfftk.readers.modreader)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.meshes">meshes (sfftkrw.schema.adapter.SFFSegment attribute)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.modreader.MEPA_FLAGS">MEPA_FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.merge">merge() (in module sfftk.notes.modify)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.merge_annotation">merge_annotation() (sfftk.schema.SFFSegmentation method)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.MESH">MESH (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.MESH_FLAGS">MESH_FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegment.meshes">meshes (sfftk.schema.SFFSegment attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODSegment.meshes">meshes() (sfftk.formats.mod.IMODSegment property)</a>
-
-      <ul>
-        <li><a href="formats.html#sfftk.formats.stl.STLSegment.meshes">(sfftk.formats.stl.STLSegment property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceSegment.meshes">(sfftk.formats.surf.AmiraHyperSurfaceSegment property)</a>
-</li>
-      </ul></li>
-      <li><a href="readers.html#sfftk.readers.modreader.MEST">MEST (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.MINX">MINX (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFLattice.mode">mode (sfftk.schema.SFFLattice attribute)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.MODEL_FLAGS">MODEL_FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.MOST">MOST (class in sfftk.readers.modreader)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.mode">mode (sfftkrw.schema.adapter.SFFLattice attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -915,77 +512,49 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFBiologicalAnnotation.name">name (sfftk.schema.SFFBiologicalAnnotation attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBiologicalAnnotation.name">name (sfftkrw.schema.adapter.SFFBiologicalAnnotation attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFSegmentation.name">(sfftk.schema.SFFSegmentation attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.name">(sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFSoftware.name">(sfftk.schema.SFFSoftware attribute)</a>, <a href="schema.html#sfftk.schema.SFFSoftware.name">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshAnnotation.name">name() (sfftk.formats.am.AmiraMeshAnnotation property)</a>
-
-      <ul>
-        <li><a href="formats.html#sfftk.formats.map.MapAnnotation.name">(sfftk.formats.map.MapAnnotation property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.seg.SeggerHeader.name">(sfftk.formats.seg.SeggerHeader property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.stl.STLSegment.name">(sfftk.formats.stl.STLSegment property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceAnnotation.name">(sfftk.formats.surf.AmiraHyperSurfaceAnnotation property)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.name">(sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.surfreader.HxSurfSegment.name">(sfftk.readers.surfreader.HxSurfSegment property)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSoftware.name">(sfftkrw.schema.adapter.SFFSoftware attribute)</a>, <a href="schema.html#sfftkrw.schema.adapter.SFFSoftware.name">[1]</a>
 </li>
       </ul></li>
-      <li><a href="notes.html#sfftk.notes.modify.NoteAttr">NoteAttr (class in sfftk.notes.modify)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFShapePrimitiveList.num_cones">num_cones() (sfftkrw.schema.adapter.SFFShapePrimitiveList property)</a>
+</li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFShapePrimitiveList.num_cuboids">num_cuboids() (sfftkrw.schema.adapter.SFFShapePrimitiveList property)</a>
+</li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFShapePrimitiveList.num_cylinders">num_cylinders() (sfftkrw.schema.adapter.SFFShapePrimitiveList property)</a>
+</li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFShapePrimitiveList.num_ellipsoids">num_ellipsoids() (sfftkrw.schema.adapter.SFFShapePrimitiveList property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="notes.html#sfftk.notes.view.NoteView">NoteView (class in sfftk.notes.view)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.num_global_external_references">num_global_external_references() (sfftkrw.schema.adapter.SFFSegmentation property)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFBiologicalAnnotation.numberOfInstances">numberOfInstances (sfftk.schema.SFFBiologicalAnnotation attribute)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFShapePrimitiveList.numCones">numCones() (sfftk.schema.SFFShapePrimitiveList property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFShapePrimitiveList.numCuboids">numCuboids() (sfftk.schema.SFFShapePrimitiveList property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFShapePrimitiveList.numCylinders">numCylinders() (sfftk.schema.SFFShapePrimitiveList property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFShapePrimitiveList.numEllipsoids">numEllipsoids() (sfftk.schema.SFFShapePrimitiveList property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.numGlobalExternalReferences">numGlobalExternalReferences() (sfftk.schema.SFFSegmentation property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFMesh.numPolygons">numPolygons() (sfftk.schema.SFFMesh property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFMesh.num_polygons">num_polygons() (sfftkrw.schema.adapter.SFFMesh property)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFPolygonList.numPolygons">(sfftk.schema.SFFPolygonList property)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFPolygonList.num_polygons">(sfftkrw.schema.adapter.SFFPolygonList property)</a>
 </li>
       </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFMesh.numVertices">numVertices() (sfftk.schema.SFFMesh property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformList.num_tranformation_matrices">num_tranformation_matrices() (sfftkrw.schema.adapter.SFFTransformList property)</a>
+</li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFMesh.num_vertices">num_vertices() (sfftkrw.schema.adapter.SFFMesh property)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFVertexList.numVertices">(sfftk.schema.SFFVertexList property)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertexList.num_vertices">(sfftkrw.schema.adapter.SFFVertexList property)</a>
 </li>
       </ul></li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBiologicalAnnotation.number_of_instances">number_of_instances (sfftkrw.schema.adapter.SFFBiologicalAnnotation attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="readers.html#sfftk.readers.modreader.OBJECT_FLAGS">OBJECT_FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.OBJECT_SYM_FLAGS">OBJECT_SYM_FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="readers.html#sfftk.readers.modreader.OBJT">OBJT (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.OBST">OBST (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReference.otherType">otherType (sfftk.schema.SFFExternalReference attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFExternalReference.other_type">other_type (sfftkrw.schema.adapter.SFFExternalReference attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -993,49 +562,27 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerHeader.parent_ids">parent_ids() (sfftk.formats.seg.SeggerHeader property)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.parent_ids">(sfftk.readers.segreader.SeggerSegmentation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.parent_id">parent_id (sfftkrw.schema.adapter.SFFSegment attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFSegment.parentID">parentID (sfftk.schema.SFFSegment attribute)</a>
+      <li><a href="core.html#sfftkrw.core.parser.parse_args">parse_args() (in module sfftkrw.core.parser)</a>
 </li>
-      <li><a href="core.html#sfftk.core.parser.parse_args">parse_args() (in module sfftk.core.parser)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertex.point">point() (sfftkrw.schema.adapter.SFFVertex property)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.find.TableField.pc">pc() (sfftk.notes.find.TableField property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFPolygonList.polygon_ids">polygon_ids() (sfftkrw.schema.adapter.SFFPolygonList property)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFPolygon.PID">PID (sfftk.schema.SFFPolygon attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODVertex.point">point() (sfftk.formats.mod.IMODVertex property)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFVertex.point">(sfftk.schema.SFFVertex property)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFPolygonList.polygon_ids">polygon_ids() (sfftk.schema.SFFPolygonList property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFMesh.polygons">polygons (sfftkrw.schema.adapter.SFFMesh attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFMesh.polygons">polygons (sfftk.schema.SFFMesh attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.pop">pop() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODMesh.polygons">polygons() (sfftk.formats.mod.IMODMesh property)</a>
-
-      <ul>
-        <li><a href="formats.html#sfftk.formats.stl.STLMesh.polygons">(sfftk.formats.stl.STLMesh property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.primary_descriptor">primary_descriptor (sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 </li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceMesh.polygons">(sfftk.formats.surf.AmiraHyperSurfaceMesh property)</a>
+      <li><a href="core.html#sfftkrw.core.print_tools.print_date">print_date() (in module sfftkrw.core.print_tools)</a>
 </li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.primaryDescriptor">primaryDescriptor (sfftk.schema.SFFSegmentation attribute)</a>
+      <li><a href="core.html#sfftkrw.core.print_tools.print_static">print_static() (in module sfftkrw.core.print_tools)</a>
 </li>
-      <li><a href="core.html#sfftk.core.print_tools.print_date">print_date() (in module sfftk.core.print_tools)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.print_model">print_model() (in module sfftk.readers.modreader)</a>
-</li>
-      <li><a href="core.html#sfftk.core.print_tools.print_static">print_static() (in module sfftk.core.print_tools)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSoftware.processingDetails">processingDetails (sfftk.schema.SFFSoftware attribute)</a>, <a href="schema.html#sfftk.schema.SFFSoftware.processingDetails">[1]</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSoftware.processing_details">processing_details (sfftkrw.schema.adapter.SFFSoftware attribute)</a>, <a href="schema.html#sfftkrw.schema.adapter.SFFSoftware.processing_details">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1043,96 +590,28 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="formats.html#sfftk.formats.mod.IMODEllipsoid.radius">radius() (sfftk.formats.mod.IMODEllipsoid property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFRGBA.red">red (sfftkrw.schema.adapter.SFFRGBA attribute)</a>
 </li>
-      <li><a href="core.html#sfftk.core.configs.Configs.read">read() (sfftk.core.configs.Configs method)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.mapreader.Map.read">(sfftk.readers.mapreader.Map method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.remove">remove() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-        <li><a href="readers.html#sfftk.readers.modreader.CLIP.read">(sfftk.readers.modreader.CLIP method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFType.repr_args">repr_args (sfftkrw.schema.base.SFFType attribute)</a>, <a href="schema.html#sfftkrw.schema.base.SFFType.repr_args">[1]</a>
 </li>
-        <li><a href="readers.html#sfftk.readers.modreader.CONT.read">(sfftk.readers.modreader.CONT method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFType.repr_str">repr_str (sfftkrw.schema.base.SFFType attribute)</a>
 </li>
-        <li><a href="readers.html#sfftk.readers.modreader.COST.read">(sfftk.readers.modreader.COST method)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFType.repr_string">repr_string (sfftkrw.schema.base.SFFType attribute)</a>
 </li>
-        <li><a href="readers.html#sfftk.readers.modreader.IMAT.read">(sfftk.readers.modreader.IMAT method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.IMOD.read">(sfftk.readers.modreader.IMOD method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.MCLP.read">(sfftk.readers.modreader.MCLP method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.MEPA.read">(sfftk.readers.modreader.MEPA method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.MESH.read">(sfftk.readers.modreader.MESH method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.MEST.read">(sfftk.readers.modreader.MEST method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.MINX.read">(sfftk.readers.modreader.MINX method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.MOST.read">(sfftk.readers.modreader.MOST method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.OBJT.read">(sfftk.readers.modreader.OBJT method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.OBST.read">(sfftk.readers.modreader.OBST method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.SLAN.read">(sfftk.readers.modreader.SLAN method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.STORE.read">(sfftk.readers.modreader.STORE method)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.modreader.VIEW.read">(sfftk.readers.modreader.VIEW method)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFRGBA.red">red (sfftk.schema.SFFRGBA attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFIndexType.reset_id">reset_id() (sfftkrw.schema.base.SFFIndexType class method)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.ref_points">ref_points() (sfftk.readers.segreader.SeggerSegmentation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.reverse">reverse() (sfftkrw.schema.base.SFFListType method)</a>
 </li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.region_colours">region_colours() (sfftk.readers.segreader.SeggerSegmentation property)</a>
+      <li><a href="core.html#sfftkrw.core.utils.rgba_to_hex">rgba_to_hex() (in module sfftkrw.core.utils)</a>
 </li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerHeader.region_ids">region_ids() (sfftk.formats.seg.SeggerHeader property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformationMatrix.rows">rows (sfftkrw.schema.adapter.SFFTransformationMatrix attribute)</a>
 
       <ul>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.region_ids">(sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      </ul></li>
-      <li><a href="notes.html#sfftk.notes.find.TableField.render">render() (sfftk.notes.find.TableField method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFComplexes.replace_complex_at">replace_complex_at() (sfftk.schema.SFFComplexes method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReferences.replace_externalReference">replace_externalReference() (sfftk.schema.SFFExternalReferences method)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFGlobalExternalReferences.replace_externalReference">(sfftk.schema.SFFGlobalExternalReferences method)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFMacromolecules.replace_macromolecule_at">replace_macromolecule_at() (sfftk.schema.SFFMacromolecules method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFComplexes.repr_args">repr_args (sfftk.schema.SFFComplexes attribute)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFType.repr_args">(sfftk.schema.SFFType attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFType.repr_str">repr_str (sfftk.schema.SFFType attribute)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFType.reset_id">reset_id() (sfftk.schema.SFFType class method)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.find.ResultsTable">ResultsTable (class in sfftk.notes.find)</a>
-</li>
-      <li><a href="core.html#sfftk.core.utils.rgba_to_hex">rgba_to_hex() (in module sfftk.core.utils)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerHeader.root_parent_ids">root_parent_ids() (sfftk.formats.seg.SeggerHeader property)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.root_parent_ids">(sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFTransformationMatrix.rows">rows (sfftk.schema.SFFTransformationMatrix attribute)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFVolume.rows">(sfftk.schema.SFFVolume attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFVolume.rows">(sfftkrw.schema.adapter.SFFVolume attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1141,205 +620,113 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="notes.html#sfftk.notes.modify.save">save() (in module sfftk.notes.modify)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVolume.sections">sections (sfftkrw.schema.adapter.SFFVolume attribute)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.find.SearchResource.search">search() (sfftk.notes.find.SearchResource method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.segments">segments (sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.find.SearchResource">SearchResource (class in sfftk.notes.find)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFAttribute">SFFAttribute (class in sfftkrw.schema.base)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.find.SearchResults">SearchResults (class in sfftk.notes.find)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBiologicalAnnotation">SFFBiologicalAnnotation (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFVolume.sections">sections (sfftk.schema.SFFVolume attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBoundingBox">SFFBoundingBox (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerAnnotation">SeggerAnnotation (class in sfftk.formats.seg)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFComplexes">SFFComplexes (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerHeader">SeggerHeader (class in sfftk.formats.seg)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFComplexesAndMacromolecules">SFFComplexesAndMacromolecules (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerSegment">SeggerSegment (class in sfftk.formats.seg)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFCone">SFFCone (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerSegmentation">SeggerSegmentation (class in sfftk.formats.seg)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation">(class in sfftk.readers.segreader)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFCuboid">SFFCuboid (class in sfftkrw.schema.adapter)</a>
 </li>
-      </ul></li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerVolume">SeggerVolume (class in sfftk.formats.seg)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFCylinder">SFFCylinder (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.segments">segments (sfftk.schema.SFFSegmentation attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFEllipsoid">SFFEllipsoid (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshSegmentation.segments">segments() (sfftk.formats.am.AmiraMeshSegmentation property)</a>
-
-      <ul>
-        <li><a href="formats.html#sfftk.formats.map.MapSegmentation.segments">(sfftk.formats.map.MapSegmentation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFExternalReference">SFFExternalReference (class in sfftkrw.schema.adapter)</a>
 </li>
-        <li><a href="formats.html#sfftk.formats.mod.IMODSegmentation.segments">(sfftk.formats.mod.IMODSegmentation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFExternalReferences">SFFExternalReferences (class in sfftkrw.schema.adapter)</a>
 </li>
-        <li><a href="formats.html#sfftk.formats.seg.SeggerSegmentation.segments">(sfftk.formats.seg.SeggerSegmentation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFGlobalExternalReferences">SFFGlobalExternalReferences (class in sfftkrw.schema.adapter)</a>
 </li>
-        <li><a href="formats.html#sfftk.formats.stl.STLSegmentation.segments">(sfftk.formats.stl.STLSegmentation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFIndexType">SFFIndexType (class in sfftkrw.schema.base)</a>
 </li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceSegmentation.segments">(sfftk.formats.surf.AmiraHyperSurfaceSegmentation property)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice">SFFLattice (class in sfftkrw.schema.adapter)</a>
 </li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFComplexes.set_complexes">set_complexes() (sfftk.schema.SFFComplexes method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFLatticeList">SFFLatticeList (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="core.html#sfftk.core.configs.set_configs">set_configs() (in module sfftk.core.configs)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType">SFFListType (class in sfftkrw.schema.base)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFMacromolecules.set_macromolecules">set_macromolecules() (sfftk.schema.SFFMacromolecules method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFMacromolecules">SFFMacromolecules (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFAttribute">SFFAttribute (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFMesh">SFFMesh (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFBiologicalAnnotation">SFFBiologicalAnnotation (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFMeshList">SFFMeshList (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFBoundingBox">SFFBoundingBox (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFPolygon">SFFPolygon (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFComplexes">SFFComplexes (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFPolygonList">SFFPolygonList (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFComplexesAndMacromolecules">SFFComplexesAndMacromolecules (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFRGBA">SFFRGBA (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFCone">SFFCone (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment">SFFSegment (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFCuboid">SFFCuboid (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFCylinder">SFFCylinder (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFEllipsoid">SFFEllipsoid (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReference">SFFExternalReference (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReferences">SFFExternalReferences (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFGlobalExternalReferences">SFFGlobalExternalReferences (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFLattice">SFFLattice (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFLatticeList">SFFLatticeList (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFMacromolecules">SFFMacromolecules (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFMesh">SFFMesh (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFMeshList">SFFMeshList (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFPolygon">SFFPolygon (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFPolygonList">SFFPolygonList (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFRGBA">SFFRGBA (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegment">SFFSegment (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation">SFFSegmentation (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentList">SFFSegmentList (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFShape">SFFShape (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFShapePrimitiveList">SFFShapePrimitiveList (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSoftware">SFFSoftware (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFThreeDVolume">SFFThreeDVolume (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation">SFFSegmentation (class in sfftkrw.schema.adapter)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="sfftk.html#module-sfftk.__init__">sfftk.__init__ (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentList">SFFSegmentList (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="core.html#module-sfftk.core.configs">sfftk.core.configs (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFShape">SFFShape (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="core.html#module-sfftk.core.parser">sfftk.core.parser (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFShapePrimitiveList">SFFShapePrimitiveList (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="core.html#module-sfftk.core.prep">sfftk.core.prep (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSoftware">SFFSoftware (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="core.html#module-sfftk.core.print_tools">sfftk.core.print_tools (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFThreeDVolume">SFFThreeDVolume (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="core.html#module-sfftk.core.utils">sfftk.core.utils (module)</a>
+      <li><a href="sfftk-rw.html#module-sfftkrw.__init__">sfftkrw.__init__ (module)</a>
 </li>
-      <li><a href="formats.html#module-sfftk.formats.am">sfftk.formats.am (module)</a>
+      <li><a href="core.html#module-sfftkrw.core.parser">sfftkrw.core.parser (module)</a>
 </li>
-      <li><a href="formats.html#module-sfftk.formats.map">sfftk.formats.map (module)</a>
+      <li><a href="core.html#module-sfftkrw.core.print_tools">sfftkrw.core.print_tools (module)</a>
 </li>
-      <li><a href="formats.html#module-sfftk.formats.mod">sfftk.formats.mod (module)</a>
+      <li><a href="core.html#module-sfftkrw.core.utils">sfftkrw.core.utils (module)</a>
 </li>
-      <li><a href="formats.html#module-sfftk.formats.seg">sfftk.formats.seg (module)</a>
+      <li><a href="schema.html#module-sfftkrw.schema.adapter">sfftkrw.schema.adapter (module)</a>
 </li>
-      <li><a href="formats.html#module-sfftk.formats.stl">sfftk.formats.stl (module)</a>
+      <li><a href="schema.html#module-sfftkrw.schema.base">sfftkrw.schema.base (module)</a>
 </li>
-      <li><a href="formats.html#module-sfftk.formats.surf">sfftk.formats.surf (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformationMatrix">SFFTransformationMatrix (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="notes.html#module-sfftk.notes.find">sfftk.notes.find (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformList">SFFTransformList (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="notes.html#module-sfftk.notes.modify">sfftk.notes.modify (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFType">SFFType (class in sfftkrw.schema.base)</a>
 </li>
-      <li><a href="notes.html#module-sfftk.notes.view">sfftk.notes.view (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFTypeError">SFFTypeError</a>
 </li>
-      <li><a href="readers.html#module-sfftk.readers.amreader">sfftk.readers.amreader (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertex">SFFVertex (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="readers.html#module-sfftk.readers.mapreader">sfftk.readers.mapreader (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertexList">SFFVertexList (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="readers.html#module-sfftk.readers.modreader">sfftk.readers.modreader (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVolume">SFFVolume (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="readers.html#module-sfftk.readers.segreader">sfftk.readers.segreader (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVolumeIndex">SFFVolumeIndex (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="readers.html#module-sfftk.readers.stlreader">sfftk.readers.stlreader (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVolumeStructure">SFFVolumeStructure (class in sfftkrw.schema.adapter)</a>
 </li>
-      <li><a href="readers.html#module-sfftk.readers.surfreader">sfftk.readers.surfreader (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.shapes">shapes (sfftkrw.schema.adapter.SFFSegment attribute)</a>
 </li>
-      <li><a href="schema.html#module-sfftk.schema">sfftk.schema (module)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFListType.sibling_classes">sibling_classes (sfftkrw.schema.base.SFFListType attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFTransformationMatrix">SFFTransformationMatrix (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.size">size (sfftkrw.schema.adapter.SFFLattice attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFTransformList">SFFTransformList (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.software">software (sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFType">SFFType (class in sfftk.schema)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFLattice.start">start (sfftkrw.schema.adapter.SFFLattice attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFTypeError">SFFTypeError</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFIndexType.start_at">start_at (sfftkrw.schema.base.SFFIndexType attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFVertex">SFFVertex (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFVertexList">SFFVertexList (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFVolume">SFFVolume (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFVolumeIndex">SFFVolumeIndex (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFVolumeStructure">SFFVolumeStructure (class in sfftk.schema)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegment.shapes">shapes (sfftk.schema.SFFSegment attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.mod.IMODSegment.shapes">shapes() (sfftk.formats.mod.IMODSegment property)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.show_chunks">show_chunks() (in module sfftk.readers.modreader)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.view.show_notes">show_notes() (in module sfftk.notes.view)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.SimpleNote">SimpleNote (class in sfftk.notes.modify)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.simplify_mask">simplify_mask() (sfftk.readers.segreader.SeggerSegmentation method)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFLattice.size">size (sfftk.schema.SFFLattice attribute)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.mapreader.Map.skew_matrix_data">skew_matrix_data() (sfftk.readers.mapreader.Map property)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.SLAN">SLAN (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.segreader.SeggerSegmentation.smoothing_levels">smoothing_levels() (sfftk.readers.segreader.SeggerSegmentation property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.software">software (sfftk.schema.SFFSegmentation attribute)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFLattice.start">start (sfftk.schema.SFFLattice attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.stl.STLAnnotation">STLAnnotation (class in sfftk.formats.stl)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.stl.STLHeader">STLHeader (class in sfftk.formats.stl)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.stl.STLMesh">STLMesh (class in sfftk.formats.stl)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.stl.STLSegment">STLSegment (class in sfftk.formats.stl)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.stl.STLSegmentation">STLSegmentation (class in sfftk.formats.stl)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.STORE">STORE (class in sfftk.readers.modreader)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFTransformationMatrix.stringify">stringify() (sfftkrw.schema.adapter.SFFTransformationMatrix static method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1347,47 +734,31 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="notes.html#sfftk.notes.find.Table">Table (class in sfftk.notes.find)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.find.TableField">TableField (class in sfftk.notes.find)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.view.TableHeaderView">TableHeaderView (class in sfftk.notes.view)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.find.TableRow">TableRow (class in sfftk.notes.find)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.find.SearchResults.tabulate">tabulate() (sfftk.notes.find.SearchResults method)</a>
-</li>
-      <li><a href="core.html#sfftk.core.prep.transform">transform() (in module sfftk.core.prep)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFMesh.transform_id">transform_id (sfftkrw.schema.adapter.SFFMesh attribute)</a>
 
       <ul>
-        <li><a href="formats.html#sfftk.formats.mod.IMODShape.transform">(sfftk.formats.mod.IMODShape property)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFShape.transform_id">(sfftkrw.schema.adapter.SFFShape attribute)</a>
+</li>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFThreeDVolume.transform_id">(sfftkrw.schema.adapter.SFFThreeDVolume attribute)</a>
 </li>
       </ul></li>
-      <li><a href="core.html#sfftk.core.prep.transform_stl_mesh">transform_stl_mesh() (in module sfftk.core.prep)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.transforms">transforms (sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
+</li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFExternalReference.type">type (sfftkrw.schema.adapter.SFFExternalReference attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFShape.update_counter">update_counter() (sfftkrw.schema.adapter.SFFShape class method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFTransformList.transformationMatrixCount">transformationMatrixCount() (sfftk.schema.SFFTransformList property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFMesh.transformId">transformId (sfftk.schema.SFFMesh attribute)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFShape.transformId">(sfftk.schema.SFFShape attribute)</a>
-</li>
-        <li><a href="schema.html#sfftk.schema.SFFThreeDVolume.transformId">(sfftk.schema.SFFThreeDVolume attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.transforms">transforms (sfftk.schema.SFFSegmentation attribute)</a>
-</li>
-      <li><a href="notes.html#sfftk.notes.modify.trash">trash() (in module sfftk.notes.modify)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshMesh.triangles">triangles() (sfftk.formats.am.AmiraMeshMesh property)</a>
-
-      <ul>
-        <li><a href="readers.html#sfftk.readers.surfreader.HxSurfSegment.triangles">(sfftk.readers.surfreader.HxSurfSegment property)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReference.type">type (sfftk.schema.SFFExternalReference attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.base.SFFIndexType.update_index">update_index() (sfftkrw.schema.base.SFFIndexType static method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1395,93 +766,51 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFExternalReference.value">value (sfftk.schema.SFFExternalReference attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFExternalReference.value">value (sfftkrw.schema.adapter.SFFExternalReference attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFThreeDVolume.value">(sfftk.schema.SFFThreeDVolume attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFThreeDVolume.value">(sfftkrw.schema.adapter.SFFThreeDVolume attribute)</a>
 </li>
       </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFSegmentation.version">version (sfftk.schema.SFFSegmentation attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegmentation.version">version (sfftkrw.schema.adapter.SFFSegmentation attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFSoftware.version">(sfftk.schema.SFFSoftware attribute)</a>, <a href="schema.html#sfftk.schema.SFFSoftware.version">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="formats.html#sfftk.formats.seg.SeggerHeader.version">version() (sfftk.formats.seg.SeggerHeader property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFPolygon.vertex_ids">vertex_ids() (sfftk.schema.SFFPolygon property)</a>
-
-      <ul>
-        <li><a href="schema.html#sfftk.schema.SFFVertexList.vertex_ids">(sfftk.schema.SFFVertexList property)</a>
-</li>
-      </ul></li>
-      <li><a href="schema.html#sfftk.schema.SFFMesh.vertices">vertices (sfftk.schema.SFFMesh attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshMesh.vertices">vertices() (sfftk.formats.am.AmiraMeshMesh property)</a>
-
-      <ul>
-        <li><a href="formats.html#sfftk.formats.mod.IMODMesh.vertices">(sfftk.formats.mod.IMODMesh property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.stl.STLMesh.vertices">(sfftk.formats.stl.STLMesh property)</a>
-</li>
-        <li><a href="formats.html#sfftk.formats.surf.AmiraHyperSurfaceMesh.vertices">(sfftk.formats.surf.AmiraHyperSurfaceMesh property)</a>
-</li>
-        <li><a href="readers.html#sfftk.readers.surfreader.HxSurfSegment.vertices">(sfftk.readers.surfreader.HxSurfSegment property)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFSoftware.version">(sfftkrw.schema.adapter.SFFSoftware attribute)</a>, <a href="schema.html#sfftkrw.schema.adapter.SFFSoftware.version">[1]</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFVertex.vID">vID (sfftk.schema.SFFVertex attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertexList.vertex_ids">vertex_ids() (sfftkrw.schema.adapter.SFFVertexList property)</a>
 </li>
-      <li><a href="notes.html#sfftk.notes.view.View">View (class in sfftk.notes.view)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.VIEW">VIEW (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.modreader.VIEW_FLAGS">VIEW_FLAGS (class in sfftk.readers.modreader)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFSegment.volume">volume (sfftk.schema.SFFSegment attribute)</a>
-</li>
-      <li><a href="formats.html#sfftk.formats.am.AmiraMeshSegment.volume">volume() (sfftk.formats.am.AmiraMeshSegment property)</a>
-</li>
-      <li><a href="schema.html#sfftk.schema.SFFVolumeStructure.voxelCount">voxelCount() (sfftk.schema.SFFVolumeStructure property)</a>
-</li>
-      <li><a href="readers.html#sfftk.readers.mapreader.Map.voxels">voxels() (sfftk.readers.mapreader.Map property)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="W">W</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="notes.html#sfftk.notes.find.TableField.width">width() (sfftk.notes.find.TableField property)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="core.html#sfftk.core.configs.Configs.write">write() (sfftk.core.configs.Configs method)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFMesh.vertices">vertices (sfftkrw.schema.adapter.SFFMesh attribute)</a>
 
       <ul>
-        <li><a href="readers.html#sfftk.readers.mapreader.Map.write">(sfftk.readers.mapreader.Map method)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFPolygon.vertices">(sfftkrw.schema.adapter.SFFPolygon attribute)</a>
 </li>
       </ul></li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFSegment.volume">volume (sfftkrw.schema.adapter.SFFSegment attribute)</a>
+</li>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFVolumeStructure.voxel_count">voxel_count() (sfftkrw.schema.adapter.SFFVolumeStructure property)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="X">X</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFCuboid.x">x (sfftk.schema.SFFCuboid attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFCuboid.x">x (sfftkrw.schema.adapter.SFFCuboid attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFEllipsoid.x">(sfftk.schema.SFFEllipsoid attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFEllipsoid.x">(sfftkrw.schema.adapter.SFFEllipsoid attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFVertex.x">(sfftk.schema.SFFVertex attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertex.x">(sfftkrw.schema.adapter.SFFVertex attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFBoundingBox.xmax">xmax (sfftk.schema.SFFBoundingBox attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBoundingBox.xmax">xmax (sfftkrw.schema.adapter.SFFBoundingBox attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFBoundingBox.xmin">xmin (sfftk.schema.SFFBoundingBox attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBoundingBox.xmin">xmin (sfftkrw.schema.adapter.SFFBoundingBox attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1489,19 +818,19 @@
 <h2 id="Y">Y</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFCuboid.y">y (sfftk.schema.SFFCuboid attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFCuboid.y">y (sfftkrw.schema.adapter.SFFCuboid attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFEllipsoid.y">(sfftk.schema.SFFEllipsoid attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFEllipsoid.y">(sfftkrw.schema.adapter.SFFEllipsoid attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFVertex.y">(sfftk.schema.SFFVertex attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertex.y">(sfftkrw.schema.adapter.SFFVertex attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFBoundingBox.ymax">ymax (sfftk.schema.SFFBoundingBox attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBoundingBox.ymax">ymax (sfftkrw.schema.adapter.SFFBoundingBox attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFBoundingBox.ymin">ymin (sfftk.schema.SFFBoundingBox attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBoundingBox.ymin">ymin (sfftkrw.schema.adapter.SFFBoundingBox attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1509,19 +838,19 @@
 <h2 id="Z">Z</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFCuboid.z">z (sfftk.schema.SFFCuboid attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFCuboid.z">z (sfftkrw.schema.adapter.SFFCuboid attribute)</a>
 
       <ul>
-        <li><a href="schema.html#sfftk.schema.SFFEllipsoid.z">(sfftk.schema.SFFEllipsoid attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFEllipsoid.z">(sfftkrw.schema.adapter.SFFEllipsoid attribute)</a>
 </li>
-        <li><a href="schema.html#sfftk.schema.SFFVertex.z">(sfftk.schema.SFFVertex attribute)</a>
+        <li><a href="schema.html#sfftkrw.schema.adapter.SFFVertex.z">(sfftkrw.schema.adapter.SFFVertex attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="schema.html#sfftk.schema.SFFBoundingBox.zmax">zmax (sfftk.schema.SFFBoundingBox attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBoundingBox.zmax">zmax (sfftkrw.schema.adapter.SFFBoundingBox attribute)</a>
 </li>
-      <li><a href="schema.html#sfftk.schema.SFFBoundingBox.zmin">zmin (sfftk.schema.SFFBoundingBox attribute)</a>
+      <li><a href="schema.html#sfftkrw.schema.adapter.SFFBoundingBox.zmin">zmin (sfftkrw.schema.adapter.SFFBoundingBox attribute)</a>
 </li>
   </ul></td>
 </tr></table>

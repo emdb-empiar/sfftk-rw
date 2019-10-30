@@ -16,14 +16,9 @@
 import os
 import sys
 sys.path.append('..') # to import sfftkrw
-import mock
 from sfftkrw import SFFTKRW_VERSION
 from sfftkrw.core import _str
 
-MOCK_MODULES = ['lxml', 'emdb_sff', 'ahds', 'ahds.data_stream', 'bitarray', 'ahds.header', 'h5py', 'numpy', 'scipy',
-                'backports.shutil_get_terminal_size', 'h5py', 'mrcfile',]
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = mock.Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
