@@ -68,12 +68,15 @@ Getting Started
 Obtaining and Installing ``sfftk-rw``
 -------------------------------------
 
+We recommend installing ``sfftk-rw`` in a virtual environment of your choice (``virtualenv``, ``pyenv``, ``anaconda/miniconda``
+or ``pipenv`` - see their respective documentation on how to do so).
+
 PyPI
 ~~~~
 
 ``sfftk-rw`` is available on PyPI. Simply run:
 
-.. code:: bash
+.. code-block:: bash
 
     pip install sfftk-rw
 
@@ -81,16 +84,37 @@ Source
 ~~~~~~
 
 The ``sfftk-rw`` source is available from Github
-`https://github.com/emdb-empiar/sfftk-rw <https://github.com/emdb-empiar/sfftk-rw>`_.
+`https://github.com/emdb-empiar/sfftk-rw <https://github.com/emdb-empiar/sfftk-rw>`_. You may install the bleeding
+edge using:
+
+.. code-block:: bash
+
+    pip install git+https://github.com/emdb-empiar/sfftk-rw.git
 
 User Interface
 --------------
 
-``sfftk-rw`` is designed a command-line tool with various utilities. Type ``sff`` to see all options;
+``sfftk-rw`` is designed as a command-line tool with various utilities. Type ``sff-rw`` to see all options;
 
-.. code:: bash
+.. code-block:: bash
 
-    sff
+    sff-rw
+    usage: sff-rw [-h] [-V] EMDB-SFF Read/Write Tools ...
+
+    The EMDB-SFF Read/Write Toolkit (sfftk-rw)
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -V, --version         show the sfftk-rw version string and the supported
+                            EMDB-SFF Read/Write version string
+
+    Tools:
+      The EMDB-SFF Read/Write Toolkit (sfftk-rw) provides the following tools:
+
+      EMDB-SFF Read/Write Tools
+        convert             converts between EMDB-SFF formats
+        view                view file summary
+        tests               run unit tests
 
 Interconversion
 ---------------
@@ -100,9 +124,9 @@ XML, HDF5 and JSON (textual annotations only). ``sfftk-rw`` allows interconversi
 
 Use the ``convert`` utility to carry out interconversions:
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.sff
+    sff-rw convert file.sff
 
 By default all ``sfftk-rw`` converts to XML except when it receives to HDF5.
 
@@ -114,9 +138,9 @@ Viewing
 
 Basic metadata about an EMDB-SFF file may be obtained using the ``view`` utility:
 
-.. code:: bash
+.. code-block:: bash
 
-    sff view [options] file.sff
+    sff-rw view [options] file.sff
 
 
 Developing with ``sfftk-rw``
@@ -129,7 +153,7 @@ the `API documentation <http://sfftk-rw.readthedocs.io/en/latest/sfftk-rw.html>`
 
 As a brief example, you can handle EMDB-SFF files using the ``SFFSegmentation`` class:
 
-.. code:: python
+.. code-block:: python
 
     from sfftkrw.schema import adapter
 

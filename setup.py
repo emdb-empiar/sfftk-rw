@@ -4,17 +4,17 @@ import sys
 
 from setuptools import setup, find_packages
 
-from sfftkrw import SFFTKRW_VERSION
+from sfftkrw import SFFTKRW_VERSION, SFFTKRW_ENTRY_POINT
 
 with open(u'README.rst') as f:
     long_description = f.read()
 
-SFFTKRW_NAME = u"sfftkrw"
+SFFTKRW_NAME = u"sfftk-rw"
 SFFTKRW_AUTHOR = u"Paul K. Korir, PhD"
 SFFTKRW_AUTHOR_EMAIL = u"pkorir@ebi.ac.uk, paul.korir@gmail.com"
 SFFTKRW_DESCRIPTION = u"Toolkit for reading and writing EMDB-SFF files"
 SFFTKRW_DESCRIPTION_CONTENT_TYPE = u'text/x-rst; charset=UTF-8'
-SFFTKRW_URL = u"http://sfftkrw.readthedocs.io/en/latest/index.html"
+SFFTKRW_URL = u"http://sfftk-rw.readthedocs.io/en/latest/index.html"
 SFFTKRW_LICENSE = u"Apache License"
 SFFTKRW_KEYWORDS = u"EMDB-SFF, SFF, segmentation"
 SFFTKRW_CLASSIFIERS = [
@@ -41,7 +41,6 @@ SFFTKRW_CLASSIFIERS = [
     u"Topic :: Text Processing :: Markup",
     u"Topic :: Utilities",
 ]
-SFFTKRW_ENTRY_POINT = 'sff'
 if sys.version_info[0] > 2:
     SFFTKRW_INSTALL_REQUIRES = ['numpy', 'h5py>2.7.0', "RandomWords"]
     SFFTKRW_SETUP_REQUIRES = []

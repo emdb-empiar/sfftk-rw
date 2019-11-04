@@ -7,8 +7,7 @@ Developing with ``sfftk-rw``
 Introduction
 ============
 
-``sfftk-rw`` has been designed to be relatively straightforward to integrate into other Python applications because it 
-has been designed in such a way that the various components are independent of one another. 
+``sfftk-rw`` is designed to be relatively straightforward to integrate into other Python applications.
 
 The main components of the package are:
 
@@ -17,7 +16,7 @@ The main components of the package are:
     `GenerateDS <https://www.davekuhlman.org/generateDS.html>`_ API which *extends* and *simplifies* EMDB-SFF fields.
 
 *   the **core** API (:py:mod:`sfftkrw.core`) provides a set of useful utilities mainly for the command-line toolkit
-    (``sff`` command) that handle command line arguments (making sure that they have the right values) and miscellaneous
+    (``sff-rw`` command) that handle command line arguments (making sure that they have the right values) and miscellaneous
     utilities.
 
 
@@ -28,7 +27,7 @@ All aspects of the structure of an EMDB-SFF file are handled by :py:mod:`sfftkrw
 defines the :py:class:`sfftkrw.schema.adapter.SFFSegmentation` class to handle reading, creation and writing of
 EMDB-SFF files. Please consult the section on :ref:`output_formats` for background information.
 
-.. code:: python
+.. code-block:: python
 
     from sfftkrw.schema.adapter import SFFSegmentation
     from sfftkrw.unittests import TEST_DATA_PATH
@@ -67,7 +66,7 @@ EMDB-SFF files. Please consult the section on :ref:`output_formats` for backgrou
 Viewing Segmentation Metadata
 -----------------------------
 
-.. code:: python
+.. code-block:: python
 
     from __future__ import print_function
     from sfftkrw.schema.adapter import SFFSegmentation
@@ -83,90 +82,47 @@ Viewing Segmentation Metadata
     
     # schema version
     print(seg.version)
-    0.7.0.dev0
-    
+    # 0.7.0.dev0
+
     # software details
-    ... print(seg.software)
-    Software object
-    
+    print(seg.software)
+    # Software object
+
     # primary descriptor
     print(seg.primary_descriptor)
-    threeDVolume
-    
+    # threeDVolume
+
     # transforms
     print(seg.transforms)
-    List of transforms
+    # List of transforms
     print(len(seg.transforms))
-    2
+    # 2
     print(seg.transforms[0])
-    [1.0000 0.0000 0.0000 1.0000 ]
-    [0.0000 1.0000 0.0000 1.0000 ]
-    [0.0000 0.0000 1.0000 1.0000 ]
+    # [1.0000 0.0000 0.0000 1.0000 ]
+    # [0.0000 1.0000 0.0000 1.0000 ]
+    # [0.0000 0.0000 1.0000 1.0000 ]
 
-    
     # bounding box
     print(seg.bounding_box)
-    Bounding box: (0.0, None, 0.0, None, 0.0, None)
-    
-    # details
-    print(seg.details)
-    DNA replication in eukaryotes is strictly regulated by several mechanisms. A central step in this replication is the assembly of the heterohexameric minichromosome maintenance (MCM2-7) helicase complex at replication origins during G1 phase as an inactive double hexamer. Here, using cryo-electron microscopy, we report a near-atomic structure of the MCM2-7 double hexamer purified from yeast G1 chromatin. Our structure shows that two single hexamers, arranged in a tilted and twisted fashion through interdigitated amino-terminal domain interactions, form a kinked central channel. Four constricted rings consisting of conserved interior β-hairpins from the two single hexamers create a narrow passageway that tightly fits duplex DNA. This narrow passageway, reinforced by the offset of the two single hexamers at the double hexamer interface, is flanked by two pairs of gate-forming subunits, MCM2 and MCM5. These unusual features of the twisted and tilted single hexamers suggest a concerted mechanism for the melting of origin DNA that requires structural deformation of the intervening DNA.
-    
-    from sfftkrw.schema.adapter.adapter import SFFSegmentation
-    from sfftkrw.unittests import TEST_DATA_PATH
-    import os
-    # XML file
-    seg_fn = os.path.join(TEST_DATA_PATH, 'annotated_sff', 'v0.7', 'emd_6338.sff')
-    seg = SFFSegmentation(seg_fn)
-    
-    # name
-    print(seg.name)
-    Segger Segmentation
-    
-    # schema version
-    print(seg.version)
-    0.7.0.dev0
-    
-    # software details
-    ... print(seg.software)
-    Software object
-    
-    # primary descriptor
-    print(seg.primary_descriptor)
-    threeDVolume
-    
-    # transforms
-    print(seg.transforms)
-    List of transforms
-    print(len(seg.transforms))
-    2
-    print(seg.transforms[0])
-    [1.0000 0.0000 0.0000 1.0000 ]
-    [0.0000 1.0000 0.0000 1.0000 ]
-    [0.0000 0.0000 1.0000 1.0000 ]
+    # Bounding box: (0.0, None, 0.0, None, 0.0, None)
 
-    
-    # bounding box
-    print(seg.bounding_box)
-    Bounding box: (0.0, None, 0.0, None, 0.0, None)
-    
     # details
     print(seg.details)
-    DNA replication in eukaryotes is strictly regulated by several mechanisms. A central step in this replication is the assembly of the heterohexameric minichromosome maintenance (MCM2-7) helicase complex at replication origins during G1 phase as an inactive double hexamer. Here, using cryo-electron microscopy, we report a near-atomic structure of the MCM2-7 double hexamer purified from yeast G1 chromatin. Our structure shows that two single hexamers, arranged in a tilted and twisted fashion through interdigitated amino-terminal domain interactions, form a kinked central channel. Four constricted rings consisting of conserved interior β-hairpins from the two single hexamers create a narrow passageway that tightly fits duplex DNA. This narrow passageway, reinforced by the offset of the two single hexamers at the double hexamer interface, is flanked by two pairs of gate-forming subunits, MCM2 and MCM5. These unusual features of the twisted and tilted single hexamers suggest a concerted mechanism for the melting of origin DNA that requires structural deformation of the intervening DNA.
-    
+    # DNA replication in eukaryotes is strictly regulated by several mechanisms. A central step in this replication is the assembly of the heterohexameric minichromosome maintenance (MCM2-7) helicase complex at replication origins during G1 phase as an inactive double hexamer. Here, using cryo-electron microscopy, we report a near-atomic structure of the MCM2-7 double hexamer purified from yeast G1 chromatin. Our structure shows that two single hexamers, arranged in a tilted and twisted fashion through interdigitated amino-terminal domain interactions, form a kinked central channel. Four constricted rings consisting of conserved interior β-hairpins from the two single hexamers create a narrow passageway that tightly fits duplex DNA. This narrow passageway, reinforced by the offset of the two single hexamers at the double hexamer interface, is flanked by two pairs of gate-forming subunits, MCM2 and MCM5. These unusual features of the twisted and tilted single hexamers suggest a concerted mechanism for the melting of origin DNA that requires structural deformation of the intervening DNA.
+
 
 Viewing Segments
 ----------------
 
-.. code:: python
+.. code-block:: python
 
     print(seg.segments)
-    Segment container
+    # Segment container
 
 Getting The List of Segment IDs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     # segment IDs
     print(seg.segments.get_ids())
@@ -175,7 +131,7 @@ Getting The List of Segment IDs
 Getting A Segment By ID
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     segment = seg.segments.get_by_id(9911)
     print(segment)
@@ -187,7 +143,7 @@ Viewing Segment Metadata
 ID and Parent ID
 ~~~~~~~~~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     print(segment.id)
     9911
@@ -198,7 +154,7 @@ ID and Parent ID
 Biological Annotation
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     print(segment.biological_annotation)
     Container for biological annotation with 2 external references
@@ -218,7 +174,7 @@ Biological Annotation
 Complexes and Macromolecules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     print(segment.complexes_and_macromolecules)
     Complexes: 0; Macromolecules: 0
@@ -234,7 +190,7 @@ Creating EMDB-SFF Objects
 
 Users can create EMDB-SFF objects from scratch then export them to a file format of your choice.
 
-.. code:: python
+.. code-block:: python
 
     from __future__ import print_function
         from sfftkrw import schema
@@ -259,7 +215,7 @@ Users can create EMDB-SFF objects from scratch then export them to a file format
 Setting Segmentation Metadata
 -----------------------------
 
-.. code:: python
+.. code-block:: python
 	
     # segmentation name
     seg.name = 'A New Segmentation'
@@ -298,14 +254,14 @@ Setting Segments
 Setting Segment Metadata
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code:: python
+.. code-block:: python
 
     segment = schema.SFFSegment()
 
 Biological Annotation
 '''''''''''''''''''''
 
-.. code:: python
+.. code-block:: python
 
 
     # define the biological annotation object
@@ -343,7 +299,7 @@ Biological Annotation
 Complexes and Macromolecules
 ''''''''''''''''''''''''''''
 
-.. code:: python
+.. code-block:: python
 
     compMacr = schema.SFFComplexesAndMacromolecules()
     # complexes
@@ -368,7 +324,7 @@ Colour
 
 Colours should be described using normalised RGBA values (each channel has a value in the interval [0,1]).
 
-.. code:: python
+.. code-block:: python
 
     segment.colour = schema.SFFRGBA(
     ...     red=0.1,
@@ -383,7 +339,7 @@ Colours should be described using normalised RGBA values (each channel has a val
 Setting Mesh Segments
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. code:: python
+.. code-block:: python
 
     from random import random, randint, choice
     
@@ -443,7 +399,7 @@ Setting Mesh Segments
 Setting Shape Segments
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. code:: python
+.. code-block:: python
 
     from random import random
     
@@ -532,7 +488,7 @@ Working with 3D volumes consists of two steps:
 
 * next, we reference the lattice by specifying how the segment is associated with the lattice e.g. by contour level or voxel value using a :py:class:`sfftkrw.schema.adapter.SFFThreeDVolume` object contained in a :py:class:`sfftkrw.schema.adapter.SFFSegment` object as a ``volume`` attribute i.e. if ``segment`` is a :py:class:`sfftkrw.schema.adapter.SFFSegment` object then ``segment.volume`` will be a :py:class:`sfftkrw.schema.adapter.SFFThreeDVolume` object and we say that ``segment`` contains a ``threeDVolume`` segment representation.
 
-.. code:: python
+.. code-block:: python
 
     import numpy
     # lattice 1
@@ -633,7 +589,7 @@ Adding A Segment To The Segmentation
 Once we have added the individual segment representations to the respective segments we can add the segment to the 
 segmentation. The list of segments is contained in a :py:class:`sfftkrw.schema.adapter.SFFSegmentList` object.
 
-.. code:: python
+.. code-block:: python
 
     # create the list of segments
     seg.segments = schema.SFFSegmentList()
@@ -647,7 +603,7 @@ Exporting EMDB-SFF Objects
 
 Finally, after completing the segmentation we can export it to disk as a file. The :py:meth:`sfftkrw.schema.adapter.SFFType.export()` method infers the output file type from from the file extension.
 
-.. code:: python
+.. code-block:: python
 
     # XML
     seg.export('file.sff')
@@ -668,7 +624,7 @@ Iterating
 Segments
 ~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     for segment in seg.segments:
         # do something with segment
@@ -680,7 +636,7 @@ Segments
 Meshes
 ~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     for mesh in segment.meshes:
     ...     for vertex in mesh.vertices:
@@ -697,7 +653,7 @@ Meshes
 External References
 ~~~~~~~~~~~~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     for extRef in segment.biological_annotation.externalReferences:
     ...     print(extRef.type)

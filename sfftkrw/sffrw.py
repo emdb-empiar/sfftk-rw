@@ -2,9 +2,9 @@
 # encoding: utf-8
 # sffrw.py
 """
-sfftkrw.sff -- Toolkit to handle operations for EMDB-SFF files
+sfftkrw.sffrw -- Toolkit for reading and writing EMDB-SFF files
 
-sfftkrw.sff is the main entry point for performing command-line operations.
+sfftkrw.sffrw is the main entry point for performing command-line operations.
 """
 from __future__ import division, print_function
 

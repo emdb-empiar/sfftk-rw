@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Developing with sfftk-rw &mdash; sfftkrw v0.5.0.dev0 documentation</title>
+  <title>Developing with sfftk-rw &mdash; sfftk-rw v0.5.0.dev0 documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sfftkrw
+            <a href="index.html" class="icon icon-home"> sfftk-rw
           
 
           
@@ -139,7 +139,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sfftkrw</a>
+          <a href="index.html">sfftk-rw</a>
         
       </nav>
 
@@ -256,15 +256,14 @@
 </div>
 <div class="section" id="introduction">
 <h2><a class="toc-backref" href="#id4">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> has been designed to be relatively straightforward to integrate into other Python applications because it
-has been designed in such a way that the various components are independent of one another.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> is designed to be relatively straightforward to integrate into other Python applications.</p>
 <p>The main components of the package are:</p>
 <ul class="simple">
 <li><p>the <strong>adapter</strong> API (<a class="reference internal" href="schema.html#module-sfftkrw.schema.adapter" title="sfftkrw.schema.adapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sfftkrw.schema.adapter</span></code></a>) which handles how data fields are represented independent of
 the file formats to be used (XML, HDF5 and JSON). This package provides an adapter to the underlying
 <a class="reference external" href="https://www.davekuhlman.org/generateDS.html">GenerateDS</a> API which <em>extends</em> and <em>simplifies</em> EMDB-SFF fields.</p></li>
 <li><p>the <strong>core</strong> API (<code class="xref py py-mod docutils literal notranslate"><span class="pre">sfftkrw.core</span></code>) provides a set of useful utilities mainly for the command-line toolkit
-(<code class="docutils literal notranslate"><span class="pre">sff</span></code> command) that handle command line arguments (making sure that they have the right values) and miscellaneous
+(<code class="docutils literal notranslate"><span class="pre">sff-rw</span></code> command) that handle command line arguments (making sure that they have the right values) and miscellaneous
 utilities.</p></li>
 </ul>
 </div>
@@ -310,97 +309,54 @@ EMDB-SFF files. Please consult the section on <a class="reference internal" href
 </div>
 <div class="section" id="viewing-segmentation-metadata">
 <h3><a class="toc-backref" href="#id6">Viewing Segmentation Metadata</a><a class="headerlink" href="#viewing-segmentation-metadata" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>from __future__ import print_function
-from sfftkrw.schema.adapter import SFFSegmentation
-from sfftkrw.unittests import TEST_DATA_PATH
-import os
-# XML file
-seg_fn = os.path.join(TEST_DATA_PATH, &#39;annotated_sff&#39;, &#39;v0.7&#39;, &#39;emd_6338.sff&#39;)
-seg = SFFSegmentation(seg_fn)
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">sfftkrw.schema.adapter</span> <span class="kn">import</span> <span class="n">SFFSegmentation</span>
+<span class="kn">from</span> <span class="nn">sfftkrw.unittests</span> <span class="kn">import</span> <span class="n">TEST_DATA_PATH</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># XML file</span>
+<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;annotated_sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.7&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_6338.sff&#39;</span><span class="p">)</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">SFFSegmentation</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
 
-# name
-print(seg.name)
-Segger Segmentation
+<span class="c1"># name</span>
+<span class="k">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="n">Segger</span> <span class="n">Segmentation</span>
 
-# schema version
-print(seg.version)
-0.7.0.dev0
+<span class="c1"># schema version</span>
+<span class="k">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+<span class="c1"># 0.7.0.dev0</span>
 
-# software details
-... print(seg.software)
-Software object
+<span class="c1"># software details</span>
+<span class="k">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">software</span><span class="p">)</span>
+<span class="c1"># Software object</span>
 
-# primary descriptor
-print(seg.primary_descriptor)
-threeDVolume
+<span class="c1"># primary descriptor</span>
+<span class="k">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">primary_descriptor</span><span class="p">)</span>
+<span class="c1"># threeDVolume</span>
 
-# transforms
-print(seg.transforms)
-List of transforms
-print(len(seg.transforms))
-2
-print(seg.transforms[0])
-[1.0000 0.0000 0.0000 1.0000 ]
-[0.0000 1.0000 0.0000 1.0000 ]
-[0.0000 0.0000 1.0000 1.0000 ]
+<span class="c1"># transforms</span>
+<span class="k">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="p">)</span>
+<span class="c1"># List of transforms</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="p">))</span>
+<span class="c1"># 2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># [1.0000 0.0000 0.0000 1.0000 ]</span>
+<span class="c1"># [0.0000 1.0000 0.0000 1.0000 ]</span>
+<span class="c1"># [0.0000 0.0000 1.0000 1.0000 ]</span>
 
+<span class="c1"># bounding box</span>
+<span class="k">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">)</span>
+<span class="c1"># Bounding box: (0.0, None, 0.0, None, 0.0, None)</span>
 
-# bounding box
-print(seg.bounding_box)
-Bounding box: (0.0, None, 0.0, None, 0.0, None)
-
-# details
-print(seg.details)
-DNA replication in eukaryotes is strictly regulated by several mechanisms. A central step in this replication is the assembly of the heterohexameric minichromosome maintenance (MCM2-7) helicase complex at replication origins during G1 phase as an inactive double hexamer. Here, using cryo-electron microscopy, we report a near-atomic structure of the MCM2-7 double hexamer purified from yeast G1 chromatin. Our structure shows that two single hexamers, arranged in a tilted and twisted fashion through interdigitated amino-terminal domain interactions, form a kinked central channel. Four constricted rings consisting of conserved interior β-hairpins from the two single hexamers create a narrow passageway that tightly fits duplex DNA. This narrow passageway, reinforced by the offset of the two single hexamers at the double hexamer interface, is flanked by two pairs of gate-forming subunits, MCM2 and MCM5. These unusual features of the twisted and tilted single hexamers suggest a concerted mechanism for the melting of origin DNA that requires structural deformation of the intervening DNA.
-
-from sfftkrw.schema.adapter.adapter import SFFSegmentation
-from sfftkrw.unittests import TEST_DATA_PATH
-import os
-# XML file
-seg_fn = os.path.join(TEST_DATA_PATH, &#39;annotated_sff&#39;, &#39;v0.7&#39;, &#39;emd_6338.sff&#39;)
-seg = SFFSegmentation(seg_fn)
-
-# name
-print(seg.name)
-Segger Segmentation
-
-# schema version
-print(seg.version)
-0.7.0.dev0
-
-# software details
-... print(seg.software)
-Software object
-
-# primary descriptor
-print(seg.primary_descriptor)
-threeDVolume
-
-# transforms
-print(seg.transforms)
-List of transforms
-print(len(seg.transforms))
-2
-print(seg.transforms[0])
-[1.0000 0.0000 0.0000 1.0000 ]
-[0.0000 1.0000 0.0000 1.0000 ]
-[0.0000 0.0000 1.0000 1.0000 ]
-
-
-# bounding box
-print(seg.bounding_box)
-Bounding box: (0.0, None, 0.0, None, 0.0, None)
-
-# details
-print(seg.details)
-DNA replication in eukaryotes is strictly regulated by several mechanisms. A central step in this replication is the assembly of the heterohexameric minichromosome maintenance (MCM2-7) helicase complex at replication origins during G1 phase as an inactive double hexamer. Here, using cryo-electron microscopy, we report a near-atomic structure of the MCM2-7 double hexamer purified from yeast G1 chromatin. Our structure shows that two single hexamers, arranged in a tilted and twisted fashion through interdigitated amino-terminal domain interactions, form a kinked central channel. Four constricted rings consisting of conserved interior β-hairpins from the two single hexamers create a narrow passageway that tightly fits duplex DNA. This narrow passageway, reinforced by the offset of the two single hexamers at the double hexamer interface, is flanked by two pairs of gate-forming subunits, MCM2 and MCM5. These unusual features of the twisted and tilted single hexamers suggest a concerted mechanism for the melting of origin DNA that requires structural deformation of the intervening DNA.
+<span class="c1"># details</span>
+<span class="k">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">details</span><span class="p">)</span>
+<span class="c1"># DNA replication in eukaryotes is strictly regulated by several mechanisms. A central step in this replication is the assembly of the heterohexameric minichromosome maintenance (MCM2-7) helicase complex at replication origins during G1 phase as an inactive double hexamer. Here, using cryo-electron microscopy, we report a near-atomic structure of the MCM2-7 double hexamer purified from yeast G1 chromatin. Our structure shows that two single hexamers, arranged in a tilted and twisted fashion through interdigitated amino-terminal domain interactions, form a kinked central channel. Four constricted rings consisting of conserved interior β-hairpins from the two single hexamers create a narrow passageway that tightly fits duplex DNA. This narrow passageway, reinforced by the offset of the two single hexamers at the double hexamer interface, is flanked by two pairs of gate-forming subunits, MCM2 and MCM5. These unusual features of the twisted and tilted single hexamers suggest a concerted mechanism for the melting of origin DNA that requires structural deformation of the intervening DNA.</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="viewing-segments">
 <h3><a class="toc-backref" href="#id7">Viewing Segments</a><a class="headerlink" href="#viewing-segments" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
-<span class="n">Segment</span> <span class="n">container</span>
+<span class="c1"># Segment container</span>
 </pre></div>
 </div>
 <div class="section" id="getting-the-list-of-segment-ids">

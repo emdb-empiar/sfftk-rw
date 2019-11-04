@@ -633,7 +633,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         )
         segmentation.details = u"Details"
         # global external references
-        segmentation.global_external_references = adapter.SFFGlobalExternalReferences()
+        segmentation.global_external_references = adapter.SFFGlobalExternalReferenceList()
         segmentation.global_external_references.append(
             adapter.SFFExternalReference(
                 type=u'one',
@@ -654,7 +654,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         biol_ann.name = u"Segment1"
         biol_ann.description = u"Some description"
         # external refs
-        biol_ann.external_references = adapter.SFFExternalReferences()
+        biol_ann.external_references = adapter.SFFExternalReferenceList()
         biol_ann.external_references.append(
             adapter.SFFExternalReference(
                 type=u"sldjflj",
@@ -679,14 +679,14 @@ class TestSFFSegmentation(Py23FixTestCase):
         # complexes and macromolecules
         # complexes
         comp_mac = adapter.SFFComplexesAndMacromolecules()
-        comp = adapter.SFFComplexes()
+        comp = adapter.SFFComplexList()
         comp.append(_str(_random_integer(1, 1000)))
         comp.append(_str(_random_integer(1, 1000)))
         comp.append(_str(_random_integer(1, 1000)))
         comp.append(_str(_random_integer(1, 1000)))
         comp.append(_str(_random_integer(1, 1000)))
         # macromolecules
-        macr = adapter.SFFMacromolecules()
+        macr = adapter.SFFMacromoleculeList()
         macr.append(_str(_random_integer(1, 1000)))
         macr.append(_str(_random_integer(1, 1000)))
         macr.append(_str(_random_integer(1, 1000)))
@@ -987,14 +987,14 @@ class TestSFFRGBA(Py23FixTestCase):
         self.assertTrue(0 <= colour.alpha <= 1)
 
 
-class TestSFFComplexes(Py23FixTestCase):
-    """Tests for SFFComplexes class"""
+class TestSFFComplexList(Py23FixTestCase):
+    """Tests for SFFComplexList class"""
 
     def test_default(self):
         """Test default settings"""
-        c = adapter.SFFComplexes()
+        c = adapter.SFFComplexList()
         self.assertEqual(c.gds_type, emdb_sff.complexType)
-        self.assertRegex(_str(c), r"SFFComplexes\(\[.*\]\)")
+        self.assertRegex(_str(c), r"SFFComplexList\(\[.*\]\)")
         with self.assertRaises(StopIteration):  # because it's empty
             next(iter(c))
         c.append(rw.random_word())
@@ -1005,11 +1005,11 @@ class TestSFFComplexes(Py23FixTestCase):
         self.assertEqual(len(c), 0)
 
 
-class TestSFFMacromolecules(Py23FixTestCase):
+class TestSFFMacromoleculeList(Py23FixTestCase):
     def test_default(self):
         """Test default settings"""
-        m = adapter.SFFMacromolecules()
-        self.assertRegex(_str(m), r"SFFMacromolecules\(\[.*\]\)")
+        m = adapter.SFFMacromoleculeList()
+        self.assertRegex(_str(m), r"SFFMacromoleculeList\(\[.*\]\)")
         with self.assertRaises(StopIteration):
             next(iter(m))
         m.append(rw.random_word())
@@ -1030,18 +1030,18 @@ class TestSFFComplexesAndMacromolecules(Py23FixTestCase):
             _str(C),
             r"SFFComplexesAndMacromolecules\(complexes=None, macromolecules=None\)"
         )
-        c = adapter.SFFComplexes()
+        c = adapter.SFFComplexList()
         _no_items = _random_integer(start=2, stop=10)
         [c.append(rw.random_word()) for _ in _xrange(_no_items)]
         C.complexes = c
-        m = adapter.SFFMacromolecules()
+        m = adapter.SFFMacromoleculeList()
         [m.append(rw.random_word()) for _ in _xrange(_no_items)]
         C.macromolecules = m
         self.assertEqual(len(C.complexes), _no_items)
         self.assertEqual(len(C.macromolecules), _no_items)
         self.assertRegex(
             _str(C),
-            r"SFFComplexesAndMacromolecules\(complexes=SFFComplexes\(.*\), macromolecules=SFFMacromolecules\(.*\)\)"
+            r"SFFComplexesAndMacromolecules\(complexes=SFFComplexList\(.*\), macromolecules=SFFMacromoleculeList\(.*\)\)"
         )
 
 
@@ -1101,7 +1101,7 @@ class TestSFFExternalReference(Py23FixTestCase):
         )
 
 
-class TestSFFExternalReferences(Py23FixTestCase):
+class TestSFFExternalReferenceList(Py23FixTestCase):
     def setUp(self):
         self._no_items = _random_integer(start=2, stop=10)
         self.ii = list(_xrange(self._no_items))
@@ -1123,12 +1123,12 @@ class TestSFFExternalReferences(Py23FixTestCase):
             label=self.ll[i],
             description=self.dd[i]
         ) for i in _xrange(self._no_items)]
-        E = adapter.SFFExternalReferences()
+        E = adapter.SFFExternalReferenceList()
         [E.append(e) for e in ee]
         # str
         self.assertRegex(
             _str(E),
-            r"""SFFExternalReferences\(\[.*\]\)"""
+            r"""SFFExternalReferenceList\(\[.*\]\)"""
         )
         # length
         self.assertEqual(len(E), self._no_items)
@@ -1167,11 +1167,11 @@ class TestSFFExternalReferences(Py23FixTestCase):
         ) for i in _xrange(self._no_items)]
         _E = emdb_sff.externalReferencesType()
         _E.set_ref(_ee)
-        E = adapter.SFFExternalReferences.from_gds_type(_E)
+        E = adapter.SFFExternalReferenceList.from_gds_type(_E)
         # str
         self.assertRegex(
             _str(E),
-            r"""SFFExternalReferences\(\[.*\]\)"""
+            r"""SFFExternalReferenceList\(\[.*\]\)"""
         )
         # length
         self.assertEqual(len(E), self._no_items)
@@ -1224,7 +1224,7 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
             label=self.ll[i],
             description=self.dd[i]
         ) for i in _xrange(self._no_items)]
-        E = adapter.SFFExternalReferences()
+        E = adapter.SFFExternalReferenceList()
         [E.append(e) for e in self.ee]
         _E = emdb_sff.externalReferencesType()
         _E.set_ref(self._ee)
@@ -1245,7 +1245,7 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
             r"""SFFBiologicalAnnotation\(""" \
             r"""name="{}", description="{}", """ \
             r"""numberOfInstances={}, """ \
-            r"""externalReferences=SFFExternalReferences\(\[.*\]\)\)""".format(
+            r"""externalReferences=SFFExternalReferenceList\(\[.*\]\)\)""".format(
                 self.name,
                 self.description,
                 self.no
@@ -1270,7 +1270,7 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
             r"""SFFBiologicalAnnotation\(""" \
             r"""name="{}", description="{}", """ \
             r"""numberOfInstances={}, """ \
-            r"""externalReferences=SFFExternalReferences\(\[.*\]\)\)""".format(
+            r"""externalReferences=SFFExternalReferenceList\(\[.*\]\)\)""".format(
                 self.name,
                 self.description,
                 self.no
@@ -2027,8 +2027,8 @@ class TestSFFEllipsoid(Py23FixTestCase):
         self.assertEqual(C.z, _z)
 
 
-class TestSFFGlobalExternalReferences(Py23FixTestCase):
-    """Test the SFFGlobalExternalReferences class"""
+class TestSFFGlobalExternalReferenceList(Py23FixTestCase):
+    """Test the SFFGlobalExternalReferenceList class"""
 
     def setUp(self):
         self._no_items = _random_integer(start=2, stop=10)
@@ -2051,12 +2051,12 @@ class TestSFFGlobalExternalReferences(Py23FixTestCase):
             label=self.ll[i],
             description=self.dd[i]
         ) for i in _xrange(self._no_items)]
-        G = adapter.SFFGlobalExternalReferences()
+        G = adapter.SFFGlobalExternalReferenceList()
         [G.append(e) for e in ee]
         # str
         self.assertRegex(
             _str(G),
-            r"""SFFGlobalExternalReferences\(\[.*\]\)"""
+            r"""SFFGlobalExternalReferenceList\(\[.*\]\)"""
         )
         # length
         self.assertEqual(len(G), self._no_items)
@@ -2095,11 +2095,11 @@ class TestSFFGlobalExternalReferences(Py23FixTestCase):
         ) for i in _xrange(self._no_items)]
         _G = emdb_sff.globalExternalReferencesType()
         _G.set_ref(_ee)
-        G = adapter.SFFGlobalExternalReferences.from_gds_type(_G)
+        G = adapter.SFFGlobalExternalReferenceList.from_gds_type(_G)
         # str
         self.assertRegex(
             _str(G),
-            r"""SFFGlobalExternalReferences\(\[.*\]\)"""
+            r"""SFFGlobalExternalReferenceList\(\[.*\]\)"""
         )
         # length
         self.assertEqual(len(G), self._no_items)

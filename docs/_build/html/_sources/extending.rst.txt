@@ -74,7 +74,7 @@ To make the above concrete, we outline how the :py:mod:`sfftk.formats.seg` forma
 
 Segger segmentation files are represented using 3D volumes. Therefore, the :py:mod:`sfftk.formats.seg` module has the following top level structure:
 
-.. code:: python
+.. code-block:: python
 
     from .base import Segmentation, Header, Segment, Annotation, Volume
     from .. import schema
@@ -98,7 +98,7 @@ Segger segmentation files are represented using 3D volumes. Therefore, the :py:m
 
 The :py:class:`sfftk.formats.seg.SeggerSegmentation` class's initialiser does the reading using the :py:mod:`sfftk.readers.segreader` module described in :ref:`step_I`;
 
-.. code:: python
+.. code-block:: python
 
     class SeggerSegmentation(Segmentation):
         def __init__(self, fn, top_level=False, *args, **kwargs):
@@ -109,7 +109,7 @@ The :py:class:`sfftk.formats.seg.SeggerSegmentation` class's initialiser does th
 
 We then reference the ``header`` and ``segments`` attributes using propers to decouple the actual hosted objects from the user-facing attributes.
 
-.. code:: python
+.. code-block:: python
 
     class SeggerSegmentation(Segmentation):
         # ...
@@ -121,7 +121,7 @@ We then reference the ``header`` and ``segments`` attributes using propers to de
 
 and delegate the :py:class:`sfftk.formats.seg.SeggerHeader` to expose header attributes.
 
-.. code:: python
+.. code-block:: python
 
     class SeggerHeader(Header):
         """Header class"""
@@ -185,7 +185,7 @@ Notice that all underlying functionality is obtained from the *ad hoc* reader, w
 
 Segments are contained in a list and exposed through the ``segments`` property of the :py:class:`sfftk.formats.seg.SeggerSegmentation` class.
 
-.. code:: python
+.. code-block:: python
 
     class SeggerSegmentation(Segmentation):
         # ...
@@ -202,7 +202,7 @@ Segments are contained in a list and exposed through the ``segments`` property o
 
 To perform a conversion the :py:class:`sfftk.formats.seg.SeggerSegmentation` class implements a :py:meth:`sfftk.formats.seg.SeggerSegmentation.convert()` method that uses the EMDB-SFF schema API as described in :doc:`developing`.
 
-.. code:: python
+.. code-block:: python
 
     class SeggerSegmentation(Segmentation):
         # ...
@@ -257,7 +257,7 @@ To perform a conversion the :py:class:`sfftk.formats.seg.SeggerSegmentation` cla
 
 Notice that in the loop for each segment (``for s in self.segments``) we refer to each segment's ``convert()`` method which is implemented as follows:
 
-.. code:: python
+.. code-block:: python
 
     class SeggerSegment(Segment):
         # ...
@@ -285,7 +285,7 @@ Step III: Implement a **convert hook** in the :py:func:`sfftk.sff.handle_convert
 
 In order to perform conversion using the command-line utility, we need to have the ``convert`` utility recognise segmentations by file type. This is simply done by add adding a regular expression match object in the :py:func:`sfftk.sff.handle_convert()` function as follows:
 
-.. code:: python
+.. code-block:: python
 
     def handle_convert(args, configs):  # @UnusedVariable
         # ...
@@ -309,9 +309,9 @@ In order to perform conversion using the command-line utility, we need to have t
 
 Once this is done the following should work:
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert --top-level-only file.seg --verbose
+    sff-rw convert --top-level-only file.seg --verbose
 
 .. _step_IV:
 
@@ -331,17 +331,17 @@ Of course, you are welcome to contact us for help doing the above. Also, if you 
 
 Once all this components are in place conversion to XML, HDF5 and JSON should be automatic.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.<format> -f sff
-    sff convert file.<format> -f hff
-    sff convert file.<format> -f json
+    sff-rw convert file.<format> -f sff
+    sff-rw convert file.<format> -f hff
+    sff-rw convert file.<format> -f json
 
 Also, tests can be run as follows:
 
-.. code:: bash
+.. code-block:: bash
 
-    sff tests formats
+    sff-rw tests formats
 
 
 Adding A Search Resource

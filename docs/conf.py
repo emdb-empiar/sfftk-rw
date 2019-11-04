@@ -56,7 +56,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'sfftkrw'
+project = u'sfftk-rw'
 copyright = u'2017, EMBL-EBI'
 author = u'Paul K. Korir, PhD'
 
@@ -233,7 +233,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'sfftkrw.tex', u'sfftkrw Documentation',
+    (master_doc, 'sfftk-rw.tex', u'sfftk-rw Documentation',
      u'Paul K. Korir, PhD', 'manual'),
 ]
 
@@ -263,7 +263,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'sfftkrw', u'sfftkrw Documentation',
+    (master_doc, 'sfftk-rw', u'sfftk-rw Documentation',
      [author], 1)
 ]
 
@@ -277,8 +277,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'sfftkrw', u'sfftkrw Documentation',
-     author, 'sfftkrw', 'One line description of project.',
+    (master_doc, 'sfftk-rw', u'sfftk-rw Documentation',
+     author, 'sfftk-rw', 'Toolkit for reading and writing EMDB-SFF files',
      'Miscellaneous'),
 ]
 
@@ -295,6 +295,12 @@ texinfo_documents = [
 # texinfo_no_detailmenu = False
 
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3', None),
+    'python': ('https://docs.python.org/', None),
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+}
+
+# autodoc options
+autodoc_docstring_signature = True
+autodoc_default_options = {
+    'member-order': 'bysource',
 }

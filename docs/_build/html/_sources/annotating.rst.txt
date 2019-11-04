@@ -17,15 +17,15 @@ Synopsis
 Annotation is performed using the `notes` utility that is accessed with the 
 ``notes`` subcommand.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes
+    sff-rw notes
 
 yielding
 
-.. code:: bash
+.. code-block:: bash
 
-    usage: sff notes [-h] EMDB-SFF annotation tools ...
+    usage: sff-rw notes [-h] EMDB-SFF annotation tools ...
 
     The EMDB-SFF Annotation Toolkit
 
@@ -133,17 +133,17 @@ The search sub-subcommand displays results from searching EMBL-EBI’s OLS. As
 described in `States <#states-find-view-modify>`__, the terminal text is 
 coloured yellow.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes search
-    sff notes search -h
-    sff notes search --help
+    sff-rw notes search
+    sff-rw notes search -h
+    sff-rw notes search --help
 
 display available options.
 
-.. code:: bash
+.. code-block:: bash
 
-    usage: sff notes search [-h] [-p CONFIG_PATH] [-b]
+    usage: sff-rw notes search [-h] [-p CONFIG_PATH] [-b]
                         [-R {ols,go,emdb,uniprot,pdb,europepmc,empiar}]
                         [-s START] [-r ROWS] [-O ONTOLOGY] [-x] [-o] [-L] [-l]
                         [search_term]
@@ -190,14 +190,14 @@ Specifying Search Terms
 For single worded searches enter the term with or without quotes. Multi-word 
 terms must be quoted to prevent splitting them.
 
-.. code:: bash
+.. code-block:: bash
 
     # single word term
-    sff notes search mitochondria
-    sff notes search ‘mitochondria’
-    sff notes search “mitochondria”
+    sff-rw notes search mitochondria
+    sff-rw notes search ‘mitochondria’
+    sff-rw notes search “mitochondria”
     # multi-word term
-    sff notes search ‘fragment mitochondria’
+    sff-rw notes search ‘fragment mitochondria’
 
 The search results are displayed as a table with the following columns:
 
@@ -251,8 +251,8 @@ For example, to search for *mitochondria* in EMDB the user would type one of the
 
 .. code-block:: bash
 
-    sff notes search -R emdb "mitochodria"
-    sff notes search --resource emdb "mitochondria"
+    sff-rw notes search -R emdb "mitochodria"
+    sff-rw notes search --resource emdb "mitochondria"
 
 
 Specifying The Ontology To Search
@@ -260,10 +260,10 @@ Specifying The Ontology To Search
 
 This only applies to searches against the `EBI Ontology Lookup Service <https://www.ebi.ac.uk/ols/index>`_ (the default resource to search or ``-R/--resource ols``).
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes search -O <resource_name> “<term>”
-    sff notes search --ontology <resource_name> “<term>”
+    sff-rw notes search -O <resource_name> “<term>”
+    sff-rw notes search --ontology <resource_name> “<term>”
 
 See `Listing Available Ontologies <#listing-available-ontologies>`__ on how 
 to get an ontology to search.
@@ -273,10 +273,10 @@ Performing Exact Searches
 
 Exact searches only return results matching the search term *exactly.*
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes search -x “<term>”
-    sff notes search --exact “<term>”
+    sff-rw notes search -x “<term>”
+    sff-rw notes search --exact “<term>”
 
 Including Obsolete Terms
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -284,18 +284,18 @@ Including Obsolete Terms
 Some terms are retired and are excluded by default. They can be included using 
 the ``-o/--obsoletes`` flag.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes search -o “<term>”
-    sff notes search --obsoletes “<term>”
+    sff-rw notes search -o “<term>”
+    sff-rw notes search --obsoletes “<term>”
 
 Listing Available Ontologies
 ----------------------------
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes search -L “term”
-    sff notes search --list-ontologies “term”
+    sff-rw notes search -L “term”
+    sff-rw notes search --list-ontologies “term”
 
 By default this provides a multi-line result for each ontology consisting of 
 the *namespace* (also called *ID space*), *preferred prefix, title, 
@@ -308,10 +308,10 @@ Alternatively, a simple table result can be displayed using the
 ``-l/--short-list-ontologies`` flag which displays only two columns: 
 *namespace* and *description.*
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes search -l “term”
-    sff notes search --short-list-ontologies “term”
+    sff-rw notes search -l “term”
+    sff-rw notes search --short-list-ontologies “term”
 
 Traversing Searching Results
 ----------------------------
@@ -320,7 +320,7 @@ By default, ``sff notes`` search only shows the first page of results. Quite
 often, there will be more than one page of results. This will be evident from 
 the last line of the results:
 
-.. code:: bash
+.. code-block:: bash
 	
     Showing: 1 to 10 of 139 results found
 
@@ -330,20 +330,20 @@ Specifying The Start Result
 The user can specify the result index at which results should be displayed 
 using the ``-s/--start`` flag.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes search -s 1 “<term>”
-    sff notes search --start 1 “<term>”
+    sff-rw notes search -s 1 “<term>”
+    sff-rw notes search --start 1 “<term>”
 
 Specifying The Number Of Rows To Display
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 More results can be display using the ``-r/--rows`` flag.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes search -r 11 “<term>”
-    sff notes search --row 11 “<term>”
+    sff-rw notes search -r 11 “<term>”
+    sff-rw notes search --row 11 “<term>”
 
 Entering invalid values for ``-s/--start`` and ``-r/--rows`` raise 
 ``ValueError`` exceptions.
@@ -359,15 +359,15 @@ Listing All Notes
 
 Listing all notes is performed by running
 
-.. code:: bash
+.. code-block:: bash
 
-    sff notes list
+    sff-rw notes list
 
 which has the following options:
 
-.. code:: bash
+.. code-block:: bash
 
-    usage: sff notes list [-h] [-H] [-p CONFIG_PATH] [-b] [-l] [-D] [-r] [-I] [-v]
+    usage: sff-rw notes list [-h] [-H] [-p CONFIG_PATH] [-b] [-l] [-D] [-r] [-I] [-v]
                           sff_file
 
     List all available annotations present in an EMDB-SFF file
@@ -396,7 +396,7 @@ which has the following options:
 The **sff notes list** sub-command only lists a summary table of notes 
 available for each segment. 
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes list file.sff
     sff notes list file.hff
@@ -404,7 +404,7 @@ available for each segment.
 
 The default output is structured as follows:
 
-.. code::
+.. code-block::
 
     Status information
     ******************
@@ -412,7 +412,7 @@ The default output is structured as follows:
     
 Here is an example:
 
-.. code:: bash
+.. code-block:: bash
 
 	**************************************************************************************************************
 	id      parId   description                              #inst #exRf #cplx #macr           colour
@@ -468,14 +468,14 @@ To view the list of notes by segment in long format (much more detail) use
 the ``-l/--long-format`` flag. This can be done with or without the header
 (``-H/--header`` flag).
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes list -l file.sff
     sff notes list --long-format file.sff
 
 having the same
 
-.. code::
+.. code-block::
 
     Status information
     ==================
@@ -483,7 +483,7 @@ having the same
 
 structure except now that the Segment metadata section has much more detail.
 
-.. code::
+.. code-block::
 
 	**************************************************************************************************************
 	ID:		9764
@@ -581,14 +581,14 @@ By default, segmentation metadata (name, software, global notes, file path,
 details) are not included when listing or showing notes. The ``-H/--header`` 
 flag includes this.
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes list -H file.sff
 	sff notes list --header file.sff
 	
 The output has the following structure: 
 
-.. code::
+.. code-block::
 
     Status information
     ==================
@@ -598,7 +598,7 @@ The output has the following structure:
     
 And here's an example:
 
-.. code::
+.. code-block::
 
 	==============================================================================================================
 	EMDB-SFF v.0.6.0a4
@@ -651,12 +651,12 @@ Sorting Notes By Description
 
 Notes are sorted by the index (first column) by default. However, the user can sort notes by description (third column) using the ``-D/--sort-by-description`` flag.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes list -D file.json
     sff notes list --sort-by-description file.json
 
-.. code::
+.. code-block::
 
 	**************************************************************************************************************
 	id      parId   description                              #inst #exRf #cplx #macr           colour
@@ -676,7 +676,7 @@ Notes are sorted by the index (first column) by default. However, the user can s
 
 becomes
 
-.. code::
+.. code-block::
 
 	**************************************************************************************************************
 	id      parId   description                              #inst #exRf #cplx #macr           colour
@@ -706,14 +706,14 @@ applies to both sorting by index or by description.
 
 Reverse sorting by index:
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes list -r file.json
     sff notes list --reverse file.json
     
 For the above, this becomes:
 
-.. code::
+.. code-block::
 
 	**************************************************************************************************************
 	id      parId   description                              #inst #exRf #cplx #macr           colour
@@ -733,14 +733,14 @@ For the above, this becomes:
 
 Reverse sorting by description
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes list -r -D file.json
     sff notes list --reverse --sort-by-description file.json
 
 leading to
 
-.. code::
+.. code-block::
 
 	**************************************************************************************************************
 	id      parId   description                              #inst #exRf #cplx #macr           colour
@@ -764,7 +764,7 @@ Viewing Segment IDs Only
 
 To view the segment IDs only write:
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes list -I file.sff
 	9764
@@ -783,7 +783,7 @@ To view the segment IDs only write:
 which are sorted in ascending order. These can be reversed using the 
 ``-r/--reverse`` flag.
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes list -I -r file.sff
 	9956
@@ -807,13 +807,13 @@ To show annotations relating to one or several (or all) segments
 
 type
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes show
 
 which has the following options:
 
-.. code:: bash
+.. code-block:: bash
 
     usage: sff notes show [-h] [-p CONFIG_PATH] [-b] [-H] [-l] [-v]
                           [-i SEGMENT_ID]
@@ -853,21 +853,21 @@ only by commas (``,``).
 
 Show one segment:
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes show -i <int> file.json
     sff notes show --segment-id <int> file.json
 
 For more than one:
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes show -i <int>,<int>,<int> file.json
     sff notes show --segment-id <int>,<int>,<int> file.json
     
 Example:
 
-.. code::
+.. code-block::
 
 	**************************************************************************************************************
 	id      parId   description                              #inst #exRf #cplx #macr           colour
@@ -878,14 +878,14 @@ Note that there are **NO SPACES** between the sequence of segment IDs. As with
 listing notes, the user can show notes in long format using the 
 ``-l/--long-format`` flag.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes show -i <int> -l file.json
     sff notes --segment-id <int> --long-format file.json
  
 Example:
 
-.. code::
+.. code-block::
 
 	**************************************************************************************************************
 	ID:		9911
@@ -918,14 +918,14 @@ Viewing Segmentation Metadata Only
 As specified for ``sff notes list``, using the ``-H/--header`` flag with 
 ``sff notes show`` will display the header (segmentation metadata) only.
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes show -H file.json
 	sff notes show --header file.json
 	
 Example:
 
-.. code::
+.. code-block::
 
 	==============================================================================================================
 	EMDB-SFF v.0.6.0a4
@@ -989,7 +989,7 @@ in the temporary file then starting again.
 You can modify the name and format of the temporary file using the ``config``
 command to modify the ``__TEMP_FILE`` option.
 
-.. code:: bash
+.. code-block:: bash
 
 	sff config get __TEMP_FILE
 	Mon Jan 22 16:49:59 2018	Reading configs from /Users/pkorir/.sfftk/sff.conf
@@ -999,7 +999,7 @@ command to modify the ``__TEMP_FILE`` option.
 to view current settings. As for ``convert``, the extension of the temporary
 file determines the output form.
 
-.. code:: bash
+.. code-block:: bash
 
 	sff config set __TEMP_FILE ./my-annotations.json
 	Mon Jan 22 16:49:27 2018	Reading configs from /Users/pkorir/.sfftk/sff.conf
@@ -1021,7 +1021,7 @@ file using a shorthand specified in the configs.
 
 The default shorthand is the 'at' symbol (``@``).
 
-.. code:: bash
+.. code-block:: bash
 
     # add a description (assuming none exists)
     sff notes add -i 1 -D ‘some description’ file.sff
@@ -1030,14 +1030,14 @@ The default shorthand is the 'at' symbol (``@``).
 
 This is useful if the file has a long name or is at a distant path.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i 1 -D ‘some description’ tomo_5_diff_change_3.3_pi_77_27_paul_publishes.json
     sff notes edit -i 1 -D ‘another description’ @
 
 or
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i 1 -D ‘some description’ ~/experiments/files/tomograms/zebra_fish_20170312/masks_repeat_19_3.3_relion_2.0.json
     sff notes edit -i 1 -D ‘some description’ @
@@ -1127,7 +1127,7 @@ Adding A Segmentation Name
 To be on the safe side use a quoted string to accommodate spaces. However, for 
 single word values no quotes are required.
 
-.. code::
+.. code-block::
 
 	# general
 	sff notes add -N "My Best Segmentation" file.json 	# not in MODIFY state yet
@@ -1137,7 +1137,7 @@ single word values no quotes are required.
 	
 Adding The Software Name
 ``````````````````````````````````````````````````````
-.. code::
+.. code-block::
 
 	sff notes add -S IMOD file.json			# not in MODIFY state
 	sff notes add --software-name Amira @	# MODIFY state
@@ -1145,7 +1145,7 @@ Adding The Software Name
 
 Adding The Software Version
 ``````````````````````````````````````````````````````
-.. code::
+.. code-block::
 
 	sff notes add -V v5.6.3 file.json			# not in MODIFY state
 	sff notes add --software-version v0.1.1 @	# MODIFY state		
@@ -1153,7 +1153,7 @@ Adding The Software Version
 
 Adding Software Processing Details
 ``````````````````````````````````````````````````````
-.. code::
+.. code-block::
 
 	# not in MODIFY state
 	sff notes add -P "Density map was automatically segmented using the watershed algorithm on a HP Cluster with 200 nodes" file.json
@@ -1162,14 +1162,14 @@ Adding Software Processing Details
 
 Adding A File Path
 ``````````````````````````````````````````````````````
-.. code::
+.. code-block::
 
 	sff notes add -F /path/to/seg file.json		# not in MODIFY state
 	sff notes add --file-path /path/to/seg @	# MODIFY state
 
 Adding Segmentation Details
 ``````````````````````````````````````````````````````
-.. code::
+.. code-block::
 
 	# not in MODIFY state
 	sff notes add -d "Specimen was irradiated with 5 lux of light then imaged vertically" file.json
@@ -1193,7 +1193,7 @@ All of these may be obtained either from the OLS website of using the output of 
 
 For example, suppose we ran
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes search 'mitochondria'
 
@@ -1206,7 +1206,7 @@ segment. We note down the *ontology name* (``go``), *IRI*
 (``http://purl.obolibrary.org/obo/GO_0005739``) and the *short_form*
 (``GO:0005739``) then use the following command:
 
-.. code:: bash
+.. code-block:: bash
 
     # global (segmentation) notes
     # not in MODIFY state
@@ -1223,7 +1223,7 @@ Adding Segment Notes
 
 Notes are added using the **sff notes add** sub-subcommand.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i <segment_id> [options] file.json
 
@@ -1232,7 +1232,7 @@ Adding A Segment Name
 
 The ``-s/--segment-name`` flag takes a single argument or quoted string to name the segment.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i 9911 -s "Top-most segment" file.sff
     sff notes add -i 9911 --segment-name "Top-most segment" file.sff
@@ -1242,7 +1242,7 @@ Adding A Segment Description
 
 Use the ``-D/--description`` flag to add a description. Multi-word descriptions will need to be quoted.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i 9911 -D 'a very good description' file.sff
     sff notes add --segment-id 9911 --description 'a very good description' file.sff
@@ -1250,7 +1250,7 @@ Use the ``-D/--description`` flag to add a description. Multi-word descriptions 
 Adding The Number of Instances
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i 9911 -n <int> file.json
     sff notes add --segment-id 9911 --number-of-instances <int> file.json
@@ -1258,13 +1258,13 @@ Adding The Number of Instances
 Adding External References
 ``````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i 9911 -E <resource_name> <iri> <short_form> file.json
 
 or several at once using multiple ``-E/--external-ref`` flags:
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i 9911 -E <resource_name> <iri> <short_form> -E <resource_name> <iri> <short_form> -E <resource_name> <iri> <short_form>file.json
 
@@ -1272,7 +1272,7 @@ or several at once using multiple ``-E/--external-ref`` flags:
 Adding A Complex (Internal Use)
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i <segment_id> -C <comp1>,<comp2>,...,<compN> file.json
     sff notes add -i <segment_id> --complexes <comp1>,<comp2>,...,<compN> file.json
@@ -1280,7 +1280,7 @@ Adding A Complex (Internal Use)
 Adding A Macromolecule (Internal Use)
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes add -i <segment_id> -M <macr1>,<macr2>,...,<macrN> file.json
     sff notes add -i <segment_id> --macromolecules <macr1>,<macr2>,...,<macrN> file.json
@@ -1301,7 +1301,7 @@ Editing External References
 As we will see shortly, an extra argument is needed to specify the external
 reference to be edited (``-e/--external-ref-id``).
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes edit -e <ref_id> -E <resource_name> <iri> <short_form> file.json
 	
@@ -1319,7 +1319,7 @@ reference) extra arguments are required to specify which item is being edited.
 Editing A Segment Name
 ```````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes edit -i <segment_id> -s <name> file.json
     sff notes edit -i <segment_id> --segment-name <name> @ # if editing a just-added name
@@ -1327,7 +1327,7 @@ Editing A Segment Name
 Editing A Description
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes edit -i <segment_id> -D ‘<description>’ file.json
     sff notes edit -i <segment_id> -D ‘<description>’ @ # if editing a just-added description
@@ -1335,7 +1335,7 @@ Editing A Description
 Editing The Number of Instances
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes edit -i <segment_id> -n <int> file.json
     sff notes edit -i <segment_id> -n <int> @ # if editing a just-added value
@@ -1343,7 +1343,7 @@ Editing The Number of Instances
 Editing An External Reference
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes edit -i <segment_id> -e <extref_id> -E <ontology> <iri> <obo_id> file.json
     sff notes edit -i <segment_id> --external-ref-id <extref_id> -E <ontology> <iri> <obo_id> file.json
@@ -1353,7 +1353,7 @@ Editing An External Reference
 Editing A Complex (Internal Use)
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes edit -i <segment_id> -c <comp_id> -C <comp1>,<comp2>,...,<compN> file.json
     sff notes edit -i <segment_id> --complex-id <comp_id> -C <comp1>,<comp2>,...,<compN> file.json
@@ -1363,7 +1363,7 @@ If only one complex is specified then the complex at complex_id will be replaced
 Editing A Macromolecule (Internal Use)
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes edit -i <segment_id> -m <macr_id> -M <macr1>,<macr2>,...,<macrN> file.json
     sff notes edit -i <segment_id> --macromolecule-id <macr_id> -M <macr1>,<macr2>,...,<macrN> file.json
@@ -1384,13 +1384,13 @@ Important points to remember:
 
     1.  view notes in the segment using
 
-        .. code:: bash
+        .. code-block:: bash
 
             sff notes show --long-format -i <id> file.json
 
         or
 
-        .. code:: bash
+        .. code-block:: bash
 
             sff notes show -H file.json
 
@@ -1398,13 +1398,13 @@ Important points to remember:
 
     2.  delete specific notes using
 
-        .. code:: bash
+        .. code-block:: bash
 
             sff notes del <id1>,<id2>,...,<idN> file.json
 
 For the complete set of options run:
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes copy
     usage: sff notes copy [-h] [-p CONFIG_PATH] [-b] [-i SEGMENT_ID]
@@ -1445,21 +1445,21 @@ Source of Notes: One or More Segments
 Copy Notes To Another
 `````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes copy -i <source_segment_id> -t <dest_segment_id> file.json
 
 Copy Notes To Multiple Segments
 ```````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes copy -i <source_segment_id> -t <id1>,<id2>,...,<idN> file.json
 
 Copy Notes To All Other Segments
 ````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes copy -i <source_segment_id> --to-all file.json
 
@@ -1468,7 +1468,7 @@ The source segment will be excluded in the destination segments.
 Copy Notes To Global External References
 ````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes copy -i <source_segment_id> --to-global file.json
 
@@ -1478,21 +1478,21 @@ Source of Notes: Global External References
 Copy Notes To One Segment
 `````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes copy --from-global -t <id> file.json
 
 Copy Notes To Multiple Segments
 ```````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes copy --from-global -t <id1>,<id2>,...,<idN> file.json
 
 Copy Notes To All Segments
 ``````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes copy --from-global --to-all file.json
 
@@ -1503,7 +1503,7 @@ The ``sff notes clear`` utility removes all notes from one or more segments or c
 As always we can view the full list of options:
 
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes clear
     usage: sff notes clear [-h] [-p CONFIG_PATH] [-b] [--all] [--from-global]
@@ -1537,28 +1537,28 @@ Clearing Segment Notes
 One Segment
 ```````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes clear -i <segment_id> file.json
 
 Multiple Segments
 `````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes clear -i <id1>,<id2>,...,<idN> file.json
 
 All Segments
 ````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes clear --from-all-segments file.json
 
 Clearing Global External References
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes clear --from-global file.json
 
@@ -1567,14 +1567,14 @@ Clearing All Notes
 
 This command clears both global and segment-level notes. Use it with care.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes clear --all file.json
 
 However, given that modification happens on a temporary file, clearing all notes is reversible provided
 ``sff notes save file.json`` is not run.
 
-.. code:: bash
+.. code-block:: bash
 
     # restore to status before beginning the current modify session
     sff notes trash @
@@ -1587,7 +1587,7 @@ Merging Notes
 
 Notes can be manually merged from two EMDB-SFF files using ``sff notes merge``.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes merge
     usage: sff notes merge [-h] [-p CONFIG_PATH] [-b] --source SOURCE [-o OUTPUT]
@@ -1624,7 +1624,7 @@ argument. Any other file (a positional argument) will be treated as the destinat
 Explicit Output
 ~~~~~~~~~~~~~~~
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes merge --source file.json file.sff -o file.hff
 
@@ -1636,7 +1636,7 @@ Implicit Output
 
 In this case, the destination file is overwritten.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes merge --source file.json file.sff
 
@@ -1657,14 +1657,14 @@ Deleting Global Notes (Segmentation)
 Deleting A Segmentation Name
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes del -N file.json
 	sff notes del -N @
 
 results in
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes show -H @
 	...
@@ -1673,7 +1673,7 @@ results in
 
 to become 
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes show -H @
 	...
@@ -1683,7 +1683,7 @@ to become
 Deleting The Software Name
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes del -S file.json
 	sff notes del -S @ 
@@ -1691,7 +1691,7 @@ Deleting The Software Name
 Deleting The Software Version
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes del -V file.json
 	sff notes del -V @
@@ -1699,7 +1699,7 @@ Deleting The Software Version
 Deleting The Software Processing Details
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes del -P file.json
 	sff notes del -P @
@@ -1707,7 +1707,7 @@ Deleting The Software Processing Details
 Deleting the Filepath
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes del -F file.json
 	sff notes del -F @
@@ -1715,7 +1715,7 @@ Deleting the Filepath
 Deleting Details
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes del -d file.json
 	sff notes del -d @
@@ -1723,7 +1723,7 @@ Deleting Details
 Deleting External References
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
 	sff notes del -e <extref_id> file.json
 	sff notes del -e <extref_id> @
@@ -1734,7 +1734,7 @@ Deleting Segment Notes
 Deleting The Segment Name
 ``````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes del -i <segment_id> -s file.json
     sff notes del -i <segment_id> -s @
@@ -1743,7 +1743,7 @@ Deleting The Segment Name
 Deleting A Description
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes del -i <segment_id> -D file.json
     sff notes del -i <segment_id> -D @
@@ -1751,7 +1751,7 @@ Deleting A Description
 Deleting The Number Of Instances
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes del -i <segment_id> -n file.json
     sff notes del -i <segment_id> -n @
@@ -1759,21 +1759,21 @@ Deleting The Number Of Instances
 Deleting An External Reference
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes del -i <segment_id> -e <extref_id> file.json
 
 Deleting A Complex (Internal Use)
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes del -i <segment_id> -c <comp_id> file.json
 
 Deleting A Macromolecule (Internal Use)
 ``````````````````````````````````````````````````````
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes del -i <segment_id> -m <macr_id> file.json
 
@@ -1789,7 +1789,7 @@ overwrites all notes from the temporary file into the destination file.
 	temporary file. But this should not be a worry because the temporary
 	file was a copy of the original file. 
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes save save_to_file.json
     sff notes save save_to_file.sff
@@ -1804,7 +1804,7 @@ Only one EMDB-SFF file per directory at a time may have its notes modified.
 This is because only one temporary file is created and an attempt to modify 
 another file will raise a warning.
 
-.. code:: bash
+.. code-block:: bash
 
     Wed Sep 13 12:55:42 2017 Temporary file shorthand to use: @
     Wed Sep 13 12:55:42 2017 Found temp file ./temp-annotated.json. Either run 'save' or 'trash' to discard changes before working on another file.
@@ -1812,7 +1812,7 @@ another file will raise a warning.
 The user can trash using the ``sff notes trash @`` to reset the current 
 directory to a VIEW STATE.
 
-.. code:: bash
+.. code-block:: bash
 
     sff notes trash @
     Wed Sep 13 12:56:18 2017 Discarding all changes made in temp file ./temp-annotated.json... Done

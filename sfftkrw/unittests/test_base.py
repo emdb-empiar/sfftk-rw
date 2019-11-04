@@ -92,9 +92,9 @@ class TestSFFType(Py23FixTestCase):
         c = adapter.SFFRGBA(random_colour=True)
         self.assertRegex(_str(c), r"SFFRGBA\(red=\d\.\d+.*\)")
         # correct assessment of length: prints out a string with the correct len() value
-        c = adapter.SFFComplexes()
+        c = adapter.SFFComplexList()
         c.id = rw.random_words(count=10)
-        self.assertRegex(_str(c), r"SFFComplexes\(\[.*\]\)")
+        self.assertRegex(_str(c), r"SFFComplexList\(\[.*\]\)")
         # plain string: prints the plain string
         v = adapter.SFFThreeDVolume()
         self.assertRegex(_str(v), r"""SFFThreeDVolume\(latticeId=None, value=None, transformId=None\)""")
@@ -135,7 +135,7 @@ class TestSFFType(Py23FixTestCase):
         S.software = adapter.SFFSoftware()
         S.transforms = adapter.SFFTransformList()
         S.bounding_box = adapter.SFFBoundingBox()
-        S.global_external_references = adapter.SFFGlobalExternalReferences()
+        S.global_external_references = adapter.SFFGlobalExternalReferenceList()
         S.segments = adapter.SFFSegmentList()
         S.lattices = adapter.SFFLatticeList()
         S.details = li.get_sentences(sentences=10)
@@ -155,7 +155,7 @@ class TestSFFType(Py23FixTestCase):
         S.software = adapter.SFFSoftware()
         S.transforms = adapter.SFFTransformList()
         S.bounding_box = adapter.SFFBoundingBox()
-        S.global_external_references = adapter.SFFGlobalExternalReferences()
+        S.global_external_references = adapter.SFFGlobalExternalReferenceList()
         S.segments = adapter.SFFSegmentList()
         S.lattices = adapter.SFFLatticeList()
         S.details = li.get_sentences(sentences=10)
@@ -450,7 +450,7 @@ class TestSFFListType(Py23FixTestCase):
             self.assertIsInstance(s, adapter.SFFSegment)
             self.assertEqual(s.id, i)
         # complexes
-        c = adapter.SFFComplexes()
+        c = adapter.SFFComplexList()
         words = rw.random_words(count=3)
         c.ids = words
         self.assertEqual(next(iter(c)), words[0])
@@ -508,7 +508,7 @@ class TestSFFListType(Py23FixTestCase):
         [S.append(adapter.SFFSegment()) for _ in _xrange(_no_segments)]
         self.assertIsInstance(S[_no_segments - 1], adapter.SFFSegment)
         # complexes
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         _no_complexes = _random_integer(start=3, stop=10)
         [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
         self.assertIsInstance(C[_no_complexes - 1], _str)
@@ -536,7 +536,7 @@ class TestSFFListType(Py23FixTestCase):
         S[0] = adapter.SFFSegment()
         self.assertEqual(len(S), 1)
         # complex
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         C.append(rw.random_word())
         C[0] = rw.random_word()
         self.assertEqual(len(C), 1)
@@ -554,7 +554,7 @@ class TestSFFListType(Py23FixTestCase):
         with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
             S[0] = rw.random_word()
         with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
-            S[0] = adapter.SFFComplexes()
+            S[0] = adapter.SFFComplexList()
         with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
             C[0] = adapter.SFFSegment()
 
@@ -566,7 +566,7 @@ class TestSFFListType(Py23FixTestCase):
         del S[0]
         self.assertEqual(len(S), 0)
         # complexes
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         C.append(rw.random_word())
         del C[0]
         self.assertEqual(len(C), 0)
@@ -589,7 +589,7 @@ class TestSFFListType(Py23FixTestCase):
         S.append(adapter.SFFSegment())
         self.assertEqual(len(S), 1)
         # complexes
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         self.assertEqual(len(C), 0)
         C.append(rw.random_word())
         self.assertEqual(len(C), 1)
@@ -607,13 +607,13 @@ class TestSFFListType(Py23FixTestCase):
         with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
             S.append(rw.random_word())
         with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
-            S.append(adapter.SFFComplexes())
+            S.append(adapter.SFFComplexList())
         with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
             C.append(adapter.SFFSegment())
 
     def test_clear(self):
         """Test that we can clear the list"""
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         _no_complexes = _random_integer(start=2, stop=10)
         [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
         self.assertEqual(len(C), _no_complexes)
@@ -632,7 +632,7 @@ class TestSFFListType(Py23FixTestCase):
         self.assertIsInstance(R, type(S))
         self.assertNotEqual(id(S), id(R))
         # complexes
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         _no_complexes = _random_integer(start=2, stop=10)
         [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
         D = C
@@ -667,10 +667,10 @@ class TestSFFListType(Py23FixTestCase):
         S1.extend(S2)
         self.assertEqual(len(S1), _no_segments1 + _no_segments2)
         # complexes
-        C1 = adapter.SFFComplexes()
+        C1 = adapter.SFFComplexList()
         _no_complexes1 = _random_integer(start=2, stop=10)
         [C1.append(rw.random_word()) for _ in _xrange(_no_complexes1)]
-        C2 = adapter.SFFComplexes()
+        C2 = adapter.SFFComplexList()
         _no_complexes2 = _random_integer(start=2, stop=10)
         [C2.append(rw.random_word()) for _ in _xrange(_no_complexes2)]
         self.assertEqual(len(C1), _no_complexes1)
@@ -717,7 +717,7 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(S), _no_segments + 1)
         self.assertEqual(S[1].id, s.id)
         # complexes
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         _no_complexes = _random_integer(start=2, stop=10)
         [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
         self.assertEqual(len(C), _no_complexes)
@@ -767,7 +767,7 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(S), 2)
         self.assertIsInstance(s, adapter.SFFSegment)
         # complexes
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         c0 = rw.random_word()
         C.append(c0)
         c1 = C.pop()
@@ -842,7 +842,7 @@ class TestSFFListType(Py23FixTestCase):
         S.remove(s)
         self.assertEqual(len(S), 0)
         # complexes
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         _no_complexes = _random_integer(start=3, stop=10)
         _word = rw.random_word()
         [C.append(_word) for _ in _xrange(_no_complexes)]
@@ -945,7 +945,7 @@ class TestSFFListType(Py23FixTestCase):
         S.append(adapter.SFFSegment.from_gds_type(emdb_sff.segmentType()))
         self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
         # complexes
-        C = adapter.SFFComplexes()
+        C = adapter.SFFComplexList()
         [C.append(rw.random_word()) for _ in _xrange(_no_items)]
         self.assertEqual(list(C.get_ids()), list())
         # vertices

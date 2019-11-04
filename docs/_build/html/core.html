@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sfftk.core package &mdash; sfftkrw v0.5.0.dev0 documentation</title>
+  <title>sfftk.core package &mdash; sfftk-rw v0.5.0.dev0 documentation</title>
   
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sfftkrw
+            <a href="index.html" class="icon icon-home"> sfftk-rw
           
 
           
@@ -87,7 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Converting Files To EMDB-SFF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="schema.html">sfftk.schema package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">sfftk.core package</a><ul>
@@ -121,7 +121,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sfftkrw</a>
+          <a href="index.html">sfftk-rw</a>
         
       </nav>
 
@@ -242,6 +242,22 @@ assume correct argument values and can concentrate on functionality.</p>
 <h3>print_tools.py<a class="headerlink" href="#print-tools-py" title="Permalink to this headline">¶</a></h3>
 <p>Utilities for printing stuff to the screen.</p>
 <dl class="function">
+<dt id="sfftkrw.core.print_tools.print_date">
+<code class="sig-prename descclassname">sfftkrw.core.print_tools.</code><code class="sig-name descname">print_date</code><span class="sig-paren">(</span><em class="sig-param">print_string</em>, <em class="sig-param">stream=&lt;_io.TextIOWrapper name='&lt;stderr&gt;' mode='w' encoding='UTF-8'&gt;</em>, <em class="sig-param">newline=True</em>, <em class="sig-param">incl_date=True</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.print_tools.print_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the given string with date on the given stream</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>print_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)"><em>bytes</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><em>unicode</em>) – the bytes/str to be printed</p></li>
+<li><p><strong>stream</strong> (<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stderr" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stderr</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stdout" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stdout</span></code></a>) – the stream/file to write to</p></li>
+<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – whether (default) or not to add a newline at the end</p></li>
+<li><p><strong>incl_date</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – whether (default) or not to include the date at the beginning</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="sfftkrw.core.print_tools.get_printable_ascii_string">
 <code class="sig-prename descclassname">sfftkrw.core.print_tools.</code><code class="sig-name descname">get_printable_ascii_string</code><span class="sig-paren">(</span><em class="sig-param">B</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.print_tools.get_printable_ascii_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a bytes string of ASCII and non-ASCII return the maximal printable prefix</p>
@@ -254,22 +270,6 @@ assume correct argument values and can concentrate on functionality.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)">bytes</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sfftkrw.core.print_tools.print_date">
-<code class="sig-prename descclassname">sfftkrw.core.print_tools.</code><code class="sig-name descname">print_date</code><span class="sig-paren">(</span><em class="sig-param">print_string</em>, <em class="sig-param">stream=&lt;_io.TextIOWrapper name='&lt;stderr&gt;' mode='w' encoding='UTF-8'&gt;</em>, <em class="sig-param">newline=True</em>, <em class="sig-param">incl_date=True</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.print_tools.print_date" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the given string with date on the given stream</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>print_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)"><em>bytes</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><em>unicode</em>) – the bytes/str to be printed</p></li>
-<li><p><strong>stream</strong> (<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stderr" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stderr</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stdout" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stdout</span></code></a>) – the stream/file to write to</p></li>
-<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – whether (default) or not to add a newline at the end</p></li>
-<li><p><strong>incl_date</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – whether (default) or not to include the date at the beginning</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>

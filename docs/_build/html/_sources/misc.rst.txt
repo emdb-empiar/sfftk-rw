@@ -9,23 +9,23 @@ Viewing ``sfftk-rw`` Version
 
 To view the current version of ``sfftk-rw`` run:
 
-.. code:: bash
+.. code-block:: bash
 
-    sff --V
-    sff --version
+    sff-rw --V
+    sff-rw --version
 
 Viewing File Metadata
 =====================
 
-.. code:: bash
+.. code-block:: bash
 
-    sff view <file>
+    sff-rw view <file>
 
 The full list of options is:
 
-.. code:: bash
+.. code-block:: bash
 
-    sff view
+    sff-rw view
     usage: sff-rw view [-h] [-V] [-C] [-v] from_file
 
     View a summary of an SFF file
@@ -44,8 +44,8 @@ The full list of options is:
 Running Unit Tests
 ==================
 
-.. code:: bash
+.. code-block:: bash
 
-    sff tests [tool]
+    sff-rw tests [tool]
 
 where ``tool`` is one of ``all``, ``core``, ``main``, ``formats``, ``readers``, ``notes`` or ``schema``.

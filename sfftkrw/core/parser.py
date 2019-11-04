@@ -15,6 +15,7 @@ import re
 from . import _dict_iter_keys
 from .print_tools import print_date
 from ..core import _decode, _basestring
+from .. import SFFTKRW_ENTRY_POINT
 
 __author__ = 'Paul K. Korir, PhD'
 __email__ = 'pkorir@ebi.ac.uk, paul.korir@gmail.com'
@@ -52,7 +53,7 @@ def add_args(parser, the_arg):
 
 
 Parser = argparse.ArgumentParser(
-    prog='sff-rw', description="The EMDB-SFF Read/Write Toolkit (sfftk-rw)")
+    prog=SFFTKRW_ENTRY_POINT, description="The EMDB-SFF Read/Write Toolkit (sfftk-rw)")
 Parser.add_argument(
     '-V', '--version',
     action='store_true',
@@ -63,7 +64,7 @@ Parser.add_argument(
 subparsers = Parser.add_subparsers(
     title='Tools',
     dest='subcommand',
-    description='The EMDB-SFF Read/Write Toolkit (sfftk-rw) provides the following tools:',
+    description='The EMDB-SFF Read/Write Toolkit ({}) provides the following tools:'.format(SFFTKRW_ENTRY_POINT),
     metavar="EMDB-SFF Read/Write Tools"
 )
 

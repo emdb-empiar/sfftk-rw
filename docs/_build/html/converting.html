@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Converting Files To EMDB-SFF &mdash; sfftkrw v0.5.0.dev0 documentation</title>
+  <title>Converting Files To EMDB-SFF &mdash; sfftk-rw v0.5.0.dev0 documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sfftkrw
+            <a href="index.html" class="icon icon-home"> sfftk-rw
           
 
           
@@ -126,7 +126,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sfftkrw</a>
+          <a href="index.html">sfftk-rw</a>
         
       </nav>
 
@@ -177,54 +177,54 @@
            <div itemprop="articleBody">
             
   <div class="section" id="converting-files-to-emdb-sff">
-<h1><a class="toc-backref" href="#id5">Converting Files To EMDB-SFF</a><a class="headerlink" href="#converting-files-to-emdb-sff" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id4">Converting Files To EMDB-SFF</a><a class="headerlink" href="#converting-files-to-emdb-sff" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#converting-files-to-emdb-sff" id="id5">Converting Files To EMDB-SFF</a></p>
+<li><p><a class="reference internal" href="#converting-files-to-emdb-sff" id="id4">Converting Files To EMDB-SFF</a></p>
 <ul>
-<li><p><a class="reference internal" href="#introduction" id="id6">Introduction</a></p>
+<li><p><a class="reference internal" href="#introduction" id="id5">Introduction</a></p>
 <ul>
-<li><p><a class="reference internal" href="#synopsis" id="id7">Synopsis</a></p></li>
-<li><p><a class="reference internal" href="#quick-start" id="id8">Quick Start</a></p>
+<li><p><a class="reference internal" href="#synopsis" id="id6">Synopsis</a></p></li>
+<li><p><a class="reference internal" href="#quick-start" id="id7">Quick Start</a></p>
 <ul>
-<li><p><a class="reference internal" href="#emdb-sff-format-interconversion" id="id9">EMDB-SFF Format Interconversion</a></p></li>
-<li><p><a class="reference internal" href="#verbose-operation" id="id10">Verbose Operation</a></p></li>
-<li><p><a class="reference internal" href="#set-details" id="id11">Set Details</a></p></li>
-<li><p><a class="reference internal" href="#change-primary-descriptor" id="id12">Change Primary Descriptor</a></p></li>
+<li><p><a class="reference internal" href="#emdb-sff-format-interconversion" id="id8">EMDB-SFF Format Interconversion</a></p></li>
+<li><p><a class="reference internal" href="#verbose-operation" id="id9">Verbose Operation</a></p></li>
+<li><p><a class="reference internal" href="#set-details" id="id10">Set Details</a></p></li>
+<li><p><a class="reference internal" href="#change-primary-descriptor" id="id11">Change Primary Descriptor</a></p></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#output-formats" id="id13">Output Formats</a></p>
+<li><p><a class="reference internal" href="#output-formats" id="id12">Output Formats</a></p>
 <ul>
-<li><p><a class="reference internal" href="#specifying-the-output-path-with-o-output-flag" id="id14">Specifying the output path with <code class="docutils literal notranslate"><span class="pre">-o/--output</span></code> flag</a></p></li>
-<li><p><a class="reference internal" href="#specifying-the-output-format-with-f-format-flag" id="id15">Specifying the output format with <code class="docutils literal notranslate"><span class="pre">-f/--format</span></code> flag</a></p></li>
-<li><p><a class="reference internal" href="#id2" id="id16">EMDB-SFF Format Interconversion</a></p></li>
+<li><p><a class="reference internal" href="#specifying-the-output-path-with-o-output-flag" id="id13">Specifying the output path with <code class="docutils literal notranslate"><span class="pre">-o/--output</span></code> flag</a></p></li>
+<li><p><a class="reference internal" href="#specifying-the-output-format-with-f-format-flag" id="id14">Specifying the output format with <code class="docutils literal notranslate"><span class="pre">-f/--format</span></code> flag</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id15">EMDB-SFF Format Interconversion</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#id3" id="id17">Verbose Operation</a></p></li>
-<li><p><a class="reference internal" href="#specify-details" id="id18">Specify Details</a></p></li>
-<li><p><a class="reference internal" href="#changing-the-primary-descriptor" id="id19">Changing The Primary Descriptor</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id16">Verbose Operation</a></p></li>
+<li><p><a class="reference internal" href="#specify-details" id="id17">Specify Details</a></p></li>
+<li><p><a class="reference internal" href="#changing-the-primary-descriptor" id="id18">Changing The Primary Descriptor</a></p></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="introduction">
-<h2><a class="toc-backref" href="#id6">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Converting files to use the EMDB-SFF data model is one of the core functions
 of <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>. This guide describes in detail how to accomplish conversions.</p>
 <div class="section" id="synopsis">
-<h3><a class="toc-backref" href="#id7">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h3>
 <p>Running</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert
-sff convert -h
-sff convert --help
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert
+sff-rw convert -h
+sff-rw convert --help
 </pre></div>
 </div>
 <p>displays all conversion options.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert
-usage: sff convert <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-p CONFIG_PATH<span class="o">]</span> <span class="o">[</span>-b<span class="o">]</span> <span class="o">[</span>-t<span class="o">]</span> <span class="o">[</span>-d DETAILS<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert
+usage: sff-rw convert <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-p CONFIG_PATH<span class="o">]</span> <span class="o">[</span>-b<span class="o">]</span> <span class="o">[</span>-t<span class="o">]</span> <span class="o">[</span>-d DETAILS<span class="o">]</span>
                    <span class="o">[</span>-R PRIMARY_DESCRIPTOR<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span> <span class="o">[</span>-m<span class="o">]</span> <span class="o">[</span>-o OUTPUT <span class="p">|</span> -f FORMAT<span class="o">]</span>
                    <span class="o">[</span>from_file <span class="o">[</span>from_file ...<span class="o">]]</span>
 
@@ -264,40 +264,40 @@ optional arguments:
 </div>
 </div>
 <div class="section" id="quick-start">
-<h3><a class="toc-backref" href="#id8">Quick Start</a><a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Quick Start</a><a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="emdb-sff-format-interconversion">
-<h4><a class="toc-backref" href="#id9">EMDB-SFF Format Interconversion</a><a class="headerlink" href="#emdb-sff-format-interconversion" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.sff --output /path/to/output/file.hff
-sff convert file.hff --format json
-sff convert file.sff --format sff <span class="c1"># reduntant but should work</span>
+<h4><a class="toc-backref" href="#id8">EMDB-SFF Format Interconversion</a><a class="headerlink" href="#emdb-sff-format-interconversion" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert file.sff --output /path/to/output/file.hff
+sff-rw convert file.hff --format json
+sff-rw convert file.sff --format sff <span class="c1"># reduntant but should work</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="verbose-operation">
-<h4><a class="toc-backref" href="#id10">Verbose Operation</a><a class="headerlink" href="#verbose-operation" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert -v file.hff
-sff convert --verbose file.hff
+<h4><a class="toc-backref" href="#id9">Verbose Operation</a><a class="headerlink" href="#verbose-operation" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert -v file.hff
+sff-rw convert --verbose file.hff
 </pre></div>
 </div>
 </div>
 <div class="section" id="set-details">
-<h4><a class="toc-backref" href="#id11">Set Details</a><a class="headerlink" href="#set-details" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert -d <span class="s2">&quot;Lorem ipsum dolor...&quot;</span> file.seg
-sff convert --details <span class="s2">&quot;Lorem ipsum dolor...&quot;</span> file.seg
+<h4><a class="toc-backref" href="#id10">Set Details</a><a class="headerlink" href="#set-details" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert -d <span class="s2">&quot;Lorem ipsum dolor...&quot;</span> file.seg
+sff-rw convert --details <span class="s2">&quot;Lorem ipsum dolor...&quot;</span> file.seg
 </pre></div>
 </div>
 </div>
 <div class="section" id="change-primary-descriptor">
-<h4><a class="toc-backref" href="#id12">Change Primary Descriptor</a><a class="headerlink" href="#change-primary-descriptor" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert -R shapePrimitiveList file.sff
-sff convert --primary-descriptor shapePrimitiveList file.sff
+<h4><a class="toc-backref" href="#id11">Change Primary Descriptor</a><a class="headerlink" href="#change-primary-descriptor" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert -R shapePrimitiveList file.sff
+sff-rw convert --primary-descriptor shapePrimitiveList file.sff
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="output-formats">
-<span id="id1"></span><h2><a class="toc-backref" href="#id13">Output Formats</a><a class="headerlink" href="#output-formats" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2><a class="toc-backref" href="#id12">Output Formats</a><a class="headerlink" href="#output-formats" title="Permalink to this headline">¶</a></h2>
 <p>EMDB-SFF files can be output as XML (<code class="docutils literal notranslate"><span class="pre">.sff</span></code>), HDF5 (<code class="docutils literal notranslate"><span class="pre">.hff</span></code>) or JSON
 (<code class="docutils literal notranslate"><span class="pre">.json</span></code>).</p>
 <ul class="simple">
@@ -315,19 +315,19 @@ geometrical data when converting to JSON - all geometrical data is excluded).</p
 <li><p>Specifying the output format with <code class="docutils literal notranslate"><span class="pre">-f/--format</span></code> flag</p></li>
 </ul>
 <div class="section" id="specifying-the-output-path-with-o-output-flag">
-<h3><a class="toc-backref" href="#id14">Specifying the output path with <code class="docutils literal notranslate"><span class="pre">-o/--output</span></code> flag</a><a class="headerlink" href="#specifying-the-output-path-with-o-output-flag" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id13">Specifying the output path with <code class="docutils literal notranslate"><span class="pre">-o/--output</span></code> flag</a><a class="headerlink" href="#specifying-the-output-path-with-o-output-flag" title="Permalink to this headline">¶</a></h3>
 <p>Conversion is performed as follows (the output file extension determines the output format):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.sff -o file.hff
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert file.sff -o file.hff
 </pre></div>
 </div>
 <p>will result in an HDF5 file while</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.sff --output file.json
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert file.sff --output file.json
 </pre></div>
 </div>
 <p>will be a JSON file.</p>
 </div>
 <div class="section" id="specifying-the-output-format-with-f-format-flag">
-<h3><a class="toc-backref" href="#id15">Specifying the output format with <code class="docutils literal notranslate"><span class="pre">-f/--format</span></code> flag</a><a class="headerlink" href="#specifying-the-output-format-with-f-format-flag" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id14">Specifying the output format with <code class="docutils literal notranslate"><span class="pre">-f/--format</span></code> flag</a><a class="headerlink" href="#specifying-the-output-format-with-f-format-flag" title="Permalink to this headline">¶</a></h3>
 <p>The -f/–format options ensures that the output file will be in the same
 directory as the original segmentation file. The <code class="docutils literal notranslate"><span class="pre">-f</span></code> flag takes one of three
 values:</p>
@@ -337,29 +337,29 @@ values:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> for JSON files.</p></li>
 </ul>
 <p>Any other value raises an error.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.seg -f hff
-sff convert file.seg --format hff
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert file.seg -f hff
+sff-rw convert file.seg --format hff
 </pre></div>
 </div>
 <p>The default format (if none is specified) is <code class="docutils literal notranslate"><span class="pre">sff</span></code> (XML).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.seg
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert file.seg
 </pre></div>
 </div>
 <p>results in <code class="docutils literal notranslate"><span class="pre">file.sff</span></code> as output.</p>
 </div>
 <div class="section" id="id2">
-<h3><a class="toc-backref" href="#id16">EMDB-SFF Format Interconversion</a><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id15">EMDB-SFF Format Interconversion</a><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>It is also possible to perform interconversions between XML, HDF5 and JSON
 EMDB-SFF files.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.sff --output /path/to/output/file.hff
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert file.sff --output /path/to/output/file.hff
 </pre></div>
 </div>
 <p>or using –format</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.hff --format json
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert file.hff --format json
 </pre></div>
 </div>
 <p>Even null conversions are possible:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.sff --format sff
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert file.sff --format sff
 </pre></div>
 </div>
 <p>As stated previously, conversion to JSON drops all geometrical descriptions.
@@ -368,10 +368,10 @@ description information.</p>
 </div>
 </div>
 <div class="section" id="id3">
-<h2><a class="toc-backref" href="#id17">Verbose Operation</a><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16">Verbose Operation</a><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>As with many Linux shell programs the <code class="docutils literal notranslate"><span class="pre">-v/--verbose</span></code> option prints status
 information on the terminal.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert --verbose file.hff
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert --verbose file.hff
 Tue Sep <span class="m">12</span> <span class="m">15</span>:29:18 <span class="m">2017</span> Seting output file to file.sff
 Tue Sep <span class="m">12</span> <span class="m">15</span>:29:18 <span class="m">2017</span> Converting from EMDB-SFF <span class="o">(</span>HDF5<span class="o">)</span> file file.hff
 Tue Sep <span class="m">12</span> <span class="m">15</span>:30:03 <span class="m">2017</span> Created SFFSegmentation object
@@ -381,20 +381,20 @@ Tue Sep <span class="m">12</span> <span class="m">15</span>:30:07 <span class="m
 </div>
 </div>
 <div class="section" id="specify-details">
-<h2><a class="toc-backref" href="#id18">Specify Details</a><a class="headerlink" href="#specify-details" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id17">Specify Details</a><a class="headerlink" href="#specify-details" title="Permalink to this headline">¶</a></h2>
 <p>The EMDB-SFF data model provides for an optional <code class="docutils literal notranslate"><span class="pre">&lt;details/&gt;</span></code> tag for
 auxilliary information. The contents of this option will be put into
 <code class="docutils literal notranslate"><span class="pre">&lt;details/&gt;.</span></code></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert --details <span class="s2">&quot;Lorem ipsum dolor...&quot;</span> file.seg
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert --details <span class="s2">&quot;Lorem ipsum dolor...&quot;</span> file.seg
 </pre></div>
 </div>
-<div class="admonition-todo admonition" id="id4">
-<p class="admonition-title">Todo</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>Allow a user to pass a <strong>file</strong> whose contents will be inserted into <code class="docutils literal notranslate"><span class="pre">&lt;details/&gt;</span></code>.</p>
 </div>
 </div>
 <div class="section" id="changing-the-primary-descriptor">
-<h2><a class="toc-backref" href="#id19">Changing The Primary Descriptor</a><a class="headerlink" href="#changing-the-primary-descriptor" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id18">Changing The Primary Descriptor</a><a class="headerlink" href="#changing-the-primary-descriptor" title="Permalink to this headline">¶</a></h2>
 <p>The EMDB-SFF data model provides for three possible geometrical descriptors:
 <cite>meshes (meshList), shape primitives (shapePrimitiveList)</cite> and
 <cite>3D volumes (threeDVolume)</cite>.</p>

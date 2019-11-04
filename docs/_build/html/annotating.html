@@ -533,12 +533,12 @@ command is invoked.</p>
 described in <a class="reference external" href="#states-find-view-modify">States</a>, the terminal text is
 coloured yellow.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff notes search
-sff notes search -h
-sff notes search --help
+sff-rw notes search -h
+sff-rw notes search --help
 </pre></div>
 </div>
 <p>display available options.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: sff notes search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-p CONFIG_PATH<span class="o">]</span> <span class="o">[</span>-b<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: sff-rw notes search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-p CONFIG_PATH<span class="o">]</span> <span class="o">[</span>-b<span class="o">]</span>
                     <span class="o">[</span>-R <span class="o">{</span>ols,go,emdb,uniprot,pdb,europepmc,empiar<span class="o">}]</span>
                     <span class="o">[</span>-s START<span class="o">]</span> <span class="o">[</span>-r ROWS<span class="o">]</span> <span class="o">[</span>-O ONTOLOGY<span class="o">]</span> <span class="o">[</span>-x<span class="o">]</span> <span class="o">[</span>-o<span class="o">]</span> <span class="o">[</span>-L<span class="o">]</span> <span class="o">[</span>-l<span class="o">]</span>
                     <span class="o">[</span>search_term<span class="o">]</span>
@@ -585,11 +585,11 @@ EBI Ontology Lookup Service <span class="o">(</span>OLS<span class="o">)</span>:
 <p>For single worded searches enter the term with or without quotes. Multi-word
 terms must be quoted to prevent splitting them.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># single word term</span>
-sff notes search mitochondria
-sff notes search ‘mitochondria’
-sff notes search “mitochondria”
+sff-rw notes search mitochondria
+sff-rw notes search ‘mitochondria’
+sff-rw notes search “mitochondria”
 <span class="c1"># multi-word term</span>
-sff notes search ‘fragment mitochondria’
+sff-rw notes search ‘fragment mitochondria’
 </pre></div>
 </div>
 <p>The search results are displayed as a table with the following columns:</p>
@@ -623,7 +623,7 @@ sff notes search ‘fragment mitochondria’
 </ul>
 <p>For example, to search for <em>mitochondria</em> in EMDB the user would type one of the following:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff notes search -R emdb <span class="s2">&quot;mitochodria&quot;</span>
-sff notes search --resource emdb <span class="s2">&quot;mitochondria&quot;</span>
+sff-rw notes search --resource emdb <span class="s2">&quot;mitochondria&quot;</span>
 </pre></div>
 </div>
 </div>

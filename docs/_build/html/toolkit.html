@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>EMDB-SFF Read/Write Toolkit (sfftk-rw) &mdash; sfftkrw v0.5.0.dev0 documentation</title>
+  <title>EMDB-SFF Read/Write Toolkit (sfftk-rw) &mdash; sfftk-rw v0.5.0.dev0 documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sfftkrw
+            <a href="index.html" class="icon icon-home"> sfftk-rw
           
 
           
@@ -108,8 +108,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Converting Files To EMDB-SFF</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a></li>
 </ul>
 
@@ -125,7 +125,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sfftkrw</a>
+          <a href="index.html">sfftk-rw</a>
         
       </nav>
 
@@ -260,6 +260,8 @@ are published in the following articles:</p>
 <h2><a class="toc-backref" href="#id7">Getting Started</a><a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="obtaining-and-installing-sfftk-rw">
 <h3><a class="toc-backref" href="#id8">Obtaining and Installing <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a><a class="headerlink" href="#obtaining-and-installing-sfftk-rw" title="Permalink to this headline">¶</a></h3>
+<p>We recommend installing <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> in a virtual environment of your choice (<code class="docutils literal notranslate"><span class="pre">virtualenv</span></code>, <code class="docutils literal notranslate"><span class="pre">pyenv</span></code>, <code class="docutils literal notranslate"><span class="pre">anaconda/miniconda</span></code>
+or <code class="docutils literal notranslate"><span class="pre">pipenv</span></code> - see their respective documentation on how to do so).</p>
 <div class="section" id="pypi">
 <h4><a class="toc-backref" href="#id9">PyPI</a><a class="headerlink" href="#pypi" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> is available on PyPI. Simply run:</p>
@@ -270,13 +272,33 @@ are published in the following articles:</p>
 <div class="section" id="source">
 <h4><a class="toc-backref" href="#id10">Source</a><a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> source is available from Github
-<a class="reference external" href="https://github.com/emdb-empiar/sfftk-rw">https://github.com/emdb-empiar/sfftk-rw</a>.</p>
+<a class="reference external" href="https://github.com/emdb-empiar/sfftk-rw">https://github.com/emdb-empiar/sfftk-rw</a>. You may install the bleeding
+edge using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/emdb-empiar/sfftk-rw.git
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="user-interface">
 <h3><a class="toc-backref" href="#id11">User Interface</a><a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> is designed a command-line tool with various utilities. Type <code class="docutils literal notranslate"><span class="pre">sff</span></code> to see all options;</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff
+<p><code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> is designed as a command-line tool with various utilities. Type <code class="docutils literal notranslate"><span class="pre">sff-rw</span></code> to see all options;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw
+usage: sff-rw <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-V<span class="o">]</span> EMDB-SFF Read/Write Tools ...
+
+The EMDB-SFF Read/Write Toolkit <span class="o">(</span>sfftk-rw<span class="o">)</span>
+
+optional arguments:
+  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  -V, --version         show the sfftk-rw version string and the supported
+                        EMDB-SFF Read/Write version string
+
+Tools:
+  The EMDB-SFF Read/Write Toolkit <span class="o">(</span>sfftk-rw<span class="o">)</span> provides the following tools:
+
+  EMDB-SFF Read/Write Tools
+    convert             converts between EMDB-SFF formats
+    view                view file summary
+    tests               run unit tests
 </pre></div>
 </div>
 </div>
@@ -285,7 +307,7 @@ are published in the following articles:</p>
 <p>As a data model, EMDB-SFF is file format agnostic. However, EMDB-SFF files are currently expressed as either
 XML, HDF5 and JSON (textual annotations only). <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> allows interconversion between these formats.</p>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">convert</span></code> utility to carry out interconversions:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.sff
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw convert file.sff
 </pre></div>
 </div>
 <p>By default all <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code> converts to XML except when it receives to HDF5.</p>
@@ -295,7 +317,7 @@ XML, HDF5 and JSON (textual annotations only). <code class="docutils literal not
 <div class="section" id="viewing">
 <h3><a class="toc-backref" href="#id13">Viewing</a><a class="headerlink" href="#viewing" title="Permalink to this headline">¶</a></h3>
 <p>Basic metadata about an EMDB-SFF file may be obtained using the <code class="docutils literal notranslate"><span class="pre">view</span></code> utility:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff view <span class="o">[</span>options<span class="o">]</span> file.sff
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff-rw view <span class="o">[</span>options<span class="o">]</span> file.sff
 </pre></div>
 </div>
 </div>

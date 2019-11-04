@@ -1,46 +1,11 @@
 # -*- coding: utf-8 -*-
 # base.py
-"""
-========================
-sfftkrw.schema.base
-========================
-
-This adapter API therefore specifies two main base classes from which all other classes are built upon:
-
-The :py:class:`SFFType` Base Class
-==================================
-
-This class contains all the magic to convert a subclass definition into a user-level class. View the
-API documentation of this class for details on its attributes.
-
-The :py:class:`SFFAttribute` Descriptor Class
-================================================
-
-Attributes of subclasses of :py:class:`SFFType` are instances of this descriptor class.
-
-In addition to the two above classes there is a :py:class:`SFFTypeError` class which is raised whenever a type error
-occurs which provides details on the required type.
-
-The :py:class:`SFFIndexType` Base Class
-================================================
-
-TBA
-
-The :py:class:`SFFListType` Base Class
-================================================
-
-TBA
-
-"""
 from __future__ import division, print_function
-
-
-import sys
-
 
 import numbers
 import os
 import re
+import sys
 
 import h5py
 
@@ -311,7 +276,7 @@ class SFFType(object):
                     # quote strings
                     repr_args = list()
                     for r in _repr_args:
-                        if isinstance(r, _str): # or isinstance(r, _bytes):
+                        if isinstance(r, _str):  # or isinstance(r, _bytes):
                             repr_args.append(u"\"{}\"".format(_decode(r, u'utf-8')))
                         elif isinstance(r, _bytes):
                             repr_args.append(u"\"{}\"".format(r))

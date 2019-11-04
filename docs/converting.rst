@@ -15,18 +15,18 @@ Synopsis
 
 Running
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert
-    sff convert -h
-    sff convert --help
+    sff-rw convert
+    sff-rw convert -h
+    sff-rw convert --help
 
 displays all conversion options.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert
-    usage: sff convert [-h] [-p CONFIG_PATH] [-b] [-t] [-d DETAILS]
+    sff-rw convert
+    usage: sff-rw convert [-h] [-p CONFIG_PATH] [-b] [-t] [-d DETAILS]
                        [-R PRIMARY_DESCRIPTOR] [-v] [-m] [-o OUTPUT | -f FORMAT]
                        [from_file [from_file ...]]
 
@@ -69,36 +69,36 @@ Quick Start
 EMDB-SFF Format Interconversion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.sff --output /path/to/output/file.hff
-    sff convert file.hff --format json
-    sff convert file.sff --format sff # reduntant but should work
+    sff-rw convert file.sff --output /path/to/output/file.hff
+    sff-rw convert file.hff --format json
+    sff-rw convert file.sff --format sff # reduntant but should work
 
 Verbose Operation
 ~~~~~~~~~~~~~~~~~
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert -v file.hff
-    sff convert --verbose file.hff
+    sff-rw convert -v file.hff
+    sff-rw convert --verbose file.hff
 
 
 Set Details
 ~~~~~~~~~~~
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert -d "Lorem ipsum dolor..." file.seg
-    sff convert --details "Lorem ipsum dolor..." file.seg
+    sff-rw convert -d "Lorem ipsum dolor..." file.seg
+    sff-rw convert --details "Lorem ipsum dolor..." file.seg
 
 Change Primary Descriptor
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert -R shapePrimitiveList file.sff
-    sff convert --primary-descriptor shapePrimitiveList file.sff
+    sff-rw convert -R shapePrimitiveList file.sff
+    sff-rw convert --primary-descriptor shapePrimitiveList file.sff
 
 
 .. _output_formats:
@@ -130,15 +130,15 @@ Specifying the output path with ``-o/--output`` flag
 
 Conversion is performed as follows (the output file extension determines the output format):
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.sff -o file.hff
+    sff-rw convert file.sff -o file.hff
 
 will result in an HDF5 file while
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.sff --output file.json
+    sff-rw convert file.sff --output file.json
 
 will be a JSON file.
 
@@ -157,16 +157,16 @@ values:
 
 Any other value raises an error.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.seg -f hff
-    sff convert file.seg --format hff
+    sff-rw convert file.seg -f hff
+    sff-rw convert file.seg --format hff
 
 The default format (if none is specified) is ``sff`` (XML).
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.seg
+    sff-rw convert file.seg
 
 results in ``file.sff`` as output.
 
@@ -176,21 +176,21 @@ EMDB-SFF Format Interconversion
 It is also possible to perform interconversions between XML, HDF5 and JSON 
 EMDB-SFF files.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.sff --output /path/to/output/file.hff
+    sff-rw convert file.sff --output /path/to/output/file.hff
 
 or using --format
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.hff --format json
+    sff-rw convert file.hff --format json
 
 Even null conversions are possible:
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert file.sff --format sff
+    sff-rw convert file.sff --format sff
 
 As stated previously, conversion to JSON drops all geometrical descriptions. 
 Similarly, conversions from JSON to EMDB-SFF will not reinstate the geometric 
@@ -202,9 +202,9 @@ Verbose Operation
 As with many Linux shell programs the ``-v/--verbose`` option prints status 
 information on the terminal.
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert --verbose file.hff
+    sff-rw convert --verbose file.hff
     Tue Sep 12 15:29:18 2017 Seting output file to file.sff
     Tue Sep 12 15:29:18 2017 Converting from EMDB-SFF (HDF5) file file.hff
     Tue Sep 12 15:30:03 2017 Created SFFSegmentation object
@@ -218,11 +218,11 @@ The EMDB-SFF data model provides for an optional ``<details/>`` tag for
 auxilliary information. The contents of this option will be put into 
 ``<details/>.``
 
-.. code:: bash
+.. code-block:: bash
 
-    sff convert --details "Lorem ipsum dolor..." file.seg
+    sff-rw convert --details "Lorem ipsum dolor..." file.seg
 
-.. todo::
+.. note::
 
     Allow a user to pass a **file** whose contents will be inserted into ``<details/>``.
 
