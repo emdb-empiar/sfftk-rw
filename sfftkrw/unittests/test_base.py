@@ -7,8 +7,10 @@ from __future__ import print_function
 
 import os
 import random
+import sys
 import tempfile
 
+import numpy
 from random_words import RandomWords, LoremIpsum
 
 from . import _random_integer, Py23FixTestCase, _random_float, _random_floats
@@ -98,7 +100,26 @@ class TestSFFType(Py23FixTestCase):
         # plain string: prints the plain string
         v = adapter.SFFThreeDVolume()
         self.assertRegex(_str(v), r"""SFFThreeDVolume\(latticeId=None, value=None, transformId=None\)""")
-
+        # len() works
+        class _Complexes(adapter.SFFComplexList):
+            repr_string = u'complex list of length {}'
+            repr_args = (u'len()',)
+        C = _Complexes()
+        no_cpx = _random_integer(start=2, stop=10)
+        [C.append(rw.random_word()) for _ in _xrange(no_cpx)]
+        self.assertRegex(_str(C), r".*{}.*".format(no_cpx))
+        # using index syntax
+        class _Lattice(adapter.SFFLattice):
+            repr_string = u"{}"
+            repr_args = (u"data[:20]", )
+        L = _Lattice.from_array(numpy.random.randint(0, 10, size=(5, 5, 5)), size=adapter.SFFVolumeStructure(rows=5, cols=5, sections=5))
+        self.assertRegex(_str(L), r"\".*\.\.\.\"")
+        # no repr_args
+        class _Complexes(adapter.SFFComplexList):
+            repr_string = u"complexes"
+            repr_args = ()
+        C = _Complexes()
+        self.assertEqual(_str(C), u"complexes")
         # repr_str is missing: prints out the output of type
         class _RGBA(adapter.SFFRGBA):
             repr_string = ""
@@ -166,6 +187,12 @@ class TestSFFType(Py23FixTestCase):
         self.assertEqual(S.version, _S.version)
         self.assertEqual(S.name, _S.name)
         self.assertEqual(S.details, _S.details)
+
+    def test_export_stderr(self):
+        """Test that we can export to stderr"""
+        S = adapter.SFFSegmentation()
+        # we check that everything was OK
+        self.assertEqual(S.export(sys.stderr), os.EX_OK)
 
     def test_export_errors(self):
         """Test that we catch all export errors"""
@@ -403,6 +430,9 @@ class TestSFFListType(Py23FixTestCase):
         U = adapter.SFFSegmentList.from_gds_type(_U)
         self.assertEqual(len(U), _no_items)
         self.assertEqual(len(U._id_dict), _no_items)
+        # error
+        with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
+            adapter.SFFSegmentList.from_gds_type([])
 
     # def test_create_from_list(self):
     #     """Test that we can create a `SFFListType` object from a literal list of contained objects"""

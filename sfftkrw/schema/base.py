@@ -2,15 +2,15 @@
 # base.py
 from __future__ import division, print_function
 
+import io
 import numbers
 import os
 import re
-import sys
 
 import h5py
 
 from .. import VALID_EXTENSIONS
-from ..core import _dict, _str, _encode, _decode, _bytes
+from ..core import _dict, _str, _encode, _decode, _bytes, _clear, _basestring
 from ..core.print_tools import print_date
 from ..schema import emdb_sff as sff
 
@@ -277,9 +277,9 @@ class SFFType(object):
                     repr_args = list()
                     for r in _repr_args:
                         if isinstance(r, _str):  # or isinstance(r, _bytes):
-                            repr_args.append(u"\"{}\"".format(_decode(r, u'utf-8')))
-                        elif isinstance(r, _bytes):
                             repr_args.append(u"\"{}\"".format(r))
+                        elif isinstance(r, _bytes):
+                            repr_args.append(u"\"{}\"".format(_decode(r, u'utf-8')))
                         else:
                             repr_args.append(r)
                     # repr_args = list(map(lambda r: "\"{}\"".format(r) if isinstance(r, _str) else r, _repr_args))
@@ -297,35 +297,40 @@ class SFFType(object):
     def export(self, fn, *_args, **_kwargs):
         """Export to a file on disc
 
-        :param str fn: filename to export to; the output format is determined by the extension:
+        :param fn: filename to export to; the output format is determined by the extension:
+        :type fn: str or io.TextIOWrapper or io.RawIOBase or io.BufferedIOBase or file
+        :return int status: exit code from :py:mod:`os` library
 
         - ``.sff`` - XML
         - ``.hff`` - HDF5
         - ``.json`` - JSON
         """
-        fn_ext = fn.split('.')[-1]
-        try:
-            assert fn_ext in VALID_EXTENSIONS
-        except AssertionError:
-            print_date(_encode(u"Invalid filename: extension should be one of {}: {}".format(
-                ", ".join(VALID_EXTENSIONS),
-                fn,
-            ), u'utf-8'))
-            return os.EX_DATAERR
-        if fn_ext == u'sff':
-            with open(fn, u'w') as f:
-                # write version and encoding
-                version = _kwargs.get(u'version') if u'version' in _kwargs else u"1.0"
-                encoding = _kwargs.get(u'encoding') if u'encoding' in _kwargs else u"UTF-8"
-                f.write(u'<?xml version="{}" encoding="{}"?>\n'.format(version, encoding))
-                # always export from the root
-                self._local.export(f, 0, *_args, **_kwargs)
-        elif fn_ext == u'hff':
-            with h5py.File(fn, u'w') as f:
-                self.as_hff(f, *_args, **_kwargs)
-        elif fn_ext == u'json':
-            with open(fn, u'w') as f:
-                self.as_json(f, *_args, **_kwargs)
+        if isinstance(fn, _basestring):
+            fn_ext = fn.split('.')[-1]
+            try:
+                assert fn_ext in VALID_EXTENSIONS
+            except AssertionError:
+                print_date(_encode(u"Invalid filename: extension should be one of {}: {}".format(
+                    ", ".join(VALID_EXTENSIONS),
+                    fn,
+                ), u'utf-8'))
+                return os.EX_DATAERR
+            if fn_ext == u'sff':
+                with open(fn, u'w') as f:
+                    # write version and encoding
+                    version = _kwargs.get(u'version') if u'version' in _kwargs else u"1.0"
+                    encoding = _kwargs.get(u'encoding') if u'encoding' in _kwargs else u"UTF-8"
+                    f.write(u'<?xml version="{}" encoding="{}"?>\n'.format(version, encoding))
+                    # always export from the root
+                    self._local.export(f, 0, *_args, **_kwargs)
+            elif fn_ext == u'hff':
+                with h5py.File(fn, u'w') as f:
+                    self.as_hff(f, *_args, **_kwargs)
+            elif fn_ext == u'json':
+                with open(fn, u'w') as f:
+                    self.as_json(f, *_args, **_kwargs)
+        elif issubclass(type(fn), io.IOBase):
+            self._local.export(fn, 0, *_args, **_kwargs)
         return os.EX_OK
 
     def as_hff(self, *args, **kwargs):
@@ -590,10 +595,7 @@ class SFFListType(SFFType):
         """Remove all items"""
         iter_name, _ = self.iter_attr
         cont = getattr(self._local, iter_name)
-        if sys.version_info[0] > 2:
-            cont.clear()
-        else:
-            del cont[:]
+        _clear(cont)
         self._id_dict.clear()
 
     def copy(self):

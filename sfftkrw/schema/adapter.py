@@ -6,17 +6,17 @@ import base64
 import numbers
 import os
 import random
+import re
 import struct
 import sys
-import re
 import zlib
 
 import h5py
 import numpy
 
 from . import emdb_sff as sff
-from .. import SFFTKRW_VERSION
 from .base import SFFType, SFFAttribute, SFFListType, SFFTypeError, SFFIndexType
+from .. import SFFTKRW_VERSION
 from ..core import _decode, _dict, _str, _encode, _bytes, _xrange
 from ..core.print_tools import print_date
 
@@ -480,11 +480,11 @@ class SFFLattice(SFFIndexType):
     endianness = SFFAttribute(u'endianness', help=u"endianness; either 'little' (default) or 'big'")
     # todo: redundant to have size and data when size should be inferred from data
     size = SFFAttribute(u'size', sff_type=SFFVolumeStructure, help=u"size of the lattice described using a "
-                                                                  ":py:class:`sfftkrw.schema.adapter.SFFVolumeStructure` object")
+                                                                   ":py:class:`sfftkrw.schema.adapter.SFFVolumeStructure` object")
     start = SFFAttribute(u'start', sff_type=SFFVolumeIndex, help=u"starting index of the lattices described using a"
-                                                                ":py:class:`sfftkrw.schema.adapter.SFFVolumeIndex` object")
-    data = SFFAttribute(u'data', help=u"data provided by a numpy array; the dimensions should correspond with those "
-                                     u"specified in the 'size' attribute")
+                                                                 ":py:class:`sfftkrw.schema.adapter.SFFVolumeIndex` object")
+    data = SFFAttribute(u'data', help=u"data provided by a :py:class:`numpy.ndarray`, byte-sequence or unicode string; "
+                                      u"the dimensions should correspond with those specified in the 'size' attribute")
 
     def __init__(self, **kwargs):
         if u'data' in kwargs:

@@ -69,6 +69,10 @@ if sys.version_info[0] > 2:
     import io
 
     _file = io.IOBase
+
+    # clear list
+    def _clear(_list):
+        _list.clear()
 else:
     import __builtin__
 
@@ -128,3 +132,7 @@ else:
 
     # file
     _file = __builtin__.file
+
+    # clear list
+    def _clear(_list):
+        del _list[:]

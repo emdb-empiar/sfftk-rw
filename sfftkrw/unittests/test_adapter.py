@@ -17,7 +17,7 @@ import numpy
 from random_words import RandomWords, LoremIpsum
 
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_integers
-from ..core import _xrange, _str, _bytes
+from ..core import _xrange, _str, _bytes, _decode
 from ..schema import adapter, emdb_sff, base
 
 rw = RandomWords()
@@ -121,9 +121,12 @@ class TestSFFSegmentation(Py23FixTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        os.remove(cls.shape_file)
-        os.remove(cls.volume_file)
-        os.remove(cls.mesh_file)
+        if os.path.exists(cls.shape_file):
+            os.remove(cls.shape_file)
+        if os.path.exists(cls.volume_file):
+            os.remove(cls.volume_file)
+        if os.path.exists(cls.mesh_file):
+            os.remove(cls.mesh_file)
 
     def tearDown(self):
         adapter.SFFPolygon.reset_id()
@@ -870,9 +873,10 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_export_json(self):
         """Export to a JSON file"""
         temp_file = tempfile.NamedTemporaryFile()
-        self.segmentation.export(temp_file.name + '.json')
+        temp_file.name += u'.json'
+        self.segmentation.export(temp_file.name)
         # assertions
-        with open(temp_file.name + '.json') as f:
+        with open(temp_file.name) as f:
             J = json.load(f)
             self.assertEqual(J[u'primaryDescriptor'], u"threeDVolume")
 
@@ -1432,7 +1436,7 @@ class TestSFFLattice(Py23FixTestCase):
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
-                _str(l.data[:100] + b"...")
+                _decode(l.data[:100] + b"...", u"utf-8")
             )
         )
 
@@ -1460,7 +1464,7 @@ class TestSFFLattice(Py23FixTestCase):
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
-                _str(l.data[:100] + b"..."),
+                _decode(l.data[:100] + b"...", u"utf-8"),
             )
         )
 
@@ -1488,7 +1492,7 @@ class TestSFFLattice(Py23FixTestCase):
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
-                _str(l.data[:100] + b"...")
+                _decode(l.data[:100] + b"...", u"utf-8")
             )
         )
 
@@ -1516,7 +1520,7 @@ class TestSFFLattice(Py23FixTestCase):
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
-                l.data[:100] + b"...",
+                _decode(l.data[:100] + b"...", u"utf-8"),
             )
         )
 
@@ -1544,7 +1548,7 @@ class TestSFFLattice(Py23FixTestCase):
                 self.l_endian,
                 _str(self.l_size),
                 _str(self.l_start),
-                l.data[:100] + b"..."
+                _decode(l.data[:100] + b"...", u"utf-8")
             )
         )
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):

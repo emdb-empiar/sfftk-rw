@@ -60,16 +60,16 @@ class TestMainHandleConvert(unittest.TestCase):
 
     def test_hff(self):
         """Test that we can convert .hff"""
-        #  first convert from some other format e.g. .mod
-        args = parse_args('convert --verbose -o {} {}'.format(
-            os.path.join(TEST_DATA_PATH, 'test_data.hff'),
-            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.sff'),
+        #  first convert from .sff
+        args = parse_args('convert --verbose -o {output} {input}'.format(
+            output=os.path.join(TEST_DATA_PATH, 'test_data.hff'),
+            input=os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.sff'),
         ), use_shlex=True)
         Main.handle_convert(args)
         # then convert to .sff
-        args = parse_args('convert --verbose {} -o {}'.format(
-            os.path.join(TEST_DATA_PATH, 'test_data.hff'),
-            os.path.join(TEST_DATA_PATH, 'test_data.sff'),
+        args = parse_args('convert --verbose {input} -o {output}'.format(
+            input=os.path.join(TEST_DATA_PATH, 'test_data.hff'),
+            output=os.path.join(TEST_DATA_PATH, 'test_data.sff'),
         ), use_shlex=True)
         Main.handle_convert(args)
         sff_files = glob.glob(os.path.join(TEST_DATA_PATH, '*.hff'))
