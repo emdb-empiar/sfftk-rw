@@ -15,11 +15,11 @@ Contents
 ==========
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    toolkit
-   converting
    data_model
+   converting
    misc
    developing
    sfftk-rw

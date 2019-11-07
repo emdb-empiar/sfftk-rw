@@ -1,14 +1,11 @@
-============================
-Converting Files To EMDB-SFF
-============================
-
-.. contents::
+==================================
+Interconverting EMDB-SFF Files
+==================================
 
 Introduction
 ============
 
-Converting files to use the EMDB-SFF data model is one of the core functions 
-of ``sfftk-rw``. This guide describes in detail how to accomplish conversions.
+Interconverting EMDB-SFF files is the core functions of ``sfftk-rw``. This guide describes in detail how to accomplish this.
 
 Synopsis
 --------

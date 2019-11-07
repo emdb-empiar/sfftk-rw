@@ -85,10 +85,10 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="converting.html">Converting Files To EMDB-SFF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_model.html">Understanding the EMDB-SFF Data Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="converting.html">Interconverting EMDB-SFF Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">:py:class:`.SFFtk`-rw</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a></li>
 </ul>
 
@@ -225,6 +225,8 @@
         <li><a href="adapter.html#sfftkrw.schema.adapter.SFFSegmentation.as_json">(sfftkrw.schema.adapter.SFFSegmentation method)</a>
 </li>
       </ul></li>
+      <li><a href="adapter.html#sfftkrw.schema.adapter.SFFShape.attribute">attribute (sfftkrw.schema.adapter.SFFShape attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -446,19 +448,21 @@
 </li>
         <li><a href="adapter.html#sfftkrw.schema.adapter.SFFSegment.id">(sfftkrw.schema.adapter.SFFSegment attribute)</a>
 </li>
+        <li><a href="adapter.html#sfftkrw.schema.adapter.SFFShape.id">(sfftkrw.schema.adapter.SFFShape attribute)</a>
+</li>
         <li><a href="adapter.html#sfftkrw.schema.adapter.SFFTransformationMatrix.id">(sfftkrw.schema.adapter.SFFTransformationMatrix attribute)</a>
 </li>
         <li><a href="adapter.html#sfftkrw.schema.adapter.SFFVertex.id">(sfftkrw.schema.adapter.SFFVertex attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adapter.html#sfftkrw.schema.adapter.SFFComplexList.ids">ids (sfftkrw.schema.adapter.SFFComplexList attribute)</a>
 
       <ul>
         <li><a href="adapter.html#sfftkrw.schema.adapter.SFFMacromoleculeList.ids">(sfftkrw.schema.adapter.SFFMacromoleculeList attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="base.html#sfftkrw.schema.base.SFFIndexType.increment_by">increment_by (sfftkrw.schema.base.SFFIndexType attribute)</a>
 </li>
       <li><a href="base.html#sfftkrw.schema.base.SFFIndexType.index_attr">index_attr (sfftkrw.schema.base.SFFIndexType attribute)</a>
@@ -663,9 +667,11 @@
 </li>
       <li><a href="adapter.html#sfftkrw.schema.adapter.SFFSegmentation">SFFSegmentation (class in sfftkrw.schema.adapter)</a>
 </li>
+      <li><a href="adapter.html#sfftkrw.schema.adapter.SFFSegmentList">SFFSegmentList (class in sfftkrw.schema.adapter)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adapter.html#sfftkrw.schema.adapter.SFFSegmentList">SFFSegmentList (class in sfftkrw.schema.adapter)</a>
+      <li><a href="adapter.html#sfftkrw.schema.adapter.SFFShape">SFFShape (class in sfftkrw.schema.adapter)</a>
 </li>
       <li><a href="adapter.html#sfftkrw.schema.adapter.SFFShapePrimitiveList">SFFShapePrimitiveList (class in sfftkrw.schema.adapter)</a>
 </li>
@@ -726,6 +732,8 @@
       <li><a href="adapter.html#sfftkrw.schema.adapter.SFFMesh.transform_id">transform_id (sfftkrw.schema.adapter.SFFMesh attribute)</a>
 
       <ul>
+        <li><a href="adapter.html#sfftkrw.schema.adapter.SFFShape.transform_id">(sfftkrw.schema.adapter.SFFShape attribute)</a>
+</li>
         <li><a href="adapter.html#sfftkrw.schema.adapter.SFFThreeDVolume.transform_id">(sfftkrw.schema.adapter.SFFThreeDVolume attribute)</a>
 </li>
       </ul></li>
@@ -740,6 +748,10 @@
 
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adapter.html#sfftkrw.schema.adapter.SFFShape.update_counter">update_counter() (sfftkrw.schema.adapter.SFFShape class method)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="base.html#sfftkrw.schema.base.SFFIndexType.update_index">update_index() (sfftkrw.schema.base.SFFIndexType static method)</a>
 </li>

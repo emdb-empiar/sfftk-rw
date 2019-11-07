@@ -255,31 +255,38 @@ This adapter API therefore specifies two main base classes from which all other 
     :members:
     :show-inheritance:
 
+:py:class:`SFFShape` class
+=====================================
+
+.. autoclass:: SFFShape(id=None, transformId=None, attribute=None)
+    :members:
+    :show-inheritance:
+
 :py:class:`SFFCone` class
 =====================================
 
-.. autoclass:: SFFCone(id=None, height=None, bottomRadius=None)
+.. autoclass:: SFFCone(id=None, height=None, bottomRadius=None, transformId=None, attribute=None)
     :members:
     :show-inheritance:
 
 :py:class:`SFFCuboid` class
 =====================================
 
-.. autoclass:: SFFCuboid(id=None, x=None, y=None, z=None)
+.. autoclass:: SFFCuboid(id=None, x=None, y=None, z=None, transformId=None, attribute=None)
     :members:
     :show-inheritance:
 
 :py:class:`SFFCylinder` class
 =====================================
 
-.. autoclass:: SFFCylinder(id=None, height=None, diameter=None)
+.. autoclass:: SFFCylinder(id=None, height=None, diameter=None, transformId=None, attribute=None)
     :members:
     :show-inheritance:
 
 :py:class:`SFFEllipsoid` class
 =====================================
 
-.. autoclass:: SFFEllipsoid(id=None, x=None, y=None, z=None)
+.. autoclass:: SFFEllipsoid(id=None, x=None, y=None, z=None, transformId=None, attribute=None)
     :members:
     :show-inheritance:
 
