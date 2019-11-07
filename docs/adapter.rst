@@ -70,9 +70,10 @@ This adapter API therefore specifies two main base classes from which all other 
 
 .. autoclass:: SFFSegmentation(name=None, software=None, primaryDescriptor=None, details=None, transformList=None, boundingBox=None, transforms=None, segments=None, lattices=None)
     :members:
+    :inherited-members:
     :show-inheritance:
 
-:py:class:`Software` class
+:py:class:`SFFSoftware` class
 =====================================
 
 .. autoclass:: SFFSoftware(name=None, version=None, processingDetails=None)

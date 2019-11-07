@@ -1828,18 +1828,18 @@ class TestSFFCone(Py23FixTestCase):
         C = adapter.SFFCone()
         self.assertRegex(
             _str(C),
-            r"""SFFCone\(id={}, height={}, bottomRadius={}\)""".format(
-                0, None, None
+            r"""SFFCone\(id={}, height={}, bottomRadius={}, transformId={}\)""".format(
+                0, None, None, None
             )
         )
-        _height, _bottom_radius = _random_float(10), _random_float(10)
+        _height, _bottom_radius, _transform_id = _random_float(10), _random_float(10), _random_integer(start=0)
         C = adapter.SFFCone(
-            height=_height, bottomRadius=_bottom_radius
+            height=_height, bottomRadius=_bottom_radius, transformId=_transform_id
         )
         self.assertRegex(
             _str(C),
-            r"""SFFCone\(id={}, height={}, bottomRadius={}\)""".format(
-                1, _height, _bottom_radius
+            r"""SFFCone\(id={}, height={}, bottomRadius={}, transformId={}\)""".format(
+                1, _height, _bottom_radius, _transform_id
             )
         )
         self.assertEqual(C.id, 1)  # the second one we have created
@@ -1852,19 +1852,19 @@ class TestSFFCone(Py23FixTestCase):
         C = adapter.SFFCone.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCone\(id={}, height={}, bottomRadius={}\)""".format(
-                None, None, None
+            r"""SFFCone\(id={}, height={}, bottomRadius={}, transformId={}\)""".format(
+                None, None, None, None
             )
         )
-        _height, _bottom_radius = _random_float(10), _random_float(10)
+        _height, _bottom_radius, _transform_id = _random_float(10), _random_float(10), _random_integer(start=0)
         _C = emdb_sff.cone(
-            height=_height, bottomRadius=_bottom_radius
+            height=_height, bottomRadius=_bottom_radius, transformId=_transform_id
         )
         C = adapter.SFFCone.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCone\(id={}, height={}, bottomRadius={}\)""".format(
-                None, _height, _bottom_radius
+            r"""SFFCone\(id={}, height={}, bottomRadius={}, transformId={}\)""".format(
+                None, _height, _bottom_radius, _transform_id
             )
         )
         self.assertIsNone(C.id)
@@ -1883,16 +1883,16 @@ class TestSFFCuboid(Py23FixTestCase):
         C = adapter.SFFCuboid()
         self.assertRegex(
             _str(C),
-            r"""SFFCuboid\(id={}, x={}, y={}, z={}\)""".format(
-                0, None, None, None
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transformId={}\)""".format(
+                0, None, None, None, None
             )
         )
-        _x, _y, _z = _random_float(10), _random_float(10), _random_float(10)
-        C = adapter.SFFCuboid(x=_x, y=_y, z=_z)
+        _x, _y, _z, _transform_id = _random_float(10), _random_float(10), _random_float(10), _random_integer()
+        C = adapter.SFFCuboid(x=_x, y=_y, z=_z, transformId=_transform_id)
         self.assertRegex(
             _str(C),
-            r"""SFFCuboid\(id={}, x={}, y={}, z={}\)""".format(
-                1, _x, _y, _z
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transformId={}\)""".format(
+                1, _x, _y, _z, _transform_id
             )
         )
         self.assertEqual(C.id, 1)  # the second one we have created
@@ -1906,17 +1906,17 @@ class TestSFFCuboid(Py23FixTestCase):
         C = adapter.SFFCuboid.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCuboid\(id={}, x={}, y={}, z={}\)""".format(
-                None, None, None, None
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transformId={}\)""".format(
+                None, None, None, None, None
             )
         )
-        _x, _y, _z = _random_float(10), _random_float(10), _random_float(10)
-        _C = emdb_sff.cuboid(x=_x, y=_y, z=_z)
+        _x, _y, _z, _transform_id = _random_float(10), _random_float(10), _random_float(10), _random_integer()
+        _C = emdb_sff.cuboid(x=_x, y=_y, z=_z, transformId=_transform_id)
         C = adapter.SFFCuboid.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCuboid\(id={}, x={}, y={}, z={}\)""".format(
-                None, _x, _y, _z
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transformId={}\)""".format(
+                None, _x, _y, _z, _transform_id
             )
         )
         self.assertEqual(C.x, _x)
@@ -1935,18 +1935,18 @@ class TestSFFCylinder(Py23FixTestCase):
         C = adapter.SFFCylinder()
         self.assertRegex(
             _str(C),
-            r"""SFFCylinder\(id={}, height={}, diameter={}\)""".format(
-                0, None, None
+            r"""SFFCylinder\(id={}, height={}, diameter={}, transformId={}\)""".format(
+                0, None, None, None
             )
         )
-        _height, _diameter = _random_float(10), _random_float(10)
+        _height, _diameter, _transform_id = _random_float(10), _random_float(10), _random_integer()
         C = adapter.SFFCylinder(
-            height=_height, diameter=_diameter
+            height=_height, diameter=_diameter, transformId=_transform_id
         )
         self.assertRegex(
             _str(C),
-            r"""SFFCylinder\(id={}, height={}, diameter={}\)""".format(
-                1, _height, _diameter
+            r"""SFFCylinder\(id={}, height={}, diameter={}, transformId={}\)""".format(
+                1, _height, _diameter, _transform_id
             )
         )
         self.assertEqual(C.id, 1)  # the second one we have created
@@ -1959,19 +1959,19 @@ class TestSFFCylinder(Py23FixTestCase):
         C = adapter.SFFCylinder.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCylinder\(id={}, height={}, diameter={}\)""".format(
-                None, None, None
+            r"""SFFCylinder\(id={}, height={}, diameter={}, transformId={}\)""".format(
+                None, None, None, None
             )
         )
-        _height, _diameter = _random_float(10), _random_float(10)
+        _height, _diameter, _transform_id = _random_float(10), _random_float(10), _random_integer(start=0)
         _C = emdb_sff.cylinder(
-            height=_height, diameter=_diameter
+            height=_height, diameter=_diameter, transformId=_transform_id
         )
         C = adapter.SFFCylinder.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCylinder\(id={}, height={}, diameter={}\)""".format(
-                None, _height, _diameter
+            r"""SFFCylinder\(id={}, height={}, diameter={}, transformId={}\)""".format(
+                None, _height, _diameter, _transform_id
             )
         )
         self.assertIsNone(C.id)
@@ -1990,16 +1990,16 @@ class TestSFFEllipsoid(Py23FixTestCase):
         E = adapter.SFFEllipsoid()
         self.assertRegex(
             _str(E),
-            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}\)""".format(
-                0, None, None, None
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transformId={}\)""".format(
+                0, None, None, None, None
             )
         )
-        _x, _y, _z = _random_float(10), _random_float(10), _random_float(10)
-        E = adapter.SFFEllipsoid(x=_x, y=_y, z=_z)
+        _x, _y, _z, _transform_id = _random_float(10), _random_float(10), _random_float(10), _random_integer()
+        E = adapter.SFFEllipsoid(x=_x, y=_y, z=_z, transformId=_transform_id)
         self.assertRegex(
             _str(E),
-            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}\)""".format(
-                1, _x, _y, _z
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transformId={}\)""".format(
+                1, _x, _y, _z, _transform_id
             )
         )
         self.assertEqual(E.id, 1)  # the second one we have created
@@ -2013,17 +2013,17 @@ class TestSFFEllipsoid(Py23FixTestCase):
         C = adapter.SFFEllipsoid.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}\)""".format(
-                None, None, None, None
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transformId={}\)""".format(
+                None, None, None, None, None
             )
         )
-        _x, _y, _z = _random_float(10), _random_float(10), _random_float(10)
-        _C = emdb_sff.ellipsoid(x=_x, y=_y, z=_z)
+        _x, _y, _z, _transform_id = _random_float(10), _random_float(10), _random_float(10), _random_integer()
+        _C = emdb_sff.ellipsoid(x=_x, y=_y, z=_z, transformId=_transform_id)
         C = adapter.SFFEllipsoid.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}\)""".format(
-                None, _x, _y, _z
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transformId={}\)""".format(
+                None, _x, _y, _z, _transform_id
             )
         )
         self.assertEqual(C.x, _x)

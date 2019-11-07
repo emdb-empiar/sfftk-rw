@@ -703,8 +703,8 @@ class SFFCone(SFFShape):
     """Cone shape class"""
     gds_type = sff.cone
     gds_tag_name = u"cone"
-    repr_string = u"SFFCone(id={}, height={}, bottomRadius={})"
-    repr_args = (u'id', u'height', u'bottom_radius')
+    repr_string = u"SFFCone(id={}, height={}, bottomRadius={}, transformId={})"
+    repr_args = (u'id', u'height', u'bottom_radius', u'transform_id')
 
     # attributes
     height = SFFAttribute(u'height', help=u"cone height")
@@ -715,8 +715,8 @@ class SFFCuboid(SFFShape):
     """Cuboid shape class"""
     gds_type = sff.cuboid
     gds_tag_name = u"cuboid"
-    repr_string = u"SFFCuboid(id={}, x={}, y={}, z={})"
-    repr_args = (u'id', u'x', u'y', u'z')
+    repr_string = u"SFFCuboid(id={}, x={}, y={}, z={}, transformId={})"
+    repr_args = (u'id', u'x', u'y', u'z', u'transform_id')
 
     # attributes
     x = SFFAttribute(u'x', help=u"length in x")
@@ -728,8 +728,8 @@ class SFFCylinder(SFFShape):
     """Cylinder shape class"""
     gds_type = sff.cylinder
     gds_tag_name = u"cylinder"
-    repr_string = u"SFFCylinder(id={}, height={}, diameter={})"
-    repr_args = (u'id', u'height', u'diameter')
+    repr_string = u"SFFCylinder(id={}, height={}, diameter={}, transformId={})"
+    repr_args = (u'id', u'height', u'diameter', u'transform_id')
 
     # attributes
     height = SFFAttribute(u'height', help=u"cylinder height")
@@ -740,8 +740,8 @@ class SFFEllipsoid(SFFShape):
     """Ellipsoid shape class"""
     gds_type = sff.ellipsoid
     gds_tag_name = u"ellipsoid"
-    repr_string = u"SFFEllipsoid(id={}, x={}, y={}, z={})"
-    repr_args = (u'id', u'x', u'y', u'z')
+    repr_string = u"SFFEllipsoid(id={}, x={}, y={}, z={}, transformId={})"
+    repr_args = (u'id', u'x', u'y', u'z', u'transform_id')
 
     # attributes
     x = SFFAttribute(u'x', help=u"length in x")

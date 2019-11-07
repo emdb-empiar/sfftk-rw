@@ -7,19 +7,49 @@ EMDB-SFF Read/Write Toolkit (``sfftk-rw``)
     Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the
     `sfftk package <https://pypi.org/project/sfftk/>`_.
 
+    Also, checkout the `Segmentation Annotation Tool <https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/>`_ for the online version.
+
 .. contents::
 
 Introduction
 ============
 
-``sfftk-rw`` is a Python package that consists of command-line utilities and an API for reading and writing
-`Electron Microscopy Data Bank - Segmentation File Format
-(EMDB-SFF) <https://github.com/emdb-empiar/EMDB-SFF>`_ files.
-It is designed to exclusively handle EMDB-SFF files meaning fewer
-dependencies simplifying integration into existing applications.
+``sfftk-rw`` is a Python toolkit for *reading and writing EMDB-SFF files only*. It is part of a family of tools
+designed to work with EMDB-SFF files (see `Data Model`_ below). Other related tools are:
 
-It is a core dependency for ``sfftk``, which extends it by adding functionality
-to convert various application-specific segmentation file formats to EMDB-SFF.
+-   ``sfftk`` - depends on ``sfftk-rw`` and additionally:
+
+    *   **converts** application-specific segmentation files to valid EMDB-SFF files;
+
+    *   **annotates** EMDB-SFF files;
+
+    *   **prepares** segmentation files prior to conversion to EMDB-SFF files;
+
+-   SAT - an online wrapper around ``sfftk`` available at https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/
+
+.. _data_model:
+
+Data Model
+----------
+
+`Electron Microscopy Data Bank - Segmentation File Format
+(EMDB-SFF) <https://github.com/emdb-empiar/EMDB-SFF>`_ defines an open, iteroperable community-driven annotated segmentation and transformations
+file data model that supports segmentations of various **geometries**. By **annotated** we mean that the segmentation consists of textual information derived from curated ontologies and data archives in addition to free text.
+
+Segmentation geometries may consist of one or more of the following structures:
+
+*   3D volumes
+
+*   3D surfaces
+
+*   3D shapes
+
+The corresponding schema may be obtained at `http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html
+<http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html>`_.
+
+Changes to the schema are welcome for discussion at the *Segmentation Working Group*
+at `https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg
+<https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg>`_.
 
 License
 -------
@@ -27,31 +57,19 @@ License
 ``sfftk-rw`` is free and open source software released under the terms of the Apache License,
 Version 2.0. Source code is copyright EMBL-European Bioinformatics Institute (EMBL-EBI) 2017.
 
-Data Model
-----------
-
-The corresponding schema may be obtained at `http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html
-<http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html>`_.
-Changes to the schema are welcome for discussion at the *Segmentation Working Group*
-at `https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg
-<https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg>`_.
-
 Contact
 -------
 
-Any questions or comments should be addressed to
-`ardan@ebi.ac.uk <mailto:ardan@ebi.ac.uk>`_ or
-`pkorir@ebi.ac.uk <mailto:pkorir@ebi.ac.uk>`_.
+You are welcome to report queries, bugs and feature requests to `pkorir@ebi.ac.uk <mailto:pkorir@ebi.ac.uk>`_.
 
 Publications
 ------------
 
-The following articles should be cited whenever ``sfftk-rw`` is used in a
-publication:
+.. The following articles should be cited whenever ``sfftk-rw`` is used in a publication:
 
-.. note::
+.. .. note::
 
-    Article in preparation
+..     Article in preparation
 
 The EMDB-SFF data model is the result of various community consultations which
 are published in the following articles:
@@ -80,8 +98,8 @@ PyPI
 
     pip install sfftk-rw
 
-Source
-~~~~~~
+Source Code
+~~~~~~~~~~~
 
 The ``sfftk-rw`` source is available from Github
 `https://github.com/emdb-empiar/sfftk-rw <https://github.com/emdb-empiar/sfftk-rw>`_. You may install the bleeding
@@ -91,8 +109,30 @@ edge using:
 
     pip install git+https://github.com/emdb-empiar/sfftk-rw.git
 
+Using ``sfftk-rw``
+------------------
+
+Synopsis
+~~~~~~~~
+
+There are two main ways to use ``sfftk-rw``:
+
+*   On the command line:
+
+    -   **view** metadata of a EMDB-SFF file
+
+    -   **interconvert** between EMDB-SFF formats (XML, HDF5 and JSON)
+
+*   Programmatically via the API:
+
+    -   **read** EMDB-SFF files
+
+    -   **create** valid EMDB-SFF segmentation objects and export as XML, HDF5 or JSON files
+
+For more information on each please see the guide to the command-line and the `Developing with sfftk-rw`_.
+
 User Interface
---------------
+~~~~~~~~~~~~~~
 
 ``sfftk-rw`` is designed as a command-line tool with various utilities. Type ``sff-rw`` to see all options;
 
@@ -117,7 +157,7 @@ User Interface
         tests               run unit tests
 
 Interconversion
----------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As a data model, EMDB-SFF is file format agnostic. However, EMDB-SFF files are currently expressed as either
 XML, HDF5 and JSON (textual annotations only). ``sfftk-rw`` allows interconversion between these formats.
@@ -134,7 +174,7 @@ For a full description of how to perform format interconversion, please see the
 `guide to format interconversion <https://sfftk-rw.readthedocs.io/en/lkatest/converting.html>`_.
 
 Viewing
-----------
+~~~~~~~~~~~~~~
 
 Basic metadata about an EMDB-SFF file may be obtained using the ``view`` utility:
 

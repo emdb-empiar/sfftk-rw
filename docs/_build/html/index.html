@@ -86,8 +86,9 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Converting Files To EMDB-SFF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_model.html">Understanding the EMDB-SFF Data Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">:py:class:`.SFFtk`-rw</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a></li>
 </ul>
 
@@ -166,16 +167,53 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="toolkit.html">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="toolkit.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="toolkit.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="toolkit.html#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="toolkit.html#data-model">Data Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="toolkit.html#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="toolkit.html#contact">Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="toolkit.html#publications">Publications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="toolkit.html#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="toolkit.html#obtaining-and-installing-sfftk-rw">Obtaining and Installing <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="toolkit.html#using-sfftk-rw">Using <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="toolkit.html#developing-with-sfftk-rw">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Converting Files To EMDB-SFF</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="converting.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="converting.html#output-formats">Output Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="converting.html#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="converting.html#synopsis">Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="converting.html#quick-start">Quick Start</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="converting.html#output-formats">Output Formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="converting.html#specifying-the-output-path-with-o-output-flag">Specifying the output path with <code class="docutils literal notranslate"><span class="pre">-o/--output</span></code> flag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="converting.html#specifying-the-output-format-with-f-format-flag">Specifying the output format with <code class="docutils literal notranslate"><span class="pre">-f/--format</span></code> flag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="converting.html#id2">EMDB-SFF Format Interconversion</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="converting.html#id3">Verbose Operation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="converting.html#specify-details">Specify Details</a></li>
 <li class="toctree-l2"><a class="reference internal" href="converting.html#changing-the-primary-descriptor">Changing The Primary Descriptor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_model.html">Understanding the EMDB-SFF Data Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data_model.html#top-level-an-emdb-sff-segmentation">Top Level: An EMDB-SFF Segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_model.html#software">Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_model.html#transformation-matrix">Transformation Matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_model.html#bounding-box">Bounding Box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_model.html#global-external-references-and-external-references">Global External References and External References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_model.html#segments">Segments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="data_model.html#segments-biological-annotation">Segments: Biological Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_model.html#segments-complexes-and-macromolecules">Segments: Complexes and Macromolecules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_model.html#segments-meshes">Segments: Meshes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_model.html#segments-3d-volumes">Segments: 3D Volumes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_model.html#segments-shape-primitives">Segments: Shape Primitives</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data_model.html#resources-for-external-references">Resources for External References</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a><ul>
@@ -184,17 +222,65 @@
 <li class="toctree-l2"><a class="reference internal" href="misc.html#running-unit-tests">Running Unit Tests</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">:py:class:`.SFFtk`-rw</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="developing.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developing.html#reading-emdb-sff-files">Reading EMDB-SFF Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developing.html#creating-emdb-sff-objects">Creating EMDB-SFF Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#working-with-sffsegmentation-objects">Working with <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentation</span></code> objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#reading-emdb-sff-files">Reading EMDB-SFF Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#creating-a-new-segmentation">Creating A New Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#exporting-to-file">Exporting to File</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#containers">Containers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#iteration">Iteration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#index-operations">Index Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#python-list-methods">Python List Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#dictionary-getter-except-for-sffcomplexlist-and-sffmacromoleculelist">Dictionary Getter (except for <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFComplexList</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMacromoleculeList</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#reset-ids-on-instantiation">Reset IDs on Instantiation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#indexed-objects">Indexed Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#special-classes">Special Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#sfftransformationmatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformationMatrix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#sfflattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLattice</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#sffrgba"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFRGBA</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#segment-geometry">Segment Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#meshes-sffmeshlist-sffmeshes-sffvertexlist-sffvertex-sffpolygonlist-and-sffpolygon">Meshes: <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMeshList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMeshes</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertexList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygonList</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygon</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#d-volumes-sfflatticelist-sffthreedvolume-sffvolumestructure-sffvolumeindex">3D Volumes: <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLatticeList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFThreeDVolume</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVolumeStructure</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVolumeIndex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#shape-primitives-sffshapeprimitvelist-sffcone-sffcuboid-sffcylinder-sffellipsoid-sffsubtomogramaverage">Shape Primitives: <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFShapePrimitveList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCone</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCuboid</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCylinder</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFEllipsoid</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSubtomogramAverage</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#id1">Reading EMDB-SFF Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#viewing-segmentation-metadata">Viewing Segmentation Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#viewing-segments">Viewing Segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#viewing-segment-metadata">Viewing Segment Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#creating-emdb-sff-objects">Creating EMDB-SFF Objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#setting-segmentation-metadata">Setting Segmentation Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#setting-segments">Setting Segments</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="developing.html#exporting-emdb-sff-objects">Exporting EMDB-SFF Objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developing.html#navigating-your-way-through-a-segmentation">Navigating Your Way Through A Segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#navigating-your-way-through-a-segmentation">Navigating Your Way Through A Segmentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="developing.html#iterating">Iterating</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="schema.html">sfftk.schema package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">sfftk.core package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schema.html">sfftk.schema package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="base.html">sfftkrw.schema.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adapter.html">sfftkrw.schema.adapter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">sfftk.core package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#module-sfftkrw.core.parser">Parser module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#module-sfftkrw.core.print_tools">Printing utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#module-sfftkrw.core.utils">Miscellaneous utilities</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
