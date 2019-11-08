@@ -9,9 +9,12 @@ Welcome to ``sfftk-rw``'s documentation!
 .. image:: https://travis-ci.com/emdb-empiar/sfftk-rw.svg?branch=master
     :target: https://travis-ci.com/emdb-empiar/sfftk-rw
 
+.. image:: https://readthedocs.org/projects/sfftk-rw/badge/?version=latest
+   :target: https://sfftk-rw.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 .. image:: https://coveralls.io/repos/github/emdb-empiar/sfftk-rw/badge.svg?branch=dev
    :target: https://coveralls.io/github/emdb-empiar/sfftk-rw?branch=dev
-
 
 .. note::
 
