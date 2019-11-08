@@ -5,7 +5,6 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
-#  - "3.8"
 
 sudo: true
 
@@ -24,11 +23,9 @@ before_install:
 
 install:
   - python setup.py develop
-#  - sff --help
 
 script:
   - pytest --cov=./sfftkrw sfftkrw/unittests
-#  - coverage run --include="/home/travis/build/emdb-empiar/sfftkrw/sfftkrw/*" --omit="/home/travis/build/emdb-empiar/sfftkrw/sfftkrw/schema/v*.py","/home/travis/build/emdb-empiar/sfftkrw/sfftkrw/test_data","/home/travis/build/emdb-empiar/sfftkrw/sfftkrw/unittests" `which sff` tests all -v 3
 
 after_success:
   - coveralls
