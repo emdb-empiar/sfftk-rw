@@ -35,7 +35,7 @@ Segmentation **geometries** may consist of one or more of the following structur
 *   3D surfaces
 *   3D shapes
 
-You can find out more about the data model by viewing the schema from the `EMDB Segmentation Data Model <http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html>`_ page, checking out code from the `data model repository on Github <https://github.com/emdb-empiar/EMDB-SFF>`_ or reading an overview from the section :ref:`understanding`.
+You can find out more about the data model by viewing the schema from the `EMDB Segmentation Data Model <http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html>`_ page, checking out code from the `data model repository on Github <https://github.com/emdb-empiar/EMDB-SFF>`_ or reading an overview from the section `Understanding the EMDB-SFF Data Model <data_model.html>`_.
 
 Changes to the schema are welcome for discussion at the *Segmentation Working Group*
 at `https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg
