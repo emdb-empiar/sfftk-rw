@@ -6,20 +6,27 @@
 Welcome to ``sfftk-rw``'s documentation!
 ========================================
 
+.. image:: https://badge.fury.io/py/sfftk-rw.svg
+   :target: https://badge.fury.io/py/sfftk-rw
+
+.. image:: https://img.shields.io/pypi/pyversions/sfftk-rw
+   :alt: PyPI - Python Version
+
 .. image:: https://travis-ci.org/emdb-empiar/sfftk-rw.svg?branch=master
-    :target: https://travis-ci.org/emdb-empiar/sfftk-rw
+   :target: https://travis-ci.org/emdb-empiar/sfftk-rw
 
 .. image:: https://readthedocs.org/projects/sfftk-rw/badge/?version=latest
    :target: https://sfftk-rw.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image:: https://coveralls.io/repos/github/emdb-empiar/sfftk-rw/badge.svg?branch=dev
-   :target: https://coveralls.io/github/emdb-empiar/sfftk-rw?branch=dev
+.. image:: https://coveralls.io/repos/github/emdb-empiar/sfftk-rw/badge.svg?branch=master
+   :target: https://coveralls.io/github/emdb-empiar/sfftk-rw?branch=master
+
 
 .. note::
 
-    Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the
-    `sfftk package <https://pypi.org/project/sfftk/>`_.
+   Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the `sfftk package <https://pypi.org/project/sfftk/>`_.
+   Also, checkout the `Segmentation Annotation Tool <https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/>`_ for the online version.
 
 Contents
 ==========
@@ -27,7 +34,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   toolkit
+   overview
    data_model
    converting
    misc

@@ -1,3 +1,5 @@
+.. _understanding:
+
 =====================================
 Understanding the EMDB-SFF Data Model
 =====================================

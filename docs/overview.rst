@@ -2,13 +2,6 @@
 EMDB-SFF Read/Write Toolkit (``sfftk-rw``)
 ========================================================
 
-.. note::
-
-    Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the
-    `sfftk package <https://pypi.org/project/sfftk/>`_.
-
-    Also, checkout the `Segmentation Annotation Tool <https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/>`_ for the online version.
-
 .. contents::
 
 Introduction
@@ -25,27 +18,24 @@ designed to work with EMDB-SFF files (see `Data Model`_ below). Other related to
 
     *   **prepares** segmentation files prior to conversion to EMDB-SFF files;
 
--   SAT - an online wrapper around ``sfftk`` available at https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/
+-   **SAT** - an online wrapper around ``sfftk`` available at https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/
 
 .. _data_model:
 
 Data Model
 ----------
 
-`Electron Microscopy Data Bank - Segmentation File Format
-(EMDB-SFF) <https://github.com/emdb-empiar/EMDB-SFF>`_ defines an open, iteroperable community-driven annotated segmentation and transformations
-file data model that supports segmentations of various **geometries**. By **annotated** we mean that the segmentation consists of textual information derived from curated ontologies and data archives in addition to free text.
+The **Electron Microscopy Data Bank - Segmentation File Format (EMDB-SFF)** is an open, community-drive segmentation and transformations data model that supports **annotations** and various segmentation **geometries**.
 
-Segmentation geometries may consist of one or more of the following structures:
+By **annotations** we mean that segmentations may be augmented through addition of textual descriptions derived from curated ontologies and data archives in addition to free text.
+
+Segmentation **geometries** may consist of one or more of the following structures:
 
 *   3D volumes
-
 *   3D surfaces
-
 *   3D shapes
 
-The corresponding schema may be obtained at `http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html
-<http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html>`_.
+You can find out more about the data model by viewing the schema from the `EMDB Segmentation Data Model <http://wwwdev.ebi.ac.uk/pdbe/emdb/emdb_static/doc/segmentation_da_docs/segmentation_da.html>`_ page, checking out code from the `data model repository on Github <https://github.com/emdb-empiar/EMDB-SFF>`_ or reading an overview from the section :ref:`understanding`.
 
 Changes to the schema are welcome for discussion at the *Segmentation Working Group*
 at `https://listserver.ebi.ac.uk/mailman/listinfo/segtrans-wg
@@ -123,13 +113,13 @@ There are two main ways to use ``sfftk-rw``:
 
     -   **interconvert** between EMDB-SFF formats (XML, HDF5 and JSON)
 
-*   Programmatically via the API:
+*   Programmatically via `the API <sfftk-rw.html>`_:
 
     -   **read** EMDB-SFF files
 
     -   **create** valid EMDB-SFF segmentation objects and export as XML, HDF5 or JSON files
 
-For more information on each please see the guide to the command-line and the `Developing with sfftk-rw`_.
+For more information on each please see the guide to the command-line and the `Developing with sfftk-rw <data_model_>`_.
 
 User Interface
 ~~~~~~~~~~~~~~
