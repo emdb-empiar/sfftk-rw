@@ -2,13 +2,16 @@
 Interconverting EMDB-SFF Files
 ==================================
 
+.. contents::
+
+--------------
 Introduction
-============
+--------------
 
 Interconverting EMDB-SFF files is the core functions of ``sfftk-rw``. This guide describes in detail how to accomplish this.
 
 Synopsis
---------
+=========
 
 Running
 
@@ -61,49 +64,63 @@ displays all conversion options.
                             (HDF5), json (JSON) [default: sff]
 
 Quick Start
------------
-
-EMDB-SFF Format Interconversion
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============
 
 .. code-block:: bash
 
+    # format interconversion
     sff-rw convert file.sff --output /path/to/output/file.hff
     sff-rw convert file.hff --format json
     sff-rw convert file.sff --format sff # reduntant but should work
 
-Verbose Operation
-~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
+    # verbose
     sff-rw convert -v file.hff
     sff-rw convert --verbose file.hff
 
+    # set details
+    sff-rw convert -d "Lorem ipsum dolor..." file.sff
+    sff-rw convert --details "Lorem ipsum dolor..." file.sff
 
-Set Details
-~~~~~~~~~~~
-
-.. code-block:: bash
-
-    sff-rw convert -d "Lorem ipsum dolor..." file.seg
-    sff-rw convert --details "Lorem ipsum dolor..." file.seg
-
-Change Primary Descriptor
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
+    # override primary descriptor
     sff-rw convert -R shapePrimitiveList file.sff
     sff-rw convert --primary-descriptor shapePrimitiveList file.sff
 
 
 .. _output_formats:
 
-Output Formats
-==============
 
-EMDB-SFF files can be output as XML (``.sff``), HDF5 (``.hff``) or JSON 
+----------------------------------
+EMDB-SFF Format Interconversion
+----------------------------------
+
+It is also possible to perform interconversions between XML, HDF5 and JSON
+EMDB-SFF files.
+
+.. code-block:: bash
+
+    sff-rw convert file.sff --output /path/to/output/file.hff
+
+or using ``--format``
+
+.. code-block:: bash
+
+    sff-rw convert file.hff --format json
+
+Even null conversions are possible:
+
+.. code-block:: bash
+
+    sff-rw convert file.sff --format sff
+
+As stated previously, conversion to JSON drops all geometrical descriptions.
+Similarly, conversions from JSON to EMDB-SFF will not reinstate the geometric
+description information.
+
+---------------
+Output Formats
+---------------
+
+EMDB-SFF files can be output as XML (``.sff``), HDF5 (``.hff``) or JSON
 (``.json``).
 
 - XML EMDB-SFF files are typically relatively large compared to HDF5 and
@@ -122,8 +139,9 @@ There are two ways to perform conversion:
 
 -  Specifying the output format with ``-f/--format`` flag
 
+
 Specifying the output path with ``-o/--output`` flag
-----------------------------------------------------
+========================================================
 
 Conversion is performed as follows (the output file extension determines the output format):
 
@@ -140,7 +158,7 @@ will result in an HDF5 file while
 will be a JSON file.
 
 Specifying the output format with ``-f/--format`` flag
--------------------------------------------------------
+========================================================
 
 The -f/--format options ensures that the output file will be in the same 
 directory as the original segmentation file. The ``-f`` flag takes one of three
@@ -156,45 +174,21 @@ Any other value raises an error.
 
 .. code-block:: bash
 
-    sff-rw convert file.seg -f hff
-    sff-rw convert file.seg --format hff
+    sff-rw convert file.sff -f hffr
+    sff-rw convert file.sff --format hff
 
 The default format (if none is specified) is ``sff`` (XML).
 
 .. code-block:: bash
 
-    sff-rw convert file.seg
+    sff-rw convert file.hff
 
 results in ``file.sff`` as output.
 
-EMDB-SFF Format Interconversion
--------------------------------
 
-It is also possible to perform interconversions between XML, HDF5 and JSON 
-EMDB-SFF files.
-
-.. code-block:: bash
-
-    sff-rw convert file.sff --output /path/to/output/file.hff
-
-or using --format
-
-.. code-block:: bash
-
-    sff-rw convert file.hff --format json
-
-Even null conversions are possible:
-
-.. code-block:: bash
-
-    sff-rw convert file.sff --format sff
-
-As stated previously, conversion to JSON drops all geometrical descriptions. 
-Similarly, conversions from JSON to EMDB-SFF will not reinstate the geometric 
-description information.
-
+----------------------------------
 Verbose Operation
-=================
+----------------------------------
 
 As with many Linux shell programs the ``-v/--verbose`` option prints status 
 information on the terminal.
@@ -208,8 +202,9 @@ information on the terminal.
     Tue Sep 12 15:30:03 2017 Exporting to file.sff
     Tue Sep 12 15:30:07 2017 Done
 
+----------------------------------
 Specify Details
-===============
+----------------------------------
 
 The EMDB-SFF data model provides for an optional ``<details/>`` tag for 
 auxilliary information. The contents of this option will be put into 
@@ -217,15 +212,15 @@ auxilliary information. The contents of this option will be put into
 
 .. code-block:: bash
 
-    sff-rw convert --details "Lorem ipsum dolor..." file.seg
+    sff-rw convert --details "Lorem ipsum dolor..." file.sff
 
-.. note::
+.. todo::
 
     Allow a user to pass a **file** whose contents will be inserted into ``<details/>``.
 
-
+----------------------------------
 Changing The Primary Descriptor
-===============================
+----------------------------------
 
 The EMDB-SFF data model provides for three possible geometrical descriptors: 
 `meshes (meshList), shape primitives (shapePrimitiveList)` and 

@@ -304,3 +304,5 @@ autodoc_docstring_signature = True
 autodoc_default_options = {
     'member-order': 'bysource',
 }
+# mock imports
+autodoc_mock_imports = ['h5py', 'numpy', 'RandomWords']

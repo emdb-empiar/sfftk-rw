@@ -8,7 +8,7 @@ Understanding the EMDB-SFF Data Model
 
 We present a brief synopsis of the data model by outlining the fields and attributes of each entity in the model. You can find the full schema documentation at [LINK]. For each entity we have included a screenshot of the entity’s structure.
 
-The `Developers Guide <developing>` shows how to create and manipulate corresponding Python objects.
+The :doc:`developing` guide shows how to create and manipulate corresponding Python objects.
 
 
 Top Level: An EMDB-SFF Segmentation
@@ -22,12 +22,12 @@ At the top level, a **segmentation** has the following attributes.
 
 *  the **version** of the EMDB-SFF schema 
 *  the **name** of the segmentation - free text
-*  a **software** description (see `Software`_)
-*  a list of **transforms** (see `Transformation Matrix`_)
+*  a **software** description (see :ref:`software`)
+*  a list of **transforms** (see :ref:`transformation_matrix`)
 *  a **primary descriptor** field - an indication of the primary geometrical descriptor. The only permitted values are **meshList**, **threeDVolume** or **shapePrimitiveList**.
-*  the dimensions of the regions **bounding box** (see `Bounding Box`_)
-*  a list of **global external references** (see `Global External References`_) a list of **segments** (see `Segments`_)
-*  a list of **lattices** (see `Lattices`_)
+*  the dimensions of the regions **bounding box** (see :ref:`bounding_box`)
+*  a list of **global external references** (see :ref:`global_external_references`) a list of **segments** (see :ref:`segments`)
+*  a list of **lattices** (see :ref:`lattices`)
 *  free text **details** describing the segmentation
 
 .. _software:
@@ -75,7 +75,7 @@ A **global external reference** consists of a set of fixed descriptors by which 
 
 .. image:: global_external_references.png
 
-*	the **type** is the name of the resource - from our example this will be "empiar" (case-sensitive). Other examples are "go" for Gene Ontology, "emdb" for EMDB (see `Resources for External References`_ for the full list of supported resources)
+*	the **type** is the name of the resource - from our example this will be "empiar" (case-sensitive). Other examples are "go" for Gene Ontology, "emdb" for EMDB (see :ref:`resources` for the full list of supported resources)
 *	the **otherType** is either a URI or IRI at which the accession (see **value**) is accessible) - from our example this would be https://www.ebi.ac.uk/pdbe/emdb/empiar/entry/10070/
 *	the **value** is the complete accession - from our example this is ``"10070"``
 *	the optional **label** is a string associated with this entry; for EMPIAR-10070 this is the title of the entry "Focused Ion Beam-Scanning Electron Microscopy of mitochondrial reticulum in murine skeletal muscle", and
@@ -90,12 +90,12 @@ A **segment** is a complex structure consisting of the following top-level entit
 
 .. image:: segment.png
 
-*	a **biological annotation** description (see `Segments: Biological Annotation`_)
+*	a **biological annotation** description (see :ref:`biological_annotation`)
 *	the **colour** of the segment in arithmetic ``rgba``
-*   a collection of **complex and macromolecule** IDs (for internal use - see `Segments: Complexes and Macromolecules`_)
-*	an optional list of **meshes** (see `Segments: Meshes`_)
-*	an optional **3D volume** description (see `Segments: 3D Volumes`_)
-*	an optional list of **shape primitives** (see `Segments: Shape Primitives`_)
+*   a collection of **complex and macromolecule** IDs (for internal use - see :ref:`complexes_and_macromolecules`)
+*	an optional list of **meshes** (see :ref:`meshes`)
+*	an optional **3D volume** description (see :ref:`volumes`)
+*	an optional list of **shape primitives** (see :ref:`shapes`)
 
 .. _biological_annotation:
 
@@ -109,7 +109,7 @@ The **biological annotation** consists of the following fields:
 *	the **name** of the segment as a free text string
 *	a **description** of the segment as a free text string
 *	a numerical indication of the **number of instances** of this segment; this has a default value of one (1)
-* 	a list of **external references** similar to global external references described in `Global External References`_
+* 	a list of **external references** similar to global external references described in :ref:`global_external_references`
 
 .. _complexes_and_macromolecules:
 
@@ -134,7 +134,7 @@ A **mesh** has three fields, each of which are further structured:
 
 *	a list of **vertices** which define the surface geometry (see `Segments: Mesh Vertex`_)
 *	a list of **polygons** which define the surface topology (see `Segments: Mesh Polygon`_)
-*	an optional **transform index** (from `Transformation Matrix`_)
+*	an optional **transform index** (from :ref:`transformation_matrix`)
 
 .. _vertex:
 
@@ -172,9 +172,9 @@ A **3D volume** consists of three fields:
 
 .. image:: three_d_volume.png
 
-*	the **lattice index** containing the volume data (see `Lattices`_)
-*	the **voxel value** that identifies this 3D volume segment in the lattice specified in `Lattices`_
-*	an optional **transform index** (from `Transformation Matrix`_)
+*	the **lattice index** containing the volume data (see :ref:`lattices`)
+*	the **voxel value** that identifies this 3D volume segment in the lattice specified in :ref:`lattices`
+*	an optional **transform index** (from :ref:`transformation_matrix`)
 
 .. _lattices:
 
@@ -188,8 +188,8 @@ A **lattice** describes a 3D structure consisting of orthogonally stacked voxels
 *	a **lattice index** - a unique integer over all lattices
 *	a **mode** string which specifies the data type of each voxel; valid values are "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "float32", "float64"
 *	the **endianness** of the lattice data; can be "little" or "big" (case-sensitive)
-*	the **size** of the lattice (see `Lattice: Volume Size`_)
-*	the **start** indices of the lattice (see `Lattice: Start Index`_)
+*	the **size** of the lattice (see :ref:`size`)
+*	the **start** indices of the lattice (see :ref:`start`)
 *	the **data** as a base64-encoded, zlib-zipped byte sequence
 
 
@@ -235,7 +235,7 @@ There are different types of **shape primitives**. Each shape primitive has:
 
 *  a **height**
 *  a **bottom radius**
-*  an optional **transform index** (from `Transformation Matrix`_)
+*  an optional **transform index** (from :ref:`transformation_matrix`)
 *  an optional **attribute value** - a floating point number associated with the shape
 
 **cuboids** have:
@@ -245,7 +245,7 @@ There are different types of **shape primitives**. Each shape primitive has:
 *  **x** extent
 *  **y** extent
 *  **z** extent
-*  an optional **transform index** (from `Transformation Matrix`_)
+*  an optional **transform index** (from :ref:`transformation_matrix`)
 *  an optional **attribute value** - a floating point number associated with the shape
 
 
@@ -255,7 +255,7 @@ There are different types of **shape primitives**. Each shape primitive has:
 
 *	a **height**
 *	a **diameter**
-*	an optional **transform index** (from `Transformation Matrix`_)
+*	an optional **transform index** (from :ref:`transformation_matrix`)
 *	an optional **attribute value** - a floating point number associated with the shape
 
 
@@ -266,7 +266,7 @@ There are different types of **shape primitives**. Each shape primitive has:
 *   **x** extent
 *   **y** extent
 *   **z** extent
-*	an optional **transform index** (from `Transformation Matrix`_)
+*	an optional **transform index** (from :ref:`transformation_matrix`)
 *	an optional **attribute value** - a floating point number associated with the shape
 
 
@@ -274,9 +274,9 @@ There are different types of **shape primitives**. Each shape primitive has:
 
 .. image:: subtomogram_average.png
 
-*	the **lattice index** containing the volume data (see `Lattices`_)
-*	the **voxel value** that specifies the recommended contour level in the lattice specified in `Lattices`_
-*	an optional **transform index** (from `Transformation Matrix`_)
+*	the **lattice index** containing the volume data (see :ref:`lattices`)
+*	the **voxel value** that specifies the recommended contour level in the lattice specified in :ref:`lattices`
+*	an optional **transform index** (from :ref:`transformation_matrix`)
 
 .. warning::
 
@@ -297,7 +297,7 @@ Here is a partial list of resources that may be used for (global) external refer
 +-----------------------------------------------------------------------+---------------+-----------------------------------------------------------------+-----------------------+------------------------+-----------------------+
 | Gene Ontology (GO)                                                    | go            | http://purl.obolibrary.org/obo/<GO_accession>                   | <GO_accession>        | ``label`` field        | ``description`` field |
 +-----------------------------------------------------------------------+---------------+-----------------------------------------------------------------+-----------------------+------------------------+-----------------------+
-| Electron Microscopy DataBank (EMDB)                                   | emdb          | https://www.ebi.ac.uk/pdbe/entry/emdb/<EMDB_accession>          | EMDB_accession>       | ``search_term``        | ``title`` field       |
+| Electron Microscopy DataBank (EMDB)                                   | emdb          | https://www.ebi.ac.uk/pdbe/entry/emdb/<EMDB_accession>          | <EMDB_accession>      | ``search_term``        | ``title`` field       |
 +-----------------------------------------------------------------------+---------------+-----------------------------------------------------------------+-----------------------+------------------------+-----------------------+
 | UniProt                                                               | uniprot       | https://www.uniprot.org/uniprot/<UniProt_accession>             | <UniProt_accession>   | ``name`` field         | ``proteins`` field    |
 +-----------------------------------------------------------------------+---------------+-----------------------------------------------------------------+-----------------------+------------------------+-----------------------+
