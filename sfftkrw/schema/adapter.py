@@ -208,8 +208,8 @@ class SFFComplexesAndMacromolecules(SFFType):
 class SFFExternalReference(SFFIndexType):
     """Class that encapsulates an external reference"""
     gds_type = sff.externalReferenceType
-    repr_string = u"SFFExternalReference(type={}, otherType={}, value={}, label={}, description={})"
-    repr_args = (u'type', u'other_type', u'value', u'label', u'description')
+    repr_string = u"SFFExternalReference(id={}, type={}, otherType={}, value={}, label={}, description={})"
+    repr_args = (u'id', u'type', u'other_type', u'value', u'label', u'description')
     ref_id = 0
     index_attr = u'ref_id'
 
@@ -355,7 +355,8 @@ class SFFBiologicalAnnotation(SFFType):
         if u"externalReferences" in hff_data:
             obj.external_references = SFFExternalReferenceList()
             for ref in hff_data[u'externalReferences']:
-                e = SFFExternalReference()
+                e = SFFExternalReference(new_obj=False)
+                # fixme: make sure external references are saved with their ID!
                 e.type, e.other_type, e.value, e.label, e.description = list(map(lambda r: _decode(r, u'utf-8'), ref))
                 obj.external_references.append(e)
         return obj
@@ -670,7 +671,7 @@ class SFFLatticeList(SFFListType):
         obj = cls()
         for lattice_id in hff_data:
             L = SFFLattice.from_hff(hff_data[lattice_id])
-            L.id = int(lattice_id)
+            L.id = int(lattice_id) # good! we preserve IDs
             obj.append(L)
         return obj
 
@@ -796,7 +797,7 @@ class SFFShapePrimitiveList(SFFListType):
         obj = cls()
         if u"ellipsoids" in hff_data:
             for ellipsoid in hff_data[u"ellipsoids"]:
-                e = SFFEllipsoid()
+                e = SFFEllipsoid(new_obj=False)
                 e.id = int(ellipsoid[u'id'])
                 e.x = float(ellipsoid[u'x'])
                 e.y = float(ellipsoid[u'y'])
@@ -807,7 +808,7 @@ class SFFShapePrimitiveList(SFFListType):
                 obj.append(e)
         if u"cones" in hff_data:
             for cone in hff_data[u"cones"]:
-                c = SFFCone()
+                c = SFFCone(new_obj=False)
                 c.id = int(cone[u'id'])
                 c.bottom_radius = float(cone[u'bottomRadius'])
                 c.height = float(cone[u'height'])
@@ -817,7 +818,7 @@ class SFFShapePrimitiveList(SFFListType):
                 obj.append(c)
         if u"cuboids" in hff_data:
             for cuboid in hff_data[u"cuboids"]:
-                c = SFFCuboid()
+                c = SFFCuboid(new_obj=False)
                 c.id = int(cuboid[u'id'])
                 c.x = float(cuboid[u'x'])
                 c.y = float(cuboid[u'y'])
@@ -828,7 +829,7 @@ class SFFShapePrimitiveList(SFFListType):
                 obj.append(c)
         if u"cylinders" in hff_data:
             for cylinder in hff_data[u"cylinders"]:
-                c = SFFCylinder()
+                c = SFFCylinder(new_obj=False)
                 c.id = int(cylinder[u'id'])
                 c.height = float(cylinder[u'height'])
                 c.diameter = float(cylinder[u'diameter'])
@@ -938,10 +939,11 @@ class SFFVertexList(SFFListType):
             obj.append(
                 SFFVertex(
                     vID=vertex[u'vID'],
-                    designation=vertex[u'designation'],
+                    designation=_decode(vertex[u'designation'], u'utf-8'),
                     x=float(vertex[u'x']),
                     y=float(vertex[u'y']),
-                    z=float(vertex[u'z'])
+                    z=float(vertex[u'z']),
+                    new_obj=False
                 )
             )
         return obj
@@ -981,7 +983,7 @@ class SFFPolygonList(SFFListType):
         assert isinstance(hff_data, h5py.Dataset)
         obj = cls()
         for polygon in hff_data:
-            P = SFFPolygon()
+            P = SFFPolygon(new_obj=False)
             P.PID = int(polygon[u'PID'])
             [P.append(int(_)) for _ in polygon[u'v']]
             obj.append(P)
@@ -1026,7 +1028,7 @@ class SFFMesh(SFFIndexType):
     def from_hff(cls, hff_data):
         """Return an SFFType object given an HDF5 object"""
         assert isinstance(hff_data, h5py.Group)
-        obj = cls()
+        obj = cls(new_obj=False)
         obj.vertices = SFFVertexList.from_hff(hff_data[u'vertices'])
         obj.polygons = SFFPolygonList.from_hff(hff_data[u'polygons'])
         return obj
@@ -1340,7 +1342,7 @@ class SFFTransformationMatrix(SFFIndexType):
         super(SFFTransformationMatrix, self).__init__(**kwargs)
 
     @classmethod
-    def from_array(cls, ndarray):
+    def from_array(cls, ndarray, **kwargs):
         """Construct an `SFFTransformationMatrix` object from a numpy `numpy.ndarray` array
 
         :param ndarray: a numpy array
@@ -1351,7 +1353,8 @@ class SFFTransformationMatrix(SFFIndexType):
         obj = cls(
             rows=rows,
             cols=cols,
-            data=SFFTransformationMatrix.stringify(ndarray)
+            data=SFFTransformationMatrix.stringify(ndarray),
+            **kwargs
         )
         obj._data = ndarray
         return obj
@@ -1465,11 +1468,8 @@ class SFFTransformList(SFFListType):
                     transform = hff_data[u'transformationMatrix'][_transform][0]
                 else:
                     transform = _transform
-                T = SFFTransformationMatrix()
+                T = SFFTransformationMatrix.from_array(transform[u'data'], new_obj=False)
                 T.id = transform[u'id']
-                T.rows = transform[u'rows']
-                T.cols = transform[u'cols']
-                T.data = u" ".join(map(_str, transform[u'data'].flatten()))
                 obj.append(T)
         return obj
 
@@ -1750,7 +1750,7 @@ class SFFSegmentation(SFFType):
         if u"globalExternalReferences" in hff_data:
             obj.global_external_references = SFFGlobalExternalReferenceList()
             for gref in hff_data[u'globalExternalReferences']:
-                g = SFFExternalReference()
+                g = SFFExternalReference(new_obj=False)
                 g.type, g.other_type, g.value, g.label, g.description = list(map(lambda g: _decode(g, u'utf-8'), gref))
                 obj.global_external_references.append(g)
         obj.segments = SFFSegmentList.from_hff(hff_data[u'segments'])
@@ -1777,11 +1777,6 @@ class SFFSegmentation(SFFType):
                 version=SFFTKRW_VERSION,
             )
         sff_data[u'software'] = self.software.as_json()
-        # sff_data[u'software'] = {
-        #     u'name': self.software.name,
-        #     u'version': self.software.version,
-        #     u'processingDetails': self.software.processing_details if self.software.processing_details is not None else None,
-        # }
         sff_data[u'primaryDescriptor'] = self.primary_descriptor
         if self.details is not None:
             sff_data[u'details'] = _decode(self.details, u'utf-8')

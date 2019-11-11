@@ -260,7 +260,8 @@ class SFFIndexType(SFFType):
             raise AttributeError(u"'{}' is missing a class variable '{}'".format(cls, cls.index_attr))
         # make sure the `index_attr` attribute is set to an integer
         try:
-            assert isinstance(getattr(cls, cls.index_attr), numbers.Integral)
+            _index_attr = getattr(cls, cls.index_attr)
+            assert isinstance(_index_attr, numbers.Integral)
         except AssertionError:
             raise SFFTypeError(cls.index_attr, numbers.Integral)
         # create the instance

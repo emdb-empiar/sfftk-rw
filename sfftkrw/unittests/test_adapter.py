@@ -1075,8 +1075,8 @@ class TestSFFExternalReference(Py23FixTestCase):
         self.assertEqual(e.description, self.d)
         self.assertEqual(
             _str(e),
-            u"""SFFExternalReference(type="{}", otherType="{}", value="{}", label="{}", description="{}")""".format(
-                self.t, self.o, self.v, self.l, self.d
+            u"""SFFExternalReference(id={}, type="{}", otherType="{}", value="{}", label="{}", description="{}")""".format(
+                0, self.t, self.o, self.v, self.l, self.d
             )
         )
 
@@ -1099,8 +1099,8 @@ class TestSFFExternalReference(Py23FixTestCase):
         self.assertEqual(e.description, self.d)
         self.assertEqual(
             _str(e),
-            u"""SFFExternalReference(type="{}", otherType="{}", value="{}", label="{}", description="{}")""".format(
-                self.t, self.o, self.v, self.l, self.d
+            u"""SFFExternalReference(id={}, type="{}", otherType="{}", value="{}", label="{}", description="{}")""".format(
+                self.i, self.t, self.o, self.v, self.l, self.d
             )
         )
 
