@@ -6,11 +6,12 @@ import io
 import numbers
 import os
 import re
+import inspect
 
 import h5py
 
 from .. import VALID_EXTENSIONS
-from ..core import _dict, _str, _encode, _decode, _bytes, _clear, _basestring
+from ..core import _dict, _str, _encode, _decode, _bytes, _clear, _basestring, _print, _getattr_static
 from ..core.print_tools import print_date
 from ..schema import emdb_sff as sff
 
@@ -30,6 +31,10 @@ class SFFTypeError(Exception):
             return repr(u"'{}' is not object of type {}".format(self.instance, self.klass))
         else:
             return repr(u"'{}' is not object of type {}: {}".format(self.instance, self.klass, self.message))
+
+
+class SFFValueError(Exception):
+    """Raised whenever invalid/missing values are found"""
 
 
 # fixme: correct documentation
@@ -169,47 +174,78 @@ class SFFType(object):
         - ``.hff`` - HDF5
         - ``.json`` - JSON
         """
-        if isinstance(fn, _basestring):
-            fn_ext = fn.split('.')[-1]
-            try:
-                assert fn_ext in VALID_EXTENSIONS
-            except AssertionError:
-                print_date(_encode(u"Invalid filename: extension should be one of {}: {}".format(
-                    ", ".join(VALID_EXTENSIONS),
-                    fn,
-                ), u'utf-8'))
-                return os.EX_DATAERR
-            if fn_ext == u'sff':
-                with open(fn, u'w') as f:
-                    # write version and encoding
-                    version = _kwargs.get(u'version') if u'version' in _kwargs else u"1.0"
-                    encoding = _kwargs.get(u'encoding') if u'encoding' in _kwargs else u"UTF-8"
-                    f.write(u'<?xml version="{}" encoding="{}"?>\n'.format(version, encoding))
-                    # always export from the root
-                    self._local.export(f, 0, *_args, **_kwargs)
-            elif fn_ext == u'hff':
-                with h5py.File(fn, u'w') as f:
-                    self.as_hff(f, *_args, **_kwargs)
-            elif fn_ext == u'json':
-                with open(fn, u'w') as f:
-                    self.as_json(f, *_args, **_kwargs)
-        elif issubclass(type(fn), io.IOBase):
-            self._local.export(fn, 0, *_args, **_kwargs)
-        return os.EX_OK
+        if self._is_valid():
+            if isinstance(fn, _basestring):
+                fn_ext = fn.split('.')[-1]
+                try:
+                    assert fn_ext in VALID_EXTENSIONS
+                except AssertionError:
+                    print_date(_encode(u"Invalid filename: extension should be one of {}: {}".format(
+                        ", ".join(VALID_EXTENSIONS),
+                        fn,
+                    ), u'utf-8'))
+                    return os.EX_DATAERR
+                if fn_ext == u'sff':
+                    with open(fn, u'w') as f:
+                        # write version and encoding
+                        version = _kwargs.get(u'version') if u'version' in _kwargs else u"1.0"
+                        encoding = _kwargs.get(u'encoding') if u'encoding' in _kwargs else u"UTF-8"
+                        f.write(u'<?xml version="{}" encoding="{}"?>\n'.format(version, encoding))
+                        # always export from the root
+                        self._local.export(f, 0, *_args, **_kwargs)
+                elif fn_ext == u'hff':
+                    with h5py.File(fn, u'w') as f:
+                        self.as_hff(f, *_args, **_kwargs)
+                elif fn_ext == u'json':
+                    with open(fn, u'w') as f:
+                        self.as_json(f, *_args, **_kwargs)
+            elif issubclass(type(fn), io.IOBase):
+                self._local.export(fn, 0, *_args, **_kwargs)
+            return os.EX_OK
+        else:
+            raise SFFValueError("export failed due to validation error")
 
     def as_hff(self, *args, **kwargs):
         raise NotImplementedError
 
     def as_json(self, *args, **kwargs):
-        raise NotImplementedError
+        if self._is_valid():
+            return os.EX_OK
+        else:
+            raise SFFValueError("export failed due to validation error")
+        # raise NotImplementedError
 
     @classmethod
     def from_hff(cls, *args, **kwargs):
+        """Convert HDF5 objects into EMDB-SFF objects
+
+        It should either return a valid object or raise an :py:class:`SFFValueError` due to failed validation
+        """
         raise NotImplementedError
 
     @classmethod
     def from_json(cls, *args, **kwargs):
-        raise NotImplementedError
+        raise SFFValueError("export failed due to validation error")
+
+    def _is_valid(self):
+        """On output ensure that all required attributes have a valid value"""
+        invalid_attrs = list()
+        for attr_name, attr_value in inspect.getmembers(self):
+            # don't even consider dunders
+            if attr_name.startswith('__'):
+                continue
+            # getattr_static prevents dynamic lookup;
+            # see https://docs.python.org/3.7/library/inspect.html#fetching-attributes-statically
+            attr_obj = _getattr_static(self, attr_name)
+            if isinstance(attr_obj, SFFAttribute): # we're only interested in data descriptors
+                value = getattr(self, attr_name)
+                if attr_obj._required and value is None:
+                    invalid_attrs.append(attr_name)
+        if invalid_attrs:
+            print_date("{} is missing the following required attributes: {}".format(self, ', '.join(invalid_attrs)))
+            return False
+        else:
+            return True
 
 
 class SFFIndexType(SFFType):
@@ -265,6 +301,7 @@ class SFFIndexType(SFFType):
         except AssertionError:
             raise SFFTypeError(cls.index_attr, numbers.Integral)
         # create the instance
+        # todo: add new_obj=new_obj for call to super
         obj = super(SFFIndexType, cls).__new__(cls)
         if new_obj:
             # current index
@@ -648,7 +685,8 @@ class SFFAttribute(object):
     :type help: bytes or unicode
     """
 
-    def __init__(self, name, sff_type=None, help=""):
+    # todo: add kwarg 'required=False' and do validation check for required attributes
+    def __init__(self, name, sff_type=None, required=False, default=None, help=""):
         """Initialiser for an attribute
 
         This class acts as an intermediary between ``SFFType`` and ``emdb_sff`` attributes. Each ``SFFType``
@@ -662,12 +700,18 @@ class SFFAttribute(object):
         self._name = name
         self.__doc__ = help
         self._sff_type = sff_type
+        self._required = required
+        self._default = default
 
     def __get__(self, obj, _):  # replaced objtype with _
         if self._sff_type:
-            return self._sff_type.from_gds_type(getattr(obj._local, self._name, None))
+            value = self._sff_type.from_gds_type(getattr(obj._local, self._name, self._default))
         else:
-            return getattr(obj._local, self._name, None)
+            value = getattr(obj._local, self._name, self._default)
+        if self._default is not None and value is None:
+            return self._default
+        else:
+            return value
 
     def __set__(self, obj, value):
         if self._sff_type:
@@ -676,6 +720,7 @@ class SFFAttribute(object):
             else:
                 raise SFFTypeError(value, self._sff_type)
         else:
+            # _print("value = '{}'".format(value))
             setattr(obj._local, self._name, value)
 
     def __delete__(self, obj):

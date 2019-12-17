@@ -14,7 +14,7 @@ import numpy
 from random_words import RandomWords, LoremIpsum
 
 from . import _random_integer, Py23FixTestCase, _random_float, _random_floats
-from ..core import _xrange, _str
+from ..core import _xrange, _str, _print
 from ..schema import adapter, base, emdb_sff
 
 rw = RandomWords()
@@ -100,26 +100,34 @@ class TestSFFType(Py23FixTestCase):
         # plain string: prints the plain string
         v = adapter.SFFThreeDVolume()
         self.assertRegex(_str(v), r"""SFFThreeDVolume\(latticeId=None, value=None, transformId=None\)""")
+
         # len() works
         class _Complexes(adapter.SFFComplexList):
             repr_string = u'complex list of length {}'
             repr_args = (u'len()',)
+
         C = _Complexes()
         no_cpx = _random_integer(start=2, stop=10)
         [C.append(rw.random_word()) for _ in _xrange(no_cpx)]
         self.assertRegex(_str(C), r".*{}.*".format(no_cpx))
+
         # using index syntax
         class _Lattice(adapter.SFFLattice):
             repr_string = u"{}"
-            repr_args = (u"data[:20]", )
-        L = _Lattice.from_array(numpy.random.randint(0, 10, size=(5, 5, 5)), size=adapter.SFFVolumeStructure(rows=5, cols=5, sections=5))
+            repr_args = (u"data[:20]",)
+
+        L = _Lattice.from_array(numpy.random.randint(0, 10, size=(5, 5, 5)),
+                                size=adapter.SFFVolumeStructure(rows=5, cols=5, sections=5))
         self.assertRegex(_str(L), r"\".*\.\.\.\"")
+
         # no repr_args
         class _Complexes(adapter.SFFComplexList):
             repr_string = u"complexes"
             repr_args = ()
+
         C = _Complexes()
         self.assertEqual(_str(C), u"complexes")
+
         # repr_str is missing: prints out the output of type
         class _RGBA(adapter.SFFRGBA):
             repr_string = ""
@@ -129,7 +137,7 @@ class TestSFFType(Py23FixTestCase):
 
         # unmatched repr_args (it should be a tuple of four values)
         class _RGBA(adapter.SFFRGBA):
-            repr_args = ('red', 'green')
+            repr_args = (u'red', u'green')
 
         _c = _RGBA(random_colour=True)
         with self.assertRaisesRegex(ValueError, r'Unmatched number.*'):
@@ -138,7 +146,8 @@ class TestSFFType(Py23FixTestCase):
     def test_export_xml(self):
         """Test that we can export a segmentation as XML"""
         S = adapter.SFFSegmentation()
-        S.name = 'test segmentation'
+        S.name = u'test segmentation'
+        S.primary_descriptor = u'meshList'
         S.details = li.get_sentences(sentences=10)
         tf = tempfile.NamedTemporaryFile()
         tf.name += '.sff'
@@ -151,8 +160,8 @@ class TestSFFType(Py23FixTestCase):
     def test_export_hdf5(self):
         """Test that we can export a segmentation as XML"""
         S = adapter.SFFSegmentation()
-        S.name = 'test segmentation'
-        S.primary_descriptor = 'meshList'
+        S.name = u'test segmentation'
+        S.primary_descriptor = u'meshList'
         S.software = adapter.SFFSoftware()
         S.transforms = adapter.SFFTransformList()
         S.bounding_box = adapter.SFFBoundingBox()
@@ -161,7 +170,7 @@ class TestSFFType(Py23FixTestCase):
         S.lattices = adapter.SFFLatticeList()
         S.details = li.get_sentences(sentences=10)
         tf = tempfile.NamedTemporaryFile()
-        tf.name += '.hff'
+        tf.name += u'.hff'
         S.export(tf.name)
         _S = adapter.SFFSegmentation.from_file(tf.name)
         self.assertEqual(S.version, _S.version)
@@ -171,8 +180,8 @@ class TestSFFType(Py23FixTestCase):
     def test_export_json(self):
         """Test that we can export a segmentation as XML"""
         S = adapter.SFFSegmentation()
-        S.name = 'test segmentation'
-        S.primary_descriptor = 'meshList'
+        S.name = u'test segmentation'
+        S.primary_descriptor = u'meshList'
         S.software = adapter.SFFSoftware()
         S.transforms = adapter.SFFTransformList()
         S.bounding_box = adapter.SFFBoundingBox()
@@ -190,15 +199,18 @@ class TestSFFType(Py23FixTestCase):
 
     def test_export_stderr(self):
         """Test that we can export to stderr"""
-        S = adapter.SFFSegmentation()
+        S = adapter.SFFSegmentation(
+            name=rw.random_word(),
+            primaryDescriptor=u'meshList',
+        )
         # we check that everything was OK
         self.assertEqual(S.export(sys.stderr), os.EX_OK)
 
     def test_export_errors(self):
         """Test that we catch all export errors"""
         tf = tempfile.NamedTemporaryFile()
-        tf.name += '.invalid'
-        self.assertEqual(os.EX_DATAERR, adapter.SFFSegmentation().export(tf.name))
+        tf.name += u'.invalid'
+        self.assertEqual(os.EX_DATAERR, adapter.SFFSegmentation(name=rw.random_word(), primaryDescriptor=u'meshList').export(tf.name))
 
     def test_format_method_missing(self):
         """Test that we get `NotImplementedError`s"""
@@ -209,19 +221,25 @@ class TestSFFType(Py23FixTestCase):
 
         _S = _SomeEntity()
         with self.assertRaises(NotImplementedError):
-            _S.as_hff('test')
+            _S.as_hff(u'test')
+
+        self.assertEqual(_S.as_json(u'test'), 0) # OK
 
         with self.assertRaises(NotImplementedError):
-            _S.as_json('test')
+            _S.from_hff(u'test')
 
-        with self.assertRaises(NotImplementedError):
-            _S.from_hff('test')
-
-        with self.assertRaises(NotImplementedError):
-            _S.from_json('test')
+        with self.assertRaises(base.SFFValueError):
+            _S.from_json(u'test')
 
         with self.assertRaises(NotImplementedError):
             _S == _S
+
+    def test_validation(self):
+        """Test validation check"""
+        s = adapter.SFFSegment(colour=adapter.SFFRGBA(random_colour=True))
+        self.assertTrue(s._is_valid())
+        s = adapter.SFFSegment(colour=adapter.SFFRGBA(random_colour=True), new_obj=False)
+        self.assertFalse(s._is_valid())
 
 
 class TestSFFIndexType(Py23FixTestCase):
@@ -1102,3 +1120,32 @@ class TestSFFAttribute(Py23FixTestCase):
         _S = _Segmentation()
         with self.assertRaises(base.SFFTypeError):
             _S.s = adapter.SFFSegment()
+
+    def test_default_value(self):
+        """Test setting a default value to the attribute"""
+
+        class _BA(adapter.SFFType):
+            gds_type = emdb_sff.biologicalAnnotationType
+            no = base.SFFAttribute('numberOfInstances', default=1)
+
+        # explicit
+        _b = _BA(numberOfInstances=33)
+        self.assertEqual(_b.no, 33)
+        # default
+        _b = _BA()
+        # _print('_b.no', _b.no)
+        self.assertEqual(_b.no, 1)
+
+    def test_required_value(self):
+        """Test setting a required attribute"""
+
+        class _ER(adapter.SFFType):
+            gds_type = emdb_sff.externalReferenceType
+            t = base.SFFAttribute('type', required=True)
+
+        _e = _ER()
+        self.assertFalse(_e._is_valid())
+        _e.t = rw.random_word()
+        self.assertTrue(_e._is_valid())
+
+

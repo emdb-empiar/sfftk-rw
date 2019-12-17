@@ -9,8 +9,9 @@ from __future__ import division, print_function
 
 import glob
 import os
-import sys
 import shlex
+import shutil
+import sys
 import unittest
 
 from . import TEST_DATA_PATH
@@ -175,13 +176,19 @@ class TestMainHandleTests(unittest.TestCase):
 class TestMainMain(unittest.TestCase):
     def test_main_convert(self):
         """Test the main entry point"""
-        in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1832.sff')
+        _in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1832.sff')
+        in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1832_copy.sff')
+        shutil.copy(_in_file, in_file)
         cmd = shlex.split(u"sfr convert --verbose {}".format(
             in_file,
         ))
         sys.argv = cmd
         status = Main.main()
         self.assertEqual(status, os.EX_OK)
+        copies = glob.glob(os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1832_copy.*'))
+        if copies:
+            for copy in copies:
+                os.remove(copy)
 
     def test_main_view(self):
         """Test the main entry point"""

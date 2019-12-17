@@ -264,12 +264,12 @@ def parse_args(_args, use_shlex=False):
                     '.')[:-1]) + '.{}'.format(args.format)
                 args.__setattr__('output', os.path.join(dirname, fn))
             # convert file.sff to file.hff
-            elif re.match(r'.*\.sff$', from_file):
+            elif re.match(r'.*\.(sff|xml)$', from_file):
                 fn = ".".join(
                     os.path.basename(from_file).split('.')[:-1]) + '.hff'
                 args.__setattr__('output', os.path.join(dirname, fn))
             # convert file.hff to file.sff
-            elif re.match(r'.*\.hff$', from_file):
+            elif re.match(r'.*\.(hff|h5|hdf5)$', from_file):
                 fn = ".".join(
                     os.path.basename(from_file).split('.')[:-1]) + '.sff'
                 args.__setattr__('output', os.path.join(dirname, fn))

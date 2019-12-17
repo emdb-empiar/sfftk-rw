@@ -12,8 +12,9 @@ import os
 import re
 import sys
 
-from .schema.adapter import SFFSegmentation
+from .core import _decode
 from .core.print_tools import print_date
+from .schema.adapter import SFFSegmentation
 
 __author__ = "Paul K. Korir, PhD"
 __email__ = "pkorir@ebi.ac.uk, paul.korir@gmail.com"
@@ -31,11 +32,11 @@ def handle_convert(args):  # @UnusedVariable
     :type configs: ``sfftk.core.configs.Configs``
     :return int status: status
     """
-    if re.match(r'.*\.sff$', args.from_file, re.IGNORECASE):
+    if re.match(r'.*\.(sff|xml)$', args.from_file, re.IGNORECASE):
         if args.verbose:
-            print_date("Converting from EMDB-SFf (XML) file {}".format(args.from_file))
+            print_date("Converting from EMDB-SFF (XML) file {}".format(args.from_file))
         seg = SFFSegmentation.from_file(args.from_file)
-    elif re.match(r'.*\.hff$', args.from_file, re.IGNORECASE):
+    elif re.match(r'.*\.(hff|h5|hdf5)$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (HDF5) file {}".format(args.from_file))
         seg = SFFSegmentation.from_file(args.from_file)
@@ -75,35 +76,35 @@ def handle_view(args):  # @UnusedVariable
     :type configs: ``sfftk.core.configs.Configs``
     :return int status: status
     """
-    if re.match(r'.*\.sff$', args.from_file, re.IGNORECASE):
+    if re.match(r'.*\.(sff|xml)$', args.from_file, re.IGNORECASE):
         seg = SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
-        print("EMDB-SFF Segmentation version {}".format(seg.version))
-        print("Segmentation name: {}".format(seg.name))
-        print("Format: XML")
-        print("Primary descriptor: {}".format(seg.primary_descriptor))
-        print("No. of segments: {}".format(len(seg.segments)))
-        print("*" * 50)
-    elif re.match(r'.*\.hff$', args.from_file, re.IGNORECASE):
+        print(u"EMDB-SFF Segmentation version {}".format(_decode(seg.version, u'utf-8')))
+        print(u"Segmentation name: {}".format(_decode(seg.name, u'utf-8')))
+        print(u"Format: XML")
+        print(u"Primary descriptor: {}".format(_decode(seg.primary_descriptor, u'utf-8')))
+        print(u"No. of segments: {}".format(len(seg.segments)))
+        print(u"*" * 50)
+    elif re.match(r'.*\.(hff|h5|hdf5)$', args.from_file, re.IGNORECASE):
         seg = SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
-        print("EMDB-SFF Segmentation version {}".format(seg.version))
-        print("Segmentation name: {}".format(seg.name))
-        print("Format: HDF5")
-        print("Primary descriptor: {}".format(seg.primary_descriptor))
-        print("No. of segments: {}".format(len(seg.segments)))
-        print("*" * 50)
+        print(u"EMDB-SFF Segmentation version {}".format(_decode(seg.version, u'utf-8')))
+        print(u"Segmentation name: {}".format(_decode(seg.name, u'utf-8')))
+        print(u"Format: HDF5")
+        print(u"Primary descriptor: {}".format(_decode(seg.primary_descriptor, u'utf-8')))
+        print(u"No. of segments: {}".format(len(seg.segments)))
+        print(u"*" * 50)
     elif re.match(r'.*\.json$', args.from_file, re.IGNORECASE):
         seg = SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
-        print("EMDB-SFF Segmentation version {}".format(seg.version))
-        print("Segmentation name: {}".format(seg.name))
-        print("Format: JSON")
-        print("Primary descriptor: {}".format(seg.primary_descriptor))
-        print("No. of segments: {}".format(len(seg.segments)))
-        print("*" * 50)
+        print(u"EMDB-SFF Segmentation version {}".format(_decode(seg.version, u'utf-8')))
+        print(u"Segmentation name: {}".format(_decode(seg.name, u'utf-8')))
+        print(u"Format: JSON")
+        print(u"Primary descriptor: {}".format(_decode(seg.primary_descriptor, u'utf-8')))
+        print(u"No. of segments: {}".format(len(seg.segments)))
+        print(u"*" * 50)
     else:
-        print("Not implemented view for files of type .{}".format(args.from_file.split('.')[-1]), file=sys.stderr)
+        print(u"Not implemented view for files of type .{}".format(args.from_file.split('.')[-1]), file=sys.stderr)
     return os.EX_OK
 
 

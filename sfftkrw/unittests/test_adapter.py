@@ -17,7 +17,7 @@ import numpy
 from random_words import RandomWords, LoremIpsum
 
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_integers
-from ..core import _xrange, _str, _bytes, _decode
+from ..core import _xrange, _str, _bytes, _decode, _print
 from ..schema import adapter, emdb_sff, base
 
 rw = RandomWords()
@@ -29,12 +29,12 @@ __date__ = u"2017-02-20"
 
 
 # todo: add ID within each test method
-# todo: the individual class tests should include the repr_string check
 class TestSFFSegmentation(Py23FixTestCase):
     @classmethod
     def setUpClass(cls):
         # empty segmentation object
         segmentation = adapter.SFFSegmentation()  # 3D volume
+        segmentation.name = rw.random_word()
         segmentation.primary_descriptor = u"threeDVolume"
         # transforms
         transforms = adapter.SFFTransformList()
@@ -134,6 +134,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_create_3D(self):
         """Create an SFFSegmentation object with 3D volume segmentation from scratch"""
         segmentation = adapter.SFFSegmentation()  # 3D volume
+        segmentation.name = rw.random_word()
         segmentation.primary_descriptor = u"threeDVolume"
         # transforms
         transforms = adapter.SFFTransformList()
@@ -256,6 +257,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_create_shapes(self):
         """Test that we can create a segmentation of shapes programmatically"""
         segmentation = adapter.SFFSegmentation()
+        segmentation.name = rw.random_word()
         segmentation.software = adapter.SFFSoftware(
             name=rw.random_word(),
             version=rw.random_word(),
@@ -524,6 +526,7 @@ class TestSFFSegmentation(Py23FixTestCase):
     def test_create_meshes(self):
         """Test that we can create a segmentation of meshes programmatically"""
         segmentation = adapter.SFFSegmentation()
+        segmentation.name = rw.random_word()
         segmentation.primary_descriptor = u"meshList"
         segments = adapter.SFFSegmentList()
         segment = adapter.SFFSegment()
@@ -990,6 +993,32 @@ class TestSFFRGBA(Py23FixTestCase):
         self.assertTrue(0 <= colour.blue <= 1)
         self.assertTrue(0 <= colour.alpha <= 1)
 
+    def test_validation(self):
+        """Test that validation works"""
+        c = adapter.SFFRGBA(random_colour=True)
+        self.assertTrue(c._is_valid())
+        c = adapter.SFFRGBA()
+        self.assertFalse(c._is_valid())
+
+    def test_as_json(self):
+        """Test export to JSON"""
+        # empty
+        c = adapter.SFFRGBA()
+        with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
+            c.as_json()
+        # populated
+        c = adapter.SFFRGBA(random_colour=True)
+        c_json = c.as_json()
+        # _print(c_json)
+        self.assertEqual(c_json[u'colour'], c.value)
+
+    def test_from_json(self):
+        """Test import from JSON"""
+        c_json = {'colour': (0.8000087483646712, 0.017170600210644427, 0.5992636068532492, 1.0)}
+        c = adapter.SFFRGBA.from_json(c_json)
+        # _print(c)
+        self.assertEqual(c.value, c_json[u'colour'])
+
 
 class TestSFFComplexList(Py23FixTestCase):
     """Tests for SFFComplexList class"""
@@ -1058,6 +1087,9 @@ class TestSFFExternalReference(Py23FixTestCase):
         self.l = u" ".join(rw.random_words(count=3))
         self.d = li.get_sentence()
 
+    def tearDown(self):
+        adapter.SFFExternalReference.reset_id()
+
     def test_default(self):
         """Test default settings"""
         e = adapter.SFFExternalReference(
@@ -1103,6 +1135,75 @@ class TestSFFExternalReference(Py23FixTestCase):
                 self.i, self.t, self.o, self.v, self.l, self.d
             )
         )
+
+    def test_as_json(self):
+        """Test that we can output as JSON"""
+        e = adapter.SFFExternalReference(
+            type=self.t,
+            otherType=self.o,
+            value=self.v,
+            label=self.l,
+            description=self.d,
+        )
+        e_json = e.as_json()
+        self.assertEqual(e_json[u'id'], e.id)
+        self.assertEqual(e_json[u'type'], e.type)
+        self.assertEqual(e_json[u'otherType'], e.other_type)
+        self.assertEqual(e_json[u'value'], e.value)
+        self.assertEqual(e_json[u'label'], e.label)
+        self.assertEqual(e_json[u'description'], e.description)
+        # missing mandatory
+        e = adapter.SFFExternalReference(
+            # type=self.t,
+            # otherType=self.o,
+            # value=self.v,
+            label=self.l,
+            description=self.d,
+        )
+        with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
+            e.as_json()
+        # missing non-mandatory
+        e = adapter.SFFExternalReference(
+            type=self.t,
+            otherType=self.o,
+            value=self.v,
+            # label=self.l,
+            # description=self.d,
+        )
+        self.assertEqual(e_json[u'type'], e.type)
+        self.assertEqual(e_json[u'otherType'], e.other_type)
+        self.assertEqual(e_json[u'value'], e.value)
+
+    def test_from_json(self):
+        """Test that we can recreate from JSON"""
+        e_json = {'id': 0, 'type': 'symptom', 'otherType': 'thin', 'value': 'definitions',
+                  'label': 'chairpersons swabs pools',
+                  'description': 'Malesuada facilisinam elitduis mus dis facer, primis est pellentesque integer dapibus '
+                                 'semper semvestibulum curae lacusnulla.'}
+        e = adapter.SFFExternalReference.from_json(e_json)
+        self.assertEqual(e_json[u'id'], e.id)
+        self.assertEqual(e_json[u'type'], e.type)
+        self.assertEqual(e_json[u'otherType'], e.other_type)
+        self.assertEqual(e_json[u'value'], e.value)
+        self.assertEqual(e_json[u'label'], e.label)
+        self.assertEqual(e_json[u'description'], e.description)
+        # missing mandatory
+        e_json = {'id': 0, 'otherType': 'thin', 'value': 'definitions',
+                  'label': 'chairpersons swabs pools',
+                  'description': 'Malesuada facilisinam elitduis mus dis facer, primis est pellentesque integer dapibus '
+                                 'semper semvestibulum curae lacusnulla.'}
+        with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
+            adapter.SFFExternalReference.from_json(e_json)
+        # missing non-mandatory
+        e_json = {'type': 'symptom', 'otherType': 'thin', 'value': 'definitions',
+                  'label': 'chairpersons swabs pools'}
+        e = adapter.SFFExternalReference.from_json(e_json)
+        self.assertIsNone(e.id)
+        self.assertEqual(e_json[u'type'], e.type)
+        self.assertEqual(e_json[u'otherType'], e.other_type)
+        self.assertEqual(e_json[u'value'], e.value)
+        self.assertEqual(e_json[u'label'], e.label)
+        self.assertIsNone(e.description)
 
 
 class TestSFFExternalReferenceList(Py23FixTestCase):
@@ -1202,6 +1303,72 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
         self.assertEqual(e.label, self.ll[e_id])
         self.assertEqual(e.description, self.dd[e_id])
 
+    def test_as_json(self):
+        """Test that we can export to JSON"""
+        ee = [adapter.SFFExternalReference(
+            type=self.tt[i],
+            otherType=self.oo[i],
+            value=self.vv[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        E = adapter.SFFExternalReferenceList()
+        [E.append(e) for e in ee]
+        E_json = E.as_json()
+        # _print(E_json)
+        for i in _xrange(self._no_items):
+            self.assertEqual(E[i].id, E_json[i][u'id'])
+            self.assertEqual(E[i].type, E_json[i][u'type'])
+            self.assertEqual(E[i].other_type, E_json[i][u'otherType'])
+            self.assertEqual(E[i].value, E_json[i][u'value'])
+            self.assertEqual(E[i].label, E_json[i][u'label'])
+            self.assertEqual(E[i].description, E_json[i][u'description'])
+        # empty
+        E = adapter.SFFExternalReferenceList()
+        E_json = E.as_json()
+        self.assertEqual(len(E), len(E_json))
+
+    def test_from_json(self):
+        """Test that we can import from JSON"""
+        E_json = [{'id': 0, 'type': 'projectiles', 'otherType': 'blast', 'value': 'injector',
+                   'label': 'bricks breaches crawl',
+                   'description': 'Est facilisicurabitur morbi dapibus volutpat, vestibulumnulla consecteturpraesent velit sempermorbi diaminteger taciti risusdonec accusam.'},
+                  {'id': 1, 'type': 'signals', 'otherType': 'wines', 'value': 'experience',
+                   'label': 'alibi defaults showers',
+                   'description': 'Auctor habitasse amet temporsuspendisse, integer hendrerit nullasuspendisse.'},
+                  {'id': 2, 'type': 'openings', 'otherType': 'pack', 'value': 'augmentations',
+                   'label': 'outing rings tilling',
+                   'description': 'Liberoduis esse nobis semvestibulum bibendumin non, sagittis eget eum massapellentesque eratproin nonummy massaphasellus.'},
+                  {'id': 3, 'type': 'blaze', 'otherType': 'contract', 'value': 'diagrams',
+                   'label': 'sewers weddings telecommunications',
+                   'description': 'Ipsum no luctus ultricies enimsed antesuspendisse.'},
+                  {'id': 4, 'type': 'terms', 'otherType': 'blackboard', 'value': 'nothing',
+                   'label': 'depot trades strikers', 'description': 'Elitr hendrerit tortorvestibulum exerci.'},
+                  {'id': 5, 'type': 'carriage', 'otherType': 'screens', 'value': 'apprehension',
+                   'label': 'signalers hunk wagon', 'description': 'Consequatduis muspellentesque.'},
+                  {'id': 6, 'type': 'lot', 'otherType': 'gums', 'value': 'rim', 'label': 'chatter north clearances',
+                   'description': 'Nostra felis.'},
+                  {'id': 7, 'type': 'outlet', 'otherType': 'actions', 'value': 'twists',
+                   'label': 'compromises additives mirrors',
+                   'description': 'Diaminteger phasellus mi sollicitudin laoreetphasellus possim, himenaeos semvestibulum egestasmauris clita elitnunc suscipit pulvinar.'},
+                  {'id': 8, 'type': 'shears', 'otherType': 'user', 'value': 'view', 'label': 'cable diagram churns',
+                   'description': 'Dolor laoreet adipiscing takimata neque dignissim velit enimaliquam, lobortisetiam mazim nunccurabitur aliquip praesent blandit.'},
+                  {'id': 9, 'type': 'jurisdiction', 'otherType': 'plug', 'value': 'calibrations',
+                   'label': 'oscillation baby males', 'description': 'Iusto aliquam quod orci, aaenean justo luctus.'}]
+        E = adapter.SFFExternalReferenceList.from_json(E_json)
+        # _print(E)
+        for i, extref in enumerate(E_json):
+            self.assertEqual(E[i].id, extref[u'id'])
+            self.assertEqual(E[i].type, extref[u'type'])
+            self.assertEqual(E[i].other_type, extref[u'otherType'])
+            self.assertEqual(E[i].value, extref[u'value'])
+            self.assertEqual(E[i].label, extref[u'label'])
+            self.assertEqual(E[i].description, extref[u'description'])
+        # invalid
+        E_json = "sldjfl"  # iterable but invalid
+        with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
+            adapter.SFFExternalReferenceList.from_json(E_json)
+
 
 class TestSFFBiologicalAnnotation(Py23FixTestCase):
     def setUp(self):
@@ -1284,6 +1451,119 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
         self.assertEqual(b.description, self.description)
         self.assertEqual(b.number_of_instances, self.no)
         self.assertEqual(b.external_references, self.external_references)
+
+    def test_hff(self):
+        """Test conversion to and from HDF5"""
+        # empty case
+        b_empty = adapter.SFFBiologicalAnnotation()
+        # _print(b_empty)
+        hff_f = tempfile.NamedTemporaryFile()
+        hff_f.name += '.hff'
+        with h5py.File(hff_f.name, 'w') as h:
+            group = h.create_group(u'test')
+            group = b_empty.as_hff(group)
+
+            b2_empty = adapter.SFFBiologicalAnnotation.from_hff(group[u'biologicalAnnotation'])
+            # _print(b2_empty)
+
+            self.assertEqual(b_empty.name, b2_empty.name)
+            self.assertEqual(b_empty.name, b2_empty.name)
+            self.assertEqual(b_empty.description, b2_empty.description)
+            self.assertEqual(b_empty.number_of_instances, b2_empty.number_of_instances)
+            self.assertEqual(b_empty.external_references, b2_empty.external_references)
+        # get rid of the file
+        os.remove(hff_f.name)
+
+        # non-empty case
+        b_full = adapter.SFFBiologicalAnnotation()
+        b_full.name = ' '.join(rw.random_words(count=2))
+        b_full.description = li.get_sentence()
+        es = adapter.SFFExternalReferenceList()
+        no_es = _random_integer(2, 10)
+        for _ in _xrange(no_es):
+            e = adapter.SFFExternalReference()
+            e.type = rw.random_word()
+            e.other_type = rw.random_word()
+            e.value = rw.random_word()
+            e.label = ' '.join(rw.random_words(count=3))
+            e.description = li.get_sentence()
+            es.append(e)
+        b_full.external_references = es
+        hff_f = tempfile.NamedTemporaryFile()
+        hff_f.name += '.hff'
+        # _print(b_full)
+        with h5py.File(hff_f.name, 'w') as h:
+            group = h.create_group(u'test')
+            group = b_full.as_hff(group)
+
+            b2_full = adapter.SFFBiologicalAnnotation.from_hff(group[u'biologicalAnnotation'])
+            # _print(b2_full)
+
+            self.assertEqual(b_full.name, b2_full.name)
+            self.assertEqual(b_full.name, b2_full.name)
+            self.assertEqual(b_full.description, b2_full.description)
+            self.assertEqual(b_full.number_of_instances, b2_full.number_of_instances)
+            self.assertEqual(b_full.external_references, b2_full.external_references)
+        # get rid of the file
+        os.remove(hff_f.name)
+
+    def test_json(self):
+        """Test conversion to and from JSON"""
+        # empty case
+        b_empty = adapter.SFFBiologicalAnnotation()
+        # # _print(b_empty)
+        b_json = b_empty.as_json()
+        # _print(b_json)
+        b2_empty = adapter.SFFBiologicalAnnotation.from_json(b_json)
+        # _print(b2_empty)
+        self.assertEqual(b_empty, b2_empty)
+        # non-empty case
+        b_full = adapter.SFFBiologicalAnnotation()
+        b_full.name = ' '.join(rw.random_words(count=2))
+        b_full.description = li.get_sentence()
+        es = adapter.SFFExternalReferenceList()
+        no_es = _random_integer(2, 10)
+        for _ in _xrange(no_es):
+            e = adapter.SFFExternalReference()
+            e.type = rw.random_word()
+            e.other_type = rw.random_word()
+            e.value = rw.random_word()
+            e.label = ' '.join(rw.random_words(count=3))
+            e.description = li.get_sentence()
+            es.append(e)
+        b_full.external_references = es
+        b_json = b_full.as_json()
+        # _print(b_json)
+        b2_full = adapter.SFFBiologicalAnnotation.from_json(b_json)
+        # _print(b2_full)
+        self.assertEqual(b_full, b2_full)
+
+    def test_from_json(self):
+        """Test that we can import from JSON"""
+        b_json = {'name': 'returns agent', 'description': 'Lacus leopraesent risusdonec tempus congue.',
+                  'externalReferences': [{'id': 0, 'type': 'listing', 'otherType': 'antennas', 'value': 'weddings',
+                                          'label': 'times selection deployment',
+                                          'description': 'Facilisicurabitur mi sanctus fames dignissim autem.'},
+                                         {'id': 1, 'type': 'basis', 'otherType': 'leaks', 'value': 'cups',
+                                          'label': 'yaw workloads house', 'description': 'Nequeetiam habitasse.'},
+                                         {'id': 2, 'type': 'chance', 'otherType': 'theory', 'value': 'allegation',
+                                          'label': 'maps chairwomen flashes',
+                                          'description': 'Suscipit eos pulvinar zzril doming dolores.'}]}
+        b_full = adapter.SFFBiologicalAnnotation.from_json(b_json)
+        # _print(b_full)
+        self.assertEqual(b_full.name, b_json[u'name'])
+        self.assertEqual(b_full.description, b_json[u'description'])
+        try:
+            self.assertEqual(b_full.number_of_instances, b_json[u'numberOfInstances'])
+        except KeyError:
+            self.assertEqual(b_full.number_of_instances, 1)
+        for i, extref in enumerate(b_json[u'externalReferences']):
+            self.assertEqual(b_full.external_references[i].id, extref[u'id'])
+            self.assertEqual(b_full.external_references[i].type, extref[u'type'])
+            self.assertEqual(b_full.external_references[i].other_type, extref[u'otherType'])
+            self.assertEqual(b_full.external_references[i].value, extref[u'value'])
+            self.assertEqual(b_full.external_references[i].label, extref[u'label'])
+            self.assertEqual(b_full.external_references[i].description, extref[u'description'])
 
 
 class TestSFFThreeDVolume(Py23FixTestCase):
@@ -1812,6 +2092,55 @@ class TestSFFBoundingBox(Py23FixTestCase):
         self.assertEqual(B.ymax, _ymax)
         self.assertEqual(B.zmin, _zmin)
         self.assertEqual(B.zmax, _zmax)
+
+    def test_as_json(self):
+        """Test export to JSON"""
+        #full
+        x0, x1, y0, y1, z0, z1 = _random_integers(count=6)
+        bb = adapter.SFFBoundingBox(
+            xmin=x0, xmax=x1,
+            ymin=y0, ymax=y1,
+            zmin=z0, zmax=z1
+        )
+        _print(bb)
+        bb_json = bb.as_json()
+        _print(bb_json)
+        self.assertEqual(bb.xmin, bb_json[u'xmin'])
+        self.assertEqual(bb.xmax, bb_json[u'xmax'])
+        self.assertEqual(bb.ymin, bb_json[u'ymin'])
+        self.assertEqual(bb.ymax, bb_json[u'ymax'])
+        self.assertEqual(bb.zmin, bb_json[u'zmin'])
+        self.assertEqual(bb.zmax, bb_json[u'zmax'])
+        # empty
+        bb = adapter.SFFBoundingBox()
+        bb_json = bb.as_json()
+        self.assertEqual(bb.xmin, bb_json[u'xmin'])
+        self.assertIsNone(bb.xmax)
+        self.assertEqual(bb.ymin, bb_json[u'ymin'])
+        self.assertIsNone(bb.ymax)
+        self.assertEqual(bb.zmin, bb_json[u'zmin'])
+        self.assertIsNone(bb.zmax)
+
+    def test_from_json(self):
+        """Test import from JSON"""
+        #full
+        bb_json = {'xmin': 640.0, 'xmax': 348.0, 'ymin': 401.0, 'ymax': 176.0, 'zmin': 491.0, 'zmax': 349.0}
+        bb = adapter.SFFBoundingBox.from_json(bb_json)
+        self.assertEqual(bb.xmin, bb_json[u'xmin'])
+        self.assertEqual(bb.xmax, bb_json[u'xmax'])
+        self.assertEqual(bb.ymin, bb_json[u'ymin'])
+        self.assertEqual(bb.ymax, bb_json[u'ymax'])
+        self.assertEqual(bb.zmin, bb_json[u'zmin'])
+        self.assertEqual(bb.zmax, bb_json[u'zmax'])
+        # empty
+        bb_json = {}
+        bb = adapter.SFFBoundingBox.from_json(bb_json)
+        self.assertEqual(bb.xmin, 0)
+        self.assertIsNone(bb.xmax)
+        self.assertEqual(bb.ymin, 0)
+        self.assertIsNone(bb.ymax)
+        self.assertEqual(bb.zmin, 0)
+        self.assertIsNone(bb.zmax)
 
 
 class TestSFFCone(Py23FixTestCase):
@@ -2529,7 +2858,7 @@ class TestSFFSegment(Py23FixTestCase):
         s = adapter.SFFSegment.from_gds_type(_s)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
             r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)"""
         )
         # change ID
@@ -2539,7 +2868,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertEqual(s.id, _id)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id={}, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""SFFSegment\(id={}, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
             r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(_id)
         )
         # change parent_id
@@ -2568,7 +2897,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertEqual(s.biological_annotation, B)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation={}, colour=None, """
+            r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation={}, colour=None, """
             r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
                 _str(B).replace(r"(", r"\(").replace(r")", r"\)")
             )
@@ -2582,7 +2911,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertEqual(s.colour, R)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour={}, """ \
+            r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour={}, """ \
             r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
                 _str(R).replace(r"(", r"\(").replace(r")", r"\)")
             )
@@ -2603,7 +2932,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertEqual(s.volume, V)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
             r"""threeDVolume={}, meshList=None, shapePrimitiveList=None\)""".format(
                 _str(V).replace(r"(", r"\(").replace(r")", r"\)")
             )
@@ -2616,7 +2945,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertIsNone(s.id)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
             r"""threeDVolume=None, meshList=SFFMeshList\(\[.*\]\), shapePrimitiveList=None\)"""
         )
         # shapes
@@ -2627,10 +2956,64 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertIsNone(s.id)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id=None, parentID=None, biologicalAnnotation=None, colour=None, """ \
+            r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
             r"""threeDVolume=None, meshList=None, shapePrimitiveList=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
             )
         )
+
+    def test_as_json(self):
+        """Test that we can export as JSON"""
+        # empty fails validation
+        s = adapter.SFFSegment()
+        with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
+            s.as_json()
+        # at least colour needed
+        s = adapter.SFFSegment()
+        s.colour = adapter.SFFRGBA(random_colour=True)
+        s_json = s.as_json()
+        self.assertEqual(s_json[u'id'], s.id)
+        self.assertEqual(s_json[u'parentID'], s.parent_id)
+        self.assertEqual(s_json[u'colour'], s.colour.value)
+        # _print(s_json)
+        # self.assertTrue(False)
+        # with annotation
+        s = adapter.SFFSegment(
+            biologicalAnnotation=adapter.SFFBiologicalAnnotation(
+                name=rw.random_word(),
+                description=li.get_sentence(),
+            )
+        )
+        s.colour = adapter.SFFRGBA(random_colour=True)
+        s_json = s.as_json()
+        # _print(s_json)
+        self.assertEqual(s_json[u'id'], s.id)
+        self.assertEqual(s_json[u'parentID'], s.parent_id)
+        self.assertEqual(s_json[u'colour'], s.colour.value)
+        self.assertEqual(s_json[u'biologicalAnnotation'][u'name'], s.biological_annotation.name)
+        self.assertEqual(s_json[u'biologicalAnnotation'][u'description'], s.biological_annotation.description)
+
+    def test_from_json(self):
+        """Test that we can import from JSON"""
+        # minimal
+        s_json = {'id': 2, 'parentID': 0, 'colour': (0.3480471169539232, 0.9354618836165659, 0.7017431484633613, 1.0)}
+        s = adapter.SFFSegment.from_json(s_json)
+        self.assertEqual(s.id, s_json[u'id'])
+        self.assertEqual(s.parent_id, s_json[u'parentID'])
+        self.assertEqual(s.colour.value, s_json[u'colour'])
+        # more
+        s_json = {'id': 3, 'parentID': 0, 'biologicalAnnotation': {'name': 'preserver',
+                                                                   'description': 'Dictumstvivamus proin purusvestibulum turpis sociis assum.',
+                                                                   'numberOfInstances': 1},
+                  'colour': (0.3284280279067431, 0.8229825614708411, 0.07590219333941295, 1.0)}
+        s = adapter.SFFSegment.from_json(s_json)
+        _print(s)
+        self.assertEqual(s_json[u'id'], s.id)
+        self.assertEqual(s_json[u'parentID'], s.parent_id)
+        self.assertEqual(s_json[u'colour'], s.colour.value)
+        self.assertEqual(s_json[u'biologicalAnnotation'][u'name'], s.biological_annotation.name)
+        self.assertEqual(s_json[u'biologicalAnnotation'][u'description'], s.biological_annotation.description)
+        self.assertEqual(s_json[u'biologicalAnnotation'][u'numberOfInstances'], s.biological_annotation.number_of_instances)
+
 
 
 class TestSFFSegmentList(Py23FixTestCase):
