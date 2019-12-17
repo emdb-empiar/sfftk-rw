@@ -681,7 +681,10 @@ class SFFAttribute(object):
     :param name: which ``emdb_sff`` attribute to get the data from
     :type name: bytes or unicode
     :param sff_type: class of attribute (default: None - standard Python types like int, str, float)
-    :param help: help text associated with the attribute
+    :type sff_type: `SFFType`
+    :param bool required: whether or not this is a required (mandatory) attribute; default is `False`
+    :param default: default value that this attribute takes; can be anything
+    :param str help: help text associated with the attribute
     :type help: bytes or unicode
     """
 

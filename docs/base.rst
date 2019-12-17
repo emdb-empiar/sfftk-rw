@@ -9,7 +9,7 @@ This API specifies several base classes from which all other classes are built u
 :py:class:`SFFAttribute` descriptor class
 ================================================
 
-.. autoclass:: SFFAttribute(name, sff_type=None, help="")
+.. autoclass:: SFFAttribute(name, sff_type=None, required=False, default=None, help="")
     :members:
     :show-inheritance:
 
@@ -40,5 +40,12 @@ This API specifies several base classes from which all other classes are built u
 ==================================
 
 .. autoclass:: SFFTypeError
+    :members:
+    :show-inheritance:
+
+:py:class:`SFFValueError` class
+==================================
+
+.. autoclass:: SFFValueError
     :members:
     :show-inheritance:
