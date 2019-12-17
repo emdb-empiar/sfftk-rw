@@ -1,4 +1,4 @@
-sfftk.core package
+sfftkrw.core package
 -----------------------
 
 Parser module

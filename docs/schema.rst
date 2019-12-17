@@ -1,5 +1,5 @@
-sfftk.schema package
---------------------
+sfftkrw.schema package
+----------------------
 
 .. automodule:: sfftkrw.schema.__init__
 	:members:

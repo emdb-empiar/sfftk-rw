@@ -1,5 +1,5 @@
-sfftk packages
-===============
+sfftk-rw packages
+=================
 
 .. automodule:: sfftkrw.__init__
 	:members:
