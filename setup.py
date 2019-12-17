@@ -35,6 +35,7 @@ SFFTKRW_CLASSIFIERS = [
     u"Programming Language :: Python :: 3.5",
     u"Programming Language :: Python :: 3.6",
     u"Programming Language :: Python :: 3.7",
+    u"Programming Language :: Python :: 3.8",
     u"Topic :: Software Development :: Libraries :: Python Modules",
     u"Topic :: Terminals",
     u"Topic :: Text Processing",
