@@ -31,6 +31,12 @@ class TestMainHandleConvert(unittest.TestCase):
         unittest.TestCase.tearDown(self)
         for s in glob.glob(os.path.join(TEST_DATA_PATH, '*.sff')):
             os.remove(s)
+        hff_fn = os.path.join(TEST_DATA_PATH, 'test_data.hff')
+        if os.path.exists(hff_fn):
+            os.remove(hff_fn)
+        json_fn = os.path.join(TEST_DATA_PATH, 'test_data.json')
+        if os.path.exists(json_fn):
+            os.remove(json_fn)
 
     def test_unknown(self):
         """Test that unknown fails"""
@@ -90,7 +96,7 @@ class TestMainHandleConvert(unittest.TestCase):
             os.path.join(TEST_DATA_PATH, 'test_data.sff'),
         ), use_shlex=True)
         Main.handle_convert(args)
-        sff_files = glob.glob(os.path.join(TEST_DATA_PATH, '*.hff'))
+        sff_files = glob.glob(os.path.join(TEST_DATA_PATH, '*.json'))
         self.assertEqual(len(sff_files), 1)
 
 

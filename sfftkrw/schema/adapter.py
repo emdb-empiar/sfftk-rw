@@ -1003,6 +1003,7 @@ class SFFVertexList(SFFListType):
     repr_string = u"SFFVertexList({})"
     repr_args = (u'list()',)
     iter_attr = (u'v', SFFVertex)
+    min_length = 3
 
     def __init__(self, **kwargs):
         super(SFFVertexList, self).__init__(**kwargs)
@@ -1050,6 +1051,7 @@ class SFFPolygonList(SFFListType):
     repr_string = u"SFFPolygonList({})"
     repr_args = (u'list()',)
     iter_attr = (u'P', SFFPolygon)
+    min_length = 1
 
     def __init__(self, **kwargs):
         super(SFFPolygonList, self).__init__(**kwargs)

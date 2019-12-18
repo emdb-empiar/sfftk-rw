@@ -1,8 +1,18 @@
 #Changes by release
 
+## [0.5.2.dev1] - 2019-12-18
+
+### List validations
+
+* schema/base.py: `SFFListType` uses `min_length` attribute to check that minimum length constraint is satisfied
+* schema/adapter.py: `min_length` attribute set for `SFFPolygonList` (1) and `SFFVertexList` (3)
+* added unit test for the above
+* deleted config stub file
+* version bump: v0.5.2.dev1
+
 ## [0.5.2.dev0] - 2019-12-17
 
-# Major improvements in handling of HDF5 and JSON
+### Major improvements in handling of HDF5 and JSON
 
 * fixed bug relating to having external references as `None`
 * we now have validation; validation is only assessed on export/import otherwise users are free to build objects incrementally

@@ -443,6 +443,7 @@ class SFFListType(SFFType):
     continuous set of IDs for the different shapes. However, when we iterate over a `SFFShapePrimitiveList` 
     we can't get a generic shape; we need individual subclasses. Therefore, this class variable defines how
     we return individual subclass instances from a `SFFShapePrimitiveList`."""
+    min_length = 0
 
     def __new__(cls, new_obj=True, *args, **kwargs):
         # make sure `iter_attr` is not empty
@@ -470,6 +471,12 @@ class SFFListType(SFFType):
     def __init__(self, *args, **kwargs):
         self._id_dict = _dict()
         super(SFFListType, self).__init__(*args, **kwargs)
+
+    def _is_valid(self):
+        if len(self) < self.min_length:
+            print_date("{} has fewer than min_length={} items: {}".format(self, self.min_length, len(self)))
+            return False
+        return True
 
     @classmethod
     def from_gds_type(cls, inst=None):

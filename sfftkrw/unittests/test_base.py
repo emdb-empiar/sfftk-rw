@@ -1086,6 +1086,31 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(s_get.id, 1)
         self.assertEqual(len(S.segments), 1)
 
+    def test_validation(self):
+        """Test that the list-type passes validation
+
+        Validation is based on the `min_length` attribute which is `0` by default
+
+        If a list-type has `min_length>0` and the list is fewer than the minimum items then it
+        should fail validation.
+
+        An example of this is `SFFVertexList` which should have at least 3 vertices (for a triangle)
+        """
+        class V(base.SFFListType):
+            gds_type = emdb_sff.vertexListType
+            min_length = 3
+            iter_attr = (u'v', adapter.SFFVertex)
+            repr_string = u"VertexList({})"
+            repr_args = (u'list()', )
+
+        v = V()
+        self.assertFalse(v._is_valid())
+        [v.append(
+            adapter.SFFVertex(*_random_floats(count=3, multiplier=10))
+        ) for _ in _xrange(_random_integer(start=3, stop=10))]
+        _print(v)
+        self.assertTrue(v._is_valid())
+
 
 class TestSFFAttribute(Py23FixTestCase):
     """Test the attribute descriptor class"""
