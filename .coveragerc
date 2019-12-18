@@ -1,6 +1,6 @@
 [run]
 omit =
-    sfftkrw/schema/v_*.py
+    sfftkrw/schema/v*.py
     sfftkrw/schema/emdb_sff.py
     sfftkrw/test_data/*
     sfftkrw/unittests/*
