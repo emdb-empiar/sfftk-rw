@@ -11,14 +11,27 @@ import random
 import re
 import tempfile
 import unittest
+import importlib
 
 import h5py
 import numpy
 from random_words import RandomWords, LoremIpsum
 
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_integers
+from .. import EMDB_SFF_VERSION
 from ..core import _xrange, _str, _bytes, _decode, _print
-from ..schema import adapter, emdb_sff, base
+from ..schema import base
+
+adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
+    schema_version=EMDB_SFF_VERSION.replace('.', '_')
+)
+adapter = importlib.import_module(adapter_name)
+
+# dynamically import the latest schema generateDS API
+emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
+    schema_version=EMDB_SFF_VERSION.replace('.', '_')
+)
+emdb_sff = importlib.import_module(emdb_sff_name)
 
 rw = RandomWords()
 li = LoremIpsum()

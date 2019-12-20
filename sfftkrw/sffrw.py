@@ -8,13 +8,14 @@ sfftkrw.sffrw is the main entry point for performing command-line operations.
 """
 from __future__ import division, print_function
 
+import importlib
 import os
 import re
 import sys
 
+from . import EMDB_SFF_VERSION
 from .core import _decode
 from .core.print_tools import print_date
-from .schema.adapter import SFFSegmentation
 
 __author__ = "Paul K. Korir, PhD"
 __email__ = "pkorir@ebi.ac.uk, paul.korir@gmail.com"
@@ -32,6 +33,11 @@ def handle_convert(args):  # @UnusedVariable
     :type configs: ``sfftk.core.configs.Configs``
     :return int status: status
     """
+    # adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
+    #     schema_version=args.schema_version.replace('.', '_')
+    # )
+    # adapter = importlib.import_module(adapter_name)
+    from . import SFFSegmentation
     if re.match(r'.*\.(sff|xml)$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (XML) file {}".format(args.from_file))
@@ -76,6 +82,11 @@ def handle_view(args):  # @UnusedVariable
     :type configs: ``sfftk.core.configs.Configs``
     :return int status: status
     """
+    # adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
+    #     schema_version=args.schema_version.replace('.', '_')
+    # )
+    # adapter = importlib.import_module(adapter_name)
+    from . import SFFSegmentation
     if re.match(r'.*\.(sff|xml)$', args.from_file, re.IGNORECASE):
         seg = SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
@@ -174,7 +185,12 @@ def handle_tests(args):
             from .unittests import test_core
             _module_test_runner(test_core, args)
         if 'schema' in args.tool:
-            from .unittests import test_base, test_adapter
+            from .unittests import test_base
+            # schema tests are only run for the current data model
+            test_adapter_name = 'sfftkrw.unittests.test_adapter_{schema_version}'.format(
+                schema_version=EMDB_SFF_VERSION.replace('.', '_')
+            )
+            test_adapter = importlib.import_module(test_adapter_name)
             _module_test_runner(test_base, args)
             _module_test_runner(test_adapter, args)
     return os.EX_OK

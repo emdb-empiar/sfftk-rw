@@ -2,6 +2,7 @@
 omit =
     sfftkrw/schema/v*.py
     sfftkrw/schema/emdb_sff.py
+    sfftkrw/schema/adapter.py
     sfftkrw/test_data/*
     sfftkrw/unittests/*
     sfftkrw/core/__init__.py

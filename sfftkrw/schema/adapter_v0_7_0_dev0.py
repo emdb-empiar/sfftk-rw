@@ -10,15 +10,23 @@ import re
 import struct
 import sys
 import zlib
+import importlib
 
 import h5py
 import numpy
 
-from . import emdb_sff as sff
+# from . import emdb_sff as sff
+from .. import EMDB_SFF_VERSION
 from .base import SFFType, SFFAttribute, SFFListType, SFFTypeError, SFFIndexType
 from .. import SFFTKRW_VERSION
 from ..core import _decode, _dict, _str, _encode, _bytes, _xrange
 from ..core.print_tools import print_date
+
+# dynamically import the latest schema generateDS API
+_emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
+    schema_version=EMDB_SFF_VERSION.replace('.', '_')
+)
+_sff = importlib.import_module(_emdb_sff_name)
 
 FORMAT_CHARS = {
     u'int8': u'b',
@@ -39,12 +47,12 @@ ENDIANNESS = {
 }
 
 # ensure that we can read/write encoded data
-sff.ExternalEncoding = u"utf-8"
+_sff.ExternalEncoding = u"utf-8"
 
 
 class SFFRGBA(SFFType):
     """RGBA colour"""
-    gds_type = sff.rgbaType
+    gds_type = _sff.rgbaType
     repr_string = u"SFFRGBA(red={}, green={}, blue={}, alpha={})"
     repr_args = (u'red', u'green', u'blue', u'alpha')
 
@@ -131,7 +139,7 @@ class SFFRGBA(SFFType):
 
 class SFFComplexList(SFFListType):
     """Class that encapsulates complex"""
-    gds_type = sff.complexType
+    gds_type = _sff.complexType
     repr_string = u"SFFComplexList({})"
     repr_args = (u'list()',)
     iter_attr = (u'id', _str)
@@ -150,7 +158,7 @@ class SFFComplexList(SFFListType):
 
 class SFFMacromoleculeList(SFFListType):
     """Class that encapsulates macromolecule"""
-    gds_type = sff.macromoleculeType
+    gds_type = _sff.macromoleculeType
     repr_string = u"SFFMacromoleculeList({})"
     repr_args = (u"list()",)
     # todo: same problem as SFFComplexList
@@ -169,7 +177,7 @@ class SFFMacromoleculeList(SFFListType):
 
 class SFFComplexesAndMacromolecules(SFFType):
     """Complexes and macromolecules"""
-    gds_type = sff.macromoleculesAndComplexesType
+    gds_type = _sff.macromoleculesAndComplexesType
     repr_string = u"SFFComplexesAndMacromolecules(complexes={}, macromolecules={})"
     repr_args = (u'complexes', u'macromolecules')
 
@@ -223,7 +231,7 @@ class SFFComplexesAndMacromolecules(SFFType):
 
 class SFFExternalReference(SFFIndexType):
     """Class that encapsulates an external reference"""
-    gds_type = sff.externalReferenceType
+    gds_type = _sff.externalReferenceType
     repr_string = u"SFFExternalReference(id={}, type={}, otherType={}, value={}, label={}, description={})"
     repr_args = (u'id', u'type', u'other_type', u'value', u'label', u'description')
     ref_id = 0
@@ -295,7 +303,7 @@ class SFFExternalReference(SFFIndexType):
 
 class SFFExternalReferenceList(SFFListType):
     """Container for external references"""
-    gds_type = sff.externalReferencesType
+    gds_type = _sff.externalReferencesType
     repr_string = u"SFFExternalReferenceList({})"
     repr_args = (u'list()',)
     iter_attr = (u'ref', SFFExternalReference)
@@ -328,7 +336,7 @@ class SFFExternalReferenceList(SFFListType):
 
 class SFFBiologicalAnnotation(SFFType):
     """Biological annotation"""
-    gds_type = sff.biologicalAnnotationType
+    gds_type = _sff.biologicalAnnotationType
     repr_string = u"""SFFBiologicalAnnotation(name={}, description={}, numberOfInstances={}, externalReferences={})"""
     repr_args = (u'name', u'description', u'number_of_instances', u'external_references')
 
@@ -454,7 +462,7 @@ class SFFBiologicalAnnotation(SFFType):
 
 class SFFThreeDVolume(SFFType):
     """Class representing segments described using a 3D volume"""
-    gds_type = sff.threeDVolumeType
+    gds_type = _sff.threeDVolumeType
     repr_string = u"SFFThreeDVolume(latticeId={}, value={}, transformId={})"
     repr_args = (u'lattice_id', u'value', u'transform_id')
 
@@ -537,7 +545,7 @@ class SFFVolume(SFFType):
 
 
 class SFFVolumeStructure(SFFVolume):
-    gds_type = sff.volumeStructureType
+    gds_type = _sff.volumeStructureType
     repr_string = u"SFFVolumeStructure(cols={}, rows={}, sections={})"
     repr_args = (u'cols', u'rows', u'sections')
 
@@ -550,14 +558,14 @@ class SFFVolumeStructure(SFFVolume):
 class SFFVolumeIndex(SFFVolume):
     """Class representing volume indices"""
     # todo: implement an iterator to increment indices correctly
-    gds_type = sff.volumeIndexType
+    gds_type = _sff.volumeIndexType
     repr_string = u"SFFVolumeIndex(cols={}, rows={}, sections={})"
     repr_args = (u'cols', u'rows', u'sections')
 
 
 class SFFLattice(SFFIndexType):
     """Class representing 3D """
-    gds_type = sff.latticeType
+    gds_type = _sff.latticeType
     repr_string = u"SFFLattice(mode={}, endianness={}, size={}, start={}, data={})"
     repr_args = (u'mode', u'endianness', u'size', u'start', u'data[:100]')
     lattice_id = 0
@@ -744,7 +752,7 @@ class SFFLattice(SFFIndexType):
 
 class SFFLatticeList(SFFListType):
     """A container for lattice objects"""
-    gds_type = sff.latticeListType
+    gds_type = _sff.latticeListType
     repr_string = u"SFFLatticeList({})"
     repr_args = (u"list()",)
     iter_attr = (u'lattice', SFFLattice)
@@ -796,7 +804,7 @@ class SFFShape(SFFIndexType):
 
 class SFFCone(SFFShape):
     """Cone shape class"""
-    gds_type = sff.cone
+    gds_type = _sff.cone
     gds_tag_name = u"cone"
     repr_string = u"SFFCone(id={}, height={}, bottomRadius={}, transformId={})"
     repr_args = (u'id', u'height', u'bottom_radius', u'transform_id')
@@ -808,7 +816,7 @@ class SFFCone(SFFShape):
 
 class SFFCuboid(SFFShape):
     """Cuboid shape class"""
-    gds_type = sff.cuboid
+    gds_type = _sff.cuboid
     gds_tag_name = u"cuboid"
     repr_string = u"SFFCuboid(id={}, x={}, y={}, z={}, transformId={})"
     repr_args = (u'id', u'x', u'y', u'z', u'transform_id')
@@ -821,7 +829,7 @@ class SFFCuboid(SFFShape):
 
 class SFFCylinder(SFFShape):
     """Cylinder shape class"""
-    gds_type = sff.cylinder
+    gds_type = _sff.cylinder
     gds_tag_name = u"cylinder"
     repr_string = u"SFFCylinder(id={}, height={}, diameter={}, transformId={})"
     repr_args = (u'id', u'height', u'diameter', u'transform_id')
@@ -833,7 +841,7 @@ class SFFCylinder(SFFShape):
 
 class SFFEllipsoid(SFFShape):
     """Ellipsoid shape class"""
-    gds_type = sff.ellipsoid
+    gds_type = _sff.ellipsoid
     gds_tag_name = u"ellipsoid"
     repr_string = u"SFFEllipsoid(id={}, x={}, y={}, z={}, transformId={})"
     repr_args = (u'id', u'x', u'y', u'z', u'transform_id')
@@ -846,15 +854,15 @@ class SFFEllipsoid(SFFShape):
 
 class SFFShapePrimitiveList(SFFListType):
     """Container for shapes"""
-    gds_type = sff.shapePrimitiveListType
+    gds_type = _sff.shapePrimitiveListType
     repr_string = u"SFFShapePrimitiveList({})"
     repr_args = (u'list()',)
     iter_attr = (u'shapePrimitive', SFFShape)
     sibling_classes = [
-        (sff.cone, SFFCone),
-        (sff.cuboid, SFFCuboid),
-        (sff.cylinder, SFFCylinder),
-        (sff.ellipsoid, SFFEllipsoid),
+        (_sff.cone, SFFCone),
+        (_sff.cuboid, SFFCuboid),
+        (_sff.cylinder, SFFCylinder),
+        (_sff.ellipsoid, SFFEllipsoid),
     ]
 
     def _shape_count(self, shape_type):
@@ -863,22 +871,22 @@ class SFFShapePrimitiveList(SFFListType):
     @property
     def num_ellipsoids(self):
         """The number of ellipsoids in this container"""
-        return self._shape_count(sff.ellipsoid)
+        return self._shape_count(_sff.ellipsoid)
 
     @property
     def num_cuboids(self):
         """The number of cuboids in this container"""
-        return self._shape_count(sff.cuboid)
+        return self._shape_count(_sff.cuboid)
 
     @property
     def num_cylinders(self):
         """The number of cylinders in this container"""
-        return self._shape_count(sff.cylinder)
+        return self._shape_count(_sff.cylinder)
 
     @property
     def num_cones(self):
         """The number of cones in this container"""
-        return self._shape_count(sff.cone)
+        return self._shape_count(_sff.cone)
 
     #     @property
     #     def num_subtomogram_averages(self):
@@ -936,7 +944,7 @@ class SFFShapePrimitiveList(SFFListType):
 
 class SFFVertex(SFFIndexType):
     """Single vertex"""
-    gds_type = sff.vertexType
+    gds_type = _sff.vertexType
     repr_string = u"SFFVertex(vID={}, designation={}, x={}, y={}, z={})"
     repr_args = (u'id', u'designation', u'x', u'y', u'z')
     vertex_id = 0
@@ -977,7 +985,7 @@ class SFFVertex(SFFIndexType):
 
 class SFFPolygon(SFFListType, SFFIndexType):
     """Single polygon"""
-    gds_type = sff.polygonType
+    gds_type = _sff.polygonType
     repr_string = u"SFFPolygon(PID={}, v={})"
     repr_args = (u'id', u'vertices')
     iter_attr = (u'v', int)
@@ -999,7 +1007,7 @@ class SFFPolygon(SFFListType, SFFIndexType):
 
 class SFFVertexList(SFFListType):
     """List of vertices"""
-    gds_type = sff.vertexListType
+    gds_type = _sff.vertexListType
     repr_string = u"SFFVertexList({})"
     repr_args = (u'list()',)
     iter_attr = (u'v', SFFVertex)
@@ -1047,7 +1055,7 @@ class SFFVertexList(SFFListType):
 
 class SFFPolygonList(SFFListType):
     """List of polygons"""
-    gds_type = sff.polygonListType
+    gds_type = _sff.polygonListType
     repr_string = u"SFFPolygonList({})"
     repr_args = (u'list()',)
     iter_attr = (u'P', SFFPolygon)
@@ -1089,7 +1097,7 @@ class SFFPolygonList(SFFListType):
 
 class SFFMesh(SFFIndexType):
     """Single mesh"""
-    gds_type = sff.meshType
+    gds_type = _sff.meshType
     repr_string = u"SFFMesh(id={}, vertexList={}, polygonList={})"
     repr_args = (u'id', u'vertices', u'polygons')
     mesh_id = 0
@@ -1133,7 +1141,7 @@ class SFFMesh(SFFIndexType):
 
 class SFFMeshList(SFFListType):
     """Mesh list representation"""
-    gds_type = sff.meshListType
+    gds_type = _sff.meshListType
     repr_string = u"SFFMeshList({})"
     repr_args = (u'list()',)
     iter_attr = (u'mesh', SFFMesh)
@@ -1197,7 +1205,7 @@ class SFFMeshList(SFFListType):
 
 class SFFSegment(SFFIndexType):
     """Class that encapsulates segment data"""
-    gds_type = sff.segmentType
+    gds_type = _sff.segmentType
     repr_string = u"""SFFSegment(id={}, parentID={}, biologicalAnnotation={}, colour={}, threeDVolume={}, meshList={}, shapePrimitiveList={})"""
     repr_args = (u'id', u'parent_id', u'biological_annotation', u'colour', u'volume', u'meshes', u'shapes')
     segment_id = 1
@@ -1313,19 +1321,19 @@ class SFFSegment(SFFIndexType):
             m = 0  # cone
             # n = 0 # subtomogram average
             for shape in self.shapes:
-                if shape.gds_type == sff.ellipsoid:  # u"ellipsoid":
+                if shape.gds_type == _sff.ellipsoid:  # u"ellipsoid":
                     h_ell[i] = (shape.id, shape.x, shape.y, shape.z, shape.transform_id,
                                 shape.attribute if hasattr(shape, u'attribute') else None)
                     i += 1
-                elif shape.gds_type == sff.cuboid:  # u"cuboid":
+                elif shape.gds_type == _sff.cuboid:  # u"cuboid":
                     h_cub[j] = (shape.id, shape.x, shape.y, shape.z, shape.transform_id,
                                 shape.attribute if hasattr(shape, u'attribute') else None)
                     j += 1
-                elif shape.gds_type == sff.cylinder:  # u"cylinder":
+                elif shape.gds_type == _sff.cylinder:  # u"cylinder":
                     h_cyl[k] = (shape.id, shape.height, shape.diameter, shape.transform_id,
                                 shape.attribute if hasattr(shape, u'attribute') else None)
                     k += 1
-                elif shape.gds_type == sff.cone:  # u"cone":
+                elif shape.gds_type == _sff.cone:  # u"cone":
                     h_con[m] = (shape.id, shape.height, shape.bottom_radius, shape.transform_id,
                                 shape.attribute if hasattr(shape, u'attribute') else None)
                     m += 1
@@ -1415,7 +1423,7 @@ class SFFSegment(SFFIndexType):
 
 class SFFSegmentList(SFFListType):
     """Container for segments"""
-    gds_type = sff.segmentListType
+    gds_type = _sff.segmentListType
     repr_string = u"SFFSegmentList({})"
     repr_args = (u'list()',)
     iter_attr = (u'segment', SFFSegment)
@@ -1442,7 +1450,7 @@ class SFFSegmentList(SFFListType):
 
 class SFFTransformationMatrix(SFFIndexType):
     """Transformation matrix transform"""
-    gds_type = sff.transformationMatrixType
+    gds_type = _sff.transformationMatrixType
     gds_tag_name = u"transformationMatrix"
     repr_string = u"SFFTransformationMatrix(id={}, rows={}, cols={}, data={})"
     repr_args = (u'id', u'rows', u'cols', u'data')
@@ -1507,7 +1515,7 @@ class SFFTransformationMatrix(SFFIndexType):
 
 class SFFTransformList(SFFListType):
     """Container for transforms"""
-    gds_type = sff.transformListType
+    gds_type = _sff.transformListType
     repr_string = u"SFFTransformList({})"
     repr_args = (u'list()',)
     iter_attr = (u'transform', SFFTransformationMatrix)
@@ -1567,7 +1575,7 @@ class SFFTransformList(SFFListType):
         j = 0  # h_cEA index
         k = 0  # h_vVR index
         for transform in self:
-            if transform.gds_type == sff.transformationMatrixType:  # u"transformation_matrix":
+            if transform.gds_type == _sff.transformationMatrixType:  # u"transformation_matrix":
                 if transformation_matrices_similar:
                     h_tM[i] = (transform.id, transform.rows, transform.cols, transform.data_array)
                     i += 1
@@ -1620,7 +1628,7 @@ class SFFSoftware(SFFType):
 
         Details of how the segmentation was produced
     """
-    gds_type = sff.softwareType
+    gds_type = _sff.softwareType
     repr_string = u"SFFSoftware(name={}, version={}, processingDetails={})"
     repr_args = (u'name', u'version', u'processing_details')
 
@@ -1662,7 +1670,7 @@ class SFFSoftware(SFFType):
 class SFFBoundingBox(SFFType):
     """Dimensions of bounding box"""
     #  config
-    gds_type = sff.boundingBoxType
+    gds_type = _sff.boundingBoxType
     repr_string = u"SFFBoundingBox(xmin={}, xmax={}, ymin={}, ymax={}, zmin={}, zmax={})"
     repr_args = (u'xmin', u'xmax', u'ymin', u'ymax', u'zmin', u'zmax')
 
@@ -1740,7 +1748,7 @@ class SFFBoundingBox(SFFType):
 
 class SFFGlobalExternalReferenceList(SFFListType):
     """Container for global external references"""
-    gds_type = sff.globalExternalReferencesType
+    gds_type = _sff.globalExternalReferencesType
     repr_string = u"SFFGlobalExternalReferenceList({})"
     repr_args = (u'list()',)
     iter_attr = (u'ref', SFFExternalReference)
@@ -1755,7 +1763,7 @@ class SFFGlobalExternalReferenceList(SFFListType):
 
 class SFFSegmentation(SFFType):
     """Adapter class to make using the output of ``generateDS`` easier to use"""
-    gds_type = sff.segmentation
+    gds_type = _sff.segmentation
     repr_string = u"SFFSegmentation(name={})"
     repr_args = (u'name',)
 
@@ -1816,7 +1824,7 @@ class SFFSegmentation(SFFType):
         seg = cls()
         if re.match(r'.*\.(sff|xml)$', fn, re.IGNORECASE):
             try:
-                seg._local = sff.parse(fn, silence=True)
+                seg._local = _sff.parse(fn, silence=True)
             except IOError:
                 print_date(_encode(u"File {} not found".format(fn), u'utf-8'))
                 sys.exit(os.EX_IOERR)

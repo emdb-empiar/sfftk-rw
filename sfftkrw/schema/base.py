@@ -7,13 +7,20 @@ import numbers
 import os
 import re
 import inspect
+import importlib
 
 import h5py
 
-from .. import VALID_EXTENSIONS
+from .. import VALID_EXTENSIONS, EMDB_SFF_VERSION
 from ..core import _dict, _str, _encode, _decode, _bytes, _clear, _basestring, _print, _getattr_static
 from ..core.print_tools import print_date
-from ..schema import emdb_sff as sff
+# from ..schema import emdb_sff as sff
+
+# dynamically import the latest schema generateDS API
+emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
+    schema_version=EMDB_SFF_VERSION.replace('.', '_')
+)
+sff = importlib.import_module(emdb_sff_name)
 
 _match_var_stop = re.compile(r"(?P<var>\w+)\[\:(?P<stop>\d*)\]")
 
@@ -114,7 +121,7 @@ class SFFType(object):
         elif inst is None:
             obj = None
         else:
-            raise SFFTypeError(inst, cls)
+            raise SFFTypeError(inst, cls.gds_type)
         return obj
 
     def __str__(self):
@@ -358,7 +365,7 @@ class SFFIndexType(SFFType):
         elif inst is None:
             obj = inst
         else:
-            raise SFFTypeError(inst, cls)
+            raise SFFTypeError(inst, cls.gds_type)
         return obj
 
 
@@ -487,7 +494,7 @@ class SFFListType(SFFType):
         elif inst is None:
             obj = inst
         else:
-            raise SFFTypeError(inst, cls)
+            raise SFFTypeError(inst, cls.gds_type)
         return obj
 
     def _cast(self, instance):

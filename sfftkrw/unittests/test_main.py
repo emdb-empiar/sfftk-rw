@@ -8,6 +8,7 @@ Unit tests for convert subcommand
 from __future__ import division, print_function
 
 import glob
+import importlib
 import os
 import shlex
 import shutil
@@ -16,7 +17,9 @@ import unittest
 
 from . import TEST_DATA_PATH
 from .. import sffrw as Main
+from ..core import _print
 from ..core.parser import parse_args
+from .. import SFFSegmentation
 
 __author__ = 'Paul K. Korir, PhD'
 __email__ = 'pkorir@ebi.ac.uk, paul.korir@gmail.com'
@@ -223,3 +226,13 @@ class TestMainMain(unittest.TestCase):
         sys.argv = cmd
         status = Main.main()
         self.assertEqual(status, os.EX_USAGE)
+
+    def test_abbreviated_import(self):
+        """Test importing user-classes from sfftkrw"""
+        mod_name = 'sfftkrw'
+        mod = importlib.import_module(mod_name)
+        self.assertEqual(mod.SFFSegmentation, SFFSegmentation)
+        s1, s2 = mod.SFFSegmentation(), SFFSegmentation()
+        # ensure we're working on the same version
+        self.assertEqual(s1.version, s2.version)
+

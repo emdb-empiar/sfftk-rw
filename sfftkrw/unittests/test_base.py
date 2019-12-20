@@ -5,6 +5,7 @@ Unit for schema adapter
 """
 from __future__ import print_function
 
+import importlib
 import os
 import random
 import sys
@@ -14,8 +15,20 @@ import numpy
 from random_words import RandomWords, LoremIpsum
 
 from . import _random_integer, Py23FixTestCase, _random_float, _random_floats
+from .. import EMDB_SFF_VERSION
 from ..core import _xrange, _str, _print
-from ..schema import adapter, base, emdb_sff
+from ..schema import base #, emdb_sff
+
+# dynamically import the latest schema generateDS API
+emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
+    schema_version=EMDB_SFF_VERSION.replace('.', '_')
+)
+# dynamically import the adapter for the API
+adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
+    schema_version=EMDB_SFF_VERSION.replace('.', '_')
+)
+emdb_sff = importlib.import_module(emdb_sff_name)
+adapter = importlib.import_module(adapter_name)
 
 rw = RandomWords()
 li = LoremIpsum()
@@ -210,7 +223,8 @@ class TestSFFType(Py23FixTestCase):
         """Test that we catch all export errors"""
         tf = tempfile.NamedTemporaryFile()
         tf.name += u'.invalid'
-        self.assertEqual(os.EX_DATAERR, adapter.SFFSegmentation(name=rw.random_word(), primaryDescriptor=u'meshList').export(tf.name))
+        self.assertEqual(os.EX_DATAERR,
+                         adapter.SFFSegmentation(name=rw.random_word(), primaryDescriptor=u'meshList').export(tf.name))
 
     def test_format_method_missing(self):
         """Test that we get `NotImplementedError`s"""
@@ -223,7 +237,7 @@ class TestSFFType(Py23FixTestCase):
         with self.assertRaises(NotImplementedError):
             _S.as_hff(u'test')
 
-        self.assertEqual(_S.as_json(u'test'), 0) # OK
+        self.assertEqual(_S.as_json(u'test'), 0)  # OK
 
         with self.assertRaises(NotImplementedError):
             _S.from_hff(u'test')
@@ -1096,12 +1110,13 @@ class TestSFFListType(Py23FixTestCase):
 
         An example of this is `SFFVertexList` which should have at least 3 vertices (for a triangle)
         """
+
         class V(base.SFFListType):
             gds_type = emdb_sff.vertexListType
             min_length = 3
             iter_attr = (u'v', adapter.SFFVertex)
             repr_string = u"VertexList({})"
-            repr_args = (u'list()', )
+            repr_args = (u'list()',)
 
         v = V()
         self.assertFalse(v._is_valid())
@@ -1172,5 +1187,3 @@ class TestSFFAttribute(Py23FixTestCase):
         self.assertFalse(_e._is_valid())
         _e.t = rw.random_word()
         self.assertTrue(_e._is_valid())
-
-
