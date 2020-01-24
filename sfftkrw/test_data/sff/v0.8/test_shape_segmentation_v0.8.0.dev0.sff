@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='utf-8'?>
+<segmentation>
+    <version>0.8.0.dev0</version>
+    <name>batch</name>
+    <software_list>
+		<software id="0">
+			<name>flags</name>
+			<version>compress</version>
+			<processing_details>Aliquam sociis feugiat labore, veniam conguenulla vehicula.</processing_details>
+		</software>
+	</software_list>
+    <transform_list>
+		<transformation_matrix id="0">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="1">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="2">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="3">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="4">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="5">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="6">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="7">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="8">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="9">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="10">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="11">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="12">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="13">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="14">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="15">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="16">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+		<transformation_matrix id="17">
+			<rows>3</rows>
+			<cols>4</cols>
+			<data>0 1 2 3 4 5 6 7 8 9 10 11</data>
+		</transformation_matrix>
+	</transform_list>
+    <primary_descriptor>shape_primitive_list</primary_descriptor>
+    <segment_list>
+		<segment id="1" parent_id="0">
+			<biological_annotation/>
+			
+			<shape_primitive_list>
+				<cone id="0">
+					<height>37.070668215404602</height>
+					<bottom_radius>25.475612876243947</bottom_radius>
+					<transform_id>0</transform_id>
+				</cone>
+				<cone id="1">
+					<height>39.730445512435828</height>
+					<bottom_radius>22.418065615924597</bottom_radius>
+					<transform_id>1</transform_id>
+				</cone>
+				<cone id="2">
+					<height>49.757252470346259</height>
+					<bottom_radius>93.983454861597437</bottom_radius>
+					<transform_id>2</transform_id>
+				</cone>
+				<cuboid id="3">
+					<x>2.365586441515</x>
+					<y>35.019352996484074</y>
+					<z>18.032738768049363</z>
+					<transform_id>3</transform_id>
+				</cuboid>
+				<cuboid id="4">
+					<x>39.801633828638785</x>
+					<y>9.596061289177737</y>
+					<z>98.102036923619778</z>
+					<transform_id>4</transform_id>
+				</cuboid>
+				<cylinder id="5">
+					<height>33.451489446285755</height>
+					<diameter>8.75704974753695</diameter>
+					<transform_id>5</transform_id>
+				</cylinder>
+				<ellipsoid id="6">
+					<x>11.771433306580537</x>
+					<y>73.818701819276299</y>
+					<z>87.750580089138694</z>
+					<transform_id>6</transform_id>
+				</ellipsoid>
+				<ellipsoid id="7">
+					<x>44.653904843960724</x>
+					<y>65.657794302789227</y>
+					<z>43.695458323442416</z>
+					<transform_id>7</transform_id>
+				</ellipsoid>
+				<cone id="8">
+					<height>75.26213442253686</height>
+					<bottom_radius>39.109739346072601</bottom_radius>
+					<transform_id>8</transform_id>
+				</cone>
+			</shape_primitive_list>
+		</segment>
+		<segment id="2" parent_id="0">
+			<biological_annotation/>
+			
+			<shape_primitive_list>
+				<cone id="0">
+					<height>0.020925217117995</height>
+					<bottom_radius>18.193718267850045</bottom_radius>
+					<transform_id>9</transform_id>
+				</cone>
+				<cone id="1">
+					<height>29.364391699240912</height>
+					<bottom_radius>0.688678195504122</bottom_radius>
+					<transform_id>10</transform_id>
+				</cone>
+				<cone id="2">
+					<height>3.463272060998102</height>
+					<bottom_radius>79.808730156546176</bottom_radius>
+					<transform_id>11</transform_id>
+				</cone>
+				<cuboid id="3">
+					<x>11.238043413540044</x>
+					<y>61.629433523103394</y>
+					<z>48.231691085570674</z>
+					<transform_id>12</transform_id>
+				</cuboid>
+				<cuboid id="4">
+					<x>80.023228411275596</x>
+					<y>10.406806979599681</y>
+					<z>94.907902191460565</z>
+					<transform_id>13</transform_id>
+				</cuboid>
+				<cylinder id="5">
+					<height>89.955775259336363</height>
+					<diameter>14.971703937881697</diameter>
+					<transform_id>14</transform_id>
+				</cylinder>
+				<ellipsoid id="6">
+					<x>35.345783765479986</x>
+					<y>37.666883761996594</y>
+					<z>62.431033343031231</z>
+					<transform_id>15</transform_id>
+				</ellipsoid>
+				<ellipsoid id="7">
+					<x>85.104190603754788</x>
+					<y>43.067383884087583</y>
+					<z>30.869954184783666</z>
+					<transform_id>16</transform_id>
+				</ellipsoid>
+				<cone id="8">
+					<height>64.099944274332259</height>
+					<bottom_radius>25.44362598200436</bottom_radius>
+					<transform_id>17</transform_id>
+				</cone>
+			</shape_primitive_list>
+		</segment>
+	</segment_list>
+</segmentation>

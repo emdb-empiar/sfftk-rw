@@ -16,6 +16,8 @@ import h5py
 import numpy
 
 # from . import emdb_sff as sff
+from . import FORMAT_CHARS, ENDIANNESS
+
 from .. import EMDB_SFF_VERSION
 from .base import SFFType, SFFAttribute, SFFListType, SFFTypeError, SFFIndexType
 from .. import SFFTKRW_VERSION
@@ -27,24 +29,6 @@ _emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 _sff = importlib.import_module(_emdb_sff_name)
-
-FORMAT_CHARS = {
-    u'int8': u'b',
-    u'uint8': u'B',
-    u'int16': u'h',
-    u'uint16': u'H',
-    u'int32': u'i',
-    u'uint32': u'I',
-    u'int64': u'q',
-    u'uint64': u'Q',
-    u'float32': u'f',
-    u'float64': u'd',
-}
-
-ENDIANNESS = {
-    u'little': u'<',
-    u'big': u'>',
-}
 
 # ensure that we can read/write encoded data
 _sff.ExternalEncoding = u"utf-8"

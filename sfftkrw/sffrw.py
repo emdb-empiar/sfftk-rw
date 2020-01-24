@@ -33,25 +33,25 @@ def handle_convert(args):  # @UnusedVariable
     :type configs: ``sfftk.core.configs.Configs``
     :return int status: status
     """
-    # adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
-    #     schema_version=args.schema_version.replace('.', '_')
-    # )
-    # adapter = importlib.import_module(adapter_name)
-    from . import SFFSegmentation
+    adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
+        schema_version=args.schema_version.replace('.', '_')
+    )
+    adapter = importlib.import_module(adapter_name)
+    # from . import SFFSegmentation
     if re.match(r'.*\.(sff|xml)$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (XML) file {}".format(args.from_file))
-        seg = SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file)
     elif re.match(r'.*\.(hff|h5|hdf5)$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (HDF5) file {}".format(args.from_file))
-        seg = SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file)
         if args.verbose:
             print_date("Created SFFSegmentation object")
     elif re.match(r'.*\.json$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (JSON) file {}".format(args.from_file))
-        seg = SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file)
         if args.verbose:
             print_date("Created SFFSegmentation object")
     else:
@@ -82,13 +82,13 @@ def handle_view(args):  # @UnusedVariable
     :type configs: ``sfftk.core.configs.Configs``
     :return int status: status
     """
-    # adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
-    #     schema_version=args.schema_version.replace('.', '_')
-    # )
-    # adapter = importlib.import_module(adapter_name)
-    from . import SFFSegmentation
+    adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
+        schema_version=args.schema_version.replace('.', '_')
+    )
+    adapter = importlib.import_module(adapter_name)
+    # from . import SFFSegmentation
     if re.match(r'.*\.(sff|xml)$', args.from_file, re.IGNORECASE):
-        seg = SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
         print(u"EMDB-SFF Segmentation version {}".format(_decode(seg.version, u'utf-8')))
         print(u"Segmentation name: {}".format(_decode(seg.name, u'utf-8')))
@@ -97,7 +97,7 @@ def handle_view(args):  # @UnusedVariable
         print(u"No. of segments: {}".format(len(seg.segments)))
         print(u"*" * 50)
     elif re.match(r'.*\.(hff|h5|hdf5)$', args.from_file, re.IGNORECASE):
-        seg = SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
         print(u"EMDB-SFF Segmentation version {}".format(_decode(seg.version, u'utf-8')))
         print(u"Segmentation name: {}".format(_decode(seg.name, u'utf-8')))
@@ -106,7 +106,7 @@ def handle_view(args):  # @UnusedVariable
         print(u"No. of segments: {}".format(len(seg.segments)))
         print(u"*" * 50)
     elif re.match(r'.*\.json$', args.from_file, re.IGNORECASE):
-        seg = SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file)
         print("*" * 50)
         print(u"EMDB-SFF Segmentation version {}".format(_decode(seg.version, u'utf-8')))
         print(u"Segmentation name: {}".format(_decode(seg.name, u'utf-8')))

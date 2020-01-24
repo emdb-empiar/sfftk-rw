@@ -128,14 +128,14 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.segments = segments
         segmentation.lattices = lattices
         cls.segmentation = segmentation
-        cls.shape_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_shape_segmentation.hff')
+        cls.shape_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_shape_segmentation.sff')
         cls.volume_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_3d_segmentation.sff')
         cls.mesh_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test_mesh_segmentation.sff')
 
     @classmethod
     def tearDownClass(cls):
-        if os.path.exists(cls.shape_file):
-            os.remove(cls.shape_file)
+        # if os.path.exists(cls.shape_file):
+        #     os.remove(cls.shape_file)
         if os.path.exists(cls.volume_file):
             os.remove(cls.volume_file)
         if os.path.exists(cls.mesh_file):
