@@ -5,13 +5,13 @@ Unit for schema adapter
 """
 from __future__ import print_function
 
+import importlib
 import json
 import os
 import random
 import re
 import tempfile
 import unittest
-import importlib
 
 import h5py
 import numpy
@@ -2108,7 +2108,7 @@ class TestSFFBoundingBox(Py23FixTestCase):
 
     def test_as_json(self):
         """Test export to JSON"""
-        #full
+        # full
         x0, x1, y0, y1, z0, z1 = _random_integers(count=6)
         bb = adapter.SFFBoundingBox(
             xmin=x0, xmax=x1,
@@ -2136,7 +2136,7 @@ class TestSFFBoundingBox(Py23FixTestCase):
 
     def test_from_json(self):
         """Test import from JSON"""
-        #full
+        # full
         bb_json = {'xmin': 640.0, 'xmax': 348.0, 'ymin': 401.0, 'ymax': 176.0, 'zmin': 491.0, 'zmax': 349.0}
         bb = adapter.SFFBoundingBox.from_json(bb_json)
         self.assertEqual(bb.xmin, bb_json[u'xmin'])
@@ -3025,8 +3025,8 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertEqual(s_json[u'colour'], s.colour.value)
         self.assertEqual(s_json[u'biologicalAnnotation'][u'name'], s.biological_annotation.name)
         self.assertEqual(s_json[u'biologicalAnnotation'][u'description'], s.biological_annotation.description)
-        self.assertEqual(s_json[u'biologicalAnnotation'][u'numberOfInstances'], s.biological_annotation.number_of_instances)
-
+        self.assertEqual(s_json[u'biologicalAnnotation'][u'numberOfInstances'],
+                         s.biological_annotation.number_of_instances)
 
 
 class TestSFFSegmentList(Py23FixTestCase):

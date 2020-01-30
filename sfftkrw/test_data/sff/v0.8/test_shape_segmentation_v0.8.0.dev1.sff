@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <segmentation>
-    <version>0.8.0.dev0</version>
+    <version>0.8.0.dev1</version>
     <name>batch</name>
     <software_list>
 		<software id="0">

@@ -6,10 +6,10 @@ BASE_DIR = os.path.dirname(__file__)
 VALID_EXTENSIONS = ['sff', 'xml', 'hff', 'h5', 'hdf5', 'json']
 
 SFFTKRW_VERSION = 'v0.5.2.dev1'
-EMDB_SFF_VERSION = 'v0.8.0.dev0'
+EMDB_SFF_VERSION = 'v0.8.0.dev1'
 # in reverse order; add newer versions on top
 SUPPORTED_EMDB_SFF_VERSIONS = [
-    'v0.8.0.dev0',
+    'v0.8.0.dev1',
     'v0.7.0.dev0',
 ]
 

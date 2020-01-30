@@ -103,7 +103,7 @@ class SFFType(object):
             # todo: consider putting the version in every object so that we can do migrations
             # ensure that the version is copied without requiring user intervention
             if isinstance(self._local, sff.segmentation):
-                self.version = self._local.schemaVersion
+                self.version = self._local.schema_version
         else:
             raise ValueError(u"attribute 'gds_type' cannot be 'None'")
         # if we have a name for the XML output tag we set it here
@@ -146,7 +146,11 @@ class SFFType(object):
                             mo = _match_var_stop.match(arg)
                             var = mo.group('var')
                             stop = int(mo.group('stop'))
-                            _repr_args.append(getattr(self, var)[:stop] + b"...")
+                            sub_str = getattr(self, var)
+                            if len(sub_str) < stop:
+                                _repr_args.append(sub_str)
+                            else:
+                                _repr_args.append(sub_str[:stop] + b"...")
                         else:
                             _repr_args.append(getattr(self, arg, None))
                     # quote strings

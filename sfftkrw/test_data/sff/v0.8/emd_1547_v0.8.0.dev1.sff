@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <segmentation>
-    <version>0.8.0.dev0</version>
+    <version>0.8.0.dev1</version>
     <name>EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage T4 co-chaperone gp31 and ADPAlF3</name>
     <software_list>
 		<software id="0">
