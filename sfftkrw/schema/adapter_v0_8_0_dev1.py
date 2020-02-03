@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import base64
-import importlib
 import os
 import random
 import re
@@ -9,21 +8,13 @@ import struct
 import sys
 import zlib
 
-import h5py
 import numpy
 
 from . import FORMAT_CHARS, ENDIANNESS
-from . import v0_8_0_dev0 as _sff
+from . import v0_8_0_dev1 as _sff
 from .base import SFFType, SFFIndexType, SFFAttribute, SFFListType, SFFTypeError
-from .. import EMDB_SFF_VERSION
 from ..core import _str, _encode, _bytes
 from ..core.print_tools import print_date
-
-# dynamically import the latest schema generateDS API
-_emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
-    schema_version=EMDB_SFF_VERSION.replace('.', '_')
-)
-_sff = importlib.import_module(_emdb_sff_name)
 
 # ensure that we can read/write encoded data
 _sff.ExternalEncoding = u"utf-8"
@@ -981,6 +972,10 @@ class SFFSoftware(SFFIndexType):
     processing_details = SFFAttribute(u'processing_details',
                                       help=u"a description of how the data was processed to produce the segmentation")
 
+    def __eq__(self, other):
+        return self.name == other.name and self.version == other.version and \
+               self.processing_details == other.processing_details
+
 
 class SFFSoftwareList(SFFListType):
     """List of SFFSoftware objects"""
@@ -1076,11 +1071,11 @@ class SFFSegmentation(SFFType):
             except IOError:
                 print_date(_encode(u"File {} not found".format(fn), u'utf-8'))
                 sys.exit(os.EX_IOERR)
-    #     elif re.match(r'.*\.(hff|h5|hdf5)$', fn, re.IGNORECASE):
-    #         with h5py.File(fn, u'r') as h:
-    #             seg._local = seg.from_hff(h)._local
-    #     elif re.match(r'.*\.json$', fn, re.IGNORECASE):
-    #         seg._local = seg.from_json(fn)._local
+        #     elif re.match(r'.*\.(hff|h5|hdf5)$', fn, re.IGNORECASE):
+        #         with h5py.File(fn, u'r') as h:
+        #             seg._local = seg.from_hff(h)._local
+        #     elif re.match(r'.*\.json$', fn, re.IGNORECASE):
+        #         seg._local = seg.from_json(fn)._local
         else:
             print_date(_encode(u"Invalid EMDB-SFF file name: {}".format(fn), u'utf-8'))
             sys.exit(os.EX_DATAERR)

@@ -10,25 +10,16 @@ import re
 import struct
 import sys
 import zlib
-import importlib
 
 import h5py
 import numpy
 
-# from . import emdb_sff as sff
 from . import FORMAT_CHARS, ENDIANNESS
-
-from .. import EMDB_SFF_VERSION
+from . import v0_7_0_dev0 as _sff
 from .base import SFFType, SFFAttribute, SFFListType, SFFTypeError, SFFIndexType
 from .. import SFFTKRW_VERSION
 from ..core import _decode, _dict, _str, _encode, _bytes, _xrange
 from ..core.print_tools import print_date
-
-# dynamically import the latest schema generateDS API
-_emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
-    schema_version=EMDB_SFF_VERSION.replace('.', '_')
-)
-_sff = importlib.import_module(_emdb_sff_name)
 
 # ensure that we can read/write encoded data
 _sff.ExternalEncoding = u"utf-8"
@@ -105,9 +96,7 @@ class SFFRGBA(SFFType):
         return obj
 
     def as_json(self):
-        """Export as JSON with validation"""
-        # validation
-        super(SFFRGBA, self).as_json()
+        """Export as JSON"""
         return {u'colour': self.value}
 
     @classmethod
@@ -247,7 +236,6 @@ class SFFExternalReference(SFFIndexType):
         return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
 
     def as_json(self):
-        super(SFFExternalReference, self).as_json()  # validation
         e = dict()
         if self.id is not None:  # value can be 0 which would evaluate to `False`
             e[u'id'] = self.id
@@ -300,7 +288,6 @@ class SFFExternalReferenceList(SFFListType):
         return all(list(map(lambda v: v[0] == v[1], zip(self, other))))
 
     def as_json(self):
-        super(SFFExternalReferenceList, self).as_json()  # validation
         es = list()
         for extref in self:
             es.append(extref.as_json())
@@ -393,7 +380,6 @@ class SFFBiologicalAnnotation(SFFType):
         return parent_group
 
     def as_json(self):
-        super(SFFBiologicalAnnotation, self).as_json()
         bio_ann = _dict()
         if self.name:
             bio_ann[u'name'] = _str(self.name)
@@ -1330,7 +1316,6 @@ class SFFSegment(SFFIndexType):
 
     def as_json(self):
         """Format this segment as JSON"""
-        super(SFFSegment, self).as_json()
         seg_data = _dict()
         seg_data[u'id'] = int(self.id)
         seg_data[u'parentID'] = int(self.parent_id)
@@ -1693,7 +1678,6 @@ class SFFBoundingBox(SFFType):
         return obj
 
     def as_json(self):
-        super(SFFBoundingBox, self).as_json()
         bb = dict()
         if self.xmin is not None:
             bb[u'xmin'] = self.xmin
@@ -1929,7 +1913,6 @@ class SFFSegmentation(SFFType):
         :param bool sort_keys: whether (default) or not to sort keys in the dictionaries
         :param int indent_width: indent width (default: 2)
         """
-        super(SFFSegmentation, self).as_json()
         # todo: also extract geometrical data
         sff_data = _dict()
         # can be simplified

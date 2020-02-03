@@ -12,10 +12,10 @@ import argparse
 import os
 import re
 
-from . import _dict_iter_keys, _print
+from . import _dict_iter_keys
 from .print_tools import print_date
+from .. import SFFTKRW_ENTRY_POINT, EMDB_SFF_VERSION, SFFTKRW_VERSION
 from ..core import _decode, _basestring
-from .. import SFFTKRW_ENTRY_POINT, EMDB_SFF_VERSION
 
 __author__ = 'Paul K. Korir, PhD'
 __email__ = 'pkorir@ebi.ac.uk, paul.korir@gmail.com'
@@ -54,11 +54,6 @@ def add_args(parser, the_arg):
 
 Parser = argparse.ArgumentParser(
     prog=SFFTKRW_ENTRY_POINT, description="The EMDB-SFF Read/Write Toolkit (sfftk-rw)")
-Parser.add_argument(
-    '--schema-version',
-    default=EMDB_SFF_VERSION,
-    help="which EMDB-SFF version to use [default: {}]".format(EMDB_SFF_VERSION)
-)
 Parser.add_argument(
     '-V', '--version',
     action='store_true',
@@ -230,11 +225,10 @@ def parse_args(_args, use_shlex=False):
         # if _args[0] == 'tests':
         #     pass
         if _args[0] == '-V' or _args[0] == '--version':
-            from .. import SFFTKRW_VERSION, EMDB_SFF_VERSION
             print_date("sfftk-rw version: {} for EMDB-SFF {}".format(SFFTKRW_VERSION, EMDB_SFF_VERSION))
             return os.EX_OK
         # anytime a new argument is added to the base parser subparsers are bumped down in index
-        elif _args[0] in _dict_iter_keys(Parser._actions[3].choices):
+        elif _args[0] in _dict_iter_keys(Parser._actions[2].choices):
             exec('{}_parser.print_help()'.format(_args[0]))
             return os.EX_OK
     # parse arguments

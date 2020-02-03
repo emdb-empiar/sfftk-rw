@@ -9,6 +9,13 @@ A collection of helpful utilities
 from __future__ import print_function, division
 
 
+
+from ..core import _decode
+import h5py
+import json
+import re
+
+
 def get_path(D, path):
     """Get a path from a dictionary
 
@@ -71,3 +78,27 @@ def rgba_to_hex(rgba, channels=3):
     elif channels == 4:
         hex_colour = u'#' + dd_hex(r) + dd_hex(g) + dd_hex(b) + dd_hex(a)
     return hex_colour
+
+
+def get_version(fn):
+    """
+    Gets the version from the EMDB-SFF file
+
+    :param fn: name of EMDB-SFF file
+    :type fn: bytes or unicode
+    :return: the version
+    :rtype: unicode
+    """
+    if re.match(r".*\.(sff|xml)$", fn, re.IGNORECASE):
+        from xml.etree import ElementTree as ET
+        root = ET.parse(fn).getroot()
+        version = root.findall('./version')[0].text
+    elif re.match(r".*\.(hff|h5|hdf5)$", fn, re.IGNORECASE):
+        with h5py.File(fn, 'r') as h:
+            version = h[u'version'][()]
+    elif re.match(r".*\.json$", fn, re.IGNORECASE):
+        with open(fn, 'r') as j:
+            version = json.load(j)[u'version']
+    else:
+        raise ValueError(u"invalid filetype: {}".format(fn))
+    return _decode(version, 'utf-8')

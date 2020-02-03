@@ -12,23 +12,24 @@ import numpy
 from random_words import RandomWords, LoremIpsum
 
 from . import TEST_DATA_PATH, Py23FixTestCase, _random_integer, _random_float, _random_integers
-from .. import EMDB_SFF_VERSION
 from ..core import _str, _xrange, _decode, _bytes
 from ..schema import base
 
-rw = RandomWords()
-li = LoremIpsum()
+EMDB_SFF_VERSION = u'0.8.0.dev1'
 
-adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
+adapter_name = 'sfftkrw.schema.adapter_v{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 adapter = importlib.import_module(adapter_name)
 
 # dynamically import the latest schema generateDS API
-emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
+emdb_sff_name = 'sfftkrw.schema.v{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 emdb_sff = importlib.import_module(emdb_sff_name)
+
+rw = RandomWords()
+li = LoremIpsum()
 
 
 class TestSFFRGBA(Py23FixTestCase):
@@ -3687,7 +3688,7 @@ class TestSFFSegmentation(Py23FixTestCase):
 
     def test_read_sff(self):
         """Read from XML (.sff) file"""
-        sff_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1547_v0.8.0.dev1.sff')
+        sff_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1547.sff')
         segmentation = adapter.SFFSegmentation.from_file(sff_file)
         transform = segmentation.transforms[1]
         # assertions

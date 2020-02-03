@@ -16,10 +16,9 @@ import sys
 import unittest
 
 from . import TEST_DATA_PATH
-from .. import sffrw as Main
-from ..core import _print
-from ..core.parser import parse_args
 from .. import SFFSegmentation
+from .. import sffrw as Main
+from ..core.parser import parse_args
 
 __author__ = 'Paul K. Korir, PhD'
 __email__ = 'pkorir@ebi.ac.uk, paul.korir@gmail.com'
@@ -131,7 +130,8 @@ class TestMainHandleView(unittest.TestCase):
             os.path.join(TEST_DATA_PATH, 'segmentations', 'test_data.xxx'),
 
         ), use_shlex=True)
-        self.assertEqual(0, Main.handle_view(args))
+        with self.assertRaises(ValueError):
+            Main.handle_view(args)
 
 
 class TestMainHandleTests(unittest.TestCase):
@@ -235,4 +235,3 @@ class TestMainMain(unittest.TestCase):
         s1, s2 = mod.SFFSegmentation(), SFFSegmentation()
         # ensure we're working on the same version
         self.assertEqual(s1.version, s2.version)
-

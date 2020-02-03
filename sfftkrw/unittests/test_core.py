@@ -3,20 +3,16 @@
 """Unit tests for :py:mod:`sfftkrw.core` package"""
 from __future__ import division, print_function
 
-import glob
 import os
 import random
-import shlex
-import shutil
 import sys
 
 from random_words import RandomWords, LoremIpsum
 
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase
-from .. import BASE_DIR
 from ..core import print_tools
-from ..core import utils, _dict_iter_items, _dict
-from ..core.parser import Parser, parse_args, tool_list
+from ..core import utils
+from ..core.parser import parse_args, tool_list
 
 rw = RandomWords()
 li = LoremIpsum()
@@ -342,6 +338,8 @@ class TestCoreUtils(Py23FixTestCase):
     @classmethod
     def setUpClass(cls):
         print("utils tests...", file=sys.stderr)
+        cls.v7_sff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
+        cls.v8_sff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.sff')
 
     def test_get_path_one_level(self):
         """Test that we can get an item at a path one level deep"""
@@ -457,3 +455,10 @@ class TestCoreUtils(Py23FixTestCase):
         args = parse_args(cmd, use_shlex=True)
         self.assertEqual(args.subcommand, 'view')
         self.assertEqual(args.from_file, 'file.sff')
+
+    def test_get_version(self):
+        """Test that we can reliably get the version from an EMDB-SFF file"""
+        v7_version = utils.get_version(self.v7_sff_file)
+        self.assertEqual(v7_version, '0.7.0.dev0')
+        v8_version = utils.get_version(self.v8_sff_file)
+        self.assertEqual(v8_version, '0.8.0.dev1')

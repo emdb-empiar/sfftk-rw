@@ -20,11 +20,11 @@ from ..core import _xrange, _str, _print
 from ..schema import base #, emdb_sff
 
 # dynamically import the latest schema generateDS API
-emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
+emdb_sff_name = 'sfftkrw.schema.v{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 # dynamically import the adapter for the API
-adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
+adapter_name = 'sfftkrw.schema.adapter_v{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 emdb_sff = importlib.import_module(emdb_sff_name)
@@ -39,9 +39,9 @@ class TestSFFTypeError(Py23FixTestCase):
 
     def test_default(self):
         """Test default operation"""
-        c = adapter.SFFComplexesAndMacromolecules()
+        c = adapter.SFFRGBA()
         with self.assertRaisesRegex(base.SFFTypeError, r".*?is not object of type.*?"):
-            c.complexes = 'complexes'
+            c == adapter.SFFSegment()
 
     def test_message(self):
         """Test error raised with message"""
@@ -57,7 +57,7 @@ class TestSFFType(Py23FixTestCase):
         """Test that a created empty segmentation has the correct version"""
         S = adapter.SFFSegmentation()
         _S = emdb_sff.segmentation()
-        self.assertEqual(S.version, _S.schemaVersion)
+        self.assertEqual(S.version, _S.schema_version)
 
     def test_gds_type_missing(self):
         """Test for presence of `gds_type` attribute"""
@@ -70,11 +70,11 @@ class TestSFFType(Py23FixTestCase):
 
     def test_create_from_gds_type(self):
         """Test creating an `SFFType` subclass object from a `gds_type' object"""
-        # we will try with SFFRGBA and rgbaType
+        # we will try with SFFRGBA and rgba_type
         red = _random_float()
         green = _random_float()
         blue = _random_float()
-        _r = emdb_sff.rgbaType(
+        _r = emdb_sff.rgba_type(
             red=red, green=green, blue=blue,
         )
         r = adapter.SFFRGBA.from_gds_type(_r)
@@ -89,7 +89,7 @@ class TestSFFType(Py23FixTestCase):
     def test_create_from_gds_type_raises_error(self):
         """Test that we get an exception when the `SFFType` subclass object's `gds_type` attribute is not the same
         as the one provided"""
-        _r = emdb_sff.biologicalAnnotationType()
+        _r = emdb_sff.biological_annotationType()
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
             r = adapter.SFFRGBA.from_gds_type(_r)
 
@@ -107,22 +107,22 @@ class TestSFFType(Py23FixTestCase):
         c = adapter.SFFRGBA(random_colour=True)
         self.assertRegex(_str(c), r"SFFRGBA\(red=\d\.\d+.*\)")
         # correct assessment of length: prints out a string with the correct len() value
-        c = adapter.SFFComplexList()
+        c = adapter.SFFSoftwareList()
         c.id = rw.random_words(count=10)
-        self.assertRegex(_str(c), r"SFFComplexList\(\[.*\]\)")
+        self.assertRegex(_str(c), r"SFFSoftwareList\(\[.*\]\)")
         # plain string: prints the plain string
         v = adapter.SFFThreeDVolume()
-        self.assertRegex(_str(v), r"""SFFThreeDVolume\(latticeId=None, value=None, transformId=None\)""")
+        self.assertRegex(_str(v), r"""SFFThreeDVolume\(lattice_id=None, value=None, transform_id=None\)""")
 
         # len() works
-        class _Complexes(adapter.SFFComplexList):
-            repr_string = u'complex list of length {}'
+        class _SoftwareList(adapter.SFFSoftwareList):
+            repr_string = u'software list of length {}'
             repr_args = (u'len()',)
 
-        C = _Complexes()
-        no_cpx = _random_integer(start=2, stop=10)
-        [C.append(rw.random_word()) for _ in _xrange(no_cpx)]
-        self.assertRegex(_str(C), r".*{}.*".format(no_cpx))
+        Sw = _SoftwareList()
+        no_sw = _random_integer(start=2, stop=10)
+        [Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(no_sw)]
+        self.assertRegex(_str(Sw), r".*{}.*".format(no_sw))
 
         # using index syntax
         class _Lattice(adapter.SFFLattice):
@@ -134,12 +134,12 @@ class TestSFFType(Py23FixTestCase):
         self.assertRegex(_str(L), r"\".*\.\.\.\"")
 
         # no repr_args
-        class _Complexes(adapter.SFFComplexList):
+        class _Complexes(adapter.SFFSoftwareList):
             repr_string = u"complexes"
             repr_args = ()
 
-        C = _Complexes()
-        self.assertEqual(_str(C), u"complexes")
+        Sw = _Complexes()
+        self.assertEqual(_str(Sw), u"complexes")
 
         # repr_str is missing: prints out the output of type
         class _RGBA(adapter.SFFRGBA):
@@ -160,7 +160,7 @@ class TestSFFType(Py23FixTestCase):
         """Test that we can export a segmentation as XML"""
         S = adapter.SFFSegmentation()
         S.name = u'test segmentation'
-        S.primary_descriptor = u'meshList'
+        S.primary_descriptor = u'mesh_list'
         S.details = li.get_sentences(sentences=10)
         tf = tempfile.NamedTemporaryFile()
         tf.name += '.sff'
@@ -174,7 +174,7 @@ class TestSFFType(Py23FixTestCase):
         """Test that we can export a segmentation as XML"""
         S = adapter.SFFSegmentation()
         S.name = u'test segmentation'
-        S.primary_descriptor = u'meshList'
+        S.primary_descriptor = u'mesh_list'
         S.software = adapter.SFFSoftware()
         S.transforms = adapter.SFFTransformList()
         S.bounding_box = adapter.SFFBoundingBox()
@@ -194,7 +194,7 @@ class TestSFFType(Py23FixTestCase):
         """Test that we can export a segmentation as XML"""
         S = adapter.SFFSegmentation()
         S.name = u'test segmentation'
-        S.primary_descriptor = u'meshList'
+        S.primary_descriptor = u'mesh_list'
         S.software = adapter.SFFSoftware()
         S.transforms = adapter.SFFTransformList()
         S.bounding_box = adapter.SFFBoundingBox()
@@ -214,7 +214,7 @@ class TestSFFType(Py23FixTestCase):
         """Test that we can export to stderr"""
         S = adapter.SFFSegmentation(
             name=rw.random_word(),
-            primaryDescriptor=u'meshList',
+            primary_descriptor=u'mesh_list',
         )
         # we check that everything was OK
         self.assertEqual(S.export(sys.stderr), os.EX_OK)
@@ -224,7 +224,7 @@ class TestSFFType(Py23FixTestCase):
         tf = tempfile.NamedTemporaryFile()
         tf.name += u'.invalid'
         self.assertEqual(os.EX_DATAERR,
-                         adapter.SFFSegmentation(name=rw.random_word(), primaryDescriptor=u'meshList').export(tf.name))
+                         adapter.SFFSegmentation(name=rw.random_word(), primary_descriptor=u'mesh_list').export(tf.name))
 
     def test_format_method_missing(self):
         """Test that we get `NotImplementedError`s"""
@@ -236,8 +236,6 @@ class TestSFFType(Py23FixTestCase):
         _S = _SomeEntity()
         with self.assertRaises(NotImplementedError):
             _S.as_hff(u'test')
-
-        self.assertEqual(_S.as_json(u'test'), 0)  # OK
 
         with self.assertRaises(NotImplementedError):
             _S.from_hff(u'test')
@@ -263,16 +261,14 @@ class TestSFFIndexType(Py23FixTestCase):
         """Reset ids"""
         adapter.SFFSegment.segment_id = 1  # reset ID informarly
         adapter.SFFShape.shape_id = 0
-        adapter.SFFVertex.vertex_id = 0
-        adapter.SFFPolygon.polygon_id = 0
 
     def test_create_from_gds_type(self):
         """Test creating an `SFFIndexType` subclass object from a gds type"""
         # segment
-        _s = emdb_sff.segmentType()
+        _s = emdb_sff.segment_type()
         s = adapter.SFFSegment.from_gds_type(_s)
         self.assertIsNone(s.id)
-        _t = emdb_sff.segmentType(id=10)
+        _t = emdb_sff.segment_type(id=10)
         t = adapter.SFFSegment.from_gds_type(_t)
         self.assertEqual(t.id, 10)
         u = adapter.SFFSegment.from_gds_type(None)
@@ -288,24 +284,6 @@ class TestSFFIndexType(Py23FixTestCase):
         self.assertEqual(s.id, 999)
         s = adapter.SFFSegment()
         self.assertEqual(s.id, 1000)
-
-    def test_vertex_ids(self):
-        """Test that vID works as expected"""
-        v = adapter.SFFVertex()
-        self.assertEqual(v.id, 0)
-        v = adapter.SFFVertex(vID=999)
-        self.assertEqual(v.id, 999)
-        v = adapter.SFFVertex()
-        self.assertEqual(v.id, 1000)
-
-    def test_polygon_ids(self):
-        """Test that PID works as expected"""
-        p = adapter.SFFPolygon()
-        self.assertEqual(p.id, 0)
-        p = adapter.SFFPolygon(PID=999)
-        self.assertEqual(p.id, 999)
-        p = adapter.SFFPolygon()
-        self.assertEqual(p.id, 1000)
 
     def test_new_obj_True(self):
         """Test that an empty `SFFIndexType` subclass has correct indexes"""
@@ -335,21 +313,21 @@ class TestSFFIndexType(Py23FixTestCase):
         self.assertIsNone(s.id)
         s = adapter.SFFSegment()
         self.assertEqual(s.id, 5)
-        s = adapter.SFFSegment.from_gds_type(emdb_sff.segmentType(id=35))
+        s = adapter.SFFSegment.from_gds_type(emdb_sff.segment_type(id=35))
         self.assertEqual(s.id, 35)
-        s = adapter.SFFSegment.from_gds_type(emdb_sff.segmentType())
+        s = adapter.SFFSegment.from_gds_type(emdb_sff.segment_type())
         self.assertIsNone(s.id)
         s = adapter.SFFSegment()
         self.assertEqual(s.id, 6)
 
     def test_with_gds_type(self):
         """Test that we can work with generateDS types"""
-        s = adapter.SFFSegment.from_gds_type(emdb_sff.segmentType())
+        s = adapter.SFFSegment.from_gds_type(emdb_sff.segment_type())
         self.assertIsNone(s.id)
-        s = adapter.SFFSegment.from_gds_type(emdb_sff.segmentType(id=37))
+        s = adapter.SFFSegment.from_gds_type(emdb_sff.segment_type(id=37))
         self.assertIsNotNone(s.id)
         self.assertEqual(adapter.SFFSegment.segment_id, 1)
-        s = adapter.SFFSegment.from_gds_type(emdb_sff.segmentType(id=38))
+        s = adapter.SFFSegment.from_gds_type(emdb_sff.segment_type(id=38))
         self.assertEqual(adapter.SFFSegment.segment_id, 1)
 
     def test_reset_id(self):
@@ -404,7 +382,7 @@ class TestSFFIndexType(Py23FixTestCase):
             # attributes
             id = base.SFFAttribute('id', help="the ID of this shape")
             transform_id = base.SFFAttribute(
-                'transformId',
+                'transform_id',
                 help="the transform applied to this shape to position it in the space"
             )
             attribute = base.SFFAttribute(
@@ -447,18 +425,18 @@ class TestSFFListType(Py23FixTestCase):
     def test_create_from_gds_type(self):
         """Test create from a gds_type"""
         # empty list
-        _S = emdb_sff.segmentListType()
+        _S = emdb_sff.segment_listType()
         S = adapter.SFFSegmentList.from_gds_type(_S)
         self.assertEqual(len(S), 0)
         # populated list; no segment IDS
-        _T = emdb_sff.segmentListType()
+        _T = emdb_sff.segment_listType()
         _no_items = _random_integer(start=2, stop=10)
-        [_T.add_segment(emdb_sff.segmentType()) for _ in _xrange(_no_items)]
+        [_T.add_segment(emdb_sff.segment_type()) for _ in _xrange(_no_items)]
         T = adapter.SFFSegmentList.from_gds_type(_T)
         self.assertEqual(len(T), _no_items)
         # populated list; with segment IDS
-        _U = emdb_sff.segmentListType()
-        [_U.add_segment(emdb_sff.segmentType(id=i)) for i in _xrange(1, _no_items + 1)]
+        _U = emdb_sff.segment_listType()
+        [_U.add_segment(emdb_sff.segment_type(id=i)) for i in _xrange(1, _no_items + 1)]
         U = adapter.SFFSegmentList.from_gds_type(_U)
         self.assertEqual(len(U), _no_items)
         self.assertEqual(len(U._id_dict), _no_items)
@@ -511,25 +489,11 @@ class TestSFFListType(Py23FixTestCase):
         for i, s in enumerate(S, start=1):
             self.assertIsInstance(s, adapter.SFFSegment)
             self.assertEqual(s.id, i)
-        # complexes
-        c = adapter.SFFComplexList()
-        words = rw.random_words(count=3)
-        c.ids = words
-        self.assertEqual(next(iter(c)), words[0])
-        # vertices
-        V = adapter.SFFVertexList()
-        _no_vertices = _random_integer(start=2, stop=10)
-        [V.append(adapter.SFFVertex()) for _ in _xrange(_no_vertices)]
-        for i, v in enumerate(V):
-            self.assertIsInstance(v, adapter.SFFVertex)
-            self.assertEqual(v.id, i)
-        # polygons
-        P = adapter.SFFPolygonList()
-        _no_polygons = _random_integer(start=2, stop=10)
-        [P.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons)]
-        for i, P in enumerate(P):
-            self.assertIsInstance(P, adapter.SFFPolygon)
-            self.assertEqual(P.id, i)
+        # software list
+        Sw = adapter.SFFSoftwareList()
+        _no_sw = _random_integer(start=2, stop=10)
+        [Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(_no_sw)]
+        self.assertEqual(next(iter(Sw)), Sw[0])
 
     def test_sibling_classes(self):
         """Test that the `sibling_classes` attribute works"""
@@ -569,26 +533,16 @@ class TestSFFListType(Py23FixTestCase):
         _no_segments = _random_integer(start=3, stop=10)
         [S.append(adapter.SFFSegment()) for _ in _xrange(_no_segments)]
         self.assertIsInstance(S[_no_segments - 1], adapter.SFFSegment)
-        # complexes
-        C = adapter.SFFComplexList()
-        _no_complexes = _random_integer(start=3, stop=10)
-        [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
-        self.assertIsInstance(C[_no_complexes - 1], _str)
-        # vertices
-        V = adapter.SFFVertexList()
-        _no_vertexs = _random_integer(start=3, stop=10)
-        [V.append(adapter.SFFVertex()) for _ in _xrange(_no_vertexs)]
-        self.assertIsInstance(V[_no_vertexs - 1], adapter.SFFVertex)
-        # polygons
-        P = adapter.SFFPolygonList()
-        _no_polygons = _random_integer(start=3, stop=10)
-        [P.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons)]
-        self.assertIsInstance(P[_no_polygons - 1], adapter.SFFPolygon)
+        # software list
+        Sw = adapter.SFFSoftwareList()
+        _no_sw = _random_integer(start=3, stop=10)
+        [Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(_no_sw)]
+        self.assertIsInstance(Sw[_no_sw - 1], adapter.SFFSoftware)
         # do we get an IndexError?
         with self.assertRaises(IndexError):
             _ = S[_no_segments]
         with self.assertRaises(IndexError):
-            _ = C[_no_complexes]
+            _ = Sw[_no_sw]
 
     def test_setitem(self):
         """Test that we can use index syntax to set an object"""
@@ -597,28 +551,18 @@ class TestSFFListType(Py23FixTestCase):
         S.append(adapter.SFFSegment())
         S[0] = adapter.SFFSegment()
         self.assertEqual(len(S), 1)
-        # complex
-        C = adapter.SFFComplexList()
-        C.append(rw.random_word())
-        C[0] = rw.random_word()
-        self.assertEqual(len(C), 1)
-        # vertices
-        V = adapter.SFFVertexList()
-        V.append(adapter.SFFVertex())
-        V[0] = adapter.SFFVertex()
-        self.assertEqual(len(V), 1)
-        # polygons
-        P = adapter.SFFPolygonList()
-        P.append(adapter.SFFPolygon())
-        P[0] = adapter.SFFPolygon()
-        self.assertEqual(len(P), 1)
+        # software
+        Sw = adapter.SFFSoftwareList()
+        Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word()))
+        Sw[0] = adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())
+        self.assertEqual(len(Sw), 1)
         # exceptions
-        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
+        with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
             S[0] = rw.random_word()
-        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
-            S[0] = adapter.SFFComplexList()
-        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
-            C[0] = adapter.SFFSegment()
+        with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
+            S[0] = adapter.SFFSoftwareList()
+        with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
+            Sw[0] = adapter.SFFSegment()
 
     def test_delitem(self):
         """Test that we can use index syntax for setting an item to the list"""
@@ -627,21 +571,11 @@ class TestSFFListType(Py23FixTestCase):
         S.append(adapter.SFFSegment())
         del S[0]
         self.assertEqual(len(S), 0)
-        # complexes
-        C = adapter.SFFComplexList()
-        C.append(rw.random_word())
-        del C[0]
-        self.assertEqual(len(C), 0)
-        # vertices
-        V = adapter.SFFVertexList()
-        V.append(adapter.SFFVertex())
-        del V[0]
-        self.assertEqual(len(V), 0)
-        # polygons
-        P = adapter.SFFPolygonList()
-        P.append(adapter.SFFPolygon())
-        del P[0]
-        self.assertEqual(len(P), 0)
+        # software list
+        Sw = adapter.SFFSoftwareList()
+        Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word()))
+        del Sw[0]
+        self.assertEqual(len(Sw), 0)
 
     def test_append(self):
         """Test that we can append to the end of the list"""
@@ -650,37 +584,27 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(S), 0)
         S.append(adapter.SFFSegment())
         self.assertEqual(len(S), 1)
-        # complexes
-        C = adapter.SFFComplexList()
-        self.assertEqual(len(C), 0)
-        C.append(rw.random_word())
-        self.assertEqual(len(C), 1)
-        # vertices
-        V = adapter.SFFVertexList()
-        self.assertEqual(len(V), 0)
-        V.append(adapter.SFFVertex())
-        self.assertEqual(len(V), 1)
-        # segments
-        P = adapter.SFFPolygonList()
-        self.assertEqual(len(P), 0)
-        P.append(adapter.SFFPolygon())
-        self.assertEqual(len(P), 1)
+        # software
+        Sw = adapter.SFFSoftwareList()
+        self.assertEqual(len(Sw), 0)
+        Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word()))
+        self.assertEqual(len(Sw), 1)
         # exceptions
-        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
+        with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
             S.append(rw.random_word())
-        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
-            S.append(adapter.SFFComplexList())
-        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
-            C.append(adapter.SFFSegment())
+        with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
+            S.append(adapter.SFFSoftwareList())
+        with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
+            Sw.append(adapter.SFFSegment())
 
     def test_clear(self):
         """Test that we can clear the list"""
-        C = adapter.SFFComplexList()
-        _no_complexes = _random_integer(start=2, stop=10)
-        [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
-        self.assertEqual(len(C), _no_complexes)
-        C.clear()
-        self.assertEqual(len(C), 0)
+        Sw = adapter.SFFSoftwareList()
+        _no_sw = _random_integer(start=2, stop=10)
+        [Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(_no_sw)]
+        self.assertEqual(len(Sw), _no_sw)
+        Sw.clear()
+        self.assertEqual(len(Sw), 0)
 
     def test_copy(self):
         """Test that we can create a shallow copy"""
@@ -693,10 +617,10 @@ class TestSFFListType(Py23FixTestCase):
         R = S.copy()
         self.assertIsInstance(R, type(S))
         self.assertNotEqual(id(S), id(R))
-        # complexes
-        C = adapter.SFFComplexList()
+        # software list
+        C = adapter.SFFSoftwareList()
         _no_complexes = _random_integer(start=2, stop=10)
-        [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
+        [C.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(_no_complexes)]
         D = C
         self.assertEqual(id(C), id(D))
         D = C.copy()
@@ -728,44 +652,22 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(S2), _no_segments2)
         S1.extend(S2)
         self.assertEqual(len(S1), _no_segments1 + _no_segments2)
-        # complexes
-        C1 = adapter.SFFComplexList()
-        _no_complexes1 = _random_integer(start=2, stop=10)
-        [C1.append(rw.random_word()) for _ in _xrange(_no_complexes1)]
-        C2 = adapter.SFFComplexList()
-        _no_complexes2 = _random_integer(start=2, stop=10)
-        [C2.append(rw.random_word()) for _ in _xrange(_no_complexes2)]
-        self.assertEqual(len(C1), _no_complexes1)
-        self.assertEqual(len(C2), _no_complexes2)
-        C1.extend(C2)
-        self.assertEqual(len(C1), _no_complexes1 + _no_complexes2)
-        # vertices
-        V1 = adapter.SFFVertexList()
-        _no_vertices1 = _random_integer(start=2, stop=10)
-        [V1.append(adapter.SFFVertex()) for _ in _xrange(_no_vertices1)]
-        V2 = adapter.SFFVertexList()
-        _no_vertices2 = _random_integer(start=2, stop=10)
-        [V2.append(adapter.SFFVertex()) for _ in _xrange(_no_vertices2)]
-        self.assertEqual(len(V1), _no_vertices1)
-        self.assertEqual(len(V2), _no_vertices2)
-        V1.extend(V2)
-        self.assertEqual(len(V1), _no_vertices1 + _no_vertices2)
-        # polygons
-        P1 = adapter.SFFPolygonList()
-        _no_polygons1 = _random_integer(start=2, stop=10)
-        [P1.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons1)]
-        P2 = adapter.SFFPolygonList()
-        _no_polygons2 = _random_integer(start=2, stop=10)
-        [P2.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons2)]
-        self.assertEqual(len(P1), _no_polygons1)
-        self.assertEqual(len(P2), _no_polygons2)
-        P1.extend(P2)
-        self.assertEqual(len(P1), _no_polygons1 + _no_polygons2)
+        # software list
+        Sw1 = adapter.SFFSoftwareList()
+        _no_sw1 = _random_integer(start=2, stop=10)
+        [Sw1.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(_no_sw1)]
+        Sw2 = adapter.SFFSoftwareList()
+        _no_sw2 = _random_integer(start=2, stop=10)
+        [Sw2.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(_no_sw2)]
+        self.assertEqual(len(Sw1), _no_sw1)
+        self.assertEqual(len(Sw2), _no_sw2)
+        Sw1.extend(Sw2)
+        self.assertEqual(len(Sw1), _no_sw1 + _no_sw2)
         # exceptions
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
-            S1.extend(C1)
+            S1.extend(Sw1)
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
-            C1.extend(S1)
+            Sw1.extend(S1)
 
     def test_insert(self):
         """Test that we can perform an insert"""
@@ -778,38 +680,20 @@ class TestSFFListType(Py23FixTestCase):
         S.insert(1, s)
         self.assertEqual(len(S), _no_segments + 1)
         self.assertEqual(S[1].id, s.id)
-        # complexes
-        C = adapter.SFFComplexList()
-        _no_complexes = _random_integer(start=2, stop=10)
-        [C.append(rw.random_word()) for _ in _xrange(_no_complexes)]
-        self.assertEqual(len(C), _no_complexes)
-        c = rw.random_word()
-        C.insert(1, c)
-        self.assertEqual(len(C), _no_complexes + 1)
-        self.assertEqual(C[1], c)
-        # vertices
-        V = adapter.SFFVertexList()
-        _no_vertices = _random_integer(start=2, stop=10)
-        [V.append(adapter.SFFVertex()) for _ in _xrange(_no_vertices)]
-        self.assertEqual(len(V), _no_vertices)
-        v = adapter.SFFVertex()
-        V.insert(1, v)
-        self.assertEqual(len(V), _no_vertices + 1)
-        self.assertEqual(V[1].id, v.id)
-        # segments
-        P = adapter.SFFPolygonList()
-        _no_polygons = _random_integer(start=2, stop=10)
-        [P.append(adapter.SFFPolygon()) for _ in _xrange(_no_polygons)]
-        self.assertEqual(len(P), _no_polygons)
-        p = adapter.SFFPolygon()
-        P.insert(1, p)
-        self.assertEqual(len(P), _no_polygons + 1)
-        self.assertEqual(P[1].id, p.id)
+        # software list
+        Sw = adapter.SFFSoftwareList()
+        _no_sw = _random_integer(start=2, stop=10)
+        [Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(_no_sw)]
+        self.assertEqual(len(Sw), _no_sw)
+        sw = adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())
+        Sw.insert(1, sw)
+        self.assertEqual(len(Sw), _no_sw + 1)
+        self.assertEqual(Sw[1], sw)
         # exceptions
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
-            S.insert(1, c)
+            S.insert(1, sw)
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
-            C.insert(1, s)
+            Sw.insert(1, s)
 
     def test_pop(self):
         """Test that we can pop items off"""
@@ -828,51 +712,21 @@ class TestSFFListType(Py23FixTestCase):
         s = S.pop(index=1)
         self.assertEqual(len(S), 2)
         self.assertIsInstance(s, adapter.SFFSegment)
-        # complexes
-        C = adapter.SFFComplexList()
-        c0 = rw.random_word()
-        C.append(c0)
-        c1 = C.pop()
-        self.assertEqual(len(C), 0)
-        self.assertIsInstance(c1, _str)
-        self.assertEqual(c0, c1)
+        # software list
+        Sw = adapter.SFFSoftwareList()
+        sw0 = adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())
+        Sw.append(sw0)
+        sw1 = Sw.pop()
+        self.assertEqual(len(Sw), 0)
+        self.assertIsInstance(sw1, adapter.SFFSoftware)
+        self.assertEqual(sw0, sw1)
         # pop with index
-        C.append(rw.random_word())
-        C.append(rw.random_word())
-        C.append(rw.random_word())
-        c = C.pop(index=1)
-        self.assertEqual(len(C), 2)
-        self.assertIsInstance(c, _str)
-        # vertices
-        V = adapter.SFFVertexList()
-        v0 = adapter.SFFVertex()
-        V.append(v0)
-        v1 = V.pop()
-        self.assertEqual(len(V), 0)
-        self.assertIsInstance(v1, adapter.SFFVertex)
-        self.assertEqual(v0.id, v1.id)  # ensure we are not creating a new one
-        # pop with index
-        V.append(adapter.SFFVertex())
-        V.append(adapter.SFFVertex())
-        V.append(adapter.SFFVertex())
-        s = V.pop(index=1)
-        self.assertEqual(len(V), 2)
-        self.assertIsInstance(s, adapter.SFFVertex)
-        # polygons
-        P = adapter.SFFPolygonList()
-        p0 = adapter.SFFPolygon()
-        P.append(p0)
-        p1 = P.pop()
-        self.assertEqual(len(P), 0)
-        self.assertIsInstance(p1, adapter.SFFPolygon)
-        self.assertEqual(p0.id, p1.id)  # ensure we are not creating a new one
-        # pop with index
-        P.append(adapter.SFFPolygon())
-        P.append(adapter.SFFPolygon())
-        P.append(adapter.SFFPolygon())
-        s = P.pop(index=1)
-        self.assertEqual(len(P), 2)
-        self.assertIsInstance(s, adapter.SFFPolygon)
+        Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word()))
+        Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word()))
+        Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word()))
+        sw = Sw.pop(index=1)
+        self.assertEqual(len(Sw), 2)
+        self.assertIsInstance(sw, adapter.SFFSoftware)
         # shapes
         Sh = adapter.SFFShapePrimitiveList()
         sh00 = adapter.SFFCone()
@@ -903,30 +757,6 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(S), 1)
         S.remove(s)
         self.assertEqual(len(S), 0)
-        # complexes
-        C = adapter.SFFComplexList()
-        _no_complexes = _random_integer(start=3, stop=10)
-        _word = rw.random_word()
-        [C.append(_word) for _ in _xrange(_no_complexes)]
-        self.assertEqual(len(C), _no_complexes)
-        C.remove(_word)
-        self.assertEqual(len(C), _no_complexes - 1)
-        C.remove(_word)
-        self.assertEqual(len(C), _no_complexes - 2)
-        # vertices
-        V = adapter.SFFVertexList()
-        v = adapter.SFFVertex(vID=1)
-        V.append(v)
-        self.assertEqual(len(V), 1)
-        V.remove(v)
-        self.assertEqual(len(V), 0)
-        # polygons
-        P = adapter.SFFPolygonList()
-        p = adapter.SFFPolygon(PID=1)
-        P.append(p)
-        self.assertEqual(len(P), 1)
-        P.remove(p)
-        self.assertEqual(len(P), 0)
         # shapes
         Sh = adapter.SFFShapePrimitiveList()
         sh = adapter.SFFCuboid(id=1)
@@ -935,10 +765,9 @@ class TestSFFListType(Py23FixTestCase):
         Sh.remove(sh)
         self.assertEqual(len(Sh), 0)
         # exceptions
-        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
-            S.remove(_word)
-        with self.assertRaisesRegex(base.SFFTypeError, r".*or int or str"):
-            C.remove(adapter.SFFSegment())
+        _sw = rw.random_word()
+        with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
+            S.remove(_sw)
 
     def test_reverse(self):
         """Test that we can reverse the list"""
@@ -949,22 +778,6 @@ class TestSFFListType(Py23FixTestCase):
         _ids = list(map(lambda s: s.id, S))
         S.reverse()
         _rids = list(map(lambda s: s.id, S))
-        self.assertEqual(_ids[::-1], _rids)
-        # vertices
-        V = adapter.SFFVertexList()
-        _no_verticess = _random_integer(start=1, stop=10)
-        [V.append(adapter.SFFVertex(vID=i)) for i in _xrange(_no_verticess)]
-        _ids = list(map(lambda v: v.id, V))
-        V.reverse()
-        _rids = list(map(lambda v: v.id, V))
-        self.assertEqual(_ids[::-1], _rids)
-        # polygon
-        P = adapter.SFFPolygonList()
-        _no_polygons = _random_integer(start=1, stop=10)
-        [P.append(adapter.SFFPolygon(PID=i)) for i in _xrange(_no_polygons)]
-        _ids = list(map(lambda p: p.id, P))
-        P.reverse()
-        _rids = list(map(lambda p: p.id, P))
         self.assertEqual(_ids[::-1], _rids)
         # shapes
         Sh = adapter.SFFShapePrimitiveList()
@@ -1004,20 +817,12 @@ class TestSFFListType(Py23FixTestCase):
         [S.append(adapter.SFFSegment()) for _ in _xrange(_no_items)]
         self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
         # appending item from gds does not change length of ID list
-        S.append(adapter.SFFSegment.from_gds_type(emdb_sff.segmentType()))
+        S.append(adapter.SFFSegment.from_gds_type(emdb_sff.segment_type()))
         self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
-        # complexes
-        C = adapter.SFFComplexList()
-        [C.append(rw.random_word()) for _ in _xrange(_no_items)]
-        self.assertEqual(list(C.get_ids()), list())
-        # vertices
-        V = adapter.SFFVertexList()
-        [V.append(adapter.SFFVertex()) for _ in _xrange(_no_items)]
-        self.assertEqual(list(V.get_ids()), list(_xrange(_no_items)))
-        # polygons
-        P = adapter.SFFPolygonList()
-        [P.append(adapter.SFFPolygon()) for _ in _xrange(_no_items)]
-        self.assertEqual(list(P.get_ids()), list(_xrange(_no_items)))
+        # software list
+        Sw = adapter.SFFSoftwareList()
+        [Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(_no_items)]
+        self.assertEqual(list(Sw.get_ids()), list(_xrange(_no_items)))
         # shapes
         Sh = adapter.SFFShapePrimitiveList()
         [Sh.append(adapter.SFFCone()) for _ in _xrange(_no_items)]
@@ -1111,20 +916,20 @@ class TestSFFListType(Py23FixTestCase):
         An example of this is `SFFVertexList` which should have at least 3 vertices (for a triangle)
         """
 
-        class V(base.SFFListType):
-            gds_type = emdb_sff.vertexListType
-            min_length = 3
-            iter_attr = (u'v', adapter.SFFVertex)
-            repr_string = u"VertexList({})"
+        class T(base.SFFListType):
+            gds_type = emdb_sff.transform_listType
+            min_length = 1
+            iter_attr = (u'transformation_matrix', adapter.SFFTransformationMatrix)
+            repr_string = u"Transform({})"
             repr_args = (u'list()',)
 
-        v = V()
-        self.assertFalse(v._is_valid())
-        [v.append(
-            adapter.SFFVertex(*_random_floats(count=3, multiplier=10))
+        t = T()
+        self.assertFalse(t._is_valid())
+        [t.append(
+            adapter.SFFTransformationMatrix(data=numpy.random.rand(5, 5))
         ) for _ in _xrange(_random_integer(start=3, stop=10))]
-        _print(v)
-        self.assertTrue(v._is_valid())
+        _print(t)
+        self.assertTrue(t._is_valid())
 
 
 class TestSFFAttribute(Py23FixTestCase):
@@ -1134,7 +939,7 @@ class TestSFFAttribute(Py23FixTestCase):
         """Test default settings"""
 
         class _Colour(adapter.SFFType):
-            gds_type = emdb_sff.rgbaType
+            gds_type = emdb_sff.rgba_type
             r = base.SFFAttribute('red', help='red colour')
             g = base.SFFAttribute('green', help='green colour')
             b = base.SFFAttribute('blue', help='blue colour')
@@ -1165,11 +970,11 @@ class TestSFFAttribute(Py23FixTestCase):
         """Test setting a default value to the attribute"""
 
         class _BA(adapter.SFFType):
-            gds_type = emdb_sff.biologicalAnnotationType
-            no = base.SFFAttribute('numberOfInstances', default=1)
+            gds_type = emdb_sff.biological_annotationType
+            no = base.SFFAttribute('number_of_instances', default=1)
 
         # explicit
-        _b = _BA(numberOfInstances=33)
+        _b = _BA(number_of_instances=33)
         self.assertEqual(_b.no, 33)
         # default
         _b = _BA()
@@ -1180,7 +985,7 @@ class TestSFFAttribute(Py23FixTestCase):
         """Test setting a required attribute"""
 
         class _ER(adapter.SFFType):
-            gds_type = emdb_sff.externalReferenceType
+            gds_type = emdb_sff.external_reference_type
             t = base.SFFAttribute('type', required=True)
 
         _e = _ER()

@@ -8,6 +8,7 @@ from __future__ import print_function
 import importlib
 import json
 import os
+import sys
 import random
 import re
 import tempfile
@@ -18,17 +19,18 @@ import numpy
 from random_words import RandomWords, LoremIpsum
 
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_integers
-from .. import EMDB_SFF_VERSION
 from ..core import _xrange, _str, _bytes, _decode, _print
 from ..schema import base
 
-adapter_name = 'sfftkrw.schema.adapter_{schema_version}'.format(
+EMDB_SFF_VERSION = u'0.7.0.dev0'
+
+adapter_name = 'sfftkrw.schema.adapter_v{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 adapter = importlib.import_module(adapter_name)
 
 # dynamically import the latest schema generateDS API
-emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
+emdb_sff_name = 'sfftkrw.schema.v{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 emdb_sff = importlib.import_module(emdb_sff_name)
@@ -48,6 +50,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         # empty segmentation object
         segmentation = adapter.SFFSegmentation()  # 3D volume
         segmentation.name = rw.random_word()
+        segmentation.version = EMDB_SFF_VERSION
         segmentation.primary_descriptor = u"threeDVolume"
         # transforms
         transforms = adapter.SFFTransformList()
@@ -148,6 +151,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         """Create an SFFSegmentation object with 3D volume segmentation from scratch"""
         segmentation = adapter.SFFSegmentation()  # 3D volume
         segmentation.name = rw.random_word()
+        segmentation.version = EMDB_SFF_VERSION
         segmentation.primary_descriptor = u"threeDVolume"
         # transforms
         transforms = adapter.SFFTransformList()
@@ -271,6 +275,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         """Test that we can create a segmentation of shapes programmatically"""
         segmentation = adapter.SFFSegmentation()
         segmentation.name = rw.random_word()
+        segmentation.version = EMDB_SFF_VERSION
         segmentation.software = adapter.SFFSoftware(
             name=rw.random_word(),
             version=rw.random_word(),
@@ -540,6 +545,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         """Test that we can create a segmentation of meshes programmatically"""
         segmentation = adapter.SFFSegmentation()
         segmentation.name = rw.random_word()
+        segmentation.version = EMDB_SFF_VERSION
         segmentation.primary_descriptor = u"meshList"
         segments = adapter.SFFSegmentList()
         segment = adapter.SFFSegment()
@@ -645,6 +651,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         """Test that we can add annotations programmatically"""
         segmentation = adapter.SFFSegmentation()  # annotation
         segmentation.name = u"name"
+        segmentation.version = EMDB_SFF_VERSION
         segmentation.software = adapter.SFFSoftware(
             name=u"Software",
             version=u"1.0.9",
@@ -1018,7 +1025,7 @@ class TestSFFRGBA(Py23FixTestCase):
         # empty
         c = adapter.SFFRGBA()
         with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-            c.as_json()
+            c.export(sys.stderr)
         # populated
         c = adapter.SFFRGBA(random_colour=True)
         c_json = c.as_json()
@@ -1174,7 +1181,7 @@ class TestSFFExternalReference(Py23FixTestCase):
             description=self.d,
         )
         with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-            e.as_json()
+            e.export(sys.stderr)
         # missing non-mandatory
         e = adapter.SFFExternalReference(
             type=self.t,
@@ -2979,7 +2986,7 @@ class TestSFFSegment(Py23FixTestCase):
         # empty fails validation
         s = adapter.SFFSegment()
         with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-            s.as_json()
+            s.export(sys.stderr)
         # at least colour needed
         s = adapter.SFFSegment()
         s.colour = adapter.SFFRGBA(random_colour=True)

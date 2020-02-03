@@ -17,7 +17,7 @@ from ..core.print_tools import print_date
 # from ..schema import emdb_sff as sff
 
 # dynamically import the latest schema generateDS API
-emdb_sff_name = 'sfftkrw.schema.{schema_version}'.format(
+emdb_sff_name = 'sfftkrw.schema.v{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 sff = importlib.import_module(emdb_sff_name)
@@ -220,11 +220,7 @@ class SFFType(object):
         raise NotImplementedError
 
     def as_json(self, *args, **kwargs):
-        if self._is_valid():
-            return os.EX_OK
-        else:
-            raise SFFValueError("export failed due to validation error")
-        # raise NotImplementedError
+        raise NotImplementedError
 
     @classmethod
     def from_hff(cls, *args, **kwargs):
@@ -578,7 +574,7 @@ class SFFListType(SFFType):
         elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
             cont.append(item)
         else:
-            raise SFFTypeError(item, SFFType, u"or int or str")
+            raise SFFTypeError(item, SFFType)
 
     def clear(self):
         """Remove all items"""
