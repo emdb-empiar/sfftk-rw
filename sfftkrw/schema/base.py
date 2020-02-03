@@ -187,7 +187,7 @@ class SFFType(object):
         """
         if self._is_valid():
             if isinstance(fn, _basestring):
-                fn_ext = fn.split('.')[-1]
+                fn_ext = fn.split('.')[-1].lower()
                 try:
                     assert fn_ext in VALID_EXTENSIONS
                 except AssertionError:
@@ -196,7 +196,7 @@ class SFFType(object):
                         fn,
                     ), u'utf-8'))
                     return os.EX_DATAERR
-                if fn_ext == u'sff':
+                if re.match(r"^(sff|xml)$", fn_ext, re.IGNORECASE):
                     with open(fn, u'w') as f:
                         # write version and encoding
                         version = _kwargs.get(u'version') if u'version' in _kwargs else u"1.0"
@@ -204,10 +204,10 @@ class SFFType(object):
                         f.write(u'<?xml version="{}" encoding="{}"?>\n'.format(version, encoding))
                         # always export from the root
                         self._local.export(f, 0, *_args, **_kwargs)
-                elif fn_ext == u'hff':
+                elif re.match(r"^(hff|h5|hdf5)$", fn_ext, re.IGNORECASE):
                     with h5py.File(fn, u'w') as f:
                         self.as_hff(f, *_args, **_kwargs)
-                elif fn_ext == u'json':
+                elif re.match(r"^json$", fn_ext, re.IGNORECASE):
                     with open(fn, u'w') as f:
                         self.as_json(f, *_args, **_kwargs)
             elif issubclass(type(fn), io.IOBase):
