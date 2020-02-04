@@ -253,6 +253,35 @@ class TestSFFType(Py23FixTestCase):
         s = adapter.SFFSegment(colour=adapter.SFFRGBA(random_colour=True), new_obj=False)
         self.assertFalse(s._is_valid())
 
+    def test_eq_attrs(self):
+        """Test the attribute that is a list of attributes for equality testing"""
+        class _SomeEntity(adapter.SFFBoundingBox):
+            eq_attrs = [u'xmin', u'xmax']
+            # we test equality of bounding boxes only on xmin and xmax
+
+        # equal
+        b1 = _SomeEntity(xmin=1, xmax=2)
+        b2 = _SomeEntity(xmin=1, xmax=2)
+        self.assertEqual(b1, b2)
+        # not equal
+        b1 = _SomeEntity(xmin=1, xmax=2)
+        b2 = _SomeEntity(xmin=0, xmax=2)
+        self.assertNotEqual(b1, b2)
+
+        # when not defined we get False by default
+        class _SomeEntity(adapter.SFFBoundingBox):
+            """eq_attrs is empty by default"""
+
+        b1 = _SomeEntity()
+        b2 = _SomeEntity()
+        self.assertNotEqual(b1, b2)
+
+        # exception: we can't compare things that are not of the same type
+        with self.assertRaises(base.SFFTypeError):
+            s = adapter.SFFSegment()
+            b1 == s
+
+
 
 class TestSFFIndexType(Py23FixTestCase):
     """Test the indexing mixin class `SFFIndexType"""

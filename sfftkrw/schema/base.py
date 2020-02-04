@@ -2,18 +2,19 @@
 # base.py
 from __future__ import division, print_function
 
+import importlib
+import inspect
 import io
 import numbers
 import os
 import re
-import inspect
-import importlib
 
 import h5py
 
 from .. import VALID_EXTENSIONS, EMDB_SFF_VERSION
-from ..core import _dict, _str, _encode, _decode, _bytes, _clear, _basestring, _print, _getattr_static
+from ..core import _dict, _str, _encode, _decode, _bytes, _clear, _basestring, _getattr_static
 from ..core.print_tools import print_date
+
 # from ..schema import emdb_sff as sff
 
 # dynamically import the latest schema generateDS API
@@ -82,6 +83,8 @@ class SFFType(object):
     -   ``list()`` fills the ``{}`` with a list of contained objects.
     -   ``data[:100]`` applied to the :py:class:`.SFFLattice` class where only the first 100 bytes are displayed
     """
+    eq_attrs = list()
+    u"""A list of attributes used to test equality"""
 
     def __new__(cls, new_obj=True, *args, **kwargs):
         """Matching constructor signature for subclasses"""
@@ -172,7 +175,13 @@ class SFFType(object):
             return _str(type(self))
 
     def __eq__(self, other):
-        raise NotImplementedError  # by default; force explicit comparison
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        if self.eq_attrs:
+            return all(list(map(lambda a: getattr(self, a) == getattr(other, a), self.eq_attrs)))
+        return False
 
     def export(self, fn, *_args, **_kwargs):
         """Export to a file on disc
@@ -220,6 +229,8 @@ class SFFType(object):
         raise NotImplementedError
 
     def as_json(self, *args, **kwargs):
+        """For all contained classes this method returns a dictionary which will be serialised into JSON. Only at the
+        top level (SFFSegmentation) will the final serialisation be done."""
         raise NotImplementedError
 
     @classmethod
@@ -232,7 +243,7 @@ class SFFType(object):
 
     @classmethod
     def from_json(cls, *args, **kwargs):
-        raise SFFValueError("export failed due to validation error")
+        raise NotImplementedError
 
     def _is_valid(self):
         """On output ensure that all required attributes have a valid value"""
@@ -244,7 +255,7 @@ class SFFType(object):
             # getattr_static prevents dynamic lookup;
             # see https://docs.python.org/3.7/library/inspect.html#fetching-attributes-statically
             attr_obj = _getattr_static(self, attr_name)
-            if isinstance(attr_obj, SFFAttribute): # we're only interested in data descriptors
+            if isinstance(attr_obj, SFFAttribute):  # we're only interested in data descriptors
                 value = getattr(self, attr_name)
                 if attr_obj._required and value is None:
                     invalid_attrs.append(attr_name)
@@ -531,6 +542,13 @@ class SFFListType(SFFType):
     def __len__(self):
         iter_name, _ = self.iter_attr
         return len(getattr(self._local, iter_name))
+
+    def __eq__(self, other):
+        try:
+            assert isinstance(other, type(self))
+        except AssertionError:
+            raise SFFTypeError(other, type(self))
+        return all(list(map(lambda v: v[0] == v[1], zip(self, other))))
 
     def __getitem__(self, index):
         iter_name, iter_type = self.iter_attr

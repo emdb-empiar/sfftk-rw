@@ -8,6 +8,7 @@ import re
 import sys
 import tempfile
 
+import h5py
 import numpy
 from random_words import RandomWords, LoremIpsum
 
@@ -33,17 +34,6 @@ li = LoremIpsum()
 
 
 class TestSFFRGBA(Py23FixTestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.test_hdf5_fn = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'test.hdf5')
-
-    @classmethod
-    def tearDownClass(cls):
-        try:
-            os.remove(cls.test_hdf5_fn)
-        except FileNotFoundError:
-            pass
-
     def setUp(self):
         self.red = random.random()
         self.green = random.random()
@@ -103,35 +93,35 @@ class TestSFFRGBA(Py23FixTestCase):
         self.assertEqual(colour.blue, self.blue)
         self.assertEqual(colour.alpha, self.alpha)
 
-    # def test_as_hff(self):
-    #     """Test convert to HDF5 group"""
-    #     colour = adapter.SFFRGBA(
-    #         red=self.red,
-    #         green=self.green,
-    #         blue=self.blue,
-    #         alpha=self.alpha
-    #     )
-    #     with h5py.File(self.test_hdf5_fn, u'w') as h:
-    #         group = h.create_group(u"container")
-    #         group = colour.as_hff(group)
-    #         self.assertIn(u"colour", group)
-    #         self.assertCountEqual(group[u'colour'][()], colour.value)
+    def test_as_hff(self):
+        """Test convert to HDF5 group"""
+        colour = adapter.SFFRGBA(
+            red=self.red,
+            green=self.green,
+            blue=self.blue,
+            alpha=self.alpha
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u"container")
+            group = colour.as_hff(group)
+            self.assertIn(u"colour", group)
+            self.assertCountEqual(group[u'colour'][()], colour.value)
 
-    # def test_from_hff(self):
-    #     """Test create from HDF5 group"""
-    #     colour = adapter.SFFRGBA(
-    #         red=self.red,
-    #         green=self.green,
-    #         blue=self.blue,
-    #         alpha=self.alpha
-    #     )
-    #     with h5py.File(self.test_hdf5_fn, u'w') as h:
-    #         group = h.create_group(u"container")
-    #         group = colour.as_hff(group)
-    #         self.assertIn(u"colour", group)
-    #         self.assertCountEqual(group[u'colour'][()], colour.value)
-    #         colour2 = adapter.SFFRGBA.from_hff(h[u'container'])
-    #         self.assertCountEqual(colour.value, colour2.value)
+    def test_from_hff(self):
+        """Test create from HDF5 group"""
+        colour = adapter.SFFRGBA(
+            red=self.red,
+            green=self.green,
+            blue=self.blue,
+            alpha=self.alpha
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u"container")
+            group = colour.as_hff(group)
+            self.assertIn(u"colour", group)
+            self.assertCountEqual(group[u'colour'][()], colour.value)
+            colour2 = adapter.SFFRGBA.from_hff(h[u'container'])
+            self.assertCountEqual(colour.value, colour2.value)
 
     def test_native_random_colour(self):
         """Test that using a kwarg random_colour will set random colours"""
@@ -148,24 +138,22 @@ class TestSFFRGBA(Py23FixTestCase):
         c = adapter.SFFRGBA()
         self.assertFalse(c._is_valid())
 
-    # def test_as_json(self):
-    #     """Test export to JSON"""
-    #     # empty
-    #     c = adapter.SFFRGBA()
-    #     with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-    #         c.as_json()
-    #     # populated
-    #     c = adapter.SFFRGBA(random_colour=True)
-    #     c_json = c.as_json()
-    #     # _print(c_json)
-    #     self.assertEqual(c_json[u'colour'], c.value)
+    def test_as_json(self):
+        """Test export to JSON"""
+        # empty
+        c = adapter.SFFRGBA()
+        with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
+            c.export(sys.stderr)
+        # populated
+        c = adapter.SFFRGBA(random_colour=True)
+        c_json = c.as_json()
+        self.assertEqual(c_json, c.value)
 
-    # def test_from_json(self):
-    #     """Test import from JSON"""
-    #     c_json = {'colour': (0.8000087483646712, 0.017170600210644427, 0.5992636068532492, 1.0)}
-    #     c = adapter.SFFRGBA.from_json(c_json)
-    #     # _print(c)
-    #     self.assertEqual(c.value, c_json[u'colour'])
+    def test_from_json(self):
+        """Test import from JSON"""
+        c_json = (0.8000087483646712, 0.017170600210644427, 0.5992636068532492, 1.0)
+        c = adapter.SFFRGBA.from_json(c_json)
+        self.assertEqual(c.value, c_json)
 
 
 class TestSFFExternalReference(Py23FixTestCase):
@@ -226,74 +214,73 @@ class TestSFFExternalReference(Py23FixTestCase):
             )
         )
 
-    # def test_as_json(self):
-    #     """Test that we can output as JSON"""
-    #     e = adapter.SFFExternalReference(
-    #         resource=self.r,
-    #         url=self.u,
-    #         accession=self.a,
-    #         label=self.l,
-    #         description=self.d,
-    #     )
-    #     e_json = e.as_json()
-    #     self.assertEqual(e_json[u'id'], e.id)
-    #     self.assertEqual(e_json[u'type'], e.resource)
-    #     self.assertEqual(e_json[u'otherType'], e.other_type)
-    #     self.assertEqual(e_json[u'value'], e.accession)
-    #     self.assertEqual(e_json[u'label'], e.label)
-    #     self.assertEqual(e_json[u'description'], e.description)
-    #     # missing mandatory
-    #     e = adapter.SFFExternalReference(
-    #         # resource=self.r,
-    #         # url=self.u,
-    #         # accession=self.a,
-    #         label=self.l,
-    #         description=self.d,
-    #     )
-    #     with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-    #         e.as_json()
-    #     # missing non-mandatory
-    #     e = adapter.SFFExternalReference(
-    #         resource=self.r,
-    #         url=self.u,
-    #         accession=self.a,
-    #         # label=self.l,
-    #         # description=self.d,
-    #     )
-    #     self.assertEqual(e_json[u'type'], e.resource)
-    #     self.assertEqual(e_json[u'otherType'], e.other_type)
-    #     self.assertEqual(e_json[u'value'], e.accession)
+    def test_as_json(self):
+        """Test that we can output as JSON"""
+        e = adapter.SFFExternalReference(
+            resource=self.r,
+            url=self.u,
+            accession=self.a,
+            label=self.l,
+            description=self.d,
+        )
+        e_json = e.as_json()
+        self.assertEqual(e_json[u'id'], e.id)
+        self.assertEqual(e_json[u'resource'], e.resource)
+        self.assertEqual(e_json[u'url'], e.url)
+        self.assertEqual(e_json[u'accession'], e.accession)
+        self.assertEqual(e_json[u'label'], e.label)
+        self.assertEqual(e_json[u'description'], e.description)
+        # missing mandatory
+        e = adapter.SFFExternalReference(
+            # resource=self.r,
+            # url=self.u,
+            # accession=self.a,
+            label=self.l,
+            description=self.d,
+        )
+        with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
+            e.export(sys.stderr)
+        # missing non-mandatory
+        e = adapter.SFFExternalReference(
+            resource=self.r,
+            url=self.u,
+            accession=self.a,
+            # label=self.l,
+            # description=self.d,
+        )
+        self.assertEqual(e_json[u'resource'], e.resource)
+        self.assertEqual(e_json[u'url'], e.url)
+        self.assertEqual(e_json[u'accession'], e.accession)
 
-    # def test_from_json(self):
-    #     """Test that we can recreate from JSON"""
-    #     e_json = {'id': 0, 'type': 'symptom', 'otherType': 'thin', 'value': 'definitions',
-    #               'label': 'chairpersons swabs pools',
-    #               'description': 'Malesuada facilisinam elitduis mus dis facer, primis est pellentesque integer dapibus '
-    #                              'semper semvestibulum curae lacusnulla.'}
-    #     e = adapter.SFFExternalReference.from_json(e_json)
-    #     self.assertEqual(e_json[u'id'], e.id)
-    #     self.assertEqual(e_json[u'type'], e.resource)
-    #     self.assertEqual(e_json[u'otherType'], e.other_type)
-    #     self.assertEqual(e_json[u'value'], e.accession)
-    #     self.assertEqual(e_json[u'label'], e.label)
-    #     self.assertEqual(e_json[u'description'], e.description)
-    #     # missing mandatory
-    #     e_json = {'id': 0, 'otherType': 'thin', 'value': 'definitions',
-    #               'label': 'chairpersons swabs pools',
-    #               'description': 'Malesuada facilisinam elitduis mus dis facer, primis est pellentesque integer dapibus '
-    #                              'semper semvestibulum curae lacusnulla.'}
-    #     with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-    #         adapter.SFFExternalReference.from_json(e_json)
-    #     # missing non-mandatory
-    #     e_json = {'type': 'symptom', 'otherType': 'thin', 'value': 'definitions',
-    #               'label': 'chairpersons swabs pools'}
-    #     e = adapter.SFFExternalReference.from_json(e_json)
-    #     self.assertIsNone(e.id)
-    #     self.assertEqual(e_json[u'type'], e.resource)
-    #     self.assertEqual(e_json[u'otherType'], e.other_type)
-    #     self.assertEqual(e_json[u'value'], e.accession)
-    #     self.assertEqual(e_json[u'label'], e.label)
-    #     self.assertIsNone(e.description)
+    def test_from_json(self):
+        """Test that we can recreate from JSON"""
+        e_json = {'id': 0, 'resource': 'symptom', 'url': 'thin', 'accession': 'definitions',
+                  'label': 'chairpersons swabs pools',
+                  'description': 'Malesuada facilisinam elitduis mus dis facer, primis est pellentesque integer dapibus '
+                                 'semper semvestibulum curae lacusnulla.'}
+        e = adapter.SFFExternalReference.from_json(e_json)
+        self.assertEqual(e_json[u'id'], e.id)
+        self.assertEqual(e_json[u'resource'], e.resource)
+        self.assertEqual(e_json[u'url'], e.url)
+        self.assertEqual(e_json[u'accession'], e.accession)
+        self.assertEqual(e_json[u'label'], e.label)
+        self.assertEqual(e_json[u'description'], e.description)
+        # missing mandatory
+        e_json = {'id': 0, 'url': 'thin', 'accession': 'definitions',
+                  'label': 'chairpersons swabs pools',
+                  'description': 'Malesuada facilisinam elitduis mus dis facer, primis est pellentesque integer dapibus '
+                                 'semper semvestibulum curae lacusnulla.'}
+        adapter.SFFExternalReference.from_json(e_json)
+        # missing non-mandatory
+        e_json = {'resource': 'symptom', 'url': 'thin', 'accession': 'definitions',
+                  'label': 'chairpersons swabs pools'}
+        e = adapter.SFFExternalReference.from_json(e_json)
+        self.assertIsNone(e.id)
+        self.assertEqual(e_json[u'resource'], e.resource)
+        self.assertEqual(e_json[u'url'], e.url)
+        self.assertEqual(e_json[u'accession'], e.accession)
+        self.assertEqual(e_json[u'label'], e.label)
+        self.assertIsNone(e.description)
 
 
 class TestSFFExternalReferenceList(Py23FixTestCase):
@@ -393,71 +380,66 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
         self.assertEqual(e.label, self.ll[e_id])
         self.assertEqual(e.description, self.dd[e_id])
 
-    # def test_as_json(self):
-    #     """Test that we can export to JSON"""
-    #     ee = [adapter.SFFExternalReference(
-    #         resource=self.rr[i],
-    #         url=self.uu[i],
-    #         accession=self.aa[i],
-    #         label=self.ll[i],
-    #         description=self.dd[i]
-    #     ) for i in _xrange(self._no_items)]
-    #     E = adapter.SFFExternalReferenceList()
-    #     [E.append(e) for e in ee]
-    #     E_json = E.as_json()
-    #     # _print(E_json)
-    #     for i in _xrange(self._no_items):
-    #         self.assertEqual(E[i].id, E_json[i][u'id'])
-    #         self.assertEqual(E[i].type, E_json[i][u'type'])
-    #         self.assertEqual(E[i].other_type, E_json[i][u'otherType'])
-    #         self.assertEqual(E[i].value, E_json[i][u'value'])
-    #         self.assertEqual(E[i].label, E_json[i][u'label'])
-    #         self.assertEqual(E[i].description, E_json[i][u'description'])
-    #     # empty
-    #     E = adapter.SFFExternalReferenceList()
-    #     E_json = E.as_json()
-    #     self.assertEqual(len(E), len(E_json))
-    #
-    # def test_from_json(self):
-    #     """Test that we can import from JSON"""
-    #     E_json = [{'id': 0, 'type': 'projectiles', 'otherType': 'blast', 'value': 'injector',
-    #                'label': 'bricks breaches crawl',
-    #                'description': 'Est facilisicurabitur morbi dapibus volutpat, vestibulumnulla consecteturpraesent velit sempermorbi diaminteger taciti risusdonec accusam.'},
-    #               {'id': 1, 'type': 'signals', 'otherType': 'wines', 'value': 'experience',
-    #                'label': 'alibi defaults showers',
-    #                'description': 'Auctor habitasse amet temporsuspendisse, integer hendrerit nullasuspendisse.'},
-    #               {'id': 2, 'type': 'openings', 'otherType': 'pack', 'value': 'augmentations',
-    #                'label': 'outing rings tilling',
-    #                'description': 'Liberoduis esse nobis semvestibulum bibendumin non, sagittis eget eum massapellentesque eratproin nonummy massaphasellus.'},
-    #               {'id': 3, 'type': 'blaze', 'otherType': 'contract', 'value': 'diagrams',
-    #                'label': 'sewers weddings telecommunications',
-    #                'description': 'Ipsum no luctus ultricies enimsed antesuspendisse.'},
-    #               {'id': 4, 'type': 'terms', 'otherType': 'blackboard', 'value': 'nothing',
-    #                'label': 'depot trades strikers', 'description': 'Elitr hendrerit tortorvestibulum exerci.'},
-    #               {'id': 5, 'type': 'carriage', 'otherType': 'screens', 'value': 'apprehension',
-    #                'label': 'signalers hunk wagon', 'description': 'Consequatduis muspellentesque.'},
-    #               {'id': 6, 'type': 'lot', 'otherType': 'gums', 'value': 'rim', 'label': 'chatter north clearances',
-    #                'description': 'Nostra felis.'},
-    #               {'id': 7, 'type': 'outlet', 'otherType': 'actions', 'value': 'twists',
-    #                'label': 'compromises additives mirrors',
-    #                'description': 'Diaminteger phasellus mi sollicitudin laoreetphasellus possim, himenaeos semvestibulum egestasmauris clita elitnunc suscipit pulvinar.'},
-    #               {'id': 8, 'type': 'shears', 'otherType': 'user', 'value': 'view', 'label': 'cable diagram churns',
-    #                'description': 'Dolor laoreet adipiscing takimata neque dignissim velit enimaliquam, lobortisetiam mazim nunccurabitur aliquip praesent blandit.'},
-    #               {'id': 9, 'type': 'jurisdiction', 'otherType': 'plug', 'value': 'calibrations',
-    #                'label': 'oscillation baby males', 'description': 'Iusto aliquam quod orci, aaenean justo luctus.'}]
-    #     E = adapter.SFFExternalReferenceList.from_json(E_json)
-    #     # _print(E)
-    #     for i, extref in enumerate(E_json):
-    #         self.assertEqual(E[i].id, extref[u'id'])
-    #         self.assertEqual(E[i].type, extref[u'type'])
-    #         self.assertEqual(E[i].other_type, extref[u'otherType'])
-    #         self.assertEqual(E[i].value, extref[u'value'])
-    #         self.assertEqual(E[i].label, extref[u'label'])
-    #         self.assertEqual(E[i].description, extref[u'description'])
-    #     # invalid
-    #     E_json = "sldjfl"  # iterable but invalid
-    #     with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-    #         adapter.SFFExternalReferenceList.from_json(E_json)
+    def test_as_json(self):
+        """Test that we can export to JSON"""
+        ee = [adapter.SFFExternalReference(
+            resource=self.rr[i],
+            url=self.uu[i],
+            accession=self.aa[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        E = adapter.SFFExternalReferenceList()
+        [E.append(e) for e in ee]
+        E_json = E.as_json()
+        # _print(E_json)
+        for i in _xrange(self._no_items):
+            self.assertEqual(E[i].id, E_json[i][u'id'])
+            self.assertEqual(E[i].resource, E_json[i][u'resource'])
+            self.assertEqual(E[i].url, E_json[i][u'url'])
+            self.assertEqual(E[i].accession, E_json[i][u'accession'])
+            self.assertEqual(E[i].label, E_json[i][u'label'])
+            self.assertEqual(E[i].description, E_json[i][u'description'])
+        # empty
+        E = adapter.SFFExternalReferenceList()
+        E_json = E.as_json()
+        self.assertEqual(len(E), len(E_json))
+
+    def test_from_json(self):
+        """Test that we can import from JSON"""
+        E_json = [{'id': 0, 'resource': 'projectiles', 'url': 'blast', 'accession': 'injector',
+                   'label': 'bricks breaches crawl',
+                   'description': 'Est facilisicurabitur morbi dapibus volutpat, vestibulumnulla consecteturpraesent velit sempermorbi diaminteger taciti risusdonec accusam.'},
+                  {'id': 1, 'resource': 'signals', 'url': 'wines', 'accession': 'experience',
+                   'label': 'alibi defaults showers',
+                   'description': 'Auctor habitasse amet temporsuspendisse, integer hendrerit nullasuspendisse.'},
+                  {'id': 2, 'resource': 'openings', 'url': 'pack', 'accession': 'augmentations',
+                   'label': 'outing rings tilling',
+                   'description': 'Liberoduis esse nobis semvestibulum bibendumin non, sagittis eget eum massapellentesque eratproin nonummy massaphasellus.'},
+                  {'id': 3, 'resource': 'blaze', 'url': 'contract', 'accession': 'diagrams',
+                   'label': 'sewers weddings telecommunications',
+                   'description': 'Ipsum no luctus ultricies enimsed antesuspendisse.'},
+                  {'id': 4, 'resource': 'terms', 'url': 'blackboard', 'accession': 'nothing',
+                   'label': 'depot trades strikers', 'description': 'Elitr hendrerit tortorvestibulum exerci.'},
+                  {'id': 5, 'resource': 'carriage', 'url': 'screens', 'accession': 'apprehension',
+                   'label': 'signalers hunk wagon', 'description': 'Consequatduis muspellentesque.'},
+                  {'id': 6, 'resource': 'lot', 'url': 'gums', 'accession': 'rim', 'label': 'chatter north clearances',
+                   'description': 'Nostra felis.'},
+                  {'id': 7, 'resource': 'outlet', 'url': 'actions', 'accession': 'twists',
+                   'label': 'compromises additives mirrors',
+                   'description': 'Diaminteger phasellus mi sollicitudin laoreetphasellus possim, himenaeos semvestibulum egestasmauris clita elitnunc suscipit pulvinar.'},
+                  {'id': 8, 'resource': 'shears', 'url': 'user', 'accession': 'view', 'label': 'cable diagram churns',
+                   'description': 'Dolor laoreet adipiscing takimata neque dignissim velit enimaliquam, lobortisetiam mazim nunccurabitur aliquip praesent blandit.'},
+                  {'id': 9, 'resource': 'jurisdiction', 'url': 'plug', 'accession': 'calibrations',
+                   'label': 'oscillation baby males', 'description': 'Iusto aliquam quod orci, aaenean justo luctus.'}]
+        E = adapter.SFFExternalReferenceList.from_json(E_json)
+        for i, extref in enumerate(E_json):
+            self.assertEqual(E[i].id, extref[u'id'])
+            self.assertEqual(E[i].resource, extref[u'resource'])
+            self.assertEqual(E[i].url, extref[u'url'])
+            self.assertEqual(E[i].accession, extref[u'accession'])
+            self.assertEqual(E[i].label, extref[u'label'])
+            self.assertEqual(E[i].description, extref[u'description'])
 
 
 class TestSFFGlobalExternalReferenceList(Py23FixTestCase):
@@ -558,6 +540,66 @@ class TestSFFGlobalExternalReferenceList(Py23FixTestCase):
         self.assertEqual(e.accession, self.aa[e_id])
         self.assertEqual(e.label, self.ll[e_id])
         self.assertEqual(e.description, self.dd[e_id])
+
+    def test_as_json(self):
+        """Test that we can export to JSON"""
+        ge = [adapter.SFFExternalReference(
+            resource=self.rr[i],
+            url=self.uu[i],
+            accession=self.aa[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        G = adapter.SFFGlobalExternalReferenceList()
+        [G.append(g) for g in ge]
+        G_json = G.as_json()
+        for i in _xrange(self._no_items):
+            self.assertEqual(G[i].id, G_json[i][u'id'])
+            self.assertEqual(G[i].resource, G_json[i][u'resource'])
+            self.assertEqual(G[i].url, G_json[i][u'url'])
+            self.assertEqual(G[i].accession, G_json[i][u'accession'])
+            self.assertEqual(G[i].label, G_json[i][u'label'])
+            self.assertEqual(G[i].description, G_json[i][u'description'])
+        # empty
+        G = adapter.SFFGlobalExternalReferenceList()
+        G_json = G.as_json()
+        self.assertEqual(len(G), len(G_json))
+
+    def test_from_json(self):
+        """Test that we can import from JSON"""
+        G_json = [{'id': 0, 'resource': 'projectiles', 'url': 'blast', 'accession': 'injector',
+                   'label': 'bricks breaches crawl',
+                   'description': 'Est facilisicurabitur morbi dapibus volutpat, vestibulumnulla consecteturpraesent velit sempermorbi diaminteger taciti risusdonec accusam.'},
+                  {'id': 1, 'resource': 'signals', 'url': 'wines', 'accession': 'experience',
+                   'label': 'alibi defaults showers',
+                   'description': 'Auctor habitasse amet temporsuspendisse, integer hendrerit nullasuspendisse.'},
+                  {'id': 2, 'resource': 'openings', 'url': 'pack', 'accession': 'augmentations',
+                   'label': 'outing rings tilling',
+                   'description': 'Liberoduis esse nobis semvestibulum bibendumin non, sagittis eget eum massapellentesque eratproin nonummy massaphasellus.'},
+                  {'id': 3, 'resource': 'blaze', 'url': 'contract', 'accession': 'diagrams',
+                   'label': 'sewers weddings telecommunications',
+                   'description': 'Ipsum no luctus ultricies enimsed antesuspendisse.'},
+                  {'id': 4, 'resource': 'terms', 'url': 'blackboard', 'accession': 'nothing',
+                   'label': 'depot trades strikers', 'description': 'Elitr hendrerit tortorvestibulum exerci.'},
+                  {'id': 5, 'resource': 'carriage', 'url': 'screens', 'accession': 'apprehension',
+                   'label': 'signalers hunk wagon', 'description': 'Consequatduis muspellentesque.'},
+                  {'id': 6, 'resource': 'lot', 'url': 'gums', 'accession': 'rim', 'label': 'chatter north clearances',
+                   'description': 'Nostra felis.'},
+                  {'id': 7, 'resource': 'outlet', 'url': 'actions', 'accession': 'twists',
+                   'label': 'compromises additives mirrors',
+                   'description': 'Diaminteger phasellus mi sollicitudin laoreetphasellus possim, himenaeos semvestibulum egestasmauris clita elitnunc suscipit pulvinar.'},
+                  {'id': 8, 'resource': 'shears', 'url': 'user', 'accession': 'view', 'label': 'cable diagram churns',
+                   'description': 'Dolor laoreet adipiscing takimata neque dignissim velit enimaliquam, lobortisetiam mazim nunccurabitur aliquip praesent blandit.'},
+                  {'id': 9, 'resource': 'jurisdiction', 'url': 'plug', 'accession': 'calibrations',
+                   'label': 'oscillation baby males', 'description': 'Iusto aliquam quod orci, aaenean justo luctus.'}]
+        G = adapter.SFFGlobalExternalReferenceList.from_json(G_json)
+        for i, extref in enumerate(G_json):
+            self.assertEqual(G[i].id, extref[u'id'])
+            self.assertEqual(G[i].resource, extref[u'resource'])
+            self.assertEqual(G[i].url, extref[u'url'])
+            self.assertEqual(G[i].accession, extref[u'accession'])
+            self.assertEqual(G[i].label, extref[u'label'])
+            self.assertEqual(G[i].description, extref[u'description'])
 
 
 class TestSFFBiologicalAnnotation(Py23FixTestCase):
@@ -697,63 +739,57 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
     #     # get rid of the file
     #     os.remove(hff_f.name)
     #
-    # def test_json(self):
-    #     """Test conversion to and from JSON"""
-    #     # empty case
-    #     b_empty = adapter.SFFBiologicalAnnotation()
-    #     # # _print(b_empty)
-    #     b_json = b_empty.as_json()
-    #     # _print(b_json)
-    #     b2_empty = adapter.SFFBiologicalAnnotation.from_json(b_json)
-    #     # _print(b2_empty)
-    #     self.assertEqual(b_empty, b2_empty)
-    #     # non-empty case
-    #     b_full = adapter.SFFBiologicalAnnotation()
-    #     b_full.name = ' '.join(rw.random_words(count=2))
-    #     b_full.description = li.get_sentence()
-    #     es = adapter.SFFExternalReferenceList()
-    #     no_es = _random_integer(2, 10)
-    #     for _ in _xrange(no_es):
-    #         e = adapter.SFFExternalReference()
-    #         e.type = rw.random_word()
-    #         e.other_type = rw.random_word()
-    #         e.value = rw.random_word()
-    #         e.label = ' '.join(rw.random_words(count=3))
-    #         e.description = li.get_sentence()
-    #         es.append(e)
-    #     b_full.external_references = es
-    #     b_json = b_full.as_json()
-    #     # _print(b_json)
-    #     b2_full = adapter.SFFBiologicalAnnotation.from_json(b_json)
-    #     # _print(b2_full)
-    #     self.assertEqual(b_full, b2_full)
-    #
-    # def test_from_json(self):
-    #     """Test that we can import from JSON"""
-    #     b_json = {'name': 'returns agent', 'description': 'Lacus leopraesent risusdonec tempus congue.',
-    #               'externalReferences': [{'id': 0, 'type': 'listing', 'otherType': 'antennas', 'value': 'weddings',
-    #                                       'label': 'times selection deployment',
-    #                                       'description': 'Facilisicurabitur mi sanctus fames dignissim autem.'},
-    #                                      {'id': 1, 'type': 'basis', 'otherType': 'leaks', 'value': 'cups',
-    #                                       'label': 'yaw workloads house', 'description': 'Nequeetiam habitasse.'},
-    #                                      {'id': 2, 'type': 'chance', 'otherType': 'theory', 'value': 'allegation',
-    #                                       'label': 'maps chairwomen flashes',
-    #                                       'description': 'Suscipit eos pulvinar zzril doming dolores.'}]}
-    #     b_full = adapter.SFFBiologicalAnnotation.from_json(b_json)
-    #     # _print(b_full)
-    #     self.assertEqual(b_full.name, b_json[u'name'])
-    #     self.assertEqual(b_full.description, b_json[u'description'])
-    #     try:
-    #         self.assertEqual(b_full.number_of_instances, b_json[u'numberOfInstances'])
-    #     except KeyError:
-    #         self.assertEqual(b_full.number_of_instances, 1)
-    #     for i, extref in enumerate(b_json[u'externalReferences']):
-    #         self.assertEqual(b_full.external_references[i].id, extref[u'id'])
-    #         self.assertEqual(b_full.external_references[i].type, extref[u'type'])
-    #         self.assertEqual(b_full.external_references[i].other_type, extref[u'otherType'])
-    #         self.assertEqual(b_full.external_references[i].value, extref[u'value'])
-    #         self.assertEqual(b_full.external_references[i].label, extref[u'label'])
-    #         self.assertEqual(b_full.external_references[i].description, extref[u'description'])
+    def test_json(self):
+        """Test conversion to and from JSON"""
+        # empty case
+        b_empty = adapter.SFFBiologicalAnnotation()
+        b_json = b_empty.as_json()
+        b2_empty = adapter.SFFBiologicalAnnotation.from_json(b_json)
+        self.assertEqual(b_empty, b2_empty)
+        # non-empty case
+        b_full = adapter.SFFBiologicalAnnotation()
+        b_full.name = ' '.join(rw.random_words(count=2))
+        b_full.description = li.get_sentence()
+        es = adapter.SFFExternalReferenceList()
+        no_es = _random_integer(2, 10)
+        for _ in _xrange(no_es):
+            e = adapter.SFFExternalReference()
+            e.resource = rw.random_word()
+            e.url = rw.random_word()
+            e.accession = rw.random_word()
+            e.label = ' '.join(rw.random_words(count=3))
+            e.description = li.get_sentence()
+            es.append(e)
+        b_full.external_references = es
+        b_json = b_full.as_json()
+        b2_full = adapter.SFFBiologicalAnnotation.from_json(b_json)
+        self.assertEqual(b_full, b2_full)
+
+    def test_from_json(self):
+        """Test that we can import from JSON"""
+        b_json = {'name': 'returns agent', 'description': 'Lacus leopraesent risusdonec tempus congue.',
+                  'external_references': [{'id': 0, 'resource': 'listing', 'url': 'antennas', 'accession': 'weddings',
+                                           'label': 'times selection deployment',
+                                           'description': 'Facilisicurabitur mi sanctus fames dignissim autem.'},
+                                          {'id': 1, 'resource': 'basis', 'url': 'leaks', 'accession': 'cups',
+                                           'label': 'yaw workloads house', 'description': 'Nequeetiam habitasse.'},
+                                          {'id': 2, 'resource': 'chance', 'url': 'theory', 'accession': 'allegation',
+                                           'label': 'maps chairwomen flashes',
+                                           'description': 'Suscipit eos pulvinar zzril doming dolores.'}]}
+        b_full = adapter.SFFBiologicalAnnotation.from_json(b_json)
+        self.assertEqual(b_full.name, b_json[u'name'])
+        self.assertEqual(b_full.description, b_json[u'description'])
+        try:
+            self.assertEqual(b_full.number_of_instances, b_json[u'number_of_instances'])
+        except KeyError:
+            self.assertEqual(b_full.number_of_instances, 1)
+        for i, extref in enumerate(b_json[u'external_references']):
+            self.assertEqual(b_full.external_references[i].id, extref[u'id'])
+            self.assertEqual(b_full.external_references[i].resource, extref[u'resource'])
+            self.assertEqual(b_full.external_references[i].url, extref[u'url'])
+            self.assertEqual(b_full.external_references[i].accession, extref[u'accession'])
+            self.assertEqual(b_full.external_references[i].label, extref[u'label'])
+            self.assertEqual(b_full.external_references[i].description, extref[u'description'])
 
 
 class TestSFFThreeDVolume(Py23FixTestCase):
@@ -801,6 +837,22 @@ class TestSFFThreeDVolume(Py23FixTestCase):
         self.assertEqual(v.value, self.value)
         self.assertEqual(v.transform_id, self.transform_id)
 
+    def test_json(self):
+        lattice_id = _random_integer(start=1)
+        value = _random_integer(start=1)
+        transform_id = _random_integer(start=0)
+        vol_full = adapter.SFFThreeDVolume(lattice_id=lattice_id, value=value, transform_id=transform_id)
+        vol_json = vol_full.as_json()
+        vol_full2 = adapter.SFFThreeDVolume.from_json(vol_json)
+        self.assertEqual(vol_full, vol_full2)
+        # empty
+        vol_empty = adapter.SFFThreeDVolume()
+        vol_empty_json = vol_empty.as_json()
+        self.assertIsNone(vol_empty_json[u'lattice_id'])
+        self.assertIsNone(vol_empty_json[u'value'])
+        vol_empty2 = adapter.SFFThreeDVolume.from_json(vol_empty_json)
+        self.assertEqual(vol_empty, vol_empty2)
+
 
 class TestSFFVolumeStructure(Py23FixTestCase):
     def setUp(self):
@@ -811,7 +863,7 @@ class TestSFFVolumeStructure(Py23FixTestCase):
     def test_default(self):
         """Test default settings"""
         vs = adapter.SFFVolumeStructure(cols=self.cols, rows=self.rows, sections=self.sections)
-        self.assertRegex(_str(vs), r"SFFVolumeStructure\(cols.*rows.*sections.*\)")
+        self.assertRegex(_str(vs), r"SFFVolumeStructure\(rows.*cols.*sections.*\)")
         self.assertEqual(vs.cols, self.cols)
         self.assertEqual(vs.rows, self.rows)
         self.assertEqual(vs.sections, self.sections)
@@ -835,11 +887,24 @@ class TestSFFVolumeStructure(Py23FixTestCase):
         """Test that we can create from a gds_type"""
         _vs = emdb_sff.volume_structure_type(cols=self.cols, rows=self.rows, sections=self.sections)
         vs = adapter.SFFVolumeStructure.from_gds_type(_vs)
-        self.assertRegex(_str(vs), r"SFFVolumeStructure\(cols.*rows.*sections.*\)")
+        self.assertRegex(_str(vs), r"SFFVolumeStructure\(rows.*cols.*sections.*\)")
         self.assertEqual(vs.cols, self.cols)
         self.assertEqual(vs.rows, self.rows)
         self.assertEqual(vs.sections, self.sections)
         self.assertEqual(vs.voxel_count, self.cols * self.rows * self.sections)
+
+    def test_json(self):
+        # empty
+        s = adapter.SFFVolumeStructure()
+        s_json = s.as_json()
+        s2 = adapter.SFFVolumeStructure.from_json(s_json)
+        self.assertEqual(s, s2)
+        # pop'd
+        rows, cols, sections = _random_integers(start=100, stop=1000, count=3)
+        s = adapter.SFFVolumeStructure(rows=rows, cols=cols, sections=sections)
+        s_json = s.as_json()
+        s2 = adapter.SFFVolumeStructure.from_json(s_json)
+        self.assertEqual(s, s2)
 
 
 class TestSFFVolumeIndex(Py23FixTestCase):
@@ -851,7 +916,7 @@ class TestSFFVolumeIndex(Py23FixTestCase):
     def test_default(self):
         """Test default settings"""
         vi = adapter.SFFVolumeIndex(cols=self.cols, rows=self.rows, sections=self.sections)
-        self.assertRegex(_str(vi), r"SFFVolumeIndex\(cols.*rows.*sections.*\)")
+        self.assertRegex(_str(vi), r"SFFVolumeIndex\(rows.*cols.*sections.*\)")
         self.assertEqual(vi.cols, self.cols)
         self.assertEqual(vi.rows, self.rows)
         self.assertEqual(vi.sections, self.sections)
@@ -860,10 +925,23 @@ class TestSFFVolumeIndex(Py23FixTestCase):
         """Test that we can create from a gds_type"""
         _vi = emdb_sff.volume_index_type(cols=self.cols, rows=self.rows, sections=self.sections)
         vi = adapter.SFFVolumeIndex.from_gds_type(_vi)
-        self.assertRegex(_str(vi), r"SFFVolumeIndex\(cols.*rows.*sections.*\)")
+        self.assertRegex(_str(vi), r"SFFVolumeIndex\(rows.*cols.*sections.*\)")
         self.assertEqual(vi.cols, self.cols)
         self.assertEqual(vi.rows, self.rows)
         self.assertEqual(vi.sections, self.sections)
+
+    def test_json(self):
+        # empty
+        s = adapter.SFFVolumeIndex()
+        s_json = s.as_json()
+        s2 = adapter.SFFVolumeIndex.from_json(s_json)
+        self.assertEqual(s, s2)
+        # pop'd
+        rows, cols, sections = _random_integers(start=100, stop=1000, count=3)
+        s = adapter.SFFVolumeIndex(rows=rows, cols=cols, sections=sections)
+        s_json = s.as_json()
+        s2 = adapter.SFFVolumeIndex.from_json(s_json)
+        self.assertEqual(s, s2)
 
 
 class TestSFFLattice(Py23FixTestCase):
@@ -899,15 +977,9 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.start.value, (0, 0, 0))
         self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
-        self.assertEqual(
+        self.assertRegex(
             _str(l),
-            u"""SFFLattice(mode="{}", endianness="{}", size={}, start={}, data="{}")""".format(
-                self.l_mode,
-                self.l_endian,
-                _str(self.l_size),
-                _str(self.l_start),
-                _decode(l.data[:100] + b"...", u"utf-8")
-            )
+            r"""SFFLattice\(id=\d+, mode=".*", endianness=".*", size=SFFVolumeStructure\(.*\), start=SFFVolumeIndex\(.*\), data=".*"\)"""
         )
 
     def test_create_init_bytes(self):
@@ -927,15 +999,9 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.start.value, (0, 0, 0))
         self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
-        self.assertEqual(
+        self.assertRegex(
             _str(l),
-            u"""SFFLattice(mode="{}", endianness="{}", size={}, start={}, data="{}")""".format(
-                self.l_mode,
-                self.l_endian,
-                _str(self.l_size),
-                _str(self.l_start),
-                _decode(l.data[:100] + b"...", u"utf-8"),
-            )
+            r"""SFFLattice\(id=\d+, mode=".*", endianness=".*", size=SFFVolumeStructure\(.*\), start=SFFVolumeIndex\(.*\), data=".*"\)"""
         )
 
     def test_create_init_unicode(self):
@@ -955,15 +1021,9 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.start.value, (0, 0, 0))
         self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
-        self.assertEqual(
+        self.assertRegex(
             _str(l),
-            u"""SFFLattice(mode="{}", endianness="{}", size={}, start={}, data="{}")""".format(
-                self.l_mode,
-                self.l_endian,
-                _str(self.l_size),
-                _str(self.l_start),
-                _decode(l.data[:100] + b"...", u"utf-8")
-            )
+            r"""SFFLattice\(id=\d+, mode=".*", endianness=".*", size=SFFVolumeStructure\(.*\), start=SFFVolumeIndex\(.*\), data=".*"\)"""
         )
 
     def test_create_classmethod_array(self):
@@ -983,15 +1043,9 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.start.value, (0, 0, 0))
         self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
-        self.assertEqual(
+        self.assertRegex(
             _str(l),
-            u"""SFFLattice(mode="{}", endianness="{}", size={}, start={}, data="{}")""".format(
-                self.l_mode,
-                self.l_endian,
-                _str(self.l_size),
-                _str(self.l_start),
-                _decode(l.data[:100] + b"...", u"utf-8"),
-            )
+            r"""SFFLattice\(id=\d+, mode=".*", endianness=".*", size=SFFVolumeStructure\(.*\), start=SFFVolumeIndex\(.*\), data=".*"\)"""
         )
 
     def test_create_classmethod_bytes(self):
@@ -1011,15 +1065,9 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.start.value, (0, 0, 0))
         self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
-        self.assertEqual(
+        self.assertRegex(
             _str(l),
-            u"""SFFLattice(mode="{}", endianness="{}", size={}, start={}, data="{}")""".format(
-                self.l_mode,
-                self.l_endian,
-                _str(self.l_size),
-                _str(self.l_start),
-                _decode(l.data[:100] + b"...", u"utf-8")
-            )
+            r"""SFFLattice\(id=\d+, mode=".*", endianness=".*", size=SFFVolumeStructure\(.*\), start=SFFVolumeIndex\(.*\), data=".*"\)"""
         )
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
             l = adapter.SFFLattice.from_bytes(
@@ -1046,6 +1094,152 @@ class TestSFFLattice(Py23FixTestCase):
         )
         l = adapter.SFFLattice.from_gds_type(_l)
         self.assertTrue(hasattr(l, u'data_array'))
+
+    def test_json(self):
+        # empty
+        l = adapter.SFFLattice()
+        l_json = l.as_json()
+        with self.assertRaises(base.SFFTypeError):
+            l2 = adapter.SFFLattice.from_json(l_json)
+        # self.assertEqual(l, l2)
+        # pop'd
+        rows, cols, sections = _random_integers(start=2, stop=5, count=3)
+        array = numpy.random.randint(0, 20, size=(rows, cols, sections))
+        l = adapter.SFFLattice.from_array(array)
+        l_json = l.as_json()
+        l2 = adapter.SFFLattice.from_json(l_json)
+        self.assertEqual(l, l2)
+
+
+class TestSFFLatticeList(Py23FixTestCase):
+    """Test the SFFLatticeList class"""
+
+    @staticmethod
+    def generate_sff_data(
+            rows=_random_integer(start=10, stop=20),
+            cols=_random_integer(start=10, stop=20),
+            sections=_random_integer(start=10, stop=20)
+    ):
+        mode = random.choice(list(adapter.FORMAT_CHARS.keys()))
+        endianness = random.choice(list(adapter.ENDIANNESS.keys()))
+        size = adapter.SFFVolumeStructure(rows=rows, cols=cols, sections=sections)
+        start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
+        if re.match(r".*int.*", mode):
+            data = numpy.random.randint(0, 100, size=(rows, cols, sections))
+        elif re.match(r".*float.*", mode):
+            data = numpy.random.rand(rows, cols, sections)
+        return mode, endianness, size, start, data
+
+    @staticmethod
+    def generate_gds_data(
+            rows=_random_integer(start=10, stop=20),
+            cols=_random_integer(start=10, stop=20),
+            sections=_random_integer(start=10, stop=20)
+    ):
+        mode = random.choice(list(adapter.FORMAT_CHARS.keys()))
+        endianness = random.choice(list(adapter.ENDIANNESS.keys()))
+        size = emdb_sff.volume_structure_type(rows=rows, cols=cols, sections=sections)
+        start = emdb_sff.volume_index_type(rows=0, cols=0, sections=0)
+        if re.match(r".*int.*", mode):
+            _data = numpy.random.randint(0, 100, size=(rows, cols, sections))
+        elif re.match(r".*float.*", mode):
+            _data = numpy.random.rand(rows, cols, sections)
+        data = adapter.SFFLattice._encode(_data, mode=mode, endianness=endianness)
+        return mode, endianness, size, start, data
+
+    def test_default(self):
+        """Test default settings"""
+        L = adapter.SFFLatticeList()
+        self.assertRegex(
+            _str(L),
+            r"""SFFLatticeList\(\[.*\]\)"""
+        )
+        self.assertEqual(len(L), 0)
+        _no_items = _random_integer(start=2, stop=5)
+        for _ in _xrange(_no_items):
+            _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_sff_data()
+            L.append(
+                adapter.SFFLattice(
+                    mode=_mode,
+                    endianness=_endianness,
+                    size=_size,
+                    start=_start,
+                    data=_data
+                )
+            )
+        self.assertRegex(
+            _str(L),
+            r"""SFFLatticeList\(\[SFFLattice\(.*\]\)"""
+        )
+        self.assertEqual(len(L), _no_items)
+        self.assertEqual(list(L.get_ids()), list(_xrange(_no_items)))
+        l_id = random.choice(list(L.get_ids()))
+        l = L.get_by_id(l_id)
+        self.assertIsInstance(l, adapter.SFFLattice)
+        self.assertEqual(l.id, l_id)
+        self.assertIn(l.mode, list(adapter.FORMAT_CHARS.keys()))
+        self.assertIn(l.endianness, list(adapter.ENDIANNESS.keys()))
+        self.assertIsInstance(l.size, adapter.SFFVolumeStructure)
+        self.assertIsInstance(l.start, adapter.SFFVolumeIndex)
+        self.assertIsInstance(l.data, _bytes)
+        self.assertIsInstance(l.data_array, numpy.ndarray)
+        self.assertTrue(len(l.data) > 0)
+
+    def test_create_from_gds_type(self):
+        """Test that we can create from gds_type"""
+        _L = emdb_sff.lattice_listType()
+        _no_items = _random_integer(start=2, stop=5)
+        _l = list()
+        for i in _xrange(_no_items):
+            _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_gds_data()
+            _l.append(
+                emdb_sff.lattice_type(
+                    id=i,
+                    mode=_mode,
+                    endianness=_endianness,
+                    size=_size,
+                    start=_start,
+                    data=_data
+                )
+            )
+        _L.set_lattice(_l)
+        L = adapter.SFFLatticeList.from_gds_type(_L)
+        self.assertRegex(
+            _str(L),
+            r"""SFFLatticeList\(\[SFFLattice\(.*\]\)"""
+        )
+        self.assertEqual(len(L), _no_items)
+        self.assertEqual(list(L.get_ids()), list(_xrange(_no_items)))
+        l_id = random.choice(list(L.get_ids()))
+        l = L.get_by_id(l_id)
+        self.assertIsInstance(l, adapter.SFFLattice)
+        self.assertEqual(l.id, l_id)
+        self.assertIn(l.mode, list(adapter.FORMAT_CHARS.keys()))
+        self.assertIn(l.endianness, list(adapter.ENDIANNESS.keys()))
+        self.assertIsInstance(l.size, adapter.SFFVolumeStructure)
+        self.assertIsInstance(l.start, adapter.SFFVolumeIndex)
+        self.assertIsInstance(l.data, _bytes)
+        self.assertIsInstance(l.data_array, numpy.ndarray)
+        self.assertTrue(len(l.data) > 0)
+
+    def test_json(self):
+        """Test that we can convert back and forth into JSON"""
+        L = adapter.SFFLatticeList()
+        _no_lats = _random_integer(start=2, stop=5)
+        for _ in _xrange(_no_lats):
+            _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_sff_data()
+            L.append(
+                adapter.SFFLattice(
+                    mode=_mode,
+                    endianness=_endianness,
+                    size=_size,
+                    start=_start,
+                    data=_data
+                )
+            )
+        L_json = L.as_json()
+        L2 = adapter.SFFLatticeList.from_json(L_json)
+        self.assertEqual(L, L2)
 
 
 class TestSFFVertices(Py23FixTestCase):
@@ -1237,6 +1431,24 @@ class TestSFFVertices(Py23FixTestCase):
         self.assertTrue(hasattr(v, u'data_array'))
         self.assertIsInstance(v.data_array, numpy.ndarray)
 
+    def test_json(self):
+        """Interconversion to JSON"""
+        v = adapter.SFFVertices(
+            num_vertices=self.num_vertices,
+            mode=self.mode,
+            endianness=self.endian,
+            data=self.data
+        )
+        v_json = v.as_json()
+        self.assertEqual(v_json, {
+            u'num_vertices': self.num_vertices,
+            u'mode': self.mode,
+            u'endianness': self.endian,
+            u'data': _decode(self.bytes, 'ASCII'),
+        })
+        v2 = adapter.SFFVertices.from_json(v_json)
+        self.assertEqual(v, v2)
+
 
 class TestSFFNormals(Py23FixTestCase):
     """SFFNormals tests"""
@@ -1427,11 +1639,27 @@ class TestSFFNormals(Py23FixTestCase):
         self.assertTrue(hasattr(n, u'data_array'))
         self.assertIsInstance(n.data_array, numpy.ndarray)
 
+    def test_json(self):
+        """Interconversion to JSON"""
+        n = adapter.SFFNormals(
+            num_normals=self.num_normals,
+            mode=self.mode,
+            endianness=self.endian,
+            data=self.data
+        )
+        n_json = n.as_json()
+        self.assertEqual(n_json, {
+            u'num_normals': self.num_normals,
+            u'mode': self.mode,
+            u'endianness': self.endian,
+            u'data': _decode(self.bytes, 'ASCII'),
+        })
+        n2 = adapter.SFFNormals.from_json(n_json)
+        self.assertEqual(n, n2)
+
 
 class TestSFFTriangles(Py23FixTestCase):
     """SFFTriangles tests"""
-
-    # todo: test from gds_type
 
     def setUp(self):
         self.num_triangles = _random_integer(start=2, stop=10)
@@ -1618,6 +1846,24 @@ class TestSFFTriangles(Py23FixTestCase):
         self.assertTrue(hasattr(t, u'data_array'))
         self.assertIsInstance(t.data_array, numpy.ndarray)
 
+    def test_json(self):
+        """Interconversion to JSON"""
+        t = adapter.SFFTriangles(
+            num_triangles=self.num_triangles,
+            mode=self.mode,
+            endianness=self.endian,
+            data=self.data
+        )
+        t_json = t.as_json()
+        self.assertEqual(t_json, {
+            u'num_triangles': self.num_triangles,
+            u'mode': self.mode,
+            u'endianness': self.endian,
+            u'data': _decode(self.bytes, 'ASCII'),
+        })
+        t2 = adapter.SFFTriangles.from_json(t_json)
+        self.assertEqual(t, t2)
+
 
 class TestSFFMesh(Py23FixTestCase):
     """Test the SFFMesh class"""
@@ -1698,6 +1944,23 @@ class TestSFFMesh(Py23FixTestCase):
         self.assertTrue(numpy.allclose(m.vertices.data_array, self.vertices_data))
         self.assertTrue(numpy.allclose(m.normals.data_array, self.normals_data))
         self.assertTrue(numpy.allclose(m.triangles.data_array, self.triangles_data))
+
+    def test_json(self):
+        """Interconvert to JSON"""
+        m = adapter.SFFMesh(
+            vertices=adapter.SFFVertices.from_array(self.vertices_data),
+            normals=adapter.SFFNormals.from_array(self.normals_data),
+            triangles=adapter.SFFTriangles.from_array(self.triangles_data)
+        )
+        m_json = m.as_json()
+        self.assertEqual(m_json, {
+            u'id': m.id,
+            u'vertices': m.vertices.as_json(),
+            u'normals': m.normals.as_json(),
+            u'triangles': m.triangles.as_json()
+        })
+        m2 = adapter.SFFMesh.from_json(m_json)
+        self.assertEqual(m, m2)
 
 
 class TestSFFMeshList(Py23FixTestCase):
@@ -1793,6 +2056,25 @@ class TestSFFMeshList(Py23FixTestCase):
         self.assertEqual(m.id, m_id)
         self.assertTrue(m.vertices.num_vertices > 0)
         self.assertTrue(m.triangles.num_triangles > 0)
+
+    def test_json(self):
+        """Interconvert to JSON"""
+        _no_items = _random_integer(start=2, stop=10)
+        M = adapter.SFFMeshList()
+        for _ in _xrange(_no_items):
+            vs, ts = TestSFFMeshList.generate_sff_data()
+            M.append(
+                adapter.SFFMesh(
+                    vertices=vs,
+                    triangles=ts
+                )
+            )
+        self.stderr(M)
+        M_json = M.as_json()
+        self.stderrj(M_json)
+        self.assertEqual(M_json, [
+            {u'id': m.id, u'vertices': m.vertices, u'normals': m.normals, u'triangles': m.triangles} for m in M
+        ])
 
 
 class TestSFFBoundingBox(Py23FixTestCase):
@@ -2243,118 +2525,6 @@ class TestSFFShapePrimitiveList(Py23FixTestCase):
         self.assertIsInstance(s, (adapter.SFFCone, adapter.SFFCuboid, adapter.SFFCylinder, adapter.SFFEllipsoid))
 
 
-class TestSFFLatticeList(Py23FixTestCase):
-    """Test the SFFLatticeList class"""
-
-    @staticmethod
-    def generate_sff_data(
-            rows=_random_integer(start=10, stop=20),
-            cols=_random_integer(start=10, stop=20),
-            sections=_random_integer(start=10, stop=20)
-    ):
-        mode = random.choice(list(adapter.FORMAT_CHARS.keys()))
-        endianness = random.choice(list(adapter.ENDIANNESS.keys()))
-        size = adapter.SFFVolumeStructure(rows=rows, cols=cols, sections=sections)
-        start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
-        if re.match(r".*int.*", mode):
-            data = numpy.random.randint(0, 100, size=(rows, cols, sections))
-        elif re.match(r".*float.*", mode):
-            data = numpy.random.rand(rows, cols, sections)
-        return mode, endianness, size, start, data
-
-    @staticmethod
-    def generate_gds_data(
-            rows=_random_integer(start=10, stop=20),
-            cols=_random_integer(start=10, stop=20),
-            sections=_random_integer(start=10, stop=20)
-    ):
-        mode = random.choice(list(adapter.FORMAT_CHARS.keys()))
-        endianness = random.choice(list(adapter.ENDIANNESS.keys()))
-        size = emdb_sff.volume_structure_type(rows=rows, cols=cols, sections=sections)
-        start = emdb_sff.volume_index_type(rows=0, cols=0, sections=0)
-        if re.match(r".*int.*", mode):
-            _data = numpy.random.randint(0, 100, size=(rows, cols, sections))
-        elif re.match(r".*float.*", mode):
-            _data = numpy.random.rand(rows, cols, sections)
-        data = adapter.SFFLattice._encode(_data, mode=mode, endianness=endianness)
-        return mode, endianness, size, start, data
-
-    def test_default(self):
-        """Test default settings"""
-        L = adapter.SFFLatticeList()
-        self.assertRegex(
-            _str(L),
-            r"""SFFLatticeList\(\[.*\]\)"""
-        )
-        self.assertEqual(len(L), 0)
-        _no_items = _random_integer(start=2, stop=5)
-        for _ in _xrange(_no_items):
-            _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_sff_data()
-            L.append(
-                adapter.SFFLattice(
-                    mode=_mode,
-                    endianness=_endianness,
-                    size=_size,
-                    start=_start,
-                    data=_data
-                )
-            )
-        self.assertRegex(
-            _str(L),
-            r"""SFFLatticeList\(\[SFFLattice\(.*\]\)"""
-        )
-        self.assertEqual(len(L), _no_items)
-        self.assertEqual(list(L.get_ids()), list(_xrange(_no_items)))
-        l_id = random.choice(list(L.get_ids()))
-        l = L.get_by_id(l_id)
-        self.assertIsInstance(l, adapter.SFFLattice)
-        self.assertEqual(l.id, l_id)
-        self.assertIn(l.mode, list(adapter.FORMAT_CHARS.keys()))
-        self.assertIn(l.endianness, list(adapter.ENDIANNESS.keys()))
-        self.assertIsInstance(l.size, adapter.SFFVolumeStructure)
-        self.assertIsInstance(l.start, adapter.SFFVolumeIndex)
-        self.assertIsInstance(l.data, _bytes)
-        self.assertIsInstance(l.data_array, numpy.ndarray)
-        self.assertTrue(len(l.data) > 0)
-
-    def test_create_from_gds_type(self):
-        """Test that we can create from gds_type"""
-        _L = emdb_sff.lattice_listType()
-        _no_items = _random_integer(start=2, stop=5)
-        _l = list()
-        for i in _xrange(_no_items):
-            _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_gds_data()
-            _l.append(
-                emdb_sff.lattice_type(
-                    id=i,
-                    mode=_mode,
-                    endianness=_endianness,
-                    size=_size,
-                    start=_start,
-                    data=_data
-                )
-            )
-        _L.set_lattice(_l)
-        L = adapter.SFFLatticeList.from_gds_type(_L)
-        self.assertRegex(
-            _str(L),
-            r"""SFFLatticeList\(\[SFFLattice\(.*\]\)"""
-        )
-        self.assertEqual(len(L), _no_items)
-        self.assertEqual(list(L.get_ids()), list(_xrange(_no_items)))
-        l_id = random.choice(list(L.get_ids()))
-        l = L.get_by_id(l_id)
-        self.assertIsInstance(l, adapter.SFFLattice)
-        self.assertEqual(l.id, l_id)
-        self.assertIn(l.mode, list(adapter.FORMAT_CHARS.keys()))
-        self.assertIn(l.endianness, list(adapter.ENDIANNESS.keys()))
-        self.assertIsInstance(l.size, adapter.SFFVolumeStructure)
-        self.assertIsInstance(l.start, adapter.SFFVolumeIndex)
-        self.assertIsInstance(l.data, _bytes)
-        self.assertIsInstance(l.data_array, numpy.ndarray)
-        self.assertTrue(len(l.data) > 0)
-
-
 class TestSFFSegment(Py23FixTestCase):
     """Test the SFFSegment class"""
 
@@ -2619,7 +2789,7 @@ class TestSFFSegment(Py23FixTestCase):
     #     # more
     #     s_json = {'id': 3, 'parent_id': 0, 'biological_annotation': {'name': 'preserver',
     #                                                                'description': 'Dictumstvivamus proin purusvestibulum turpis sociis assum.',
-    #                                                                'numberOfInstances': 1},
+    #                                                                'number_of_instances': 1},
     #               'colour': (0.3284280279067431, 0.8229825614708411, 0.07590219333941295, 1.0)}
     #     s = adapter.SFFSegment.from_json(s_json)
     #     _print(s)
@@ -2628,7 +2798,7 @@ class TestSFFSegment(Py23FixTestCase):
     #     self.assertEqual(s_json[u'colour'], s.colour.value)
     #     self.assertEqual(s_json[u'biological_annotation'][u'name'], s.biological_annotation.name)
     #     self.assertEqual(s_json[u'biological_annotation'][u'description'], s.biological_annotation.description)
-    #     self.assertEqual(s_json[u'biological_annotation'][u'numberOfInstances'], s.biological_annotation.number_of_instances)
+    #     self.assertEqual(s_json[u'biological_annotation'][u'number_of_instances'], s.biological_annotation.number_of_instances)
 
 
 class TestSFFSegmentList(Py23FixTestCase):

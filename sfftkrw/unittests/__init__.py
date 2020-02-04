@@ -2,10 +2,11 @@
 import os
 import random
 import sys
+import json
 from unittest import TestCase
 
 from .. import BASE_DIR
-from ..core import _xrange
+from ..core import _xrange, _print
 
 __author__ = 'Paul K. Korir, PhD'
 __email__ = 'pkorir@ebi.ac.uk, paul.korir@gmail.com'
@@ -78,3 +79,21 @@ class Py23Fix(object):
 
 class Py23FixTestCase(Py23Fix, TestCase):
     """Mixin to fix method changes in TestCase class"""
+    @classmethod
+    def setUpClass(cls):
+        cls.test_hdf5_fn = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'test.hdf5')
+
+    @classmethod
+    def tearDownClass(cls):
+        try:
+            os.remove(cls.test_hdf5_fn)
+        except FileNotFoundError:
+            pass
+
+    @staticmethod
+    def stderr(*args, **kwargs):
+        _print(*args, **kwargs)
+
+    @staticmethod
+    def stderrj(*args, **kwargs):
+        _print(json.dumps(*args, indent=2, **kwargs))

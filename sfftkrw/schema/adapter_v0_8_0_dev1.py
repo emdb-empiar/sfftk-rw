@@ -8,12 +8,13 @@ import struct
 import sys
 import zlib
 
+import h5py
 import numpy
 
 from . import FORMAT_CHARS, ENDIANNESS
 from . import v0_8_0_dev1 as _sff
 from .base import SFFType, SFFIndexType, SFFAttribute, SFFListType, SFFTypeError
-from ..core import _str, _encode, _bytes
+from ..core import _str, _encode, _bytes, _dict, _decode
 from ..core.print_tools import print_date
 
 # ensure that we can read/write encoded data
@@ -26,6 +27,7 @@ class SFFRGBA(SFFType):
     gds_tag_name = u'colour'
     repr_string = u"SFFRGBA(red={}, green={}, blue={}, alpha={})"
     repr_args = (u'red', u'green', u'blue', u'alpha')
+    eq_attrs = [u'red', u'green', u'blue', u'alpha']
 
     # attributes
     red = SFFAttribute(u'red', required=True, help=u"red channel")
@@ -41,13 +43,6 @@ class SFFRGBA(SFFType):
         super(SFFRGBA, self).__init__(**kwargs)
         if random_colour:
             self.value = random.random(), random.random(), random.random()
-
-    def __eq__(self, other):
-        try:
-            assert isinstance(other, type(self))
-        except AssertionError:
-            raise SFFTypeError(other, type(self))
-        return self.value == other.value
 
     @property
     def value(self):
@@ -73,6 +68,30 @@ class SFFRGBA(SFFType):
         def __nonzero__(self):
             return self._boolean_test()
 
+    def as_hff(self, parent_group, name=u"colour"):
+        """Return the data of this object as an HDF5 group in the given parent group"""
+        assert isinstance(parent_group, h5py.Group)
+        parent_group[name] = self.value
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, hff_data):
+        """Return an SFFType object given an HDF5 object"""
+        assert isinstance(hff_data, h5py.Group)
+        obj = cls(new_obj=False)
+        obj.value = hff_data[u'colour'][()]
+        return obj
+
+    def as_json(self):
+        """Export as JSON"""
+        return self.value
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        obj.value = data
+        return obj
+
 
 class SFFExternalReference(SFFIndexType):
     gds_type = _sff.external_reference_type
@@ -81,6 +100,7 @@ class SFFExternalReference(SFFIndexType):
     repr_args = (u'id', u'resource', u'url', u'accession', u'label', u'description')
     ref_id = 0
     index_attr = u'ref_id'
+    eq_attrs = [u'resource', u'url', u'accession', u'label', u'description']
 
     # attributes
     id = SFFAttribute(u'id', help=u"this external reference's ID")
@@ -91,13 +111,38 @@ class SFFExternalReference(SFFIndexType):
     label = SFFAttribute(u'label', help=u"a short description of this external reference")
     description = SFFAttribute(u'description', help=u"a long description of this external reference")
 
-    def __eq__(self, other):
-        try:
-            assert isinstance(other, type(self))
-        except AssertionError:
-            raise SFFTypeError(other, type(self))
-        attrs = [u'resource', u'url', u'accession', u'label', u'description']
-        return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
+    def as_json(self):
+        e = dict()
+        if self.id is not None:  # value can be 0 which would evaluate to `False`
+            e[u'id'] = self.id
+        if self.resource:
+            e[u'resource'] = self.resource
+        if self.url:
+            e[u'url'] = self.url
+        if self.accession:
+            e[u'accession'] = self.accession
+        if self.label:
+            e[u'label'] = self.label
+        if self.description:
+            e[u'description'] = self.description
+        return e
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        if u'id' in data:
+            obj.id = data[u'id']
+        if u'resource' in data:
+            obj.resource = data[u'resource']
+        if u'url' in data:
+            obj.url = data[u'url']
+        if u'accession' in data:
+            obj.accession = data[u'accession']
+        if u'label' in data:
+            obj.label = data[u'label']
+        if u'description' in data:
+            obj.description = data[u'description']
+        return obj
 
 
 class SFFExternalReferenceList(SFFListType):
@@ -108,12 +153,18 @@ class SFFExternalReferenceList(SFFListType):
     repr_args = (u'list()',)
     iter_attr = (u'ref', SFFExternalReference)
 
-    def __eq__(self, other):
-        try:
-            assert isinstance(other, type(self))
-        except AssertionError:
-            raise SFFTypeError(other, type(self))
-        return all(list(map(lambda v: v[0] == v[1], zip(self, other))))
+    def as_json(self):
+        es = list()
+        for extref in self:
+            es.append(extref.as_json())
+        return es
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        for extref in data:
+            obj.append(SFFExternalReference.from_json(extref))
+        return obj
 
 
 class SFFGlobalExternalReferenceList(SFFListType):
@@ -124,6 +175,19 @@ class SFFGlobalExternalReferenceList(SFFListType):
     repr_args = (u'list()',)
     iter_attr = (u'ref', SFFExternalReference)
 
+    def as_json(self):
+        ge = list()
+        for extref in self:
+            ge.append(extref.as_json())
+        return ge
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        for extref in data:
+            obj.append(SFFExternalReference.from_json(extref))
+        return obj
+
 
 class SFFBiologicalAnnotation(SFFType):
     """Biological annotation"""
@@ -131,6 +195,7 @@ class SFFBiologicalAnnotation(SFFType):
     gds_tag_name = u'biological_annotation'
     repr_string = u"""SFFBiologicalAnnotation(name={}, description={}, number_of_instances={}, external_references={})"""
     repr_args = (u'name', u'description', u'number_of_instances', u'external_references')
+    eq_attrs = [u'name', u'description', u'external_references', u'number_of_instances']
 
     # attributes
     name = SFFAttribute(u'name', help=u"the name of this segment")
@@ -154,20 +219,41 @@ class SFFBiologicalAnnotation(SFFType):
         def __nonzero__(self):
             return self._boolean_test()
 
-    def __eq__(self, other):
-        try:
-            assert isinstance(other, type(self))
-        except AssertionError:
-            raise SFFTypeError(other, type(self))
-        attrs = [u'name', u'description', u'external_references', u'number_of_instances']
-        return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
-
     @property
     def num_external_references(self):
         if self.external_references:
             return len(self.external_references)
         else:
             return 0
+
+    def as_json(self):
+        bio_ann = _dict()
+        if self.name:
+            bio_ann[u'name'] = _str(self.name)
+        if self.description:
+            bio_ann[u'description'] = _str(self.description)
+        if self.number_of_instances:
+            bio_ann[u'number_of_instances'] = self.number_of_instances
+        if self.external_references:
+            bio_ann[u'external_references'] = self.external_references.as_json()
+        return bio_ann
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        if u'name' in data:
+            obj.name = data[u'name']
+        if u'description' in data:
+            obj.description = data[u'description']
+        if u'number_of_instances' in data:
+            obj.number_of_instances = data[u'number_of_instances']
+        if u'external_references' in data:
+            obj.external_references = SFFExternalReferenceList.from_json(data[u'external_references'])
+        # validate
+        if obj._is_valid():
+            return obj
+        else:
+            super(SFFBiologicalAnnotation, cls).from_json(data)
 
 
 class SFFThreeDVolume(SFFType):
@@ -176,6 +262,7 @@ class SFFThreeDVolume(SFFType):
     gds_tag_name = u'three_d_volume'
     repr_string = u"SFFThreeDVolume(lattice_id={}, value={}, transform_id={})"
     repr_args = (u'lattice_id', u'value', u'transform_id')
+    eq_attrs = [u'lattice_id', u'value', u'transform_id']
 
     # attributes
     lattice_id = SFFAttribute(u'lattice_id', required=True,
@@ -183,21 +270,32 @@ class SFFThreeDVolume(SFFType):
     value = SFFAttribute(u'value', required=True, help=u"the voxel values associated with this 3D volume")
     transform_id = SFFAttribute(u'transform_id', help=u"a transform applied to this 3D volume [optional]")
 
-    def __eq__(self, other):
-        try:
-            assert isinstance(other, type(self))
-        except AssertionError:
-            raise SFFTypeError(other, type(self))
-        attrs = [u'lattice_id', u'value', u'transform_id']
-        return all(list(map(lambda a: getattr(self, a) == getattr(other, a), attrs)))
+    def as_json(self, *args, **kwargs):
+        return {
+            u'lattice_id': self.lattice_id,
+            u'value': self.value,
+            u'transform_id': self.transform_id,
+        }
+
+    @classmethod
+    def from_json(cls, data, *args, **kwargs):
+        obj = cls(new_obj=False)
+        if u'lattice_id' in data:
+            obj.lattice_id = data[u'lattice_id']
+        if u'value' in data:
+            obj.value = data[u'value']
+        if u'transform_id' in data:
+            obj.transform_id = data[u'transform_id']
+        return obj
 
 
 class SFFVolume(SFFType):
     """Class for represention 3-space dimension"""
     # attributes
-    cols = SFFAttribute(u'cols', help=u"number of columns")
     rows = SFFAttribute(u'rows', help=u"number of rows")
+    cols = SFFAttribute(u'cols', help=u"number of columns")
     sections = SFFAttribute(u'sections', help=u"number of sections (sets of congruent row-column collections)")
+    eq_attrs = [u'rows', u'cols', u'sections']
 
     @property
     def value(self):
@@ -210,12 +308,38 @@ class SFFVolume(SFFType):
         else:
             raise SFFTypeError(value, u"Iterable", message=u"should be of length 3")
 
+        # def __eq__(self, other):
+        self.attrs = [u'']
+        # try:
+        #     assert isinstance(other, type(self))
+        # except AssertionError:
+        #     raise SFFTypeError(other, type(self))
+        # return self.rows == other.rows and self.cols == other.cols and self.sections == other.sections
+
+    def as_json(self, *args, **kwargs):
+        return {
+            u'rows': self.rows,
+            u'cols': self.cols,
+            u'sections': self.sections,
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        if u'rows' in data:
+            obj.rows = data[u'rows']
+        if u'cols' in data:
+            obj.cols = data[u'cols']
+        if u'sections' in data:
+            obj.sections = data[u'sections']
+        return obj
+
 
 class SFFVolumeStructure(SFFVolume):
     gds_type = _sff.volume_structure_type
     gds_tag_name = u'size'
-    repr_string = u"SFFVolumeStructure(cols={}, rows={}, sections={})"
-    repr_args = (u'cols', u'rows', u'sections')
+    repr_string = u"SFFVolumeStructure(rows={}, cols={}, sections={})"
+    repr_args = (u'rows', u'cols', u'sections')
 
     @property
     def voxel_count(self):
@@ -228,32 +352,32 @@ class SFFVolumeIndex(SFFVolume):
     # todo: implement an iterator to increment indices correctly
     gds_type = _sff.volume_index_type
     gds_tag_name = u'start'
-    repr_string = u"SFFVolumeIndex(cols={}, rows={}, sections={})"
-    repr_args = (u'cols', u'rows', u'sections')
+    repr_string = u"SFFVolumeIndex(rows={}, cols={}, sections={})"
+    repr_args = (u'rows', u'cols', u'sections')
 
 
 class SFFLattice(SFFIndexType):
     """Class representing 3D """
     gds_type = _sff.lattice_type
     gds_tag_name = u'lattice'
-    repr_string = u"SFFLattice(mode={}, endianness={}, size={}, start={}, data={})"
-    repr_args = (u'mode', u'endianness', u'size', u'start', u'data[:100]')
+    repr_string = u"SFFLattice(id={}, mode={}, endianness={}, size={}, start={}, data={})"
+    repr_args = (u'id', u'mode', u'endianness', u'size', u'start', u'data[:100]')
     lattice_id = 0
-
     index_attr = u'lattice_id'
+    eq_attrs = [u'mode', u'endianness', u'size', u'start', u'data']
 
     # attributes
     id = SFFAttribute(u'id', required=True, help=u"the ID for this lattice (referenced by 3D volumes)")
-    # todo: set default mode
-    mode = SFFAttribute(u'mode', required=True,
+    mode = SFFAttribute(u'mode', required=True, default=u'uint32',
                         help=u"type of data for each voxel; valid values are: int8, uint8, int16, uint16, int32, "
                              u"uint32, int64, uint64, float32, float64")
-    # todo: set default endianness
-    endianness = SFFAttribute(u'endianness', required=True, help=u"endianness; either 'little' (default) or 'big'")
+    endianness = SFFAttribute(u'endianness', required=True, default=u'little',
+                              help=u"endianness; either 'little' (default) or 'big'")
     size = SFFAttribute(u'size', sff_type=SFFVolumeStructure, required=True,
                         help=u"size of the lattice described using a "
                              ":py:class:`sfftkrw.schema.adapter.SFFVolumeStructure` object")
-    start = SFFAttribute(u'start', sff_type=SFFVolumeIndex, required=True,
+    start = SFFAttribute(u'start', sff_type=SFFVolumeIndex, default=SFFVolumeIndex(rows=0, cols=0, sections=0),
+                         required=True,
                          help=u"starting index of the lattices described using a"
                               ":py:class:`sfftkrw.schema.adapter.SFFVolumeIndex` object")
     data = SFFAttribute(u'data', required=True,
@@ -396,6 +520,39 @@ class SFFLattice(SFFIndexType):
         del bindata
         return data
 
+    def as_json(self, *args, **kwargs):
+        return {
+            u'id': self.id,
+            u'mode': self.mode,
+            u'endianness': self.endianness,
+            u'size': self.size.as_json() if self.size is not None else None,
+            u'start': self.start.as_json() if self.start is not None else None,
+            u'data': _decode(self.data, 'ASCII'),
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        if u'id' in data:
+            obj.id = data[u'id']
+        if u'mode' in data:
+            obj.mode = data[u'mode']
+        if u'endianness' in data:
+            obj.endianness = data[u'endianness']
+        if u'size' in data:
+            if data[u'size'] is not None:
+                obj.size = SFFVolumeStructure.from_json(data[u'size'])
+            else:
+                obj.size = None
+        if u'start' in data:
+            if data[u'start'] is not None:
+                obj.start = SFFVolumeIndex.from_json(data[u'start'])
+            else:
+                obj.start = None
+        if u'data' in data:  # lazy for numpy
+            obj.data = _encode(data[u'data'], 'ASCII')
+        return obj
+
 
 class SFFLatticeList(SFFListType):
     """A container for lattice objects"""
@@ -404,6 +561,327 @@ class SFFLatticeList(SFFListType):
     repr_string = u"SFFLatticeList({})"
     repr_args = (u"list()",)
     iter_attr = (u'lattice', SFFLattice)
+
+    def as_json(self, *args, **kwargs):
+        llist = list()
+        for lattice in self:
+            llist.append(lattice.as_json())
+        return llist
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        for lattice in data:
+            obj.append(SFFLattice.from_json(lattice))
+        return obj
+
+
+class SFFEncodedSequence(SFFType):
+    """Superclass for `SFFVertices`, `SFFNormals` and `SFFTriangles`"""
+    default_mode = u'float32'
+    default_endianness = u'little'
+    num_items_kwarg = None  # 'num_vertices' | 'num_normals' | 'num_triangles'
+    """the name of the attribute with the size"""
+
+    def __init__(self, **kwargs):
+        if u'data' in kwargs:
+            if isinstance(kwargs[u'data'], numpy.ndarray):
+                # check that the dimensions are correct
+                try:
+                    assert kwargs[u'data'].shape[1] == 3  # x, y, z
+                except AssertionError:
+                    raise ValueError(u"data has invalid dimensions: {}; should be (n, 3)".format(kwargs[u'data'].shape))
+                self._data = kwargs[u'data']
+                kwargs['data'] = self._encode(kwargs[u'data'], **kwargs)
+            elif isinstance(kwargs[u'data'], _bytes):
+                self._data = self._decode(kwargs[u'data'], **kwargs)
+                # make sure the number of items is correct
+                try:
+                    assert self._data.shape[0] == kwargs.get(self.num_items_kwarg)
+                except AssertionError:
+                    raise ValueError(
+                        u"mismatch in stated in retrieved number of items: {}/{}".format(
+                            kwargs.get(self.num_items_kwarg),
+                            self._data.shape[0]))
+            elif isinstance(kwargs[u'data'], _str):
+                _data = _encode(kwargs[u'data'], u'ASCII')
+                self._data = SFFEncodedSequence._decode(_data, **kwargs)
+                # make sure the number of items is correct
+                try:
+                    assert self._data.shape[0] == kwargs.get(self.num_items_kwarg)
+                except AssertionError:
+                    raise ValueError(
+                        u"mismatch in stated in retrieved number of items: {}/{}".format(kwargs[self.num_items_kwarg],
+                                                                                            self._data.shape[0]))
+                kwargs[u'data'] = _data
+                del _data
+        super(SFFEncodedSequence, self).__init__(**kwargs)
+
+    def __getitem__(self, item):
+        return self.data_array[item]
+
+    def __len__(self):
+        return getattr(self, self.num_items_kwarg)
+
+    @classmethod
+    def from_array(cls, data, mode=None, endianness=None):
+        """Create a :py:class:`SFFVertices` object from a numpy array inferring size and assuming certain defaults
+
+        :param data: the data as a :py:class:`numpy.ndarray` object
+        :type data: :py:class:`numpy.ndarray`
+        :param mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
+        :type mode: bytes or str or unicode
+        :param endianness: byte ordering: ``little`` (default) or ``big``
+        :type endianness: bytes or str or unicode
+        :return: a :py:class:`SFFVertices` object
+        :rtype: :py:class:`SFFVertices`
+        """
+        if mode is None:
+            mode = cls.default_mode
+        if endianness is None:
+            endianness = cls.default_endianness
+        # assertions
+        encoded_data = SFFEncodedSequence._encode(data, mode=mode, endianness=endianness)
+        kwargs = {
+            cls.num_items_kwarg: data.shape[0],
+            'mode': mode,
+            'endianness': endianness,
+            'data': encoded_data,
+        }
+        obj = cls(**kwargs)
+        obj._data = data
+        return obj
+
+    @classmethod
+    def from_bytes(cls, byte_seq, num_items, mode=None, endianness=None):
+        """Create a :py:class:`SFFVertices` object using a bytes object
+
+        :param byte_seq: the data as a base64-encoded sequence; can be bytes or unicode
+        :type byte_seq: bytes or unicode
+        :param int num_vertices: the number of vertices contained (for validation)
+        :param mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
+        :type mode: bytes or str or unicode
+        :param endianness: byte ordering: ``little`` (default) or ``big``
+        :type endianness: bytes or str or unicode
+        :return: a :py:class:`SFFVertices` object
+        :rtype: :py:class:`SFFVertices`
+        """
+        if mode is None:
+            mode = cls.default_mode
+        if endianness is None:
+            endianness = cls.default_endianness
+        if isinstance(byte_seq, _str):  # if unicode convert to bytes
+            byte_seq = _encode(byte_seq, u'ASCII')
+        kwargs = {
+            cls.num_items_kwarg: num_items,
+            'mode': mode,
+            'endianness': endianness,
+            'data': byte_seq,
+        }
+        obj = cls(**kwargs)
+        return obj
+
+    @property
+    def data_array(self):
+        if not hasattr(self, u'_data'):
+            # make numpy from bytes
+            self._data = SFFEncodedSequence._decode(
+                self.data,
+                mode=self.mode,
+                endianness=self.endianness,
+            )
+        return self._data
+
+    @staticmethod
+    def _encode(array, mode=None, endianness=None, **kwargs):
+        """Encode a :py:class:`numpy.ndarray` as a base64-encoded byte sequence
+
+        :param array: a :py:class:`numpy.ndarray` array
+        :type array: :py:class:`numpy.ndarray`
+        :param str mode: the data type
+        :param str endianness: the byte orientation
+        :return bytes: the corresponding bytes sequence
+        """
+        if mode is None:
+            mode = SFFEncodedSequence.default_mode
+        if endianness is None:
+            endianness = SFFEncodedSequence.default_endianness
+        array_in_mode_and_endianness = array.astype(
+            '{}{}'.format(ENDIANNESS[endianness], FORMAT_CHARS[mode]))  # cast to required mode
+        return base64.b64encode(array_in_mode_and_endianness.tobytes())
+
+    @staticmethod
+    def _decode(bin64, mode=None, endianness=None, **kwargs):
+        """Decode a base64-encoded byte sequence to a numpy array
+
+        :param str bin64: the base64-encoded byte sequence
+        :param str mode: the data type
+        :param str endianness: the byte orientation
+        :return: a :py:class:`numpy.ndarray` object
+        :rtype: :py:class:`numpy.ndarray`
+        """
+        if mode is None:
+            mode = SFFEncodedSequence.default_mode
+        if endianness is None:
+            endianness = SFFEncodedSequence.default_endianness
+        binpack = base64.b64decode(bin64)
+        dt = numpy.dtype('{}{}'.format(ENDIANNESS[endianness], FORMAT_CHARS[mode]))
+        unpacked = numpy.frombuffer(binpack, dtype=dt)
+        return unpacked.reshape(-1, 3)  # leave first value to be auto-filled
+
+    def as_json(self, *args, **kwargs):
+        return {
+            self.num_items_kwarg: getattr(self, self.num_items_kwarg),
+            u'mode': self.mode,
+            u'endianness': self.endianness,
+            u'data': _decode(self.data, 'ASCII'),
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        if cls.num_items_kwarg in data:
+            setattr(obj, cls.num_items_kwarg, data[cls.num_items_kwarg])
+        if u'mode' in data:
+            obj.mode = data[u'mode']
+        if u'endianness' in data:
+            obj.endianness = data[u'endianness']
+        if u'data' in data:
+            obj.data = _encode(data[u'data'], 'ASCII')
+        return obj
+
+
+class SFFVertices(SFFEncodedSequence):
+    """Vertices: neither a list nor an index type but is encoded
+
+    Suggests the need for an `SFFCodedType` which has encoded data
+    with `_encode` and `_decode` services/methods.
+    """
+    gds_type = _sff.vertices_type
+    gds_tag_name = u'vertices'
+    repr_string = u"SFFVertices(num_vertices={}, mode={}, endianness={}, data={})"
+    repr_args = (u'num_vertices', u'mode', u'endianness', u'data[:100]')
+    num_items_kwarg = u'num_vertices'
+    eq_attrs = [u'num_vertices', u'mode', u'endianness', u'data']
+
+    # attributes
+    num_vertices = SFFAttribute(u'num_vertices', required=True, help=u"the number of vertices contained")
+    mode = SFFAttribute(u'mode', default=u"float32", help=u"data type; valid values are: int8, uint8, int16, uint16, "
+                                                          u"int32, uint32, int64, uint64, float32, float64 [default: 'float32']")
+    endianness = SFFAttribute(u'endianness', default=u"little", help=u"binary packing endianness [default: 'little']")
+    data = SFFAttribute(u'data', required=True, help=u"base64-encoded packed binary data")
+
+
+class SFFNormals(SFFEncodedSequence):
+    """Normals"""
+    gds_type = _sff.normals_type
+    gds_tag_name = u'normals'
+    repr_string = u"SFFNormals(num_normals={}, mode={}, endianness={}, data={})"
+    repr_args = (u'num_normals', u'mode', u'endianness', u'data[:100]')
+    num_items_kwarg = u'num_normals'
+    eq_attrs = [u'num_normals', u'mode', u'endianness', u'data']
+
+    # attributes
+    num_normals = SFFAttribute(u'num_normals', required=True, help=u"the number of normals contained")
+    mode = SFFAttribute(u'mode', default=u"float32", help=u"data type; valid values are: int8, uint8, int16, uint16, "
+                                                          u"int32, uint32, int64, uint64, float32, float64 [default: 'float32']")
+    endianness = SFFAttribute(u'endianness', default=u"little", help=u"binary packing endianness [default: 'little']")
+    data = SFFAttribute(u'data', required=True, help=u"base64-encoded packed binary data")
+
+
+class SFFTriangles(SFFEncodedSequence):
+    """Triangles"""
+    gds_type = _sff.triangles_type
+    gds_tag_name = u'triangles'
+    repr_string = u"SFFTriangles(num_triangles={}, mode={}, endianness={}, data={})"
+    repr_args = (u'num_triangles', u'mode', u'endianness', u'data[:100]')
+    default_mode = u'uint32'
+    num_items_kwarg = u'num_triangles'
+    eq_attrs = [u'num_triangles', u'mode', u'endianness', u'data']
+
+    # attributes
+    num_triangles = SFFAttribute(u'num_triangles', required=True, help=u"the number of triangles contained")
+    mode = SFFAttribute(u'mode', default=u"uint32", help=u"data type; valid values are: int8, uint8, int16, uint16, "
+                                                         u"int32, uint32, int64, uint64, float32, float64 [default: 'float32']")
+    endianness = SFFAttribute(u'endianness', default=u"little", help=u"binary packing endianness [default: 'little']")
+    data = SFFAttribute(u'data', required=True, help=u"base64-encoded packed binary data")
+
+
+class SFFMesh(SFFIndexType):
+    """Single mesh"""
+    gds_type = _sff.mesh_type
+    gds_tag_name = u'mesh'
+    repr_string = u"SFFMesh(id={}, vertices={}, normals={}, triangles={})"
+    repr_args = (u'id', u'vertices', u'normals', u'triangles')
+    mesh_id = 0
+    index_attr = u'mesh_id'
+    eq_attrs = [u'vertices', u'normals', u'triangles']
+
+    # attributes
+    id = SFFAttribute(u'id')
+    vertices = SFFAttribute(u'vertices', required=True, sff_type=SFFVertices, help="a list of vertices")
+    normals = SFFAttribute(u'normals', sff_type=SFFNormals, help="a list of normals which correspond to vertices")
+    triangles = SFFAttribute(u'triangles', required=True, sff_type=SFFTriangles,
+                             help="a list of triangles; each triangle is represented by a trio of vertex indices")
+    transform_id = SFFAttribute(u'transform_id', help=u"a transform applied to the mesh")
+
+    def __init__(self, **kwargs):
+        if 'normals' in kwargs:
+            try:
+                assert kwargs['vertices'].data_array.shape == kwargs['normals'].data_array.shape
+            except AssertionError:
+                raise ValueError("vertex list and normal list are of different lengths/dimensions")
+        # check that the triangle list is valid
+        # todo: device better test for this
+        # indexes = set(kwargs['triangles'].data_array.flatten().tolist())
+        # try:
+        #     assert (kwargs['vertices'].num_vertices - 1) in indexes
+        # except AssertionError:
+        #     raise ValueError("incompatible vertex and triangle lists")
+        super(SFFMesh, self).__init__(**kwargs)
+
+    def as_json(self, *args, **kwargs):
+        return {
+            u'id': self.id,
+            u'vertices': self.vertices.as_json(),
+            u'normals': self.normals.as_json() if self.normals is not None else None,
+            u'triangles': self.triangles.as_json(),
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        if u'id' in data:
+            obj.id = data[u'id']
+        if u'vertices' in data:
+            obj.vertices = SFFVertices.from_json(data[u'vertices'])
+        if u'normals' in data:
+            obj.normals = SFFNormals.from_json(data[u'normals'])
+        if u'triangles' in data:
+            obj.triangles = SFFTriangles.from_json(data[u'triangles'])
+        return obj
+
+
+class SFFMeshList(SFFListType):
+    """Mesh list representation"""
+    gds_type = _sff.mesh_listType
+    gds_tag_name = u'mesh_list'
+    repr_string = u"SFFMeshList({})"
+    repr_args = (u'list()',)
+    iter_attr = (u'mesh', SFFMesh)
+
+    def as_json(self, *args, **kwargs):
+        mlist = list()
+        for mesh in self:
+            mlist.append(mesh.as_json())
+        return mlist
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        for mesh in data:
+            obj.append(SFFMesh.from_json(mesh))
+        return obj
 
 
 class SFFShape(SFFIndexType):
@@ -519,261 +997,6 @@ class SFFShapePrimitiveList(SFFListType):
     #     @property
     #     def num_subtomogram_averages(self):
     #         return self._shape_count(sff.subtomogramAverage)
-
-
-class SFFEncodedSequence(SFFType):
-    """Superclass for `SFFVertices`, `SFFNormals` and `SFFTriangles`"""
-    default_mode = u'float32'
-    default_endianness = u'little'
-    num_items_kwarg = None  # 'num_vertices' | 'num_normals' | 'num_triangles'
-    """the name of the attribute with the size"""
-
-    def __init__(self, **kwargs):
-        if u'data' in kwargs:
-            if isinstance(kwargs[u'data'], numpy.ndarray):
-                # check that the dimensions are correct
-                try:
-                    assert kwargs[u'data'].shape[1] == 3  # x, y, z
-                except AssertionError:
-                    raise ValueError(u"data has invalid dimensions: {}; should be (n, 3)".format(kwargs[u'data'].shape))
-                self._data = kwargs[u'data']
-                kwargs['data'] = self._encode(kwargs[u'data'], **kwargs)
-            elif isinstance(kwargs[u'data'], _bytes):
-                self._data = self._decode(kwargs[u'data'], **kwargs)
-                # make sure the number of vertices is correct
-                try:
-                    assert self._data.shape[0] == kwargs.get(self.num_items_kwarg)
-                except AssertionError:
-                    raise ValueError(
-                        u"mismatch in stated in retrieved number of vertices: {}/{}".format(
-                            kwargs.get(self.num_items_kwarg),
-                            self._data.shape[0]))
-            elif isinstance(kwargs[u'data'], _str):
-                _data = _encode(kwargs[u'data'], u'ASCII')
-                self._data = SFFEncodedSequence._decode(_data, **kwargs)
-                # make sure the number of vertices is correct
-                try:
-                    assert self._data.shape[0] == kwargs.get(self.num_items_kwarg)
-                except AssertionError:
-                    raise ValueError(
-                        u"mismatch in stated in retrieved number of vertices: {}/{}".format(kwargs[u'num_vertices'],
-                                                                                            self._data.shape[0]))
-                kwargs[u'data'] = _data
-                del _data
-        super(SFFEncodedSequence, self).__init__(**kwargs)
-
-    def __getitem__(self, item):
-        return self.data_array[item]
-
-    def __len__(self):
-        return getattr(self, self.num_items_kwarg)
-
-    def __eq__(self, other):
-        return getattr(self, self.num_items_kwarg) == getattr(other, other.num_items_kwarg) \
-               and self.mode == other.mode \
-               and self.endianness == other.endianness \
-               and self.data == other.data
-
-    @classmethod
-    def from_array(cls, data, mode=None, endianness=None):
-        """Create a :py:class:`SFFVertices` object from a numpy array inferring size and assuming certain defaults
-
-        :param data: the data as a :py:class:`numpy.ndarray` object
-        :type data: :py:class:`numpy.ndarray`
-        :param mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
-        :type mode: bytes or str or unicode
-        :param endianness: byte ordering: ``little`` (default) or ``big``
-        :type endianness: bytes or str or unicode
-        :return: a :py:class:`SFFVertices` object
-        :rtype: :py:class:`SFFVertices`
-        """
-        if mode is None:
-            mode = cls.default_mode
-        if endianness is None:
-            endianness = cls.default_endianness
-        # assertions
-        encoded_data = SFFEncodedSequence._encode(data, mode=mode, endianness=endianness)
-        kwargs = {
-            cls.num_items_kwarg: data.shape[0],
-            'mode': mode,
-            'endianness': endianness,
-            'data': encoded_data,
-        }
-        obj = cls(**kwargs)
-        obj._data = data
-        return obj
-
-    @classmethod
-    def from_bytes(cls, byte_seq, num_items, mode=None, endianness=None):
-        """Create a :py:class:`SFFVertices` object using a bytes object
-
-        :param byte_seq: the data as a base64-encoded sequence; can be bytes or unicode
-        :type byte_seq: bytes or unicode
-        :param int num_vertices: the number of vertices contained (for validation)
-        :param mode: the size of each voxel; valid values are: `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64``float32`, `float64`
-        :type mode: bytes or str or unicode
-        :param endianness: byte ordering: ``little`` (default) or ``big``
-        :type endianness: bytes or str or unicode
-        :return: a :py:class:`SFFVertices` object
-        :rtype: :py:class:`SFFVertices`
-        """
-        if mode is None:
-            mode = cls.default_mode
-        if endianness is None:
-            endianness = cls.default_endianness
-        if isinstance(byte_seq, _str):  # if unicode convert to bytes
-            byte_seq = _encode(byte_seq, u'ASCII')
-        kwargs = {
-            cls.num_items_kwarg: num_items,
-            'mode': mode,
-            'endianness': endianness,
-            'data': byte_seq,
-        }
-        obj = cls(**kwargs)
-        return obj
-
-    @property
-    def data_array(self):
-        if not hasattr(self, u'_data'):
-            # make numpy from bytes
-            self._data = SFFEncodedSequence._decode(
-                self.data,
-                mode=self.mode,
-                endianness=self.endianness,
-            )
-        return self._data
-
-    @staticmethod
-    def _encode(array, mode=None, endianness=None, **kwargs):
-        """Encode a :py:class:`numpy.ndarray` as a base64-encoded byte sequence
-
-        :param array: a :py:class:`numpy.ndarray` array
-        :type array: :py:class:`numpy.ndarray`
-        :param str mode: the data type
-        :param str endianness: the byte orientation
-        :return bytes: the corresponding bytes sequence
-        """
-        if mode is None:
-            mode = SFFEncodedSequence.default_mode
-        if endianness is None:
-            endianness = SFFEncodedSequence.default_endianness
-        array_in_mode_and_endianness = array.astype(
-            '{}{}'.format(ENDIANNESS[endianness], FORMAT_CHARS[mode]))  # cast to required mode
-        return base64.b64encode(array_in_mode_and_endianness.tobytes())
-
-    @staticmethod
-    def _decode(bin64, mode=None, endianness=None, **kwargs):
-        """Decode a base64-encoded byte sequence to a numpy array
-
-        :param str bin64: the base64-encoded byte sequence
-        :param str mode: the data type
-        :param str endianness: the byte orientation
-        :return: a :py:class:`numpy.ndarray` object
-        :rtype: :py:class:`numpy.ndarray`
-        """
-        if mode is None:
-            mode = SFFEncodedSequence.default_mode
-        if endianness is None:
-            endianness = SFFEncodedSequence.default_endianness
-        binpack = base64.b64decode(bin64)
-        dt = numpy.dtype('{}{}'.format(ENDIANNESS[endianness], FORMAT_CHARS[mode]))
-        unpacked = numpy.frombuffer(binpack, dtype=dt)
-        return unpacked.reshape(-1, 3)  # leave first value to be auto-filled
-
-
-class SFFVertices(SFFEncodedSequence):
-    """Vertices: neither a list nor an index type but is encoded
-
-    Suggests the need for an `SFFCodedType` which has encoded data
-    with `_encode` and `_decode` services/methods.
-    """
-    gds_type = _sff.vertices_type
-    gds_tag_name = u'vertices'
-    repr_string = u"SFFVertices(num_vertices={}, mode={}, endianness={}, data={})"
-    repr_args = (u'num_vertices', u'mode', u'endianness', u'data[:100]')
-    num_items_kwarg = u'num_vertices'
-
-    # attributes
-    num_vertices = SFFAttribute(u'num_vertices', required=True, help=u"the number of vertices contained")
-    mode = SFFAttribute(u'mode', default=u"float32", help=u"data type; valid values are: int8, uint8, int16, uint16, "
-                                                          u"int32, uint32, int64, uint64, float32, float64 [default: 'float32']")
-    endianness = SFFAttribute(u'endianness', default=u"little", help=u"binary packing endianness [default: 'little']")
-    data = SFFAttribute(u'data', required=True, help=u"base64-encoded packed binary data")
-
-
-class SFFNormals(SFFEncodedSequence):
-    """Normals"""
-    gds_type = _sff.normals_type
-    gds_tag_name = u'normals'
-    repr_string = u"SFFNormals(num_normals={}, mode={}, endianness={}, data={})"
-    repr_args = (u'num_normals', u'mode', u'endianness', u'data[:100]')
-    num_items_kwarg = u'num_normals'
-
-    # attributes
-    num_normals = SFFAttribute(u'num_normals', required=True, help=u"the number of normals contained")
-    mode = SFFAttribute(u'mode', default=u"float32", help=u"data type; valid values are: int8, uint8, int16, uint16, "
-                                                          u"int32, uint32, int64, uint64, float32, float64 [default: 'float32']")
-    endianness = SFFAttribute(u'endianness', default=u"little", help=u"binary packing endianness [default: 'little']")
-    data = SFFAttribute(u'data', required=True, help=u"base64-encoded packed binary data")
-
-
-class SFFTriangles(SFFEncodedSequence):
-    """Triangles"""
-    gds_type = _sff.triangles_type
-    gds_tag_name = u'triangles'
-    repr_string = u"SFFTriangles(num_triangles={}, mode={}, endianness={}, data={})"
-    repr_args = (u'num_triangles', u'mode', u'endianness', u'data[:100]')
-    default_mode = u'uint32'
-    num_items_kwarg = u'num_triangles'
-
-    # attributes
-    num_triangles = SFFAttribute(u'num_triangles', required=True, help=u"the number of triangles contained")
-    mode = SFFAttribute(u'mode', default=u"uint32", help=u"data type; valid values are: int8, uint8, int16, uint16, "
-                                                         u"int32, uint32, int64, uint64, float32, float64 [default: 'float32']")
-    endianness = SFFAttribute(u'endianness', default=u"little", help=u"binary packing endianness [default: 'little']")
-    data = SFFAttribute(u'data', required=True, help=u"base64-encoded packed binary data")
-
-
-class SFFMesh(SFFIndexType):
-    """Single mesh"""
-    gds_type = _sff.mesh_type
-    gds_tag_name = u'mesh'
-    repr_string = u"SFFMesh(id={}, vertices={}, normals={}, triangles={})"
-    repr_args = (u'id', u'vertices', u'normals', u'triangles')
-    mesh_id = 0
-    index_attr = u'mesh_id'
-
-    # attributes
-    id = SFFAttribute(u'id')
-    vertices = SFFAttribute(u'vertices', required=True, sff_type=SFFVertices, help="a list of vertices")
-    normals = SFFAttribute(u'normals', sff_type=SFFNormals, help="a list of normals which correspond to vertices")
-    triangles = SFFAttribute(u'triangles', required=True, sff_type=SFFTriangles,
-                             help="a list of triangles; each triangle is represented by a trio of vertex indices")
-    transform_id = SFFAttribute(u'transform_id', help=u"a transform applied to the mesh")
-
-    def __init__(self, **kwargs):
-        if 'normals' in kwargs:
-            try:
-                assert kwargs['vertices'].data_array.shape == kwargs['normals'].data_array.shape
-            except AssertionError:
-                raise ValueError("vertex list and normal list are of different lengths/dimensions")
-        # check that the triangle list is valid
-        # todo: device better test for this
-        # indexes = set(kwargs['triangles'].data_array.flatten().tolist())
-        # try:
-        #     assert (kwargs['vertices'].num_vertices - 1) in indexes
-        # except AssertionError:
-        #     raise ValueError("incompatible vertex and triangle lists")
-        super(SFFMesh, self).__init__(**kwargs)
-
-
-class SFFMeshList(SFFListType):
-    """Mesh list representation"""
-    gds_type = _sff.mesh_listType
-    gds_tag_name = u'mesh_list'
-    repr_string = u"SFFMeshList({})"
-    repr_args = (u'list()',)
-    iter_attr = (u'mesh', SFFMesh)
 
 
 class SFFSegment(SFFIndexType):
@@ -1038,7 +1261,7 @@ class SFFSegmentation(SFFType):
         u'global_external_references',
         sff_type=SFFGlobalExternalReferenceList,
         help=u"a list of external references that apply to the whole segmentation (global); "
-             u"a :py:class:`sfftkrw.schema.adapter.SFFGlobalExternalReferences` object"
+             u"a :py:class:`sfftkrw.schema.adapter.SFFGlobalexternal_references` object"
     )
     segments = SFFAttribute(
         u'segment_list',
