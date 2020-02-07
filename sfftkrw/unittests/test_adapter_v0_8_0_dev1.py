@@ -12,7 +12,7 @@ import h5py
 import numpy
 from random_words import RandomWords, LoremIpsum
 
-from . import TEST_DATA_PATH, Py23FixTestCase, _random_integer, _random_float, _random_integers
+from . import TEST_DATA_PATH, Py23FixTestCase, _random_integer, _random_float, _random_integers, _random_floats
 from ..core import _str, _xrange, _decode, _bytes
 from ..schema import base
 
@@ -744,6 +744,7 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
         # empty case
         b_empty = adapter.SFFBiologicalAnnotation()
         b_json = b_empty.as_json()
+        self.stderrj(b_json)
         b2_empty = adapter.SFFBiologicalAnnotation.from_json(b_json)
         self.assertEqual(b_empty, b2_empty)
         # non-empty case
@@ -2073,7 +2074,12 @@ class TestSFFMeshList(Py23FixTestCase):
         M_json = M.as_json()
         self.stderrj(M_json)
         self.assertEqual(M_json, [
-            {u'id': m.id, u'vertices': m.vertices, u'normals': m.normals, u'triangles': m.triangles} for m in M
+            {
+                u'id': m.id,
+                u'vertices': m.vertices.as_json(),
+                u'normals': None,
+                u'triangles': m.triangles.as_json()
+            } for m in M
         ])
 
 
@@ -2158,54 +2164,54 @@ class TestSFFBoundingBox(Py23FixTestCase):
         self.assertEqual(B.zmin, _zmin)
         self.assertEqual(B.zmax, _zmax)
 
-    # def test_as_json(self):
-    #     """Test export to JSON"""
-    #     #full
-    #     x0, x1, y0, y1, z0, z1 = _random_integers(count=6)
-    #     bb = adapter.SFFBoundingBox(
-    #         xmin=x0, xmax=x1,
-    #         ymin=y0, ymax=y1,
-    #         zmin=z0, zmax=z1
-    #     )
-    #     _print(bb)
-    #     bb_json = bb.as_json()
-    #     _print(bb_json)
-    #     self.assertEqual(bb.xmin, bb_json[u'xmin'])
-    #     self.assertEqual(bb.xmax, bb_json[u'xmax'])
-    #     self.assertEqual(bb.ymin, bb_json[u'ymin'])
-    #     self.assertEqual(bb.ymax, bb_json[u'ymax'])
-    #     self.assertEqual(bb.zmin, bb_json[u'zmin'])
-    #     self.assertEqual(bb.zmax, bb_json[u'zmax'])
-    #     # empty
-    #     bb = adapter.SFFBoundingBox()
-    #     bb_json = bb.as_json()
-    #     self.assertEqual(bb.xmin, bb_json[u'xmin'])
-    #     self.assertIsNone(bb.xmax)
-    #     self.assertEqual(bb.ymin, bb_json[u'ymin'])
-    #     self.assertIsNone(bb.ymax)
-    #     self.assertEqual(bb.zmin, bb_json[u'zmin'])
-    #     self.assertIsNone(bb.zmax)
-    #
-    # def test_from_json(self):
-    #     """Test import from JSON"""
-    #     #full
-    #     bb_json = {'xmin': 640.0, 'xmax': 348.0, 'ymin': 401.0, 'ymax': 176.0, 'zmin': 491.0, 'zmax': 349.0}
-    #     bb = adapter.SFFBoundingBox.from_json(bb_json)
-    #     self.assertEqual(bb.xmin, bb_json[u'xmin'])
-    #     self.assertEqual(bb.xmax, bb_json[u'xmax'])
-    #     self.assertEqual(bb.ymin, bb_json[u'ymin'])
-    #     self.assertEqual(bb.ymax, bb_json[u'ymax'])
-    #     self.assertEqual(bb.zmin, bb_json[u'zmin'])
-    #     self.assertEqual(bb.zmax, bb_json[u'zmax'])
-    #     # empty
-    #     bb_json = {}
-    #     bb = adapter.SFFBoundingBox.from_json(bb_json)
-    #     self.assertEqual(bb.xmin, 0)
-    #     self.assertIsNone(bb.xmax)
-    #     self.assertEqual(bb.ymin, 0)
-    #     self.assertIsNone(bb.ymax)
-    #     self.assertEqual(bb.zmin, 0)
-    #     self.assertIsNone(bb.zmax)
+    def test_as_json(self):
+        """Test export to JSON"""
+        # full
+        x0, x1, y0, y1, z0, z1 = _random_integers(count=6)
+        bb = adapter.SFFBoundingBox(
+            xmin=x0, xmax=x1,
+            ymin=y0, ymax=y1,
+            zmin=z0, zmax=z1
+        )
+        self.stderr(bb)
+        bb_json = bb.as_json()
+        self.stderrj(bb_json)
+        self.assertEqual(bb.xmin, bb_json[u'xmin'])
+        self.assertEqual(bb.xmax, bb_json[u'xmax'])
+        self.assertEqual(bb.ymin, bb_json[u'ymin'])
+        self.assertEqual(bb.ymax, bb_json[u'ymax'])
+        self.assertEqual(bb.zmin, bb_json[u'zmin'])
+        self.assertEqual(bb.zmax, bb_json[u'zmax'])
+        # empty
+        bb = adapter.SFFBoundingBox()
+        bb_json = bb.as_json()
+        self.assertEqual(bb.xmin, bb_json[u'xmin'])
+        self.assertIsNone(bb.xmax)
+        self.assertEqual(bb.ymin, bb_json[u'ymin'])
+        self.assertIsNone(bb.ymax)
+        self.assertEqual(bb.zmin, bb_json[u'zmin'])
+        self.assertIsNone(bb.zmax)
+
+    def test_from_json(self):
+        """Test import from JSON"""
+        # full
+        bb_json = {'xmin': 640.0, 'xmax': 348.0, 'ymin': 401.0, 'ymax': 176.0, 'zmin': 491.0, 'zmax': 349.0}
+        bb = adapter.SFFBoundingBox.from_json(bb_json)
+        self.assertEqual(bb.xmin, bb_json[u'xmin'])
+        self.assertEqual(bb.xmax, bb_json[u'xmax'])
+        self.assertEqual(bb.ymin, bb_json[u'ymin'])
+        self.assertEqual(bb.ymax, bb_json[u'ymax'])
+        self.assertEqual(bb.zmin, bb_json[u'zmin'])
+        self.assertEqual(bb.zmax, bb_json[u'zmax'])
+        # empty
+        bb_json = {}
+        bb = adapter.SFFBoundingBox.from_json(bb_json)
+        self.assertEqual(bb.xmin, 0)
+        self.assertIsNone(bb.xmax)
+        self.assertEqual(bb.ymin, 0)
+        self.assertIsNone(bb.ymax)
+        self.assertEqual(bb.zmin, 0)
+        self.assertIsNone(bb.zmax)
 
 
 class TestSFFCone(Py23FixTestCase):
@@ -2265,6 +2271,22 @@ class TestSFFCone(Py23FixTestCase):
         self.assertEqual(C.height, _height)
         self.assertEqual(C.bottom_radius, _bottom_radius)
 
+    def test_json(self):
+        """Interconvert to JSON"""
+        height, bottom_radius = _random_floats(count=2, multiplier=10)
+        c = adapter.SFFCone(height=height, bottom_radius=bottom_radius)
+        c_json = c.as_json()
+        self.stderrj(c_json)
+        self.assertEqual(c_json, {
+            u'id': c.id,
+            u'shape': u'cone',
+            u'height': c.height,
+            u'bottom_radius': c.bottom_radius,
+            u'transform_id': None
+        })
+        c2 = adapter.SFFCone.from_json(c_json)
+        self.assertEqual(c, c2)
+
 
 class TestSFFCuboid(Py23FixTestCase):
     """Test the SFFCuboid class"""
@@ -2316,6 +2338,23 @@ class TestSFFCuboid(Py23FixTestCase):
         self.assertEqual(C.x, _x)
         self.assertEqual(C.y, _y)
         self.assertEqual(C.z, _z)
+
+    def test_json(self):
+        """Interconvert to JSON"""
+        x, y, z = _random_floats(count=3, multiplier=10)
+        c = adapter.SFFCuboid(x=x, y=y, z=z)
+        c_json = c.as_json()
+        self.stderrj(c_json)
+        self.assertEqual(c_json, {
+            u'id': c.id,
+            u'shape': u'cuboid',
+            u'x': c.x,
+            u'y': c.y,
+            u'z': c.z,
+            u'transform_id': None
+        })
+        c2 = adapter.SFFCuboid.from_json(c_json)
+        self.assertEqual(c, c2)
 
 
 class TestSFFCylinder(Py23FixTestCase):
@@ -2372,6 +2411,22 @@ class TestSFFCylinder(Py23FixTestCase):
         self.assertEqual(C.height, _height)
         self.assertEqual(C.diameter, _diameter)
 
+    def test_json(self):
+        """Interconvert to JSON"""
+        height, diameter = _random_floats(count=2, multiplier=10)
+        c = adapter.SFFCylinder(height=height, diameter=diameter)
+        c_json = c.as_json()
+        self.stderrj(c_json)
+        self.assertEqual(c_json, {
+            u'id': c.id,
+            u'shape': u'cylinder',
+            u'height': c.height,
+            u'diameter': c.diameter,
+            u'transform_id': None
+        })
+        c2 = adapter.SFFCylinder.from_json(c_json)
+        self.assertEqual(c, c2)
+
 
 class TestSFFEllipsoid(Py23FixTestCase):
     """Test the SFFEllipsoid class"""
@@ -2423,6 +2478,23 @@ class TestSFFEllipsoid(Py23FixTestCase):
         self.assertEqual(C.x, _x)
         self.assertEqual(C.y, _y)
         self.assertEqual(C.z, _z)
+
+    def test_json(self):
+        """Interconvert to JSON"""
+        x, y, z = _random_floats(count=3, multiplier=10)
+        e = adapter.SFFEllipsoid(x=x, y=y, z=z)
+        e_json = e.as_json()
+        self.stderrj(e_json)
+        self.assertEqual(e_json, {
+            u'id': e.id,
+            u'shape': u'ellipsoid',
+            u'x': e.x,
+            u'y': e.y,
+            u'z': e.z,
+            u'transform_id': None
+        })
+        e2 = adapter.SFFEllipsoid.from_json(e_json)
+        self.assertEqual(e, e2)
 
 
 class TestSFFShapePrimitiveList(Py23FixTestCase):
@@ -2523,6 +2595,23 @@ class TestSFFShapePrimitiveList(Py23FixTestCase):
         s_id = random.choice(list(_xrange(total_shapes)))
         s = S[s_id]
         self.assertIsInstance(s, (adapter.SFFCone, adapter.SFFCuboid, adapter.SFFCylinder, adapter.SFFEllipsoid))
+
+    def test_json(self):
+        """Interconvert to JSON"""
+        S = adapter.SFFShapePrimitiveList()
+
+        def _meld(*args):
+            melded = list()
+            for arg in args:
+                melded += arg
+            return melded
+
+        shapes = _meld(*self.get_sff_shapes())
+        for shape in shapes:
+            S.append(shape)
+        S_json = S.as_json()
+        S2 = adapter.SFFShapePrimitiveList.from_json(S_json)
+        self.assertEqual(S, S2)
 
 
 class TestSFFSegment(Py23FixTestCase):
@@ -2747,58 +2836,55 @@ class TestSFFSegment(Py23FixTestCase):
             )
         )
 
-    # def test_as_json(self):
-    #     """Test that we can export as JSON"""
-    #     # empty fails validation
-    #     s = adapter.SFFSegment()
-    #     with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-    #         s.as_json()
-    #     # at least colour needed
-    #     s = adapter.SFFSegment()
-    #     s.colour = adapter.SFFRGBA(random_colour=True)
-    #     s_json = s.as_json()
-    #     self.assertEqual(s_json[u'id'], s.id)
-    #     self.assertEqual(s_json[u'parent_id'], s.parent_id)
-    #     self.assertEqual(s_json[u'colour'], s.colour.value)
-    #     # _print(s_json)
-    #     # self.assertTrue(False)
-    #     # with annotation
-    #     s = adapter.SFFSegment(
-    #         biological_annotation=adapter.SFFBiologicalAnnotation(
-    #             name=rw.random_word(),
-    #             description=li.get_sentence(),
-    #         )
-    #     )
-    #     s.colour = adapter.SFFRGBA(random_colour=True)
-    #     s_json = s.as_json()
-    #     # _print(s_json)
-    #     self.assertEqual(s_json[u'id'], s.id)
-    #     self.assertEqual(s_json[u'parent_id'], s.parent_id)
-    #     self.assertEqual(s_json[u'colour'], s.colour.value)
-    #     self.assertEqual(s_json[u'biological_annotation'][u'name'], s.biological_annotation.name)
-    #     self.assertEqual(s_json[u'biological_annotation'][u'description'], s.biological_annotation.description)
-    # 
-    # def test_from_json(self):
-    #     """Test that we can import from JSON"""
-    #     # minimal
-    #     s_json = {'id': 2, 'parent_id': 0, 'colour': (0.3480471169539232, 0.9354618836165659, 0.7017431484633613, 1.0)}
-    #     s = adapter.SFFSegment.from_json(s_json)
-    #     self.assertEqual(s.id, s_json[u'id'])
-    #     self.assertEqual(s.parent_id, s_json[u'parent_id'])
-    #     self.assertEqual(s.colour.value, s_json[u'colour'])
-    #     # more
-    #     s_json = {'id': 3, 'parent_id': 0, 'biological_annotation': {'name': 'preserver',
-    #                                                                'description': 'Dictumstvivamus proin purusvestibulum turpis sociis assum.',
-    #                                                                'number_of_instances': 1},
-    #               'colour': (0.3284280279067431, 0.8229825614708411, 0.07590219333941295, 1.0)}
-    #     s = adapter.SFFSegment.from_json(s_json)
-    #     _print(s)
-    #     self.assertEqual(s_json[u'id'], s.id)
-    #     self.assertEqual(s_json[u'parent_id'], s.parent_id)
-    #     self.assertEqual(s_json[u'colour'], s.colour.value)
-    #     self.assertEqual(s_json[u'biological_annotation'][u'name'], s.biological_annotation.name)
-    #     self.assertEqual(s_json[u'biological_annotation'][u'description'], s.biological_annotation.description)
-    #     self.assertEqual(s_json[u'biological_annotation'][u'number_of_instances'], s.biological_annotation.number_of_instances)
+    def test_as_json(self):
+        """Test that we can export as JSON"""
+        # at least colour needed
+        s = adapter.SFFSegment()
+        s.colour = adapter.SFFRGBA(random_colour=True)
+        s_json = s.as_json()
+        self.stderrj(s_json)
+        self.assertEqual(s_json[u'id'], s.id)
+        self.assertEqual(s_json[u'parent_id'], s.parent_id)
+        self.assertEqual(s_json[u'colour'], s.colour.value)
+        # _print(s_json)
+        # self.assertTrue(False)
+        # with annotation
+        s = adapter.SFFSegment(
+            biological_annotation=adapter.SFFBiologicalAnnotation(
+                name=rw.random_word(),
+                description=li.get_sentence(),
+            )
+        )
+        s.colour = adapter.SFFRGBA(random_colour=True)
+        s_json = s.as_json()
+        self.stderrj(s_json)
+        self.assertEqual(s_json[u'id'], s.id)
+        self.assertEqual(s_json[u'parent_id'], s.parent_id)
+        self.assertEqual(s_json[u'colour'], s.colour.value)
+        self.assertEqual(s_json[u'biological_annotation'][u'name'], s.biological_annotation.name)
+        self.assertEqual(s_json[u'biological_annotation'][u'description'], s.biological_annotation.description)
+
+    def test_from_json(self):
+        """Test that we can import from JSON"""
+        # minimal
+        s_json = {'id': 2, 'parent_id': 0, 'colour': (0.3480471169539232, 0.9354618836165659, 0.7017431484633613, 1.0)}
+        s = adapter.SFFSegment.from_json(s_json)
+        self.assertEqual(s.id, s_json[u'id'])
+        self.assertEqual(s.parent_id, s_json[u'parent_id'])
+        self.assertEqual(s.colour.value, s_json[u'colour'])
+        # more
+        s_json = {'id': 3, 'parent_id': 0, 'biological_annotation': {'name': 'preserver',
+                                                                   'description': 'Dictumstvivamus proin purusvestibulum turpis sociis assum.',
+                                                                   'number_of_instances': 1},
+                  'colour': (0.3284280279067431, 0.8229825614708411, 0.07590219333941295, 1.0)}
+        s = adapter.SFFSegment.from_json(s_json)
+        _print(s)
+        self.assertEqual(s_json[u'id'], s.id)
+        self.assertEqual(s_json[u'parent_id'], s.parent_id)
+        self.assertEqual(s_json[u'colour'], s.colour.value)
+        self.assertEqual(s_json[u'biological_annotation'][u'name'], s.biological_annotation.name)
+        self.assertEqual(s_json[u'biological_annotation'][u'description'], s.biological_annotation.description)
+        self.assertEqual(s_json[u'biological_annotation'][u'number_of_instances'], s.biological_annotation.number_of_instances)
 
 
 class TestSFFSegmentList(Py23FixTestCase):

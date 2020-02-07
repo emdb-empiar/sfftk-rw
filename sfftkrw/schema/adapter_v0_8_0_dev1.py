@@ -227,16 +227,22 @@ class SFFBiologicalAnnotation(SFFType):
             return 0
 
     def as_json(self):
-        bio_ann = _dict()
-        if self.name:
-            bio_ann[u'name'] = _str(self.name)
-        if self.description:
-            bio_ann[u'description'] = _str(self.description)
-        if self.number_of_instances:
-            bio_ann[u'number_of_instances'] = self.number_of_instances
-        if self.external_references:
-            bio_ann[u'external_references'] = self.external_references.as_json()
-        return bio_ann
+        return {
+            u'name': self.name,
+            u'description': self.description,
+            u'number_of_instances': self.number_of_instances,
+            u'external_references': self.external_references if self.external_references is not None else [],
+        }
+        # bio_ann = _dict()
+        # if self.name:
+        #     bio_ann[u'name'] = _str(self.name)
+        # if self.description:
+        #     bio_ann[u'description'] = _str(self.description)
+        # if self.number_of_instances:
+        #     bio_ann[u'number_of_instances'] = self.number_of_instances
+        # if self.external_references:
+        #     bio_ann[u'external_references'] = self.external_references.as_json()
+        # return bio_ann
 
     @classmethod
     def from_json(cls, data):
@@ -612,7 +618,7 @@ class SFFEncodedSequence(SFFType):
                 except AssertionError:
                     raise ValueError(
                         u"mismatch in stated in retrieved number of items: {}/{}".format(kwargs[self.num_items_kwarg],
-                                                                                            self._data.shape[0]))
+                                                                                         self._data.shape[0]))
                 kwargs[u'data'] = _data
                 del _data
         super(SFFEncodedSequence, self).__init__(**kwargs)
@@ -913,10 +919,39 @@ class SFFCone(SFFShape):
     gds_tag_name = u"cone"
     repr_string = u"SFFCone(id={}, height={}, bottom_radius={}, transform_id={})"
     repr_args = (u'id', u'height', u'bottom_radius', u'transform_id')
+    eq_attrs = [u'height', u'bottom_radius']
 
     # attributes
     height = SFFAttribute(u'height', required=True, help=u"cone height")
     bottom_radius = SFFAttribute(u'bottom_radius', required=True, help=u"cone bottom radius")
+
+    def as_json(self, *args, **kwargs):
+        return {
+            u'id': self.id,
+            u'shape': u'cone',
+            u'height': self.height,
+            u'bottom_radius': self.bottom_radius,
+            u'transform_id': self.transform_id,
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        if u'shape' in data:
+            if data[u'shape'] == u'cone':
+                obj = cls(new_obj=False)
+                if u'id' in data:
+                    obj.id = data[u'id']
+                if u'height' in data:
+                    obj.height = data[u'height']
+                if u'bottom_radius' in data:
+                    obj.bottom_radius = data[u'bottom_radius']
+                if u'transform_id' in data:
+                    obj.transform_id = data[u'transform_id']
+                return obj
+            else:
+                raise SFFTypeError(u"cannot convert shape '{}' into ellipsoid".format(data[u'type']))
+        else:
+            raise ValueError(u"missing 'shape' attribute")
 
 
 class SFFCuboid(SFFShape):
@@ -925,11 +960,43 @@ class SFFCuboid(SFFShape):
     gds_tag_name = u"cuboid"
     repr_string = u"SFFCuboid(id={}, x={}, y={}, z={}, transform_id={})"
     repr_args = (u'id', u'x', u'y', u'z', u'transform_id')
+    eq_attrs = [u'x', u'y', u'z']
 
     # attributes
     x = SFFAttribute(u'x', required=True, help=u"length in x")
     y = SFFAttribute(u'y', required=True, help=u"length in y")
     z = SFFAttribute(u'z', required=True, help=u"length in z")
+
+    def as_json(self, *args, **kwargs):
+        return {
+            u'id': self.id,
+            u'shape': u'cuboid',
+            u'x': self.x,
+            u'y': self.y,
+            u'z': self.z,
+            u'transform_id': self.transform_id,
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        if u'shape' in data:
+            if data[u'shape'] == u'cuboid':
+                obj = cls(new_obj=False)
+                if u'id' in data:
+                    obj.id = data[u'id']
+                if u'x' in data:
+                    obj.x = data[u'x']
+                if u'y' in data:
+                    obj.y = data[u'y']
+                if u'z' in data:
+                    obj.z = data[u'z']
+                if u'transform_id' in data:
+                    obj.transform_id = data[u'transform_id']
+                return obj
+            else:
+                raise SFFTypeError(u"cannot convert shape '{}' into cuboid".format(data[u'type']))
+        else:
+            raise ValueError(u"missing 'shape' attribute")
 
 
 class SFFCylinder(SFFShape):
@@ -938,10 +1005,39 @@ class SFFCylinder(SFFShape):
     gds_tag_name = u"cylinder"
     repr_string = u"SFFCylinder(id={}, height={}, diameter={}, transform_id={})"
     repr_args = (u'id', u'height', u'diameter', u'transform_id')
+    eq_attrs = [u'height', u'diameter']
 
     # attributes
     height = SFFAttribute(u'height', required=True, help=u"cylinder height")
     diameter = SFFAttribute(u'diameter', required=True, help=u"cylinder diameter")
+
+    def as_json(self, *args, **kwargs):
+        return {
+            u'id': self.id,
+            u'shape': u'cylinder',
+            u'height': self.height,
+            u'diameter': self.diameter,
+            u'transform_id': self.transform_id,
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        if u'shape' in data:
+            if data[u'shape'] == u'cylinder':
+                obj = cls(new_obj=False)
+                if u'id' in data:
+                    obj.id = data[u'id']
+                if u'height' in data:
+                    obj.height = data[u'height']
+                if u'diameter' in data:
+                    obj.diameter = data[u'diameter']
+                if u'transform_id' in data:
+                    obj.transform_id = data[u'transform_id']
+                return obj
+            else:
+                raise SFFTypeError(u"cannot convert shape '{}' into cylinder".format(data[u'type']))
+        else:
+            raise ValueError(u"missing 'shape' attribute")
 
 
 class SFFEllipsoid(SFFShape):
@@ -950,11 +1046,43 @@ class SFFEllipsoid(SFFShape):
     gds_tag_name = u"ellipsoid"
     repr_string = u"SFFEllipsoid(id={}, x={}, y={}, z={}, transform_id={})"
     repr_args = (u'id', u'x', u'y', u'z', u'transform_id')
+    eq_attrs = [u'x', u'y', u'z']
 
     # attributes
     x = SFFAttribute(u'x', required=True, help=u"length in x")
     y = SFFAttribute(u'y', required=True, help=u"length in y")
     z = SFFAttribute(u'z', required=True, help=u"length in z")
+
+    def as_json(self, *args, **kwargs):
+        return {
+            u'id': self.id,
+            u'shape': u'ellipsoid',
+            u'x': self.x,
+            u'y': self.y,
+            u'z': self.z,
+            u'transform_id': self.transform_id,
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        if u'shape' in data:
+            if data[u'shape'] == u'ellipsoid':
+                obj = cls(new_obj=False)
+                if u'id' in data:
+                    obj.id = data[u'id']
+                if u'x' in data:
+                    obj.x = data[u'x']
+                if u'y' in data:
+                    obj.y = data[u'y']
+                if u'z' in data:
+                    obj.z = data[u'z']
+                if u'transform_id' in data:
+                    obj.transform_id = data[u'transform_id']
+                return obj
+            else:
+                raise SFFTypeError(u"cannot convert shape '{}' into ellipsoid".format(data[u'type']))
+        else:
+            raise ValueError(u"missing 'shape' attribute")
 
 
 class SFFShapePrimitiveList(SFFListType):
@@ -998,6 +1126,31 @@ class SFFShapePrimitiveList(SFFListType):
     #     def num_subtomogram_averages(self):
     #         return self._shape_count(sff.subtomogramAverage)
 
+    def as_json(self, *args, **kwargs):
+        slist = list()
+        for shape in self:
+            slist.append(shape.as_json())
+        return slist
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        for shape in data:
+            if u'shape' in shape:
+                if shape[u'shape'] == u'cone':
+                    obj.append(SFFCone.from_json(shape))
+                elif shape[u'shape'] == u'cuboid':
+                    obj.append(SFFCuboid.from_json(shape))
+                elif shape[u'shape'] == u'cylinder':
+                    obj.append(SFFCylinder.from_json(shape))
+                elif shape[u'shape'] == u'ellipsoid':
+                    obj.append(SFFEllipsoid.from_json(shape))
+                else:
+                    raise SFFTypeError(u"cannot convert shape '{}' into ellipsoid".format(data[u'type']))
+            else:
+                raise ValueError(u"missing 'shape' attribute")
+        return obj
+
 
 class SFFSegment(SFFIndexType):
     """Class that encapsulates segment data"""
@@ -1006,7 +1159,7 @@ class SFFSegment(SFFIndexType):
     repr_string = u"""SFFSegment(id={}, parent_id={}, biological_annotation={}, colour={}, three_d_volume={}, mesh_list={}, shape_primitive_list={})"""
     repr_args = (u'id', u'parent_id', u'biological_annotation', u'colour', u'volume', u'meshes', u'shapes')
     segment_id = 1
-    segment_parentID = 0
+    segment_parent_id = 0
     index_attr = u'segment_id'
     start_at = 1
 
@@ -1034,6 +1187,53 @@ class SFFSegment(SFFIndexType):
     shapes = SFFAttribute(u'shape_primitive_list', sff_type=SFFShapePrimitiveList,
                           help=u"the list of shape primitives that describe this segment; a :py:class:`sfftkrw.schema.adapter.SFFShapePrimitiveList` object")
 
+    def as_json(self):
+        """Format this segment as JSON"""
+        return {
+            u'id': self.id,
+            u'parent_id': self.parent_id,
+            u'biological_annotation': self.biological_annotation.as_json() if self.biological_annotation is not None else None,
+            u'colour': self.colour.as_json(),
+            u'mesh_list': self.meshes.as_json() if self.meshes is not None else [],
+            u'three_d_volume': self.volume.as_json() if self.volume is not None else None,
+            u'shape_primitive_list': self.shapes.as_json() if self.shapes is not None else []
+        }
+        # seg_data = _dict()
+        # seg_data[u'id'] = int(self.id)
+        # seg_data[u'parent_id'] = int(self.parent_id)
+        # if self.biological_annotation is not None:
+        #     seg_data[u'biological_annotation'] = self.biological_annotation.as_json()
+        # seg_data.update(self.colour.as_json())
+        seg_data[u'colour'] = tuple(map(float, self.colour.value))
+        # if self.meshes:
+        #     seg_data[u'mesh_list'] = len(self.meshes)
+        # if self.shapes:
+        #     seg_data[u'shape_primitive_list'] = len(self.shapes)
+        # return seg_data
+
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        if u'id' in data:
+            obj.id = data[u'id']
+        if u'parent_id' in data:
+            obj.parent_id = data[u'parent_id']
+        if u'colour' in data:
+            obj.colour = SFFRGBA.from_json(data)
+        if u'biological_annotation' in data:
+            obj.biological_annotation = SFFBiologicalAnnotation.from_json(data[u'biological_annotation'])
+        if u'mesh_list' in data:
+            obj.meshes = data[u'mesh_list']
+        if u'shape_primitive_list' in data:
+            obj.shapes = data[u'shape_primitive_list']
+        if u'threeDVolume' in data:
+            obj.volume = data[u'threeDVolume']
+        # validate
+        if obj._is_valid():
+            return obj
+        else:
+            super(SFFSegment, cls).from_json(data)
 
 class SFFSegmentList(SFFListType):
     """Container for segments"""
@@ -1225,6 +1425,42 @@ class SFFBoundingBox(SFFType):
     zmin = SFFAttribute(u'zmin', default=0, help=u"minimum z co-ordinate value")
     zmax = SFFAttribute(u'zmax', help=u"maximum z co-ordinate value")
 
+    def as_json(self):
+        bb = dict()
+        if self.xmin is not None:
+            bb[u'xmin'] = self.xmin
+        if self.xmax is not None:
+            bb[u'xmax'] = self.xmax
+        if self.ymin is not None:
+            bb[u'ymin'] = self.ymin
+        if self.ymax is not None:
+            bb[u'ymax'] = self.ymax
+        if self.zmin is not None:
+            bb[u'zmin'] = self.zmin
+        if self.zmax is not None:
+            bb[u'zmax'] = self.zmax
+        return bb
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        if u'xmin' in data:
+            obj.xmin = data[u'xmin']
+        if u'xmax' in data:
+            obj.xmax = data[u'xmax']
+        if u'ymin' in data:
+            obj.ymin = data[u'ymin']
+        if u'ymax' in data:
+            obj.ymax = data[u'ymax']
+        if u'zmin' in data:
+            obj.zmin = data[u'zmin']
+        if u'zmax' in data:
+            obj.zmax = data[u'zmax']
+        if obj._is_valid():
+            return obj
+        else:
+            super(SFFBoundingBox, cls).from_json(data)
+
 
 class SFFSegmentation(SFFType):
     """Adapter class to make using the output of ``generateDS`` easier to use"""
@@ -1245,7 +1481,7 @@ class SFFSegmentation(SFFType):
         u'primary_descriptor',
         required=True,
         help=u"the main type of representation used for this segmentation; "
-             u"can be one of 'meshList', 'shapePrimitiveList' or 'threeDVolume'"
+             u"can be one of 'mesh_list', 'shape_primitive_list' or 'threeDVolume'"
     )
     transforms = SFFAttribute(
         u'transform_list',
