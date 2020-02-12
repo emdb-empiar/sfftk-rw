@@ -102,8 +102,7 @@ class SFFType(object):
                     _kwargs[k] = kwargs[k]._local
                 else:
                     _kwargs[k] = kwargs[k]
-            self._local = self.gds_type(*args, **_kwargs)  # 1 and #3 - SFFType from (*a, **kw)
-            # todo: consider putting the version in every object so that we can do migrations
+            self._local = self.gds_type(*args, **_kwargs)
             # ensure that the version is copied without requiring user intervention
             if isinstance(self._local, sff.segmentation):
                 self.version = self._local.schema_version
@@ -741,10 +740,15 @@ class SFFAttribute(object):
     def __get__(self, obj, _):  # replaced objtype with _
         if self._sff_type:
             value = self._sff_type.from_gds_type(getattr(obj._local, self._name, self._default))
+            # if the value is None and this is a SFFListType subclass return an empty subclass
+            if issubclass(self._sff_type, SFFListType) and value is None:
+                value = self._sff_type()
         else:
             value = getattr(obj._local, self._name, self._default)
+        # if the value is None and we have a default return the default
         if self._default is not None and value is None:
             return self._default
+        # otherwise return the value or None
         else:
             return value
 

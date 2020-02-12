@@ -216,6 +216,16 @@ class TestSFFExternalReference(Py23FixTestCase):
 
     def test_as_json(self):
         """Test that we can output as JSON"""
+        e = adapter.SFFExternalReference()
+        self.stderrj(e.as_json())
+        self.assertEqual(e.as_json(), {
+            u"id": e.id,
+            u"resource": None,
+            u"url": None,
+            u"accession": None,
+            u"label": None,
+            u"description": None,
+        })
         e = adapter.SFFExternalReference(
             resource=self.r,
             url=self.u,
@@ -382,6 +392,8 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
 
     def test_as_json(self):
         """Test that we can export to JSON"""
+        ee = adapter.SFFExternalReferenceList()
+        self.assertEqual(ee.as_json(), [])
         ee = [adapter.SFFExternalReference(
             resource=self.rr[i],
             url=self.uu[i],
@@ -543,6 +555,8 @@ class TestSFFGlobalExternalReferenceList(Py23FixTestCase):
 
     def test_as_json(self):
         """Test that we can export to JSON"""
+        ge = adapter.SFFGlobalExternalReferenceList()
+        self.assertEqual(ge.as_json(), [])
         ge = [adapter.SFFExternalReference(
             resource=self.rr[i],
             url=self.uu[i],
@@ -743,9 +757,18 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
         """Test conversion to and from JSON"""
         # empty case
         b_empty = adapter.SFFBiologicalAnnotation()
+        self.stderr('b_empty:', b_empty)
         b_json = b_empty.as_json()
+        self.stderr(b_json)
+        self.assertEqual(b_json, {
+            u"name": None,
+            u"description": None,
+            u"external_references": [],
+            u"number_of_instances": 1,
+        })
         self.stderrj(b_json)
         b2_empty = adapter.SFFBiologicalAnnotation.from_json(b_json)
+        self.stderr('b2_empty:', b2_empty)
         self.assertEqual(b_empty, b2_empty)
         # non-empty case
         b_full = adapter.SFFBiologicalAnnotation()
@@ -2070,9 +2093,9 @@ class TestSFFMeshList(Py23FixTestCase):
                     triangles=ts
                 )
             )
-        self.stderr(M)
+        # self.stderr(M)
         M_json = M.as_json()
-        self.stderrj(M_json)
+        # self.stderrj(M_json)
         self.assertEqual(M_json, [
             {
                 u'id': m.id,
@@ -2081,6 +2104,9 @@ class TestSFFMeshList(Py23FixTestCase):
                 u'triangles': m.triangles.as_json()
             } for m in M
         ])
+        M2 = adapter.SFFMeshList.from_json(M_json)
+        self.stderr(M2)
+        self.assertEqual(M, M2)
 
 
 class TestSFFBoundingBox(Py23FixTestCase):
@@ -2626,7 +2652,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=1, parent_id=0, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)"""
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)"""
         )
         # change ID
         _id = _random_integer()
@@ -2635,7 +2661,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id=0, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)""".format(_id)
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(_id)
         )
         # change parent_id
         _parent_id = _random_integer()
@@ -2645,7 +2671,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id={}, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)""".format(
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
                 _id + 1,
                 _parent_id
             )
@@ -2658,14 +2684,13 @@ class TestSFFSegment(Py23FixTestCase):
         s = adapter.SFFSegment(biological_annotation=B)
         self.assertEqual(s.id, _id + 2)  # we have an increment from the previous set value
         self.assertEqual(s.biological_annotation, B)
+        _segment_regex = r"""SFFSegment\(id={}, parent_id={}, biological_annotation={}, colour=None, """ \
+                         r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+            _id + 2, 0, _str(B).replace(r"(", r"\(").replace(r")", r"\)").replace(r"[", r"\[").replace(r"]", r"\]"))
+        self.stderr(_segment_regex)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id={}, parent_id={}, biological_annotation={}, colour=None, """
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)""".format(
-                _id + 2,
-                0,
-                _str(B).replace(r"(", r"\(").replace(r")", r"\)")
-            )
+            _segment_regex
         )
         # change colour
         R = adapter.SFFRGBA(random_colour=True)
@@ -2675,7 +2700,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id={}, biological_annotation=None, colour={}, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)""".format(
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
                 _id + 3,
                 0,
                 _str(R).replace(r"(", r"\(").replace(r")", r"\)")
@@ -2696,7 +2721,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id={}, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume={}, mesh_list=None, shape_primitive_list=None\)""".format(
+            r"""three_d_volume={}, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
                 _id + 4,
                 0,
                 _str(V).replace(r"(", r"\(").replace(r")", r"\)")
@@ -2709,7 +2734,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id={}, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=None\)""".format(
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
                 _id + 5,
                 0,
             )
@@ -2721,7 +2746,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id={}, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
                 _id + 6,
                 0,
             )
@@ -2734,7 +2759,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parent_id=\d+, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)"""
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)"""
         )
         # change ID
         _id = _random_integer()
@@ -2744,7 +2769,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id=\d+, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)""".format(_id)
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(_id)
         )
         # change parent_id
         _parent_id = _random_integer()
@@ -2755,7 +2780,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id={}, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)""".format(
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
                 None,
                 _parent_id
             )
@@ -2773,8 +2798,8 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parent_id=\d+, biological_annotation={}, colour=None, """
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)""".format(
-                _str(B).replace(r"(", r"\(").replace(r")", r"\)")
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+                _str(B).replace(r"(", r"\(").replace(r")", r"\)").replace(r"[", r"\[").replace(r"]", r"\]")
             )
         )
         # change colour
@@ -2787,7 +2812,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parent_id=\d+, biological_annotation=None, colour={}, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=None\)""".format(
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
                 _str(R).replace(r"(", r"\(").replace(r")", r"\)")
             )
         )
@@ -2808,7 +2833,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parent_id=\d+, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume={}, mesh_list=None, shape_primitive_list=None\)""".format(
+            r"""three_d_volume={}, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
                 _str(V).replace(r"(", r"\(").replace(r")", r"\)")
             )
         )
@@ -2821,7 +2846,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parent_id=\d+, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=None\)"""
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)"""
         )
         # shapes
         _S = emdb_sff.shape_primitive_listType()
@@ -2832,7 +2857,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parent_id=\d+, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=None, shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
             )
         )
 
@@ -2869,22 +2894,28 @@ class TestSFFSegment(Py23FixTestCase):
         # minimal
         s_json = {'id': 2, 'parent_id': 0, 'colour': (0.3480471169539232, 0.9354618836165659, 0.7017431484633613, 1.0)}
         s = adapter.SFFSegment.from_json(s_json)
+        self.stderr(s)
         self.assertEqual(s.id, s_json[u'id'])
         self.assertEqual(s.parent_id, s_json[u'parent_id'])
         self.assertEqual(s.colour.value, s_json[u'colour'])
         # more
-        s_json = {'id': 3, 'parent_id': 0, 'biological_annotation': {'name': 'preserver',
-                                                                   'description': 'Dictumstvivamus proin purusvestibulum turpis sociis assum.',
-                                                                   'number_of_instances': 1},
-                  'colour': (0.3284280279067431, 0.8229825614708411, 0.07590219333941295, 1.0)}
+        s_json = {
+            'id': 3,
+            'parent_id': 0,
+            'biological_annotation': {
+                'name': 'preserver',
+                'description': 'Dictumstvivamus proin purusvestibulum turpis sociis assum.',
+                'number_of_instances': 1},
+            'colour': (0.3284280279067431, 0.8229825614708411, 0.07590219333941295, 1.0)
+        }
         s = adapter.SFFSegment.from_json(s_json)
-        _print(s)
         self.assertEqual(s_json[u'id'], s.id)
         self.assertEqual(s_json[u'parent_id'], s.parent_id)
         self.assertEqual(s_json[u'colour'], s.colour.value)
         self.assertEqual(s_json[u'biological_annotation'][u'name'], s.biological_annotation.name)
         self.assertEqual(s_json[u'biological_annotation'][u'description'], s.biological_annotation.description)
-        self.assertEqual(s_json[u'biological_annotation'][u'number_of_instances'], s.biological_annotation.number_of_instances)
+        self.assertEqual(s_json[u'biological_annotation'][u'number_of_instances'],
+                         s.biological_annotation.number_of_instances)
 
 
 class TestSFFSegmentList(Py23FixTestCase):

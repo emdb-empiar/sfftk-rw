@@ -17,7 +17,7 @@ from random_words import RandomWords, LoremIpsum
 from . import _random_integer, Py23FixTestCase, _random_float, _random_floats
 from .. import EMDB_SFF_VERSION
 from ..core import _xrange, _str, _print
-from ..schema import base #, emdb_sff
+from ..schema import base  # , emdb_sff
 
 # dynamically import the latest schema generateDS API
 emdb_sff_name = 'sfftkrw.schema.v{schema_version}'.format(
@@ -224,7 +224,8 @@ class TestSFFType(Py23FixTestCase):
         tf = tempfile.NamedTemporaryFile()
         tf.name += u'.invalid'
         self.assertEqual(os.EX_DATAERR,
-                         adapter.SFFSegmentation(name=rw.random_word(), primary_descriptor=u'mesh_list').export(tf.name))
+                         adapter.SFFSegmentation(name=rw.random_word(), primary_descriptor=u'mesh_list').export(
+                             tf.name))
 
     def test_format_method_missing(self):
         """Test that we get `NotImplementedError`s"""
@@ -240,12 +241,6 @@ class TestSFFType(Py23FixTestCase):
         with self.assertRaises(NotImplementedError):
             _S.from_hff(u'test')
 
-        with self.assertRaises(base.SFFValueError):
-            _S.from_json(u'test')
-
-        with self.assertRaises(NotImplementedError):
-            _S == _S
-
     def test_validation(self):
         """Test validation check"""
         s = adapter.SFFSegment(colour=adapter.SFFRGBA(random_colour=True))
@@ -255,6 +250,7 @@ class TestSFFType(Py23FixTestCase):
 
     def test_eq_attrs(self):
         """Test the attribute that is a list of attributes for equality testing"""
+
         class _SomeEntity(adapter.SFFBoundingBox):
             eq_attrs = [u'xmin', u'xmax']
             # we test equality of bounding boxes only on xmin and xmax
@@ -280,7 +276,6 @@ class TestSFFType(Py23FixTestCase):
         with self.assertRaises(base.SFFTypeError):
             s = adapter.SFFSegment()
             b1 == s
-
 
 
 class TestSFFIndexType(Py23FixTestCase):
@@ -983,6 +978,23 @@ class TestSFFAttribute(Py23FixTestCase):
         # delete alpha
         del _c.a
         self.assertIsNone(_c.a)
+
+    def test_list_attribute(self):
+        """Test that an empty list attribute does not return 'None'"""
+        class _BA(adapter.SFFType):
+            gds_type = emdb_sff.biological_annotationType
+            repr_string = """_BA(external_references={})"""
+            repr_args = ('extref',)
+            extref = base.SFFAttribute(
+                'external_references',
+                sff_type=adapter.SFFExternalReferenceList,
+                help='the list of external reference objects'
+            )
+
+        ba = _BA()
+        self.stderr(ba)
+        self.assertIsInstance(ba.extref, adapter.SFFExternalReferenceList)
+        self.assertEqual(len(ba.extref), 0)
 
     def test_error(self):
         """Test that we get an exception on setting wrong type"""

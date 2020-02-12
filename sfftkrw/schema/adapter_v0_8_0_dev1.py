@@ -14,7 +14,7 @@ import numpy
 from . import FORMAT_CHARS, ENDIANNESS
 from . import v0_8_0_dev1 as _sff
 from .base import SFFType, SFFIndexType, SFFAttribute, SFFListType, SFFTypeError
-from ..core import _str, _encode, _bytes, _dict, _decode
+from ..core import _str, _encode, _bytes, _decode
 from ..core.print_tools import print_date
 
 # ensure that we can read/write encoded data
@@ -112,20 +112,14 @@ class SFFExternalReference(SFFIndexType):
     description = SFFAttribute(u'description', help=u"a long description of this external reference")
 
     def as_json(self):
-        e = dict()
-        if self.id is not None:  # value can be 0 which would evaluate to `False`
-            e[u'id'] = self.id
-        if self.resource:
-            e[u'resource'] = self.resource
-        if self.url:
-            e[u'url'] = self.url
-        if self.accession:
-            e[u'accession'] = self.accession
-        if self.label:
-            e[u'label'] = self.label
-        if self.description:
-            e[u'description'] = self.description
-        return e
+        return {
+            u"id": self.id,
+            u"resource": self.resource,
+            u"url": self.url,
+            u"accession": self.accession,
+            u"label": self.label,
+            u"description": self.description,
+        }
 
     @classmethod
     def from_json(cls, data):
@@ -200,8 +194,11 @@ class SFFBiologicalAnnotation(SFFType):
     # attributes
     name = SFFAttribute(u'name', help=u"the name of this segment")
     description = SFFAttribute(u'description', help=u"a brief description for this segment")
-    external_references = SFFAttribute(u'external_references', sff_type=SFFExternalReferenceList,
-                                       help=u"the set of external references")
+    external_references = SFFAttribute(
+        u'external_references',
+        sff_type=SFFExternalReferenceList,
+        help=u"the set of external references"
+    )
     number_of_instances = SFFAttribute(u'number_of_instances', default=1,
                                        help=u"the number of instances of this segment")
 
@@ -231,18 +228,8 @@ class SFFBiologicalAnnotation(SFFType):
             u'name': self.name,
             u'description': self.description,
             u'number_of_instances': self.number_of_instances,
-            u'external_references': self.external_references if self.external_references is not None else [],
+            u'external_references': self.external_references.as_json(),
         }
-        # bio_ann = _dict()
-        # if self.name:
-        #     bio_ann[u'name'] = _str(self.name)
-        # if self.description:
-        #     bio_ann[u'description'] = _str(self.description)
-        # if self.number_of_instances:
-        #     bio_ann[u'number_of_instances'] = self.number_of_instances
-        # if self.external_references:
-        #     bio_ann[u'external_references'] = self.external_references.as_json()
-        # return bio_ann
 
     @classmethod
     def from_json(cls, data):
@@ -255,11 +242,7 @@ class SFFBiologicalAnnotation(SFFType):
             obj.number_of_instances = data[u'number_of_instances']
         if u'external_references' in data:
             obj.external_references = SFFExternalReferenceList.from_json(data[u'external_references'])
-        # validate
-        if obj._is_valid():
-            return obj
-        else:
-            super(SFFBiologicalAnnotation, cls).from_json(data)
+        return obj
 
 
 class SFFThreeDVolume(SFFType):
@@ -861,8 +844,9 @@ class SFFMesh(SFFIndexType):
             obj.id = data[u'id']
         if u'vertices' in data:
             obj.vertices = SFFVertices.from_json(data[u'vertices'])
-        if u'normals' in data:
-            obj.normals = SFFNormals.from_json(data[u'normals'])
+        if u'normals' in data:  # because normals are optional
+            if data[u'normals']:
+                obj.normals = SFFNormals.from_json(data[u'normals'])
         if u'triangles' in data:
             obj.triangles = SFFTriangles.from_json(data[u'triangles'])
         return obj
@@ -1211,7 +1195,6 @@ class SFFSegment(SFFIndexType):
         #     seg_data[u'shape_primitive_list'] = len(self.shapes)
         # return seg_data
 
-
     @classmethod
     def from_json(cls, data):
         obj = cls(new_obj=False)
@@ -1220,7 +1203,7 @@ class SFFSegment(SFFIndexType):
         if u'parent_id' in data:
             obj.parent_id = data[u'parent_id']
         if u'colour' in data:
-            obj.colour = SFFRGBA.from_json(data)
+            obj.colour = SFFRGBA.from_json(data[u'colour'])
         if u'biological_annotation' in data:
             obj.biological_annotation = SFFBiologicalAnnotation.from_json(data[u'biological_annotation'])
         if u'mesh_list' in data:
@@ -1229,11 +1212,8 @@ class SFFSegment(SFFIndexType):
             obj.shapes = data[u'shape_primitive_list']
         if u'threeDVolume' in data:
             obj.volume = data[u'threeDVolume']
-        # validate
-        if obj._is_valid():
-            return obj
-        else:
-            super(SFFSegment, cls).from_json(data)
+        return obj
+
 
 class SFFSegmentList(SFFListType):
     """Container for segments"""
