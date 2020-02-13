@@ -2661,7 +2661,8 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id=0, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(_id)
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+                _id)
         )
         # change parent_id
         _parent_id = _random_integer()
@@ -2769,7 +2770,8 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id=\d+, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(_id)
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+                _id)
         )
         # change parent_id
         _parent_id = _random_integer()
@@ -3064,6 +3066,20 @@ class TestSFFSoftware(Py23FixTestCase):
         self.assertEqual(S.version, version)
         self.assertEqual(S.processing_details, processing_details)
 
+    def test_json(self):
+        """Interconvert to JSON"""
+        s = adapter.SFFSoftware(
+            name=rw.random_word(),
+            version=rw.random_word(),
+            processing_details=li.get_sentences(sentences=5)
+        )
+        s_json = s.as_json()
+        self.assertEqual(s.name, s_json[u'name'])
+        self.assertEqual(s.version, s_json[u'version'])
+        self.assertEqual(s.processing_details, s_json[u'processing_details'])
+        s2 = adapter.SFFSoftware.from_json(s_json)
+        self.assertEqual(s, s2)
+
 
 class TestSFFSoftwareList(Py23FixTestCase):
     """Test the SFFSoftwareList class"""
@@ -3104,6 +3120,28 @@ class TestSFFSoftwareList(Py23FixTestCase):
         )
         self.assertEqual(len(S), _no_items)
         self.assertEqual(list(S.get_ids()), list(_xrange(_no_items)))
+
+    def test_json(self):
+        """Interconvert to JSON"""
+        sl = adapter.SFFSoftwareList()
+        no_sw = _random_integer(start=2, stop=5)
+        [sl.append(
+            adapter.SFFSoftware(
+                name=rw.random_word(),
+                version=rw.random_word(),
+                processing_details=li.get_sentences(sentences=5),
+            )
+        ) for _ in _xrange(no_sw)]
+        sl_json = sl.as_json()
+        self.assertEqual(len(sl), no_sw)
+        self.assertEqual(sl_json, [{
+            u'id': sw.id,
+            u'name': sw.name,
+            u'version': sw.version,
+            u'processing_details': sw.processing_details
+        } for sw in sl])
+        sw2 = adapter.SFFSoftwareList.from_json(sl_json)
+        self.assertEqual(sl, sw2)
 
 
 class TestSFFTransformationMatrix(Py23FixTestCase):
@@ -3221,6 +3259,19 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
         self.assertEqual(T.data, self.data_string)
         self.assertTrue(numpy.array_equal(T.data_array, self.data))
 
+    def test_json(self):
+        """Interconvert to JSON"""
+        rows, cols = _random_integers(count=2, start=3, stop=6)
+        tx = adapter.SFFTransformationMatrix.from_array(numpy.random.rand(rows, cols))
+        tx_json = tx.as_json()
+        self.assertEqual(tx.id, tx_json[u'id'])
+        self.assertEqual(tx.rows, tx_json[u'rows'])
+        self.assertEqual(tx.cols, tx_json[u'cols'])
+        self.assertEqual(tx.data, tx_json[u'data'])
+        tx2 = adapter.SFFTransformationMatrix.from_json(tx_json)
+        self.stderr(tx2)
+        self.assertEqual(tx, tx2)
+
 
 class TestSFFTransformList(Py23FixTestCase):
     def setUp(self):
@@ -3280,6 +3331,22 @@ class TestSFFTransformList(Py23FixTestCase):
         TT = adapter.SFFTransformList.from_gds_type(_TT)
         self.assertEqual(self.tx_count, len(TT))
         self.assertEqual(list(TT.get_ids()), list(_xrange(len(TT))))
+
+    def test_json(self):
+        """Interconvert to JSON"""
+        tl = adapter.SFFTransformList()
+        no_txs = _random_integer(start=2, stop=5)
+        [tl.append(adapter.SFFTransformationMatrix.from_array(numpy.random.rand(3, 4))) for _ in _xrange(no_txs)]
+        tl_json = tl.as_json()
+        self.assertEqual(len(tl), no_txs)
+        self.assertEqual(tl_json, [{
+            u'id': tx.id,
+            u'rows': tx.rows,
+            u'cols': tx.cols,
+            u'data': tx.data
+        } for tx in tl])
+        tl2 = adapter.SFFTransformList.from_json(tl_json)
+        self.assertEqual(tl, tl2)
 
 
 class TestSFFSegmentation(Py23FixTestCase):

@@ -1232,6 +1232,7 @@ class SFFTransformationMatrix(SFFIndexType):
     repr_args = (u'id', u'rows', u'cols', u'data')
     transform_id = 0
     index_attr = u'transform_id'
+    eq_attrs = [u'rows', u'cols', u'data']
 
     # attributes
     id = SFFAttribute(u'id', required=True, help=u"an ID for this transform")
@@ -1314,6 +1315,23 @@ class SFFTransformationMatrix(SFFIndexType):
         self._data = ndarray
         self.data = self.stringify(ndarray)
 
+    def as_json(self, *args, **kwargs):
+        return {
+            u"id": self.id,
+            u"rows": self.rows,
+            u"cols": self.cols,
+            u"data": self.data,
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        obj.id = data[u'id']
+        obj.rows = int(data[u'rows'])
+        obj.cols = int(data[u'cols'])
+        obj.data = data[u'data']
+        return obj
+
 
 class SFFTransformList(SFFListType):
     """Container for transforms"""
@@ -1345,6 +1363,19 @@ class SFFTransformList(SFFListType):
                     break
         return transformation_matrices_similar, rows, cols
 
+    def as_json(self):
+        tlist = list()
+        for tx in self:
+            tlist.append(tx.as_json())
+        return tlist
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        for tx in data:
+            obj.append(SFFTransformationMatrix.from_json(tx))
+        return obj
+
 
 class SFFSoftware(SFFIndexType):
     """Class definition for specifying software used to create this segmentation
@@ -1367,6 +1398,7 @@ class SFFSoftware(SFFIndexType):
     repr_args = (u'id', u'name', u'version', u'processing_details')
     software_id = 0
     index_attr = u'software_id'
+    eq_attrs = [u'name', u'version', u'processing_details']
 
     # attributes
     id = SFFAttribute(u'id', help=u"the software ID")
@@ -1375,9 +1407,22 @@ class SFFSoftware(SFFIndexType):
     processing_details = SFFAttribute(u'processing_details',
                                       help=u"a description of how the data was processed to produce the segmentation")
 
-    def __eq__(self, other):
-        return self.name == other.name and self.version == other.version and \
-               self.processing_details == other.processing_details
+    def as_json(self, *args, **kwargs):
+        return {
+            u"id": self.id,
+            u"name": self.name,
+            u"version": self.version,
+            u"processing_details": self.processing_details,
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        obj.id = data[u'id']
+        obj.name = data[u'name']
+        obj.version = data[u'version']
+        obj.processing_details = data[u'processing_details']
+        return obj
 
 
 class SFFSoftwareList(SFFListType):
@@ -1387,6 +1432,19 @@ class SFFSoftwareList(SFFListType):
     repr_string = u"SFFSoftwareList({})"
     repr_args = (u'list()',)
     iter_attr = (u'software', SFFSoftware)
+
+    def as_json(self, *args, **kwargs):
+        slist = list()
+        for sw in self:
+            slist.append(sw.as_json())
+        return slist
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        for sw in data:
+            obj.append(SFFSoftware.from_json(sw))
+        return obj
 
 
 class SFFBoundingBox(SFFType):
@@ -1519,3 +1577,6 @@ class SFFSegmentation(SFFType):
             print_date(_encode(u"Invalid EMDB-SFF file name: {}".format(fn), u'utf-8'))
             sys.exit(os.EX_DATAERR)
         return seg
+
+    def to_file(self, *args, **kwargs):
+        return super(SFFSegmentation, self).export(*args, **kwargs)
