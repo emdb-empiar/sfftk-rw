@@ -5,6 +5,7 @@ from __future__ import division, print_function
 import importlib
 import inspect
 import io
+import json
 import numbers
 import os
 import re
@@ -149,10 +150,13 @@ class SFFType(object):
                             var = mo.group('var')
                             stop = int(mo.group('stop'))
                             sub_str = getattr(self, var)
-                            if len(sub_str) < stop:
-                                _repr_args.append(sub_str)
+                            if sub_str: # there is something
+                                if len(sub_str) < stop:
+                                    _repr_args.append(sub_str)
+                                else:
+                                    _repr_args.append(sub_str[:stop] + b"...")
                             else:
-                                _repr_args.append(sub_str[:stop] + b"...")
+                                _repr_args.append(sub_str)
                         else:
                             _repr_args.append(getattr(self, arg, None))
                     # quote strings
@@ -217,7 +221,8 @@ class SFFType(object):
                         self.as_hff(f, *_args, **_kwargs)
                 elif re.match(r"^json$", fn_ext, re.IGNORECASE):
                     with open(fn, u'w') as f:
-                        self.as_json(f, *_args, **_kwargs)
+                        json.dump(self.as_json(*_args, **_kwargs), f)
+                        # self.as_json(f, *_args, **_kwargs)
             elif issubclass(type(fn), io.IOBase):
                 self._local.export(fn, 0, *_args, **_kwargs)
             return os.EX_OK
@@ -764,3 +769,10 @@ class SFFAttribute(object):
 
     def __delete__(self, obj):
         delattr(obj._local, self._name)
+
+
+def _assert_or_raise(obj, klass, exception=SFFTypeError):
+    try:
+        assert isinstance(obj, klass)
+    except AssertionError:
+        raise exception(obj, klass)

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 import random
 import sys
-import json
 from unittest import TestCase
 
 from .. import BASE_DIR
@@ -79,6 +79,7 @@ class Py23Fix(object):
 
 class Py23FixTestCase(Py23Fix, TestCase):
     """Mixin to fix method changes in TestCase class"""
+
     @classmethod
     def setUpClass(cls):
         cls.test_hdf5_fn = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'test.hdf5')
@@ -97,3 +98,30 @@ class Py23FixTestCase(Py23Fix, TestCase):
     @staticmethod
     def stderrj(*args, **kwargs):
         _print(json.dumps(*args, indent=2, **kwargs))
+
+    @staticmethod
+    def stderrh(group):
+        def _print_keys(group, indent=0):
+            if hasattr(group, 'keys'):
+                for key in group.keys():
+                    try:
+                        _print('{indent}{key} => {value}'.format(
+                            indent='\t' * indent,
+                            key=key,
+                            value=group[key][()]
+                        ))
+                    except AttributeError:
+                        _print('{indent}{key} => {value}'.format(
+                            indent='\t' * indent,
+                            key=key,
+                            value=group[key].name
+                        ))
+                    if hasattr(group[key], 'keys'):
+                        if group[key].keys():
+                            indent += 1
+                            _print_keys(group[key], indent=indent)
+                        indent -= 1
+            else:
+                _print(group)
+
+        _print_keys(group)

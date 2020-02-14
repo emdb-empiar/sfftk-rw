@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import importlib
+import json
 import os
 import random
 import re
@@ -13,7 +14,7 @@ import numpy
 from random_words import RandomWords, LoremIpsum
 
 from . import TEST_DATA_PATH, Py23FixTestCase, _random_integer, _random_float, _random_integers, _random_floats
-from ..core import _str, _xrange, _decode, _bytes
+from ..core import _str, _xrange, _decode, _bytes, _encode
 from ..schema import base
 
 EMDB_SFF_VERSION = u'0.8.0.dev1'
@@ -217,7 +218,6 @@ class TestSFFExternalReference(Py23FixTestCase):
     def test_as_json(self):
         """Test that we can output as JSON"""
         e = adapter.SFFExternalReference()
-        self.stderrj(e.as_json())
         self.assertEqual(e.as_json(), {
             u"id": e.id,
             u"resource": None,
@@ -291,6 +291,39 @@ class TestSFFExternalReference(Py23FixTestCase):
         self.assertEqual(e_json[u'accession'], e.accession)
         self.assertEqual(e_json[u'label'], e.label)
         self.assertIsNone(e.description)
+
+    def test_hff(self):
+        """Interconversion to HDF5"""
+        # empty
+        e = adapter.SFFExternalReference()
+        e_hff = e.as_hff()
+        self.assertEqual(e_hff, (e.id, None, None, None, None, None))
+        e2 = adapter.SFFExternalReference.from_hff(e_hff)
+        self.assertEqual(e, e2)
+        # pop'd
+        e = adapter.SFFExternalReference(
+            resource=self.r,
+            url=self.u,
+            accession=self.a,
+            label=self.l,
+            description=self.d,
+        )
+        e_hff = e.as_hff()
+        self.assertEqual(e_hff, (e.id, e.resource, e.url, e.accession, e.label, e.description))
+        e2 = adapter.SFFExternalReference.from_hff(e_hff)
+        self.assertEqual(e, e2)
+        # missing non-mandatory
+        e = adapter.SFFExternalReference(
+            resource=self.r,
+            url=self.u,
+            accession=self.a,
+        )
+        e_hff = e.as_hff()
+        self.assertEqual(e_hff.resource, e.resource)
+        self.assertEqual(e_hff.url, e.url)
+        self.assertEqual(e_hff.accession, e.accession)
+        e2 = adapter.SFFExternalReference.from_hff(e_hff)
+        self.assertEqual(e, e2)
 
 
 class TestSFFExternalReferenceList(Py23FixTestCase):
@@ -452,6 +485,47 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
             self.assertEqual(E[i].accession, extref[u'accession'])
             self.assertEqual(E[i].label, extref[u'label'])
             self.assertEqual(E[i].description, extref[u'description'])
+
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # empty
+        ee = adapter.SFFExternalReferenceList()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = ee.as_hff(group)
+            self.assertIn(u'external_references', group)
+            self.assertEqual(len(ee), 0)
+            self.assertEqual(len(ee), len(group[u'external_references']))
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            ee2 = adapter.SFFExternalReferenceList.from_hff(h[u'container'])
+            self.assertEqual(ee, ee2)
+        # pop'd
+        ee = [adapter.SFFExternalReference(
+            resource=self.rr[i],
+            url=self.uu[i],
+            accession=self.aa[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        E = adapter.SFFExternalReferenceList()
+        [E.append(e) for e in ee]
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = E.as_hff(group)
+            self.stderrh(group)
+            self.assertIn(u'external_references', group)
+            self.assertTrue(len(ee) > 0)
+            self.assertEqual(len(ee), len(group[u'external_references']))
+            for i in _xrange(self._no_items):
+                self.assertEqual(E[i].id, group[u'external_references'][i][u'id'])
+                self.assertEqual(E[i].resource, group[u'external_references'][i][u'resource'])
+                self.assertEqual(E[i].url, group[u'external_references'][i][u'url'])
+                self.assertEqual(E[i].accession, group[u'external_references'][i][u'accession'])
+                self.assertEqual(E[i].label, group[u'external_references'][i][u'label'])
+                self.assertEqual(E[i].description, group[u'external_references'][i][u'description'])
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            self.stderrh(h[u'container'])
+            ee2 = adapter.SFFExternalReferenceList.from_hff(h[u'container'])
 
 
 class TestSFFGlobalExternalReferenceList(Py23FixTestCase):
@@ -615,6 +689,47 @@ class TestSFFGlobalExternalReferenceList(Py23FixTestCase):
             self.assertEqual(G[i].label, extref[u'label'])
             self.assertEqual(G[i].description, extref[u'description'])
 
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # empty
+        ge = adapter.SFFGlobalExternalReferenceList()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = ge.as_hff(group)
+            self.assertIn(u'global_external_references', group)
+            self.assertEqual(len(ge), 0)
+            self.assertEqual(len(ge), len(group[u'global_external_references']))
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            ge2 = adapter.SFFGlobalExternalReferenceList.from_hff(h[u'container'])
+            self.assertEqual(ge, ge2)
+        # pop'd
+        ge = [adapter.SFFExternalReference(
+            resource=self.rr[i],
+            url=self.uu[i],
+            accession=self.aa[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        G = adapter.SFFGlobalExternalReferenceList()
+        [G.append(e) for e in ge]
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = G.as_hff(group)
+            self.assertIn(u'global_external_references', group)
+            self.assertTrue(len(ge) > 0)
+            self.assertEqual(len(ge), len(group[u'global_external_references']))
+            for i in _xrange(self._no_items):
+                self.assertEqual(G[i].id, group[u'global_external_references'][i][u'id'])
+                self.assertEqual(G[i].resource, group[u'global_external_references'][i][u'resource'])
+                self.assertEqual(G[i].url, group[u'global_external_references'][i][u'url'])
+                self.assertEqual(G[i].accession, group[u'global_external_references'][i][u'accession'])
+                self.assertEqual(G[i].label, group[u'global_external_references'][i][u'label'])
+                self.assertEqual(G[i].description, group[u'global_external_references'][i][u'description'])
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            self.stderrh(h[u'container'])
+            ge2 = adapter.SFFGlobalExternalReferenceList.from_hff(h[u'container'])
+            self.stderr(ge2)
+
 
 class TestSFFBiologicalAnnotation(Py23FixTestCase):
     def setUp(self):
@@ -753,22 +868,18 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
     #     # get rid of the file
     #     os.remove(hff_f.name)
     #
-    def test_json(self):
+    def test_as_json(self):
         """Test conversion to and from JSON"""
         # empty case
         b_empty = adapter.SFFBiologicalAnnotation()
-        self.stderr('b_empty:', b_empty)
         b_json = b_empty.as_json()
-        self.stderr(b_json)
         self.assertEqual(b_json, {
             u"name": None,
             u"description": None,
             u"external_references": [],
             u"number_of_instances": 1,
         })
-        self.stderrj(b_json)
         b2_empty = adapter.SFFBiologicalAnnotation.from_json(b_json)
-        self.stderr('b2_empty:', b2_empty)
         self.assertEqual(b_empty, b2_empty)
         # non-empty case
         b_full = adapter.SFFBiologicalAnnotation()
@@ -814,6 +925,50 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
             self.assertEqual(b_full.external_references[i].accession, extref[u'accession'])
             self.assertEqual(b_full.external_references[i].label, extref[u'label'])
             self.assertEqual(b_full.external_references[i].description, extref[u'description'])
+
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # empty case
+        b_empty = adapter.SFFBiologicalAnnotation()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = b_empty.as_hff(group)
+            self.assertIn(u'biological_annotation', group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            b_empty2 = adapter.SFFBiologicalAnnotation.from_hff(h[u'container'])
+            self.assertEqual(b_empty, b_empty2)
+        # non-empty case
+        b_full = adapter.SFFBiologicalAnnotation()
+        b_full.name = ' '.join(rw.random_words(count=2))
+        b_full.description = li.get_sentence()
+        es = adapter.SFFExternalReferenceList()
+        no_es = _random_integer(2, 10)
+        for _ in _xrange(no_es):
+            e = adapter.SFFExternalReference()
+            e.resource = rw.random_word()
+            e.url = rw.random_word()
+            e.accession = rw.random_word()
+            e.label = ' '.join(rw.random_words(count=3))
+            e.description = li.get_sentence()
+            es.append(e)
+        b_full.external_references = es
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = b_full.as_hff(group)
+            self.assertIn(u'biological_annotation', group)
+            self.assertIn(u'name', group[u'biological_annotation'])
+            self.assertEqual(group[u'biological_annotation/name'][()], b_full.name)
+            self.assertIn(u'description', group[u'biological_annotation'])
+            self.assertEqual(group[u'biological_annotation/description'][()], b_full.description)
+            self.assertIn(u'number_of_instances', group[u'biological_annotation'])
+            self.assertEqual(group[u'biological_annotation/number_of_instances'][()], b_full.number_of_instances)
+            self.assertIn(u'external_references', group[u'biological_annotation'])
+            self.assertEqual(len(group[u'biological_annotation/external_references'][()]),
+                             len(b_full.external_references))
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            b_full2 = adapter.SFFBiologicalAnnotation.from_hff(h[u'container'])
+            self.stderr(b_full2)
+            self.assertEqual(b_full, b_full2)
 
 
 class TestSFFThreeDVolume(Py23FixTestCase):
@@ -877,6 +1032,34 @@ class TestSFFThreeDVolume(Py23FixTestCase):
         vol_empty2 = adapter.SFFThreeDVolume.from_json(vol_empty_json)
         self.assertEqual(vol_empty, vol_empty2)
 
+    def test_hff(self):
+        lattice_id = _random_integer(start=1)
+        value = _random_integer(start=1)
+        transform_id = _random_integer(start=0)
+        vol_full = adapter.SFFThreeDVolume(lattice_id=lattice_id, value=value, transform_id=transform_id)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = vol_full.as_hff(group)
+            self.assertIn(u'three_d_volume', group)
+            self.assertEqual(group[u'three_d_volume/lattice_id'][()], vol_full.lattice_id)
+            self.assertEqual(group[u'three_d_volume/value'][()], vol_full.value)
+            self.assertEqual(group[u'three_d_volume/transform_id'][()], vol_full.transform_id)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            vol_full2 = adapter.SFFThreeDVolume.from_hff(h[u'container'])
+            self.assertEqual(vol_full, vol_full2)
+        # empty
+        vol_empty = adapter.SFFThreeDVolume()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = vol_empty.as_hff(group)
+            self.assertIn(u'three_d_volume', group)
+            self.assertNotIn(u'lattice_id', group[u'three_d_volume'])
+            self.assertNotIn(u'value', group[u'three_d_volume'])
+            self.assertNotIn(u'transform_id', group[u'three_d_volume'])
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            vol_empty2 = adapter.SFFThreeDVolume.from_hff(h[u'container'])
+            self.assertEqual(vol_empty, vol_empty2)
+
 
 class TestSFFVolumeStructure(Py23FixTestCase):
     def setUp(self):
@@ -929,6 +1112,21 @@ class TestSFFVolumeStructure(Py23FixTestCase):
         s_json = s.as_json()
         s2 = adapter.SFFVolumeStructure.from_json(s_json)
         self.assertEqual(s, s2)
+
+    def test_hff(self):
+        # empty
+        vs = adapter.SFFVolumeStructure()
+        vs_hff = vs.as_hff()
+        self.assertEqual(vs_hff, (None, None, None))
+        vs2 = adapter.SFFVolumeStructure.from_hff(vs_hff)
+        self.assertEqual(vs, vs2)
+        # non-empty
+        rows, cols, sections = _random_integers(count=3)
+        vs = adapter.SFFVolumeStructure(rows=rows, cols=cols, sections=sections)
+        vs_hff = vs.as_hff(vs)
+        self.assertEqual(vs_hff, (rows, cols, sections))
+        vs2 = adapter.SFFVolumeStructure.from_hff(vs_hff)
+        self.assertEqual(vs, vs2)
 
 
 class TestSFFVolumeIndex(Py23FixTestCase):
@@ -1134,6 +1332,46 @@ class TestSFFLattice(Py23FixTestCase):
         l2 = adapter.SFFLattice.from_json(l_json)
         self.assertEqual(l, l2)
 
+    def test_hff(self):
+        # empty case
+        l = adapter.SFFLattice()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = l.as_hff(group, name=_str(l.id))
+            self.assertIn(u'{}'.format(l.id), group)
+            self.assertIn(u'{}/id'.format(l.id), group)
+            self.assertIn(u'{}/mode'.format(l.id), group)
+            self.assertIn(u'{}/endianness'.format(l.id), group)
+            self.assertNotIn(u'{}/size'.format(l.id), group)
+            self.assertIn(u'{}/start'.format(l.id), group)
+            self.assertNotIn(u'{}/data'.format(l.id), group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            l2 = adapter.SFFLattice.from_hff(h[u'container'], name=_str(l.id))
+            self.assertEqual(l, l2)
+        # non-empty case
+        rows, cols, sections = _random_integers(count=3, start=5, stop=10)
+        array = numpy.random.randint(0, 10, size=(rows, cols, sections))
+        l = adapter.SFFLattice.from_array(array)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = l.as_hff(group, name=_str(l.id))
+            self.assertIn(u'{}'.format(l.id), group)
+            self.assertIn(u'{}/id'.format(l.id), group)
+            self.assertIn(u'{}/mode'.format(l.id), group)
+            self.assertIn(u'{}/endianness'.format(l.id), group)
+            self.assertIn(u'{}/size'.format(l.id), group)
+            self.assertIn(u'{}/start'.format(l.id), group)
+            self.assertIn(u'{}/data'.format(l.id), group)
+            self.assertEqual(group[u'{}/id'.format(l.id)][()], l.id)
+            self.assertEqual(group[u'{}/mode'.format(l.id)][()], _encode(l.mode, 'utf-8'))
+            self.assertEqual(group[u'{}/endianness'.format(l.id)][()], _encode(l.endianness, 'utf-8'))
+            self.assertCountEqual(group[u'{}/size'.format(l.id)][()], l.size.as_hff())
+            self.assertCountEqual(group[u'{}/start'.format(l.id)][()], l.start.as_hff())
+            self.assertEqual(group[u'{}/data'.format(l.id)][()], _encode(l.data, 'utf-8'))
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            l2 = adapter.SFFLattice.from_hff(h[u'container'], name=_str(l.id))
+            self.assertEqual(l.id, l2.id)
+
 
 class TestSFFLatticeList(Py23FixTestCase):
     """Test the SFFLatticeList class"""
@@ -1264,6 +1502,34 @@ class TestSFFLatticeList(Py23FixTestCase):
         L_json = L.as_json()
         L2 = adapter.SFFLatticeList.from_json(L_json)
         self.assertEqual(L, L2)
+
+    def test_hff(self):
+        # empty case
+        L = adapter.SFFLatticeList()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = L.as_hff(group)
+            self.assertIn(u'lattice_list', group)
+            self.assertEqual(len(group[u'lattice_list']), 0)
+        # non-empty case
+        L = adapter.SFFLatticeList()
+        _no_lats = _random_integer(start=2, stop=5)
+        for _ in _xrange(_no_lats):
+            _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_sff_data()
+            L.append(
+                adapter.SFFLattice(
+                    mode=_mode,
+                    endianness=_endianness,
+                    size=_size,
+                    start=_start,
+                    data=_data
+                )
+            )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = L.as_hff(group)
+            self.assertIn(u'lattice_list', group)
+            self.assertEqual(len(group[u'lattice_list']), len(L))
 
 
 class TestSFFVertices(Py23FixTestCase):
@@ -1473,6 +1739,45 @@ class TestSFFVertices(Py23FixTestCase):
         v2 = adapter.SFFVertices.from_json(v_json)
         self.assertEqual(v, v2)
 
+    def test_hff(self):
+        # empty
+        v = adapter.SFFVertices()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = v.as_hff(group)
+            self.stderrh(group)
+            self.assertIn(u'vertices', group)
+            self.assertNotIn(u'vertices/num_vertices', group)
+            self.assertIn(u'vertices/mode', group)
+            self.assertIn(u'vertices/endianness', group)
+            self.assertNotIn(u'vertices/data', group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            v2 = adapter.SFFVertices.from_hff(h[u'container'])
+            self.assertEqual(v, v2)
+        # non-empty
+        v = adapter.SFFVertices(
+            num_vertices=self.num_vertices,
+            mode=self.mode,
+            endianness=self.endian,
+            data=self.data
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = v.as_hff(group)
+            self.stderrh(group)
+            self.assertIn(u'vertices', group)
+            self.assertIn(u'vertices/num_vertices', group)
+            self.assertEqual(group[u'vertices/num_vertices'][()], v.num_vertices)
+            self.assertIn(u'vertices/mode', group)
+            self.assertEqual(_decode(group[u'vertices/mode'][()], 'utf-8'), v.mode)
+            self.assertIn(u'vertices/endianness', group)
+            self.assertEqual(_decode(group[u'vertices/endianness'][()], 'utf-8'), v.endianness)
+            self.assertIn(u'vertices/data', group)
+            self.assertEqual(group[u'vertices/data'][()], v.data)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            v2 = adapter.SFFVertices.from_hff(h[u'container'])
+            self.assertEqual(v, v2)
+
 
 class TestSFFNormals(Py23FixTestCase):
     """SFFNormals tests"""
@@ -1681,6 +1986,45 @@ class TestSFFNormals(Py23FixTestCase):
         n2 = adapter.SFFNormals.from_json(n_json)
         self.assertEqual(n, n2)
 
+    def test_hff(self):
+        # empty
+        n = adapter.SFFNormals()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = n.as_hff(group)
+            self.stderrh(group)
+            self.assertIn(u'normals', group)
+            self.assertNotIn(u'normals/num_normals', group)
+            self.assertIn(u'normals/mode', group)
+            self.assertIn(u'normals/endianness', group)
+            self.assertNotIn(u'normals/data', group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            n2 = adapter.SFFNormals.from_hff(h[u'container'])
+            self.assertEqual(n, n2)
+        # non-empty
+        n = adapter.SFFNormals(
+            num_normals=self.num_normals,
+            mode=self.mode,
+            endianness=self.endian,
+            data=self.data
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = n.as_hff(group)
+            self.stderrh(group)
+            self.assertIn(u'normals', group)
+            self.assertIn(u'normals/num_normals', group)
+            self.assertEqual(group[u'normals/num_normals'][()], n.num_normals)
+            self.assertIn(u'normals/mode', group)
+            self.assertEqual(_decode(group[u'normals/mode'][()], 'utf-8'), n.mode)
+            self.assertIn(u'normals/endianness', group)
+            self.assertEqual(_decode(group[u'normals/endianness'][()], 'utf-8'), n.endianness)
+            self.assertIn(u'normals/data', group)
+            self.assertEqual(group[u'normals/data'][()], n.data)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            n2 = adapter.SFFNormals.from_hff(h[u'container'])
+            self.assertEqual(n, n2)
+
 
 class TestSFFTriangles(Py23FixTestCase):
     """SFFTriangles tests"""
@@ -1888,6 +2232,45 @@ class TestSFFTriangles(Py23FixTestCase):
         t2 = adapter.SFFTriangles.from_json(t_json)
         self.assertEqual(t, t2)
 
+    def test_hff(self):
+        # empty
+        n = adapter.SFFTriangles()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = n.as_hff(group)
+            self.stderrh(group)
+            self.assertIn(u'triangles', group)
+            self.assertNotIn(u'triangles/num_triangles', group)
+            self.assertIn(u'triangles/mode', group)
+            self.assertIn(u'triangles/endianness', group)
+            self.assertNotIn(u'triangles/data', group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            n2 = adapter.SFFTriangles.from_hff(h[u'container'])
+            self.assertEqual(n, n2)
+        # non-empty
+        n = adapter.SFFTriangles(
+            num_triangles=self.num_triangles,
+            mode=self.mode,
+            endianness=self.endian,
+            data=self.data
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = n.as_hff(group)
+            self.stderrh(group)
+            self.assertIn(u'triangles', group)
+            self.assertIn(u'triangles/num_triangles', group)
+            self.assertEqual(group[u'triangles/num_triangles'][()], n.num_triangles)
+            self.assertIn(u'triangles/mode', group)
+            self.assertEqual(_decode(group[u'triangles/mode'][()], 'utf-8'), n.mode)
+            self.assertIn(u'triangles/endianness', group)
+            self.assertEqual(_decode(group[u'triangles/endianness'][()], 'utf-8'), n.endianness)
+            self.assertIn(u'triangles/data', group)
+            self.assertEqual(group[u'triangles/data'][()], n.data)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            n2 = adapter.SFFTriangles.from_hff(h[u'container'])
+            self.assertEqual(n, n2)
+
 
 class TestSFFMesh(Py23FixTestCase):
     """Test the SFFMesh class"""
@@ -1985,6 +2368,38 @@ class TestSFFMesh(Py23FixTestCase):
         })
         m2 = adapter.SFFMesh.from_json(m_json)
         self.assertEqual(m, m2)
+
+    def test_hff(self):
+        # empty
+        m = adapter.SFFMesh()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = m.as_hff(group, name=_str(m.id))
+            self.assertIn(u'{}'.format(m.id), group)
+            self.assertIn(u'{}/id'.format(m.id), group)
+            self.assertNotIn(u'{}/vertices'.format(m.id), group)
+            self.assertNotIn(u'{}/normals'.format(m.id), group)
+            self.assertNotIn(u'{}/triangles'.format(m.id), group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            m2 = adapter.SFFMesh.from_hff(h[u'container'], name=_str(m.id))
+            self.assertEqual(m, m2)
+        # non-empty
+        m = adapter.SFFMesh(
+            vertices=adapter.SFFVertices.from_array(self.vertices_data),
+            normals=adapter.SFFNormals.from_array(self.normals_data),
+            triangles=adapter.SFFTriangles.from_array(self.triangles_data)
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = m.as_hff(group, name=_str(m.id))
+            self.assertIn(u'{}'.format(m.id), group)
+            self.assertIn(u'{}/id'.format(m.id), group)
+            self.assertIn(u'{}/vertices'.format(m.id), group)
+            self.assertIn(u'{}/normals'.format(m.id), group)
+            self.assertIn(u'{}/triangles'.format(m.id), group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            m2 = adapter.SFFMesh.from_hff(h[u'container'], name=_str(m.id))
+            self.assertEqual(m, m2)
 
 
 class TestSFFMeshList(Py23FixTestCase):
@@ -2093,9 +2508,7 @@ class TestSFFMeshList(Py23FixTestCase):
                     triangles=ts
                 )
             )
-        # self.stderr(M)
         M_json = M.as_json()
-        # self.stderrj(M_json)
         self.assertEqual(M_json, [
             {
                 u'id': m.id,
@@ -2105,7 +2518,6 @@ class TestSFFMeshList(Py23FixTestCase):
             } for m in M
         ])
         M2 = adapter.SFFMeshList.from_json(M_json)
-        self.stderr(M2)
         self.assertEqual(M, M2)
 
 
@@ -2199,9 +2611,7 @@ class TestSFFBoundingBox(Py23FixTestCase):
             ymin=y0, ymax=y1,
             zmin=z0, zmax=z1
         )
-        self.stderr(bb)
         bb_json = bb.as_json()
-        self.stderrj(bb_json)
         self.assertEqual(bb.xmin, bb_json[u'xmin'])
         self.assertEqual(bb.xmax, bb_json[u'xmax'])
         self.assertEqual(bb.ymin, bb_json[u'ymin'])
@@ -2302,7 +2712,6 @@ class TestSFFCone(Py23FixTestCase):
         height, bottom_radius = _random_floats(count=2, multiplier=10)
         c = adapter.SFFCone(height=height, bottom_radius=bottom_radius)
         c_json = c.as_json()
-        self.stderrj(c_json)
         self.assertEqual(c_json, {
             u'id': c.id,
             u'shape': u'cone',
@@ -2370,7 +2779,6 @@ class TestSFFCuboid(Py23FixTestCase):
         x, y, z = _random_floats(count=3, multiplier=10)
         c = adapter.SFFCuboid(x=x, y=y, z=z)
         c_json = c.as_json()
-        self.stderrj(c_json)
         self.assertEqual(c_json, {
             u'id': c.id,
             u'shape': u'cuboid',
@@ -2442,7 +2850,6 @@ class TestSFFCylinder(Py23FixTestCase):
         height, diameter = _random_floats(count=2, multiplier=10)
         c = adapter.SFFCylinder(height=height, diameter=diameter)
         c_json = c.as_json()
-        self.stderrj(c_json)
         self.assertEqual(c_json, {
             u'id': c.id,
             u'shape': u'cylinder',
@@ -2510,7 +2917,6 @@ class TestSFFEllipsoid(Py23FixTestCase):
         x, y, z = _random_floats(count=3, multiplier=10)
         e = adapter.SFFEllipsoid(x=x, y=y, z=z)
         e_json = e.as_json()
-        self.stderrj(e_json)
         self.assertEqual(e_json, {
             u'id': e.id,
             u'shape': u'ellipsoid',
@@ -2688,7 +3094,6 @@ class TestSFFSegment(Py23FixTestCase):
         _segment_regex = r"""SFFSegment\(id={}, parent_id={}, biological_annotation={}, colour=None, """ \
                          r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
             _id + 2, 0, _str(B).replace(r"(", r"\(").replace(r")", r"\)").replace(r"[", r"\[").replace(r"]", r"\]"))
-        self.stderr(_segment_regex)
         self.assertRegex(
             _str(s),
             _segment_regex
@@ -2707,7 +3112,7 @@ class TestSFFSegment(Py23FixTestCase):
                 _str(R).replace(r"(", r"\(").replace(r")", r"\)")
             )
         )
-        # 3D volume
+        # 3D volume\
         _l = _random_integer(start=0)
         _v = _random_integer()
         _t = _random_integer(start=0)
@@ -2718,7 +3123,7 @@ class TestSFFSegment(Py23FixTestCase):
         )
         s = adapter.SFFSegment(three_d_volume=V)
         self.assertEqual(s.id, _id + 4)
-        self.assertEqual(s.volume, V)
+        self.assertEqual(s.three_d_volume, V)
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parent_id={}, biological_annotation=None, colour=None, """ \
@@ -2760,7 +3165,8 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parent_id=\d+, biological_annotation=None, colour=None, """ \
-            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)"""
+            r"""three_d_volume=None, mesh_list=SFFMeshList\(\[.*\]\), """ \
+            r"""shape_primitive_list=SFFShapePrimitiveList\(\[.*\]\)\)"""
         )
         # change ID
         _id = _random_integer()
@@ -2831,7 +3237,7 @@ class TestSFFSegment(Py23FixTestCase):
         _s = emdb_sff.segment_type(three_d_volume=_V)
         s = adapter.SFFSegment.from_gds_type(_s)
         self.assertIsNone(s.id)
-        self.assertEqual(s.volume, V)
+        self.assertEqual(s.three_d_volume, V)
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parent_id=\d+, biological_annotation=None, colour=None, """ \
@@ -2869,7 +3275,6 @@ class TestSFFSegment(Py23FixTestCase):
         s = adapter.SFFSegment()
         s.colour = adapter.SFFRGBA(random_colour=True)
         s_json = s.as_json()
-        self.stderrj(s_json)
         self.assertEqual(s_json[u'id'], s.id)
         self.assertEqual(s_json[u'parent_id'], s.parent_id)
         self.assertEqual(s_json[u'colour'], s.colour.value)
@@ -2884,7 +3289,6 @@ class TestSFFSegment(Py23FixTestCase):
         )
         s.colour = adapter.SFFRGBA(random_colour=True)
         s_json = s.as_json()
-        self.stderrj(s_json)
         self.assertEqual(s_json[u'id'], s.id)
         self.assertEqual(s_json[u'parent_id'], s.parent_id)
         self.assertEqual(s_json[u'colour'], s.colour.value)
@@ -2896,7 +3300,6 @@ class TestSFFSegment(Py23FixTestCase):
         # minimal
         s_json = {'id': 2, 'parent_id': 0, 'colour': (0.3480471169539232, 0.9354618836165659, 0.7017431484633613, 1.0)}
         s = adapter.SFFSegment.from_json(s_json)
-        self.stderr(s)
         self.assertEqual(s.id, s_json[u'id'])
         self.assertEqual(s.parent_id, s_json[u'parent_id'])
         self.assertEqual(s.colour.value, s_json[u'colour'])
@@ -2961,6 +3364,51 @@ class TestSFFSegmentList(Py23FixTestCase):
         )
         self.assertEqual(len(S), _no_items)
         self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
+
+    def test_json(self):
+        """Interconversion to JSON"""
+        S = adapter.SFFSegmentList()
+        no_s = _random_integer(start=2, stop=5)
+        for _ in _xrange(no_s):
+            no_er = _random_integer(start=2, stop=10)
+            external_references = adapter.SFFExternalReferenceList()
+            [external_references.append(
+                adapter.SFFExternalReference(
+                    resource=rw.random_word(),
+                    url=rw.random_word(),
+                    accession=rw.random_word(),
+                    label=rw.random_word(),
+                    description=li.get_sentence(),
+                )
+            ) for _ in _xrange(no_er)]
+            S.append(
+                adapter.SFFSegment(
+                    biological_annotation=adapter.SFFBiologicalAnnotation(
+                        name=rw.random_word(),
+                        description=li.get_sentence(),
+                        external_references=external_references,
+                    ),
+                    colour=adapter.SFFRGBA(random_colour=True),
+                    three_d_volume=adapter.SFFThreeDVolume(
+                        lattice_id=_random_integer(stop=5),
+                        value=_random_integer()
+                    ),
+                    # mesh_list=,
+                    # shape_primitive_list=shape_primitive_list,
+                )
+            )
+        S_json = S.as_json()
+        self.assertEqual(S_json, [{
+            u'id': s.id,
+            u'parent_id': s.parent_id,
+            u'biological_annotation': s.biological_annotation.as_json() if s.biological_annotation is not None else None,
+            u'colour': s.colour.as_json(),
+            u'three_d_volume': s.three_d_volume.as_json(),
+            u'mesh_list': s.mesh_list.as_json(),
+            u'shape_primitive_list': s.shape_primitive_list.as_json()
+        } for s in S])
+        S2 = adapter.SFFSegmentList.from_json(S_json)
+        self.assertEqual(S, S2)
 
 
 class TestSFFSoftware(Py23FixTestCase):
@@ -3269,7 +3717,6 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
         self.assertEqual(tx.cols, tx_json[u'cols'])
         self.assertEqual(tx.data, tx_json[u'data'])
         tx2 = adapter.SFFTransformationMatrix.from_json(tx_json)
-        self.stderr(tx2)
         self.assertEqual(tx, tx2)
 
 
@@ -3415,7 +3862,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         # segment one
         segment = adapter.SFFSegment()
         vol1_value = 1
-        segment.volume = adapter.SFFThreeDVolume(
+        segment.three_d_volume = adapter.SFFThreeDVolume(
             lattice_id=0,
             value=vol1_value,
         )
@@ -3424,7 +3871,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         # segment two
         segment = adapter.SFFSegment()
         vol2_value = 37.1
-        segment.volume = adapter.SFFThreeDVolume(
+        segment.three_d_volume = adapter.SFFThreeDVolume(
             lattice_id=1,
             value=vol2_value
         )
@@ -3436,7 +3883,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.lattices = lattices
         cls.segmentation = segmentation
         cls.shape_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'test_shape_segmentation.sff')
-        cls.volume_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'test_3d_segmentation.sff')
+        cls.three_d_volume_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'test_3d_segmentation.sff')
         cls.mesh_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'test_mesh_segmentation.sff')
 
     @classmethod
@@ -3444,8 +3891,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         """Remove files from disk"""
         if os.path.exists(cls.shape_file):
             os.remove(cls.shape_file)
-        if os.path.exists(cls.volume_file):
-            os.remove(cls.volume_file)
+        if os.path.exists(cls.three_d_volume_file):
+            os.remove(cls.three_d_volume_file)
         if os.path.exists(cls.mesh_file):
             os.remove(cls.mesh_file)
 
@@ -3496,7 +3943,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         # lattice container
         lattices = adapter.SFFLatticeList()
         # lattice 1
-        binlist = numpy.array([random.randint(0, 5) for i in _xrange(20 * 20 * 20)]).reshape(20, 20, 20)
+        # binlist = numpy.array([random.randint(0, 5) for i in _xrange(20 * 20 * 20)]).reshape(20, 20, 20)
+        binlist = numpy.random.randint(0, 5, size=(20, 20, 20))
         lattice = adapter.SFFLattice(
             mode=u'uint32',
             endianness=u'little',
@@ -3506,7 +3954,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         )
         lattices.append(lattice)
         # lattice 2
-        binlist2 = numpy.array([random.random() * 100 for i in _xrange(30 * 40 * 50)]).reshape(30, 40, 50)
+        # binlist2 = numpy.array([random.random() * 100 for i in _xrange(30 * 40 * 50)]).reshape(30, 40, 50)
+        binlist2 = numpy.random.rand(30, 40, 50) * 100
         lattice2 = adapter.SFFLattice(
             mode=u'float32',
             endianness=u'big',
@@ -3518,17 +3967,17 @@ class TestSFFSegmentation(Py23FixTestCase):
         # segments
         segments = adapter.SFFSegmentList()
         # segment one
-        segment = adapter.SFFSegment()
+        segment = adapter.SFFSegment(colour=adapter.SFFRGBA(random_colour=True))
         vol1_value = 1
-        segment.volume = adapter.SFFThreeDVolume(
+        segment.three_d_volume = adapter.SFFThreeDVolume(
             lattice_id=0,
             value=vol1_value,
         )
         segments.append(segment)
         # segment two
-        segment = adapter.SFFSegment()
+        segment = adapter.SFFSegment(colour=adapter.SFFRGBA(random_colour=True))
         vol2_value = 37.1
-        segment.volume = adapter.SFFThreeDVolume(
+        segment.three_d_volume = adapter.SFFThreeDVolume(
             lattice_id=1,
             value=vol2_value
         )
@@ -3538,8 +3987,16 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.segments = segments
         segmentation.lattices = lattices
         # export
-        segmentation.export(self.volume_file)
+        self.stderr(segmentation)
+        self.stderrj(segmentation.as_json())
+        segmentation.export(self.three_d_volume_file)
         # assertions
+        self.assertRegex(
+            _str(segmentation),
+            r"""SFFSegmentation\(name="\w+", version="{}"\)""".format(
+                EMDB_SFF_VERSION
+            )
+        )
         self.assertEqual(segmentation.primary_descriptor, u"three_d_volume")
         self.assertEqual(segmentation.bounding_box.xmin, 0)
         self.assertEqual(segmentation.bounding_box.xmax, xmax)
@@ -3548,7 +4005,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         self.assertEqual(segmentation.bounding_box.zmin, 0)
         self.assertEqual(segmentation.bounding_box.zmax, zmax)
         # test the number of transforms
-        self.assertEqual(len(segmentation.transforms), 3)
+        self.assertTrue(len(segmentation.transforms) > 0)
         # test the transform IDs
         t_ids = map(lambda t: t.id, segmentation.transforms)
         self.assertCountEqual(t_ids, range(3))
@@ -3557,13 +4014,13 @@ class TestSFFSegmentation(Py23FixTestCase):
         # segment one
         segment = segmentation.segments[0]
         # volume
-        self.assertEqual(segment.volume.lattice_id, 0)
-        self.assertEqual(segment.volume.value, vol1_value)
+        self.assertEqual(segment.three_d_volume.lattice_id, 0)
+        self.assertEqual(segment.three_d_volume.value, vol1_value)
         # segment two
         segment = segmentation.segments.get_by_id(2)
         # volume
-        self.assertEqual(segment.volume.lattice_id, 1)
-        self.assertEqual(segment.volume.value, vol2_value)
+        self.assertEqual(segment.three_d_volume.lattice_id, 1)
+        self.assertEqual(segment.three_d_volume.value, vol2_value)
         # lattices
         lattices = segmentation.lattices
         self.assertEqual(len(lattices), 2)
@@ -3711,7 +4168,7 @@ class TestSFFSegmentation(Py23FixTestCase):
                 transform_id=transform.id,
             )
         )
-        segment.shapes = shapes
+        segment.shape_primitive_list = shapes
         segments.append(segment)
         # more shapes
         segment = adapter.SFFSegment()
@@ -3838,18 +4295,18 @@ class TestSFFSegmentation(Py23FixTestCase):
                 transform_id=transform.id,
             )
         )
-        segment.shapes = shapes
+        segment.shape_primitive_list = shapes
         segments.append(segment)
         segmentation.segments = segments
         segmentation.transforms = transforms
         # export
         segmentation.export(self.shape_file)
         # assertions
-        self.assertEqual(len(segment.shapes), 9)
-        self.assertEqual(segment.shapes.num_cones, 4)
-        self.assertEqual(segment.shapes.num_cylinders, 1)
-        self.assertEqual(segment.shapes.num_cuboids, 2)
-        self.assertEqual(segment.shapes.num_ellipsoids, 2)
+        self.assertEqual(len(segment.shape_primitive_list), 9)
+        self.assertEqual(segment.shape_primitive_list.num_cones, 4)
+        self.assertEqual(segment.shape_primitive_list.num_cylinders, 1)
+        self.assertEqual(segment.shape_primitive_list.num_cuboids, 2)
+        self.assertEqual(segment.shape_primitive_list.num_ellipsoids, 2)
 
     def test_create_meshes(self):
         """Test that we can create a segmentation of meshes programmatically"""
@@ -3859,7 +4316,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         segments = adapter.SFFSegmentList()
         segment = adapter.SFFSegment()
         # meshes
-        meshes = adapter.SFFMeshList()
+        mesh_list = adapter.SFFMeshList()
         # mesh 1
         count1 = _random_integer(start=3, stop=10)
         vertices1, normals1, triangles1 = self.get_mesh_components(count=count1)
@@ -3876,14 +4333,14 @@ class TestSFFSegmentation(Py23FixTestCase):
             normals=adapter.SFFNormals.from_array(normals2),
             triangles=adapter.SFFTriangles.from_array(triangles2)
         )
-        meshes.append(mesh)
-        meshes.append(mesh2)
-        segment.meshes = meshes
+        mesh_list.append(mesh)
+        mesh_list.append(mesh2)
+        segment.mesh_list = mesh_list
         segments.append(segment)
         # segment two
         segment = adapter.SFFSegment()
         # mesh
-        meshes = adapter.SFFMeshList()
+        mesh_list = adapter.SFFMeshList()
         count3 = _random_integer(start=3, stop=10)
         vertices3, normals3, triangles3 = self.get_mesh_components(count=count3)
         mesh = adapter.SFFMesh(
@@ -3891,8 +4348,8 @@ class TestSFFSegmentation(Py23FixTestCase):
             normals=adapter.SFFNormals.from_array(normals3),
             triangles=adapter.SFFTriangles.from_array(triangles3)
         )
-        meshes.append(mesh)
-        segment.meshes = meshes
+        mesh_list.append(mesh)
+        segment.mesh_list = mesh_list
         segments.append(segment)
         segmentation.segments = segments
         # export
@@ -3900,8 +4357,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         # assertions
         # segment one
         segment1 = segmentation.segments.get_by_id(1)
-        self.assertEqual(len(segment1.meshes), 2)
-        mesh1, mesh2 = segment1.meshes
+        self.assertEqual(len(segment1.mesh_list), 2)
+        mesh1, mesh2 = segment1.mesh_list
         self.assertEqual(len(mesh1.vertices), vertices1.shape[0])
         self.assertEqual(len(mesh1.normals), normals1.shape[0])
         self.assertEqual(len(mesh1.triangles), triangles1.shape[0])
@@ -3910,8 +4367,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         self.assertEqual(len(mesh2.triangles), triangles2.shape[0])
         # segment two
         segment2 = segmentation.segments.get_by_id(2)
-        mesh = segment2.meshes[0]
-        self.assertEqual(len(segment2.meshes), 1)
+        mesh = segment2.mesh_list[0]
+        self.assertEqual(len(segment2.mesh_list), 1)
         self.assertEqual(len(mesh.vertices), vertices3.shape[0])
         self.assertEqual(len(mesh.normals), normals3.shape[0])
         self.assertEqual(len(mesh.triangles), triangles3.shape[0])
@@ -4117,6 +4574,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         # assertions
         with open(temp_file.name + u'.sff') as f:
             self.assertEqual(f.readline(), u'<?xml version="1.0" encoding="UTF-8"?>\n')
+
     #
     # def test_export_hff(self):
     #     """Export to an HDF5 file"""
@@ -4127,12 +4585,12 @@ class TestSFFSegmentation(Py23FixTestCase):
     #         find = f.readline().find(b'HDF')
     #         self.assertGreaterEqual(find, 0)
     #
-    # def test_export_json(self):
-    #     """Export to a JSON file"""
-    #     temp_file = tempfile.NamedTemporaryFile()
-    #     temp_file.name += u'.json'
-    #     self.segmentation.export(temp_file.name)
-    #     # assertions
-    #     with open(temp_file.name) as f:
-    #         J = json.load(f)
-    #         self.assertEqual(J[u'primaryDescriptor'], u"threeDVolume")
+    def test_export_json(self):
+        """Export to a JSON file"""
+        temp_file = tempfile.NamedTemporaryFile()
+        temp_file.name += u'.json'
+        self.segmentation.to_file(temp_file.name)
+        # assertions
+        with open(temp_file.name) as f:
+            J = json.load(f)
+            self.assertEqual(J[u'primary_descriptor'], u"three_d_volume")
