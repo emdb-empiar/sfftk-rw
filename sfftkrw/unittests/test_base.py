@@ -206,6 +206,7 @@ class TestSFFType(Py23FixTestCase):
         tf.name += '.json'
         S.export(tf.name)
         _S = adapter.SFFSegmentation.from_file(tf.name)
+        self.stderr(S, _S)
         self.assertEqual(S.version, _S.version)
         self.assertEqual(S.name, _S.name)
         self.assertEqual(S.details, _S.details)
@@ -267,9 +268,10 @@ class TestSFFType(Py23FixTestCase):
         # when not defined we get False by default
         class _SomeEntity(adapter.SFFBoundingBox):
             """eq_attrs is empty by default"""
+            eq_attrs = []
 
-        b1 = _SomeEntity()
-        b2 = _SomeEntity()
+        b1 = _SomeEntity(xmin=1)
+        b2 = _SomeEntity(xmin=1)
         self.assertNotEqual(b1, b2)
 
         # exception: we can't compare things that are not of the same type

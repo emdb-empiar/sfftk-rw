@@ -1,0 +1,383 @@
+<?xml version='1.0' encoding='utf-8'?>
+<segmentation>
+    <version>0.8.0.dev0</version>
+    <name>Segger Segmentation</name>
+    <software_list>
+		<software id="0">
+			<name>segger</name>
+			<version>2</version>
+			<processing_details/>
+		</software>
+	</software_list>
+    <primary_descriptor>three_d_volume</primary_descriptor>
+    <bounding_box/>
+    <global_external_references>
+		<ref id="0" resource="ncit" url="http://purl.obolibrary.org/obo/NCIT_C14206" accession="NCIT_C14206" label="Escherichia coli" description="A common, gram negative gut bacterium that has been studied intensively by geneticists because of its small genome size, normal lack of pathogenicity, and ease of growth in the laboratory."/>
+		<ref id="1" resource="dron" url="http://purl.obolibrary.org/obo/DRON_00018778" accession="DRON_00018778" label="Escherichia coli" description=""/>
+		<ref id="2" resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0006157" accession="OMIT_0006157" label="Escherichia coli" description=""/>
+		<ref id="3" resource="ncbitaxon" url="http://purl.obolibrary.org/obo/NCBITaxon_562" accession="NCBITaxon_562" label="Escherichia coli" description=""/>
+	</global_external_references>
+    <segment_list>
+		<segment id="9764" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.800000011920929</red>
+                <green>0.959999978542328</green>
+                <blue>0.400000005960464</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9814" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.800000011920929</red>
+                <green>0.479999989271164</green>
+                <blue>0.879999995231628</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9815" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>1.</red>
+                <green>0.411764711141586</green>
+                <blue>0.705882370471954</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9840" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.159999996423721</red>
+                <green>0.839999973773956</green>
+                <blue>0.479999989271164</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9859" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.920000016689301</red>
+                <green>0.839999973773956</green>
+                <blue>0.959999978542328</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9893" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.</red>
+                <green>0.839999973773956</green>
+                <blue>0.759999990463257</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9897" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.</red>
+                <green>0.839999973773956</green>
+                <blue>0.759999990463257</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9911" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.920000016689301</red>
+                <green>0.839999973773956</green>
+                <blue>0.959999978542328</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9914" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.159999996423721</red>
+                <green>0.839999973773956</green>
+                <blue>0.479999989271164</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9952" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>1.</red>
+                <green>0.411764711141586</green>
+                <blue>0.705882370471954</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9955" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.800000011920929</red>
+                <green>0.959999978542328</green>
+                <blue>0.400000005960464</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+		<segment id="9956" parent_id="0">
+			<biological_annotation>
+				<name>GroEL</name>
+				
+				<description>GroEL</description>
+				<external_references>nothing
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3000881348" accession="OGG_3000881348" label="groEL" description=""/>
+				
+					<ref resource="ogg" url="http://purl.obolibrary.org/obo/OGG_3001198820" accession="OGG_3001198820" label="groEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="vo" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0010998" accession="VO_0010998" label="GroEL" description=""/>
+				
+					<ref resource="pdro" url="http://purl.obolibrary.org/obo/VO_0011075" accession="VO_0011075" label="GroEL" description=""/>
+				
+					<ref resource="omit" url="http://purl.obolibrary.org/obo/OMIT_0001676" accession="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+				</external_references></biological_annotation>
+			<colour>
+                <red>0.800000011920929</red>
+                <green>0.479999989271164</green>
+                <blue>0.879999995231628</blue>
+            </colour>
+			<three_d_volume>
+				<lattice_id/>
+				
+			</three_d_volume>
+		</segment>
+	</segment_list>
+    <details/>
+</segmentation>

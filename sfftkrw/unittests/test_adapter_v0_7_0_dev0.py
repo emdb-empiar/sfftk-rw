@@ -1077,11 +1077,11 @@ class TestSFFComplexesAndMacromolecules(Py23FixTestCase):
     def test_default(self):
         """Test default settings"""
         C = adapter.SFFComplexesAndMacromolecules()
-        self.assertIsNone(C.complexes)
-        self.assertIsNone(C.macromolecules)
+        self.assertEqual(len(C.complexes), 0)
+        self.assertEqual(len(C.macromolecules), 0)
         self.assertRegex(
             _str(C),
-            r"SFFComplexesAndMacromolecules\(complexes=None, macromolecules=None\)"
+            r"SFFComplexesAndMacromolecules\(complexes=SFFComplexList\(\[.*\]\), macromolecules=SFFMacromoleculeList\(\[.*\]\)\)"
         )
         c = adapter.SFFComplexList()
         _no_items = _random_integer(start=2, stop=10)
@@ -1213,7 +1213,8 @@ class TestSFFExternalReference(Py23FixTestCase):
                   'description': 'Malesuada facilisinam elitduis mus dis facer, primis est pellentesque integer dapibus '
                                  'semper semvestibulum curae lacusnulla.'}
         with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-            adapter.SFFExternalReference.from_json(e_json)
+            e = adapter.SFFExternalReference.from_json(e_json)
+            e.export(sys.stderr)
         # missing non-mandatory
         e_json = {'type': 'symptom', 'otherType': 'thin', 'value': 'definitions',
                   'label': 'chairpersons swabs pools'}
@@ -1387,7 +1388,9 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
         # invalid
         E_json = "sldjfl"  # iterable but invalid
         with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
-            adapter.SFFExternalReferenceList.from_json(E_json)
+            e = adapter.SFFExternalReferenceList.from_json(E_json)
+            self.stderr(e)
+            e.export(sys.stderr)
 
 
 class TestSFFBiologicalAnnotation(Py23FixTestCase):
@@ -2771,7 +2774,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=1, parentID=0, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)"""
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)"""
         )
         # change ID
         _id = _random_integer()
@@ -2780,7 +2783,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID=0, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(_id)
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(_id)
         )
         # change parent_id
         _parent_id = _random_integer()
@@ -2790,7 +2793,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 _id + 1,
                 _parent_id
             )
@@ -2806,10 +2809,10 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation={}, colour=None, """
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 _id + 2,
                 0,
-                _str(B).replace(r"(", r"\(").replace(r")", r"\)")
+                _str(B).replace(r"(", r"\(").replace(r")", r"\)").replace(r"[", r"\[").replace(r"]", r"\]")
             )
         )
         # change colour
@@ -2820,7 +2823,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour={}, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 _id + 3,
                 0,
                 _str(R).replace(r"(", r"\(").replace(r")", r"\)")
@@ -2841,7 +2844,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume={}, meshList=None, shapePrimitiveList=None\)""".format(
+            r"""threeDVolume={}, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 _id + 4,
                 0,
                 _str(V).replace(r"(", r"\(").replace(r")", r"\)")
@@ -2854,7 +2857,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=SFFMeshList\(\[.*\]\), shapePrimitiveList=None\)""".format(
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 _id + 5,
                 0,
             )
@@ -2866,7 +2869,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 _id + 6,
                 0,
             )
@@ -2879,7 +2882,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)"""
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)"""
         )
         # change ID
         _id = _random_integer()
@@ -2889,7 +2892,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(_id)
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(_id)
         )
         # change parent_id
         _parent_id = _random_integer()
@@ -2900,7 +2903,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 None,
                 _parent_id
             )
@@ -2918,8 +2921,8 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation={}, colour=None, """
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
-                _str(B).replace(r"(", r"\(").replace(r")", r"\)")
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
+                _str(B).replace(r"(", r"\(").replace(r")", r"\)").replace(r"[", r"\[").replace(r"]", r"\]")
             )
         )
         # change colour
@@ -2932,7 +2935,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour={}, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=None\)""".format(
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 _str(R).replace(r"(", r"\(").replace(r")", r"\)")
             )
         )
@@ -2953,7 +2956,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume={}, meshList=None, shapePrimitiveList=None\)""".format(
+            r"""threeDVolume={}, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 _str(V).replace(r"(", r"\(").replace(r")", r"\)")
             )
         )
@@ -2966,7 +2969,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=SFFMeshList\(\[.*\]\), shapePrimitiveList=None\)"""
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[.*\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)"""
         )
         # shapes
         _S = emdb_sff.shapePrimitiveListType()
@@ -2977,7 +2980,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=None, shapePrimitiveList=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[.*\]\)\)""".format(
             )
         )
 

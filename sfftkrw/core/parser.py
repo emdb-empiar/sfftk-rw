@@ -14,7 +14,7 @@ import re
 
 from . import _dict_iter_keys
 from .print_tools import print_date
-from .. import SFFTKRW_ENTRY_POINT, EMDB_SFF_VERSION, SFFTKRW_VERSION
+from .. import SFFTKRW_VERSION, SFFTKRW_ENTRY_POINT, EMDB_SFF_VERSION
 from ..core import _decode, _basestring
 
 __author__ = 'Paul K. Korir, PhD'

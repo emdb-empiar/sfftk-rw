@@ -42,6 +42,7 @@ class TestParser(Py23FixTestCase):
 class TestCorePrintUtils(Py23FixTestCase):
     @classmethod
     def setUpClass(cls):
+        super(TestCorePrintUtils, cls).setUpClass()
         cls._weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
     def setUp(self):
@@ -337,6 +338,7 @@ class TestCoreParserTests(Py23FixTestCase):
 class TestCoreUtils(Py23FixTestCase):
     @classmethod
     def setUpClass(cls):
+        super(TestCoreUtils, cls).setUpClass()
         print("utils tests...", file=sys.stderr)
         cls.v7_sff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
         cls.v8_sff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.sff')
@@ -462,3 +464,12 @@ class TestCoreUtils(Py23FixTestCase):
         self.assertEqual(v7_version, '0.7.0.dev0')
         v8_version = utils.get_version(self.v8_sff_file)
         self.assertEqual(v8_version, '0.8.0.dev1')
+
+    def test_get_unique_id(self):
+        from ..core.utils import get_unique_id
+        id_1 = get_unique_id()
+        self.stderr(id_1)
+        # would a second import alter anything?
+        from ..core.utils import get_unique_id
+        id_2 = get_unique_id()
+        self.assertTrue(id_1 + 1 == id_2)

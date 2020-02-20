@@ -1,0 +1,658 @@
+{
+    "version": "0.8.0.dev1",
+    "name": "EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage T4 co-chaperone gp31 and ADPAlF3",
+    "details": "",
+    "software_list": [
+        {
+            "id": 0,
+            "name": "Segger (UCSF Chimera)",
+            "version": "1.9.7",
+            "processing_details": "Images were recorded on a 200 kV FEG microscope on photographic film and processed at 2.8 \u00c5/pixel, with final data sets of 30,000 and 35,000 side views of the binary and ternary complexes respectively. A starting model for the binary complex was obtained by angular reconstitution in IMAGIC32, and our previously determined GroEL-ADP-gp31 structure20 was used as a starting model for the ternary complexes. The data sets were sorted into classes showing different substrate features by a combination of MSA and competitive projection matching10, and the atomic structures of the GroEL subunit domains, gp31 and gp24 subunits were docked into the final, asymmetric maps as separate rigid bodies using URO33."
+        }
+    ],
+    "primary_descriptor": "three_d_volume",
+    "transform_list": [
+        {
+            "id": 0,
+            "rows": 3,
+            "cols": 4,
+            "data": "1.0 0.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 0.0 1.0 1.0"
+        },
+        {
+            "id": 1,
+            "rows": 3,
+            "cols": 4,
+            "data": "2.8 0.0 0.0 -226.8 0.0 2.8 0.0 -226.8 0.0 0.0 2.8 -226.8"
+        }
+    ],
+    "bounding_box": null,
+    "global_external_references": [
+        {
+            "id": 2,
+            "resource": "pr",
+            "url": "http://purl.obolibrary.org/obo/PR_P0A6Y5",
+            "accession": "PR_P0A6Y5",
+            "label": "33 kDa chaperonin (Escherichia coli K-12)",
+            "description": "A 33 kDa chaperonin that is encoded in the genome of Escherichia coli K-12."
+        },
+        {
+            "id": 3,
+            "resource": "pr",
+            "url": "http://purl.obolibrary.org/obo/PR_P0A6F5",
+            "accession": "PR_P0A6F5",
+            "label": "60 kDa chaperonin (Escherichia coli K-12)",
+            "description": "A 60 kDa chaperonin that is encoded in the genome of Escherichia coli K-12."
+        },
+        {
+            "id": 4,
+            "resource": "pr",
+            "url": "http://purl.obolibrary.org/obo/PR_P0A6F9",
+            "accession": "PR_P0A6F9",
+            "label": "10 kDa chaperonin (Escherichia coli K-12)",
+            "description": "A 10 kDa chaperonin that is encoded in the genome of Escherichia coli K-12."
+        },
+        {
+            "id": 5,
+            "resource": "ncbitaxon",
+            "url": "http://purl.obolibrary.org/obo/NCBITaxon_32630",
+            "accession": "NCBITaxon_32630",
+            "label": "synthetic construct",
+            "description": null
+        },
+        {
+            "id": 6,
+            "resource": "ncbitaxon",
+            "url": "http://purl.obolibrary.org/obo/NCBITaxon_10665",
+            "accession": "NCBITaxon_10665",
+            "label": "Escherichia virus T4",
+            "description": null
+        },
+        {
+            "id": 7,
+            "resource": "ncbitaxon",
+            "url": "http://purl.obolibrary.org/obo/NCBITaxon_348604",
+            "accession": "NCBITaxon_348604",
+            "label": "Enterobacteria phage T4 sensu lato",
+            "description": null
+        },
+        {
+            "id": 8,
+            "resource": "ncit",
+            "url": "http://purl.obolibrary.org/obo/NCIT_C14302",
+            "accession": "NCIT_C14302",
+            "label": "Bacteriophage T4",
+            "description": "A double-stranded DNA virus that infects bacteria such as E. coli."
+        },
+        {
+            "id": 9,
+            "resource": "EMDB",
+            "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1545",
+            "accession": "EMD-1545",
+            "label": "EMD-1545",
+            "description": "Structure of a chaperonin complex with non-native substrate protein gp23"
+        },
+        {
+            "id": 10,
+            "resource": "EMDB",
+            "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1544",
+            "accession": "EMD-1544",
+            "label": "EMD-1544",
+            "description": "Structure of a chaperonin complex with non-native substrate protein gp23"
+        },
+        {
+            "id": 11,
+            "resource": "EMDB",
+            "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1548",
+            "accession": "EMD-1548",
+            "label": "EMD-1548",
+            "description": "Structure of GroEL in complex with non-native capsid protein gp23, folding capsid protein gp23, Bacteriophage T4 co-chaperone gp31 and ADPAlF3"
+        },
+        {
+            "id": 12,
+            "resource": "EMDB",
+            "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1546",
+            "accession": "EMD-1546",
+            "label": "EMD-1546",
+            "description": "Structure of GroEL in complex with Bacteriophage T4 co-chaperone gp31 and ADPAlF3"
+        },
+        {
+            "id": 13,
+            "resource": "ncit",
+            "url": "http://purl.obolibrary.org/obo/NCIT_C14206",
+            "accession": "NCIT_C14206",
+            "label": "Escherichia coli",
+            "description": "A common, gram negative gut bacterium that has been studied intensively by geneticists because of its small genome size, normal lack of pathogenicity, and ease of growth in the laboratory."
+        }
+    ],
+    "segment_list": [
+        {
+            "id": 762,
+            "parent_id": 0,
+            "biological_annotation": {
+                "name": "GroEL bottom ring (trans)",
+                "description": "Tetradecamer of GroEL",
+                "number_of_instances": 1,
+                "external_references": [
+                    {
+                        "id": 14,
+                        "resource": "go",
+                        "url": "http://purl.obolibrary.org/obo/GO_1990220",
+                        "accession": "GO_1990220",
+                        "label": "GroEL-GroES complex",
+                        "description": "Bacterial chaperonin complex consisting of a heptameric 10kDa chaperonin subunit GroES and a tetradecameric (2x7) 60kDa chaperonin subunit GroEL. The 60kDa subunit possesses ATPase activity while the holo-enzyme is responsible for the correct folding of proteins."
+                    },
+                    {
+                        "id": 15,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/1xck",
+                        "accession": "1xck",
+                        "label": "Crystal structure of apo GroEL",
+                        "description": "Escherichia coli"
+                    },
+                    {
+                        "id": 16,
+                        "resource": "UniProt",
+                        "url": "https://www.uniprot.org/uniprot/P0A6F5",
+                        "accession": "P0A6F5",
+                        "label": "CH60_ECOLI",
+                        "description": "undefined (Escherichia coli (strain K12))"
+                    },
+                    {
+                        "id": 17,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8319",
+                        "accession": "EMD-8319",
+                        "label": "EMD-8319",
+                        "description": "C-terminal truncated mutant E. coli GroEL"
+                    },
+                    {
+                        "id": 18,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8318",
+                        "accession": "EMD-8318",
+                        "label": "EMD-8318",
+                        "description": "Mutant E. coli GroEL (C-terminal truncated) bound with PepQ"
+                    },
+                    {
+                        "id": 19,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8317",
+                        "accession": "EMD-8317",
+                        "label": "EMD-8317",
+                        "description": "Wild-type E. coli GroEL"
+                    },
+                    {
+                        "id": 20,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8316",
+                        "accession": "EMD-8316",
+                        "label": "EMD-8316",
+                        "description": "Wild-type E. coli GroEL bound with PepQ"
+                    },
+                    {
+                        "id": 21,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8750",
+                        "accession": "EMD-8750",
+                        "label": "EMD-8750",
+                        "description": "GroEL using cryoEM"
+                    },
+                    {
+                        "id": 22,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-6422",
+                        "accession": "EMD-6422",
+                        "label": "EMD-6422",
+                        "description": "CryoEM structure of GroEL"
+                    },
+                    {
+                        "id": 23,
+                        "resource": "ncit",
+                        "url": "http://purl.obolibrary.org/obo/NCIT_C61458",
+                        "accession": "NCIT_C61458",
+                        "label": "Ring",
+                        "description": "Doughnut-shaped object or surface generated by rotating a circle around an axis that does not intersect the circle; any object that resembles a ring."
+                    },
+                    {
+                        "id": 24,
+                        "resource": "ncit",
+                        "url": "http://purl.obolibrary.org/obo/NCIT_C25440",
+                        "accession": "NCIT_C25440",
+                        "label": "Bottom",
+                        "description": "The lowest part, side, or surface of something."
+                    },
+                    {
+                        "id": 25,
+                        "resource": "go",
+                        "url": "http://purl.obolibrary.org/obo/GO_1990220",
+                        "accession": "GO_1990220",
+                        "label": "GroEL-GroES complex",
+                        "description": "Bacterial chaperonin complex consisting of a heptameric 10kDa chaperonin subunit GroES and a tetradecameric (2x7) 60kDa chaperonin subunit GroEL. The 60kDa subunit possesses ATPase activity while the holo-enzyme is responsible for the correct folding of proteins."
+                    }
+                ]
+            },
+            "colour": [
+                0.914871156215668,
+                0.771943986415863,
+                0.875687658786774,
+                1.0
+            ],
+            "mesh_list": [],
+            "three_d_volume": {
+                "lattice_id": 0,
+                "value": 762.0,
+                "transform_id": null
+            },
+            "shape_primitive_list": []
+        },
+        {
+            "id": 767,
+            "parent_id": 0,
+            "biological_annotation": {
+                "name": "gp31 cap",
+                "description": "Heptamer of gp31",
+                "number_of_instances": 1,
+                "external_references": [
+                    {
+                        "id": 26,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/5vf3",
+                        "accession": "5vf3",
+                        "label": "Bacteriophage T4 isometric capsid",
+                        "description": "Escherichia virus T4"
+                    },
+                    {
+                        "id": 27,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/4mo1",
+                        "accession": "4mo1",
+                        "label": "Crystal structure of antitermination protein Q from bacteriophage lambda. Northeast Structural Genomics Consortium target OR18A.",
+                        "description": "Escherichia virus Lambda"
+                    },
+                    {
+                        "id": 28,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/5vf3",
+                        "accession": "5vf3",
+                        "label": "Bacteriophage T4 isometric capsid",
+                        "description": "Escherichia virus T4"
+                    },
+                    {
+                        "id": 29,
+                        "resource": "UniProt",
+                        "url": "https://www.uniprot.org/uniprot/P04535",
+                        "accession": "P04535",
+                        "label": "CAPSH_BPT4",
+                        "description": "undefined (Enterobacteria phage T4 (Bacteriophage T4))"
+                    },
+                    {
+                        "id": 30,
+                        "resource": "ncbitaxon",
+                        "url": "http://purl.obolibrary.org/obo/NCBITaxon_133161",
+                        "accession": "NCBITaxon_133161",
+                        "label": "uncultured bacterium gp23",
+                        "description": null
+                    },
+                    {
+                        "id": 31,
+                        "resource": "ncbitaxon",
+                        "url": "http://purl.obolibrary.org/obo/NCBITaxon_2023329",
+                        "accession": "NCBITaxon_2023329",
+                        "label": "Phage gp23",
+                        "description": null
+                    },
+                    {
+                        "id": 32,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/2cgt",
+                        "accession": "2cgt",
+                        "label": "GROEL-ADP-gp31 COMPLEX",
+                        "description": "Escherichia coli"
+                    },
+                    {
+                        "id": 33,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/3upu",
+                        "accession": "3upu",
+                        "label": "Crystal structure of the T4 Phage SF1B Helicase Dda",
+                        "description": "Escherichia virus T4"
+                    },
+                    {
+                        "id": 34,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/2cgt",
+                        "accession": "2cgt",
+                        "label": "GROEL-ADP-gp31 COMPLEX",
+                        "description": "Escherichia virus T4"
+                    },
+                    {
+                        "id": 35,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/1g31",
+                        "accession": "1g31",
+                        "label": "GP31 CO-CHAPERONIN FROM BACTERIOPHAGE T4",
+                        "description": "Escherichia virus T4"
+                    },
+                    {
+                        "id": 36,
+                        "resource": "UniProt",
+                        "url": "https://www.uniprot.org/uniprot/P17307",
+                        "accession": "P17307",
+                        "label": "Y13C_BPT4",
+                        "description": "undefined (Enterobacteria phage T4 (Bacteriophage T4))"
+                    },
+                    {
+                        "id": 37,
+                        "resource": "UniProt",
+                        "url": "https://www.uniprot.org/uniprot/P17313",
+                        "accession": "P17313",
+                        "label": "VG31_BPT4",
+                        "description": "undefined (Enterobacteria phage T4 (Bacteriophage T4))"
+                    },
+                    {
+                        "id": 38,
+                        "resource": "UniProt",
+                        "url": "https://www.uniprot.org/uniprot/P04535",
+                        "accession": "P04535",
+                        "label": "CAPSH_BPT4",
+                        "description": "undefined (Enterobacteria phage T4 (Bacteriophage T4))"
+                    },
+                    {
+                        "id": 39,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1203",
+                        "accession": "EMD-1203",
+                        "label": "EMD-1203",
+                        "description": "An expanded protein folding cage in the GroEL-gp31 complex."
+                    },
+                    {
+                        "id": 40,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1202",
+                        "accession": "EMD-1202",
+                        "label": "EMD-1202",
+                        "description": "An expanded protein folding cage in the GroEL-gp31 complex."
+                    }
+                ]
+            },
+            "colour": [
+                0.196078434586525,
+                0.196078434586525,
+                0.803921580314636,
+                1.0
+            ],
+            "mesh_list": [],
+            "three_d_volume": {
+                "lattice_id": 0,
+                "value": 767.0,
+                "transform_id": null
+            },
+            "shape_primitive_list": []
+        },
+        {
+            "id": 771,
+            "parent_id": 0,
+            "biological_annotation": {
+                "name": "gp23",
+                "description": "Monomer",
+                "number_of_instances": 1,
+                "external_references": [
+                    {
+                        "id": 41,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/5vf3",
+                        "accession": "5vf3",
+                        "label": "Bacteriophage T4 isometric capsid",
+                        "description": "Escherichia virus T4"
+                    },
+                    {
+                        "id": 42,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/1yue",
+                        "accession": "1yue",
+                        "label": "Bacteriophage T4 capsid vertex protein gp24",
+                        "description": "Escherichia virus T4"
+                    },
+                    {
+                        "id": 43,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/4mo1",
+                        "accession": "4mo1",
+                        "label": "Crystal structure of antitermination protein Q from bacteriophage lambda. Northeast Structural Genomics Consortium target OR18A.",
+                        "description": "Escherichia virus Lambda"
+                    },
+                    {
+                        "id": 44,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/5vf3",
+                        "accession": "5vf3",
+                        "label": "Bacteriophage T4 isometric capsid",
+                        "description": "Escherichia virus T4"
+                    },
+                    {
+                        "id": 45,
+                        "resource": "UniProt",
+                        "url": "https://www.uniprot.org/uniprot/A0A1Y2ZJK8",
+                        "accession": "A0A1Y2ZJK8",
+                        "label": "A0A1Y2ZJK8_ECOLX",
+                        "description": "undefined (Escherichia coli)"
+                    },
+                    {
+                        "id": 46,
+                        "resource": "UniProt",
+                        "url": "https://www.uniprot.org/uniprot/A0A1Y2ZJK8",
+                        "accession": "A0A1Y2ZJK8",
+                        "label": "A0A1Y2ZJK8_ECOLX",
+                        "description": "undefined (Escherichia coli)"
+                    },
+                    {
+                        "id": 47,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1545",
+                        "accession": "EMD-1545",
+                        "label": "EMD-1545",
+                        "description": "Structure of a chaperonin complex with non-native substrate protein gp23"
+                    },
+                    {
+                        "id": 48,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1544",
+                        "accession": "EMD-1544",
+                        "label": "EMD-1544",
+                        "description": "Structure of a chaperonin complex with non-native substrate protein gp23"
+                    },
+                    {
+                        "id": 49,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-1548",
+                        "accession": "EMD-1548",
+                        "label": "EMD-1548",
+                        "description": "Structure of GroEL in complex with non-native capsid protein gp23, folding capsid protein gp23, Bacteriophage T4 co-chaperone gp31 and ADPAlF3"
+                    },
+                    {
+                        "id": 50,
+                        "resource": "ncbitaxon",
+                        "url": "http://purl.obolibrary.org/obo/NCBITaxon_133161",
+                        "accession": "NCBITaxon_133161",
+                        "label": "uncultured bacterium gp23",
+                        "description": null
+                    },
+                    {
+                        "id": 51,
+                        "resource": "ncbitaxon",
+                        "url": "http://purl.obolibrary.org/obo/NCBITaxon_2023329",
+                        "accession": "NCBITaxon_2023329",
+                        "label": "Phage gp23",
+                        "description": null
+                    }
+                ]
+            },
+            "colour": [
+                0.39215686917305,
+                0.584313750267029,
+                0.929411768913269,
+                1.0
+            ],
+            "mesh_list": [],
+            "three_d_volume": {
+                "lattice_id": 0,
+                "value": 771.0,
+                "transform_id": null
+            },
+            "shape_primitive_list": []
+        },
+        {
+            "id": 775,
+            "parent_id": 0,
+            "biological_annotation": {
+                "name": "GroEL top ring (cis)",
+                "description": "Tetradecamer of GroEL",
+                "number_of_instances": 1,
+                "external_references": [
+                    {
+                        "id": 52,
+                        "resource": "ncit",
+                        "url": "http://purl.obolibrary.org/obo/NCIT_C61458",
+                        "accession": "NCIT_C61458",
+                        "label": "Ring",
+                        "description": "Doughnut-shaped object or surface generated by rotating a circle around an axis that does not intersect the circle; any object that resembles a ring."
+                    },
+                    {
+                        "id": 53,
+                        "resource": "ncit",
+                        "url": "http://purl.obolibrary.org/obo/NCIT_C62637",
+                        "accession": "NCIT_C62637",
+                        "label": "Top",
+                        "description": "The uppermost part, side, or surface of something."
+                    },
+                    {
+                        "id": 54,
+                        "resource": "go",
+                        "url": "http://purl.obolibrary.org/obo/GO_1990220",
+                        "accession": "GO_1990220",
+                        "label": "GroEL-GroES complex",
+                        "description": "Bacterial chaperonin complex consisting of a heptameric 10kDa chaperonin subunit GroES and a tetradecameric (2x7) 60kDa chaperonin subunit GroEL. The 60kDa subunit possesses ATPase activity while the holo-enzyme is responsible for the correct folding of proteins."
+                    },
+                    {
+                        "id": 55,
+                        "resource": "PDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/pdb/1xck",
+                        "accession": "1xck",
+                        "label": "Crystal structure of apo GroEL",
+                        "description": "Escherichia coli"
+                    },
+                    {
+                        "id": 56,
+                        "resource": "UniProt",
+                        "url": "https://www.uniprot.org/uniprot/P0A6F5",
+                        "accession": "P0A6F5",
+                        "label": "CH60_ECOLI",
+                        "description": "undefined (Escherichia coli (strain K12))"
+                    },
+                    {
+                        "id": 57,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8319",
+                        "accession": "EMD-8319",
+                        "label": "EMD-8319",
+                        "description": "C-terminal truncated mutant E. coli GroEL"
+                    },
+                    {
+                        "id": 58,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8318",
+                        "accession": "EMD-8318",
+                        "label": "EMD-8318",
+                        "description": "Mutant E. coli GroEL (C-terminal truncated) bound with PepQ"
+                    },
+                    {
+                        "id": 59,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8317",
+                        "accession": "EMD-8317",
+                        "label": "EMD-8317",
+                        "description": "Wild-type E. coli GroEL"
+                    },
+                    {
+                        "id": 60,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8316",
+                        "accession": "EMD-8316",
+                        "label": "EMD-8316",
+                        "description": "Wild-type E. coli GroEL bound with PepQ"
+                    },
+                    {
+                        "id": 61,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-8750",
+                        "accession": "EMD-8750",
+                        "label": "EMD-8750",
+                        "description": "GroEL using cryoEM"
+                    },
+                    {
+                        "id": 62,
+                        "resource": "EMDB",
+                        "url": "https://www.ebi.ac.uk/pdbe/entry/emdb/EMD-6422",
+                        "accession": "EMD-6422",
+                        "label": "EMD-6422",
+                        "description": "CryoEM structure of GroEL"
+                    }
+                ]
+            },
+            "colour": [
+                0.125490203499794,
+                0.69803923368454,
+                0.666666686534882,
+                1.0
+            ],
+            "mesh_list": [],
+            "three_d_volume": {
+                "lattice_id": 0,
+                "value": 775.0,
+                "transform_id": null
+            },
+            "shape_primitive_list": []
+        },
+        {
+            "id": 776,
+            "parent_id": 0,
+            "biological_annotation": {
+                "name": "Artefacts (ignore)",
+                "description": null,
+                "number_of_instances": 1,
+                "external_references": []
+            },
+            "colour": [
+                1.0,
+                0.498039215803146,
+                0.0,
+                1.0
+            ],
+            "mesh_list": [],
+            "three_d_volume": {
+                "lattice_id": 0,
+                "value": 776.0,
+                "transform_id": null
+            },
+            "shape_primitive_list": []
+        }
+    ],
+    "lattice_list": [
+        {
+            "id": 0,
+            "mode": "uint32",
+            "endianness": "little",
+            "size": {
+                "rows": 160,
+                "cols": 160,
+                "sections": 160
+            },
+            "start": {
+                "rows": 0,
+                "cols": 0,
+                "sections": 0
+            },
+            "data": "eJzswQEBAAAAgJD+r+4ICgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgNm12xXHcW4Bo1B1/zdcvw6hCZPXx5K2PmzF0loQmE4c2eBnJDndAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/9uCQAAAAAEDQ/9eeMAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwC5d3XsQ=="
+        }
+    ]
+}

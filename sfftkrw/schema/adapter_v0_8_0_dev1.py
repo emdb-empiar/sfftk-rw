@@ -2,6 +2,7 @@
 
 import base64
 import collections
+import json
 import numbers
 import os
 import random
@@ -18,14 +19,12 @@ from . import v0_8_0_dev1 as _sff
 from .base import SFFType, SFFIndexType, SFFAttribute, SFFListType, SFFTypeError, _assert_or_raise
 from ..core import _str, _encode, _bytes, _decode
 from ..core.print_tools import print_date
+from ..core.utils import get_unique_id
 
 # ensure that we can read/write encoded data
+
 _sff.ExternalEncoding = u"utf-8"
 
-# named tuples
-_external_reference = collections.namedtuple(
-    u'external_reference', [u'id', u'resource', u'url', u'accession', u'label', u'description']
-)
 _volume = collections.namedtuple(
     u'volume', [u'rows', u'cols', u'sections']
 )
@@ -122,8 +121,10 @@ class SFFExternalReference(SFFIndexType):
     description = SFFAttribute(u'description', help=u"a long description of this external reference")
 
     def as_json(self):
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u"id": self.id,
+            u"id": int(self.id),
             u"resource": self.resource,
             u"url": self.url,
             u"accession": self.accession,
@@ -148,22 +149,54 @@ class SFFExternalReference(SFFIndexType):
             obj.description = data[u'description']
         return obj
 
-    def as_hff(self, *args, **kwargs):
-        return _external_reference(self.id, self.resource, self.url, self.accession, self.label, self.description)
+    def as_hff(self, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        # first check if we have an ID; if we don't have one then get a globally unique one
+        if self.id is None:
+            self.id = get_unique_id()
+        # now set the name of the group to the id; it's a string of the numerical id
+        if not name:
+            name = _str(self.id)
+        else:
+            _assert_or_raise(name, _str)
+        # then create the group
+        group = parent_group.create_group(name)
+        # we can do this because we can guarantee that the id exists
+        group[u'id'] = self.id
+        if self.resource:
+            group[u'resource'] = self.resource
+        if self.url:
+            group[u'url'] = self.url
+        if self.accession:
+            group[u'accession'] = self.accession
+        if self.label:
+            group[u'label'] = self.label
+        if self.description:
+            group[u'description'] = self.description
+        return parent_group
 
     @classmethod
-    def from_hff(cls, data):
+    def from_hff(cls, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group[parent_group.name]
         obj = cls(new_obj=False)
-        _data = _external_reference(*data)  # make a namedtuple
-        obj.id = _data.id
-        obj.resource = _data.resource
-        obj.url = _data.url
-        obj.accession = _data.accession
-        obj.label = _data.label
-        obj.description = _data.description
+        if u'id' in group:
+            obj.id = group[u'id'][()]
+        if u'resource' in group:
+            obj.resource = group[u'resource'][()]
+        if u'url' in group:
+            obj.url = group[u'url'][()]
+        if u'accession' in group:
+            obj.accession = group[u'accession'][()]
+        if u'label' in group:
+            obj.label = group[u'label'][()]
+        if u'description' in group:
+            obj.description = group[u'description'][()]
         return obj
 
 
+# todo: super SFFExternalReferenceList and SFFGlobalExternalReferenceList
+# noinspection PyUnresolvedReferences
 class SFFExternalReferenceList(SFFListType):
     """Container for external references"""
     gds_type = _sff.external_referencesType
@@ -186,39 +219,23 @@ class SFFExternalReferenceList(SFFListType):
         return obj
 
     def as_hff(self, parent_group, name=u'external_references'):
-        try:
-            assert isinstance(parent_group, h5py.Group)
-        except AssertionError:
-            raise SFFTypeError(parent_group, h5py.Group)
-        vl_str = h5py.special_dtype(vlen=_str)
-        h_ext = parent_group.create_dataset(
-            name,
-            (len(self),),
-            dtype=[
-                (u'id', u'u8'),
-                (u'resource', vl_str),
-                (u'url', vl_str),
-                (u'accession', vl_str),
-                (u'label', vl_str),
-                (u'description', vl_str),
-            ]
-        )
-        for i, extref in enumerate(self):
-            h_ext[i] = extref.as_hff()
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group.create_group(name)
+        for extref in self:
+            group = extref.as_hff(group)
         return parent_group
 
     @classmethod
-    def from_hff(cls, group, name=u'external_references'):
-        try:
-            assert isinstance(group, h5py.Group)
-        except AssertionError:
-            raise SFFTypeError(group, h5py.Group)
+    def from_hff(cls, parent_group, name=u'external_references'):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group[name]
         obj = cls(new_obj=False)
-        for ref in group[name]:
-            obj.append(SFFExternalReference.from_hff(ref))
+        for subgroup in sorted(group.values(), key=lambda g: int(os.path.basename(g.name))):
+            obj.append(SFFExternalReference.from_hff(subgroup))
         return obj
 
 
+# noinspection PyUnresolvedReferences
 class SFFGlobalExternalReferenceList(SFFListType):
     """Container for global external references"""
     gds_type = _sff.global_external_referencesType
@@ -241,36 +258,19 @@ class SFFGlobalExternalReferenceList(SFFListType):
         return obj
 
     def as_hff(self, parent_group, name=u'global_external_references'):
-        try:
-            assert isinstance(parent_group, h5py.Group)
-        except AssertionError:
-            raise SFFTypeError(parent_group, h5py.Group)
-        vl_str = h5py.special_dtype(vlen=_str)
-        h_ext = parent_group.create_dataset(
-            name,
-            (len(self),),
-            dtype=[
-                (u'id', u'u8'),
-                (u'resource', vl_str),
-                (u'url', vl_str),
-                (u'accession', vl_str),
-                (u'label', vl_str),
-                (u'description', vl_str),
-            ]
-        )
-        for i, extref in enumerate(self):
-            h_ext[i] = extref.as_hff()
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group.create_group(name)
+        for extref in self:
+            group = extref.as_hff(group)
         return parent_group
 
     @classmethod
-    def from_hff(cls, group, name=u'global_external_references'):
-        try:
-            assert isinstance(group, h5py.Group)
-        except AssertionError:
-            raise SFFTypeError(group, h5py.Group)
+    def from_hff(cls, parent_group, name=u'global_external_references'):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group[name]
         obj = cls(new_obj=False)
-        for ref in group[name]:
-            obj.append(SFFExternalReference.from_hff(ref))
+        for subgroup in sorted(group.values(), key=lambda g: int(os.path.basename(g.name))):
+            obj.append(SFFExternalReference.from_hff(subgroup))
         return obj
 
 
@@ -387,9 +387,9 @@ class SFFThreeDVolume(SFFType):
 
     def as_json(self, *args, **kwargs):
         return {
-            u'lattice_id': self.lattice_id,
-            u'value': self.value,
-            u'transform_id': self.transform_id,
+            u'lattice_id': int(self.lattice_id) if self.lattice_id is not None else None,
+            u'value': float(self.value) if self.value is not None else None,
+            u'transform_id': int(self.transform_id) if self.transform_id is not None else None,
         }
 
     @classmethod
@@ -433,19 +433,20 @@ class SFFThreeDVolume(SFFType):
 class SFFVolume(SFFType):
     """Class for represention 3-space dimension"""
     # attributes
-    rows = SFFAttribute(u'rows', help=u"number of rows")
-    cols = SFFAttribute(u'cols', help=u"number of columns")
-    sections = SFFAttribute(u'sections', help=u"number of sections (sets of congruent row-column collections)")
+    rows = SFFAttribute(u'rows', required=True, help=u"number of rows")
+    cols = SFFAttribute(u'cols', required=True, help=u"number of columns")
+    sections = SFFAttribute(u'sections', required=True,
+                            help=u"number of sections (sets of congruent row-column collections)")
     eq_attrs = [u'rows', u'cols', u'sections']
 
     @property
     def value(self):
-        return self.cols, self.rows, self.sections
+        return self.rows, self.cols, self.sections
 
     @value.setter
     def value(self, value):
         if len(value) == 3:
-            self.cols, self.rows, self.sections = value
+            self.rows, self.cols, self.sections = value
         else:
             raise SFFTypeError(value, u"Iterable", message=u"should be of length 3")
 
@@ -459,9 +460,9 @@ class SFFVolume(SFFType):
 
     def as_json(self, *args, **kwargs):
         return {
-            u'rows': self.rows,
-            u'cols': self.cols,
-            u'sections': self.sections,
+            u'rows': int(self.rows) if self.rows is not None else None,
+            u'cols': int(self.cols) if self.cols is not None else None,
+            u'sections': int(self.sections) if self.sections is not None else None,
         }
 
     @classmethod
@@ -475,14 +476,30 @@ class SFFVolume(SFFType):
             obj.sections = data[u'sections']
         return obj
 
-    def as_hff(self, *args, **kwargs):
-        return _volume(self.rows, self.cols, self.sections)
+    def as_hff(self, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        _assert_or_raise(name, _str)  # will be set in the children
+        group = parent_group.create_group(name)
+        if self.rows is not None:
+            group[u'rows'] = self.rows
+        if self.cols is not None:
+            group[u'cols'] = self.cols
+        if self.sections is not None:
+            group[u'sections'] = self.sections
+        return parent_group
 
     @classmethod
-    def from_hff(cls, data):
+    def from_hff(cls, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        _assert_or_raise(name, _str)  # will be set in the children
         obj = cls(new_obj=False)
-        _data = _volume(*data)  # make a named tuple
-        obj.rows, obj.cols, obj.sections = _data.rows, _data.cols, _data.sections
+        group = parent_group[name]
+        if u'rows' in group:
+            obj.rows = group[u'rows'][()]
+        if u'cols' in group:
+            obj.cols = group[u'cols'][()]
+        if u'sections' in group:
+            obj.sections = group[u'sections'][()]
         return obj
 
 
@@ -497,6 +514,13 @@ class SFFVolumeStructure(SFFVolume):
         """The number of voxels in this volume"""
         return self.cols * self.rows * self.sections
 
+    def as_hff(self, parent_group, name=u'size'):
+        return super(SFFVolumeStructure, self).as_hff(parent_group, name=name)
+
+    @classmethod
+    def from_hff(cls, parent_group, name=u'size'):
+        return super(SFFVolumeStructure, cls).from_hff(parent_group, name=name)
+
 
 class SFFVolumeIndex(SFFVolume):
     """Class representing volume indices"""
@@ -505,6 +529,13 @@ class SFFVolumeIndex(SFFVolume):
     gds_tag_name = u'start'
     repr_string = u"SFFVolumeIndex(rows={}, cols={}, sections={})"
     repr_args = (u'rows', u'cols', u'sections')
+
+    def as_hff(self, parent_group, name=u'start'):
+        return super(SFFVolumeIndex, self).as_hff(parent_group, name=name)
+
+    @classmethod
+    def from_hff(cls, parent_group, name=u'start'):
+        return super(SFFVolumeIndex, cls).from_hff(parent_group, name=name)
 
 
 class SFFLattice(SFFIndexType):
@@ -672,8 +703,10 @@ class SFFLattice(SFFIndexType):
         return data
 
     def as_json(self, *args, **kwargs):
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u'id': self.id,
+            u'id': int(self.id),
             u'mode': self.mode,
             u'endianness': self.endianness,
             u'size': self.size.as_json() if self.size is not None else None,
@@ -706,6 +739,8 @@ class SFFLattice(SFFIndexType):
 
     def as_hff(self, parent_group, name=None):
         _assert_or_raise(parent_group, h5py.Group)
+        if self.id is None:
+            self.id = get_unique_id()
         if not name:
             name = _str(self.id)  # use the string of the id as the name
         else:
@@ -718,9 +753,9 @@ class SFFLattice(SFFIndexType):
         if self.endianness:
             group[u'endianness'] = _encode(self.endianness, 'utf-8')
         if self.size:
-            group[u'size'] = self.size.as_hff()
+            group = self.size.as_hff(group)
         if self.start:
-            group[u'start'] = self.start.as_hff()
+            group = self.start.as_hff(group)
         if self.data:
             group[u'data'] = _encode(self.data, 'utf-8')
         return parent_group
@@ -728,9 +763,8 @@ class SFFLattice(SFFIndexType):
     @classmethod
     def from_hff(cls, parent_group, name=None):
         _assert_or_raise(parent_group, h5py.Group)
-        _assert_or_raise(name, _str)
         obj = cls(new_obj=False)
-        group = parent_group[name]
+        group = parent_group[parent_group.name]
         if u'id' in group:
             obj.id = int(group[u'id'][()])
         if u'mode' in group:
@@ -738,9 +772,9 @@ class SFFLattice(SFFIndexType):
         if u'endianness' in group:
             obj.endianness = _decode(group[u'endianness'][()], 'utf-8')
         if u'size' in group:
-            obj.size = SFFVolumeStructure.from_hff(group[u'size'][()])
+            obj.size = SFFVolumeStructure.from_hff(group)
         if u'start' in group:
-            obj.start = SFFVolumeIndex.from_hff(group[u'start'][()])
+            obj.start = SFFVolumeIndex.from_hff(group)
         if u'data' in group:
             obj.data = group[u'data'][()]
         return obj
@@ -772,7 +806,7 @@ class SFFLatticeList(SFFListType):
         _assert_or_raise(parent_group, h5py.Group)
         group = parent_group.create_group(name)
         for lattice in self:
-            group = lattice.as_hff(group, name=_str(lattice.id))
+            group = lattice.as_hff(group)
         return parent_group
 
     @classmethod
@@ -781,8 +815,8 @@ class SFFLatticeList(SFFListType):
         _assert_or_raise(parent_group, h5py.Group)
         obj = cls(new_obj=False)
         group = parent_group[name]
-        for lattice_id in group:
-            obj.append(SFFLattice.from_hff(group, name=_str(lattice_id)))
+        for subgroup in sorted(group.values(), key=lambda g: int(os.path.basename(g.name))):
+            obj.append(SFFLattice.from_hff(subgroup))
         return obj
 
 
@@ -941,7 +975,7 @@ class SFFEncodedSequence(SFFType):
 
     def as_json(self, *args, **kwargs):
         return {
-            self.num_items_kwarg: getattr(self, self.num_items_kwarg),
+            self.num_items_kwarg: int(getattr(self, self.num_items_kwarg)),
             u'mode': self.mode,
             u'endianness': self.endianness,
             u'data': _decode(self.data, 'ASCII'),
@@ -1103,8 +1137,10 @@ class SFFMesh(SFFIndexType):
         super(SFFMesh, self).__init__(**kwargs)
 
     def as_json(self, *args, **kwargs):
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u'id': self.id,
+            u'id': int(self.id),
             u'vertices': self.vertices.as_json(),
             u'normals': self.normals.as_json() if self.normals is not None else None,
             u'triangles': self.triangles.as_json(),
@@ -1125,6 +1161,8 @@ class SFFMesh(SFFIndexType):
         return obj
 
     def as_hff(self, parent_group, name=None):
+        if self.id is None:
+            self.id = get_unique_id()
         _assert_or_raise(parent_group, h5py.Group)
         if not name:
             name = _str(self.id)
@@ -1144,9 +1182,8 @@ class SFFMesh(SFFIndexType):
     @classmethod
     def from_hff(cls, parent_group, name=None):
         _assert_or_raise(parent_group, h5py.Group)
-        _assert_or_raise(name, _str)
         obj = cls(new_obj=False)
-        group = parent_group[name]
+        group = parent_group[parent_group.name]
         if u'id' in group:
             obj.id = int(group[u'id'][()])
         if u'vertices' in group:
@@ -1177,6 +1214,25 @@ class SFFMeshList(SFFListType):
         obj = cls(new_obj=False)
         for mesh in data:
             obj.append(SFFMesh.from_json(mesh))
+        return obj
+
+    def as_hff(self, parent_group, name=u'mesh_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group.create_group(name)
+        for mesh in self:
+            group = mesh.as_hff(group)
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=u'mesh_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[name]
+        # since the names of the mesh groups are string versions of the mesh ids
+        # when iterating they are sorted lexicographically
+        # therefore we sort by int-casted names
+        for subgroup in sorted(group.values(), key=lambda g: int(os.path.basename(g.name))):
+            obj.append(SFFMesh.from_hff(subgroup))
         return obj
 
 
@@ -1216,8 +1272,10 @@ class SFFCone(SFFShape):
     bottom_radius = SFFAttribute(u'bottom_radius', required=True, help=u"cone bottom radius")
 
     def as_json(self, *args, **kwargs):
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u'id': self.id,
+            u'id': int(self.id),
             u'shape': u'cone',
             u'height': self.height,
             u'bottom_radius': self.bottom_radius,
@@ -1239,7 +1297,48 @@ class SFFCone(SFFShape):
                     obj.transform_id = data[u'transform_id']
                 return obj
             else:
-                raise SFFTypeError(u"cannot convert shape '{}' into ellipsoid".format(data[u'type']))
+                raise SFFTypeError(u"cannot convert shape '{}' into cone".format(data[u'shape']))
+        else:
+            raise ValueError(u"missing 'shape' attribute")
+
+    def as_hff(self, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        if self.id is None:
+            self.id = get_unique_id()
+        if not name:
+            name = _str(self.id)
+        else:
+            _assert_or_raise(name, _str)
+        group = parent_group.create_group(name)
+        if self.id is not None:
+            group[u'id'] = self.id
+        if self.height is not None:
+            group[u'height'] = self.height
+        if self.bottom_radius is not None:
+            group[u'bottom_radius'] = self.bottom_radius
+        if self.transform_id is not None:
+            group[u'transform_id'] = self.transform_id
+        group[u'shape'] = u'cone'
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[parent_group.name]
+        if u'shape' in group:
+            if group[u'shape'][()] == u'cone':
+                if u'id' in group:
+                    obj.id = group[u'id'][()]
+                if u'height' in group:
+                    obj.height = group[u'height'][()]
+                if u'bottom_radius' in group:
+                    obj.bottom_radius = group[u'bottom_radius'][()]
+                if u'transform_id' in group:
+                    obj.transform_id = group[u'transform_id'][()]
+                return obj
+            else:
+                raise SFFTypeError(u"cannot convert shape '{}' into cone".format(group[u'shape'][()]))
         else:
             raise ValueError(u"missing 'shape' attribute")
 
@@ -1258,8 +1357,10 @@ class SFFCuboid(SFFShape):
     z = SFFAttribute(u'z', required=True, help=u"length in z")
 
     def as_json(self, *args, **kwargs):
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u'id': self.id,
+            u'id': int(self.id),
             u'shape': u'cuboid',
             u'x': self.x,
             u'y': self.y,
@@ -1284,7 +1385,52 @@ class SFFCuboid(SFFShape):
                     obj.transform_id = data[u'transform_id']
                 return obj
             else:
-                raise SFFTypeError(u"cannot convert shape '{}' into cuboid".format(data[u'type']))
+                raise SFFTypeError(u"cannot convert shape '{}' into cuboid".format(data[u'shape']))
+        else:
+            raise ValueError(u"missing 'shape' attribute")
+
+    def as_hff(self, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        if self.id is None:
+            self.id = get_unique_id()
+        if not name:
+            name = _str(self.id)
+        else:
+            _assert_or_raise(name, _str)
+        group = parent_group.create_group(name)
+        if self.id is not None:
+            group[u'id'] = self.id
+        if self.x is not None:
+            group[u'x'] = self.x
+        if self.y is not None:
+            group[u'y'] = self.y
+        if self.z is not None:
+            group[u'z'] = self.z
+        if self.transform_id is not None:
+            group[u'transform_id'] = self.transform_id
+        group[u'shape'] = u'cuboid'
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[parent_group.name]
+        if u'shape' in group:
+            if group[u'shape'][()] == u'cuboid':
+                if u'id' in group:
+                    obj.id = group[u'id'][()]
+                if u'x' in group:
+                    obj.x = group[u'x'][()]
+                if u'y' in group:
+                    obj.y = group[u'y'][()]
+                if u'z' in group:
+                    obj.z = group[u'z'][()]
+                if u'transform_id' in group:
+                    obj.transform_id = group[u'transform_id'][()]
+                return obj
+            else:
+                raise SFFTypeError(u"cannot convert shape '{}' into cuboid".format(group[u'shape'][()]))
         else:
             raise ValueError(u"missing 'shape' attribute")
 
@@ -1302,8 +1448,10 @@ class SFFCylinder(SFFShape):
     diameter = SFFAttribute(u'diameter', required=True, help=u"cylinder diameter")
 
     def as_json(self, *args, **kwargs):
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u'id': self.id,
+            u'id': int(self.id),
             u'shape': u'cylinder',
             u'height': self.height,
             u'diameter': self.diameter,
@@ -1325,7 +1473,48 @@ class SFFCylinder(SFFShape):
                     obj.transform_id = data[u'transform_id']
                 return obj
             else:
-                raise SFFTypeError(u"cannot convert shape '{}' into cylinder".format(data[u'type']))
+                raise SFFTypeError(u"cannot convert shape '{}' into cylinder".format(data[u'shape']))
+        else:
+            raise ValueError(u"missing 'shape' attribute")
+
+    def as_hff(self, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        if self.id is None:
+            self.id = get_unique_id()
+        if not name:
+            name = _str(self.id)
+        else:
+            _assert_or_raise(name, _str)
+        group = parent_group.create_group(name)
+        if self.id is not None:
+            group[u'id'] = self.id
+        if self.height is not None:
+            group[u'height'] = self.height
+        if self.diameter is not None:
+            group[u'diameter'] = self.diameter
+        if self.transform_id is not None:
+            group[u'transform_id'] = self.transform_id
+        group[u'shape'] = u'cylinder'
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[parent_group.name]
+        if u'shape' in group:
+            if group[u'shape'][()] == u'cylinder':
+                if u'id' in group:
+                    obj.id = group[u'id'][()]
+                if u'height' in group:
+                    obj.height = group[u'height'][()]
+                if u'diameter' in group:
+                    obj.diameter = group[u'diameter'][()]
+                if u'transform_id' in group:
+                    obj.transform_id = group[u'transform_id'][()]
+                return obj
+            else:
+                raise SFFTypeError(u"cannot convert shape '{}' into cylinder".format(group[u'shape'][()]))
         else:
             raise ValueError(u"missing 'shape' attribute")
 
@@ -1344,8 +1533,10 @@ class SFFEllipsoid(SFFShape):
     z = SFFAttribute(u'z', required=True, help=u"length in z")
 
     def as_json(self, *args, **kwargs):
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u'id': self.id,
+            u'id': int(self.id),
             u'shape': u'ellipsoid',
             u'x': self.x,
             u'y': self.y,
@@ -1370,7 +1561,52 @@ class SFFEllipsoid(SFFShape):
                     obj.transform_id = data[u'transform_id']
                 return obj
             else:
-                raise SFFTypeError(u"cannot convert shape '{}' into ellipsoid".format(data[u'type']))
+                raise SFFTypeError(u"cannot convert shape '{}' into ellipsoid".format(data[u'shape']))
+        else:
+            raise ValueError(u"missing 'shape' attribute")
+
+    def as_hff(self, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        if self.id is None:
+            self.id = get_unique_id()
+        if not name:
+            name = _str(self.id)
+        else:
+            _assert_or_raise(name, _str)
+        group = parent_group.create_group(name)
+        if self.id is not None:
+            group[u'id'] = self.id
+        if self.x is not None:
+            group[u'x'] = self.x
+        if self.y is not None:
+            group[u'y'] = self.y
+        if self.z is not None:
+            group[u'z'] = self.z
+        if self.transform_id is not None:
+            group[u'transform_id'] = self.transform_id
+        group[u'shape'] = u'ellipsoid'
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[parent_group.name]
+        if u'shape' in group:
+            if group[u'shape'][()] == u'ellipsoid':
+                if u'id' in group:
+                    obj.id = group[u'id'][()]
+                if u'x' in group:
+                    obj.x = group[u'x'][()]
+                if u'y' in group:
+                    obj.y = group[u'y'][()]
+                if u'z' in group:
+                    obj.z = group[u'z'][()]
+                if u'transform_id' in group:
+                    obj.transform_id = group[u'transform_id'][()]
+                return obj
+            else:
+                raise SFFTypeError(u"cannot convert shape '{}' into ellipsoid".format(group[u'shape'][()]))
         else:
             raise ValueError(u"missing 'shape' attribute")
 
@@ -1436,7 +1672,35 @@ class SFFShapePrimitiveList(SFFListType):
                 elif shape[u'shape'] == u'ellipsoid':
                     obj.append(SFFEllipsoid.from_json(shape))
                 else:
-                    raise SFFTypeError(u"cannot convert shape '{}' into ellipsoid".format(data[u'type']))
+                    raise SFFTypeError(u"cannot convert shape '{}'".format(data[u'shape']))
+            else:
+                raise ValueError(u"missing 'shape' attribute")
+        return obj
+
+    def as_hff(self, parent_group, name=u'shape_primitive_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group.create_group(name)
+        for shape in self:
+            group = shape.as_hff(group)
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=u'shape_primitive_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[name]
+        for subgroup in sorted(group.values(), key=lambda g: int(os.path.basename(g.name))):
+            if u'shape' in subgroup:
+                if subgroup[u'shape'][()] == u'cone':
+                    obj.append(SFFCone.from_hff(subgroup))
+                elif subgroup[u'shape'][()] == u'cuboid':
+                    obj.append(SFFCuboid.from_hff(subgroup))
+                elif subgroup[u'shape'][()] == u'cylinder':
+                    obj.append(SFFCylinder.from_hff(subgroup))
+                elif subgroup[u'shape'][()] == u'ellipsoid':
+                    obj.append(SFFEllipsoid.from_hff(subgroup))
+                else:
+                    raise SFFTypeError(u"cannot convert shape '{}'".format(subgroup[u'shape'][()]))
             else:
                 raise ValueError(u"missing 'shape' attribute")
         return obj
@@ -1482,9 +1746,11 @@ class SFFSegment(SFFIndexType):
 
     def as_json(self):
         """Format this segment as JSON"""
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u'id': self.id,
-            u'parent_id': self.parent_id,
+            u'id': int(self.id),
+            u'parent_id': int(self.parent_id),
             u'biological_annotation': self.biological_annotation.as_json() if self.biological_annotation is not None else None,
             u'colour': self.colour.as_json(),
             u'mesh_list': self.mesh_list.as_json(),
@@ -1515,6 +1781,52 @@ class SFFSegment(SFFIndexType):
                 obj.three_d_volume = SFFThreeDVolume.from_json(data[u'three_d_volume'])
         return obj
 
+    def as_hff(self, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        if self.id is None:
+            self.id = get_unique_id()
+        if not name:
+            name = _str(self.id)
+        else:
+            _assert_or_raise(name, _str)
+        group = parent_group.create_group(name)
+        if self.id is not None:
+            group[u'id'] = self.id
+        if self.parent_id is not None:
+            group[u'parent_id'] = self.parent_id
+        if self.biological_annotation is not None:
+            group = self.biological_annotation.as_hff(group)
+        if self.colour is not None:
+            group = self.colour.as_hff(group)
+        if self.mesh_list:
+            group = self.mesh_list.as_hff(group)
+        if self.three_d_volume is not None:
+            group = self.three_d_volume.as_hff(group)
+        if self.shape_primitive_list:
+            group = self.shape_primitive_list.as_hff(group)
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group[parent_group.name]
+        obj = cls(new_obj=False)
+        if u'id' in group:
+            obj.id = group[u'id'][()]
+        if u'parent_id' in group:
+            obj.parent_id = group[u'parent_id'][()]
+        if u'biological_annotation' in group:
+            obj.biological_annotation = SFFBiologicalAnnotation.from_hff(group)
+        if u'colour' in group:
+            obj.colour = SFFRGBA.from_hff(group)
+        if u'mesh_list' in group:
+            obj.mesh_list = SFFMeshList.from_hff(group)
+        if u'three_d_volume' in group:
+            obj.three_d_volume = SFFThreeDVolume.from_hff(group)
+        if u'shape_primitive_list' in group:
+            obj.shape_primitive_list = SFFShapePrimitiveList.from_hff(group)
+        return obj
+
 
 class SFFSegmentList(SFFListType):
     """Container for segments"""
@@ -1535,6 +1847,22 @@ class SFFSegmentList(SFFListType):
         obj = cls(new_obj=False)
         for seg in data:
             obj.append(SFFSegment.from_json(seg))
+        return obj
+
+    def as_hff(self, parent_group, name=u'segment_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group.create_group(name)
+        for segment in self:
+            group = segment.as_hff(group)
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=u'segment_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[name]
+        for subgroup in sorted(group.values(), key=lambda g: int(os.path.basename(g.name))):
+            obj.append(SFFSegment.from_hff(subgroup))
         return obj
 
 
@@ -1630,10 +1958,12 @@ class SFFTransformationMatrix(SFFIndexType):
         self.data = self.stringify(ndarray)
 
     def as_json(self, *args, **kwargs):
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u"id": self.id,
-            u"rows": self.rows,
-            u"cols": self.cols,
+            u"id": int(self.id),
+            u"rows": int(self.rows),
+            u"cols": int(self.cols),
             u"data": self.data,
         }
 
@@ -1644,6 +1974,40 @@ class SFFTransformationMatrix(SFFIndexType):
         obj.rows = int(data[u'rows'])
         obj.cols = int(data[u'cols'])
         obj.data = data[u'data']
+        return obj
+
+    def as_hff(self, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        if self.id is None:
+            self.id = get_unique_id()
+        if not name:
+            name = _str(self.id)
+        else:
+            _assert_or_raise(name, _str)
+        group = parent_group.create_group(name)
+        if self.id is not None:
+            group[u'id'] = self.id
+        if self.rows is not None:
+            group[u'rows'] = self.rows
+        if self.cols is not None:
+            group[u'cols'] = self.cols
+        if self.data is not None:
+            group[u'data'] = self.data
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[parent_group.name]
+        if u'id' in group:
+            obj.id = group[u'id'][()]
+        if u'rows' in group:
+            obj.rows = group[u'rows'][()]
+        if u'cols' in group:
+            obj.cols = group[u'cols'][()]
+        if u'data' in group:
+            obj.data = group[u'data'][()]
         return obj
 
 
@@ -1690,6 +2054,22 @@ class SFFTransformList(SFFListType):
             obj.append(SFFTransformationMatrix.from_json(tx))
         return obj
 
+    def as_hff(self, parent_group, name=u'transform_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group.create_group(name)
+        for sw in self:
+            group = sw.as_hff(group)
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=u'transform_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[name]
+        for subgroup in sorted(group.values(), key=lambda g: int(os.path.basename(g.name))):
+            obj.append(SFFTransformationMatrix.from_hff(subgroup))
+        return obj
+
 
 class SFFSoftware(SFFIndexType):
     """Class definition for specifying software used to create this segmentation
@@ -1722,8 +2102,10 @@ class SFFSoftware(SFFIndexType):
                                       help=u"a description of how the data was processed to produce the segmentation")
 
     def as_json(self, *args, **kwargs):
+        if self.id is None:
+            self.id = get_unique_id()
         return {
-            u"id": self.id,
+            u"id": int(self.id),
             u"name": self.name,
             u"version": self.version,
             u"processing_details": self.processing_details,
@@ -1736,6 +2118,40 @@ class SFFSoftware(SFFIndexType):
         obj.name = data[u'name']
         obj.version = data[u'version']
         obj.processing_details = data[u'processing_details']
+        return obj
+
+    def as_hff(self, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        if self.id is None:
+            self.id = get_unique_id()
+        if not name:
+            name = _str(self.id)
+        else:
+            _assert_or_raise(name, _str)
+        group = parent_group.create_group(name)
+        if self.id is not None:
+            group[u'id'] = self.id
+        if self.name is not None:
+            group[u'name'] = self.name
+        if self.version is not None:
+            group[u'version'] = self.version
+        if self.processing_details is not None:
+            group[u'processing_details'] = self.processing_details
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[parent_group.name]
+        if u'id' in group:
+            obj.id = group[u'id'][()]
+        if u'name' in group:
+            obj.name = group[u'name'][()]
+        if u'version' in group:
+            obj.version = group[u'version'][()]
+        if u'processing_details' in group:
+            obj.processing_details = group[u'processing_details'][()]
         return obj
 
 
@@ -1760,6 +2176,22 @@ class SFFSoftwareList(SFFListType):
             obj.append(SFFSoftware.from_json(sw))
         return obj
 
+    def as_hff(self, parent_group, name=u'software_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group.create_group(name)
+        for sw in self:
+            group = sw.as_hff(group)
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=u'software_list'):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[name]
+        for subgroup in sorted(group.values(), key=lambda g: int(os.path.basename(g.name))):
+            obj.append(SFFSoftware.from_hff(subgroup))
+        return obj
+
 
 class SFFBoundingBox(SFFType):
     """Dimensions of bounding box"""
@@ -1768,6 +2200,7 @@ class SFFBoundingBox(SFFType):
     gds_tag_name = u'bounding_box'
     repr_string = u"SFFBoundingBox(xmin={}, xmax={}, ymin={}, ymax={}, zmin={}, zmax={})"
     repr_args = (u'xmin', u'xmax', u'ymin', u'ymax', u'zmin', u'zmax')
+    eq_attrs = [u'xmin', u'xmax', u'ymin', u'ymax', u'zmin', u'zmax']
 
     # attributes
     xmin = SFFAttribute(u'xmin', default=0, help=u"minimum x co-ordinate value")
@@ -1812,6 +2245,39 @@ class SFFBoundingBox(SFFType):
             return obj
         else:
             super(SFFBoundingBox, cls).from_json(data)
+
+    def as_hff(self, parent_group, name=u'bounding_box'):
+        _assert_or_raise(parent_group, h5py.Group)
+        group = parent_group.create_group(name)
+        group[u'xmin'] = self.xmin
+        if self.xmax is not None:
+            group[u'xmax'] = self.xmax
+        group[u'ymin'] = self.ymin
+        if self.ymax is not None:
+            group[u'ymax'] = self.ymax
+        group[u'zmin'] = self.zmin
+        if self.zmax is not None:
+            group[u'zmax'] = self.zmax
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=u'bounding_box'):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[name]
+        if u'xmin' in group:
+            obj.xmin = group[u'xmin'][()]
+        if u'xmax' in group:
+            obj.xmax = group[u'xmax'][()]
+        if u'ymin' in group:
+            obj.ymin = group[u'ymin'][()]
+        if u'ymax' in group:
+            obj.ymax = group[u'ymax'][()]
+        if u'zmin' in group:
+            obj.zmin = group[u'zmin'][()]
+        if u'zmax' in group:
+            obj.zmax = group[u'zmax'][()]
+        return obj
 
 
 class SFFSegmentation(SFFType):
@@ -1866,6 +2332,30 @@ class SFFSegmentation(SFFType):
     details = SFFAttribute(
         u'details', help=u"any other details about this segmentation (free text)")
 
+    @property
+    def transform_list(self):
+        return self.transforms
+
+    @transform_list.setter
+    def transform_list(self, value):
+        self.transforms = value
+
+    @property
+    def segment_list(self):
+        return self.segments
+
+    @segment_list.setter
+    def segment_list(self, value):
+        self.segments = value
+
+    @property
+    def lattice_list(self):
+        return self.lattices
+
+    @lattice_list.setter
+    def lattice_list(self, value):
+        self.lattices = value
+
     def as_json(self, *args, **kwargs):
         return {
             u'version': self.version,
@@ -1873,12 +2363,92 @@ class SFFSegmentation(SFFType):
             u'details': self.details,
             u'software_list': self.software_list.as_json(),
             u'primary_descriptor': self.primary_descriptor,
-            u'transforms': self.transforms.as_json(),
-            u'bounding_box': self.bounding_box.as_json(),
+            u'transform_list': self.transform_list.as_json(),
+            u'bounding_box': self.bounding_box.as_json() if self.bounding_box else None,
             u'global_external_references': self.global_external_references.as_json(),
-            u'segments': self.segments.as_json(),
-            u'lattices': self.lattices.as_json(),
+            u'segment_list': self.segment_list.as_json(),
+            u'lattice_list': self.lattice_list.as_json(),
         }
+
+    @classmethod
+    def from_json(cls, data):
+        obj = cls(new_obj=False)
+        if u'version' in data:
+            obj.version = data[u'version']
+        if u'name' in data:
+            obj.name = data[u'name']
+        if u'details' in data:
+            obj.details = data[u'details']
+        if u'software_list' in data:
+            obj.software_list = SFFSoftwareList.from_json(data[u'software_list'])
+        if u'primary_descriptor' in data:
+            obj.primary_descriptor = data[u'primary_descriptor']
+        if u'transform_list' in data:
+            obj.transform_list = SFFTransformList.from_json(data[u'transform_list'])
+        if u'bounding_box' in data:
+            obj.bounding_box = SFFBoundingBox.from_json(data[u'bounding_box'])
+        if u'global_external_references' in data:
+            obj.global_external_references = SFFGlobalExternalReferenceList.from_json(
+                data[u'global_external_references'])
+        if u'segment_list' in data:
+            obj.segment_list = SFFSegmentList.from_json(data[u'segment_list'])
+        if u'lattice_list' in data:
+            obj.lattice_list = SFFLatticeList.from_json(data[u'lattice_list'])
+        return obj
+
+    def as_hff(self, parent_group, name=u'/'):
+        _assert_or_raise(parent_group, h5py.File)
+        # group = parent_group.create_group(name)
+        group = parent_group
+        if self.version is not None:
+            group[u'version'] = self.version
+        if self.name is not None:
+            group[u'name'] = self.name
+        if self.details is not None:
+            group[u'details'] = self.details
+        if self.software_list:
+            group = self.software_list.as_hff(group)
+        if self.primary_descriptor is not None:
+            group[u'primary_descriptor'] = self.primary_descriptor
+        if self.transform_list:
+            group = self.transform_list.as_hff(group)
+        if self.bounding_box is not None:
+            group = self.bounding_box.as_hff(group)
+        if self.global_external_references:
+            group = self.global_external_references.as_hff(group)
+        if self.segment_list:
+            group = self.segment_list.as_hff(group)
+        if self.lattice_list:
+            group = self.lattice_list.as_hff(group)
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=u'/'):
+        _assert_or_raise(parent_group, h5py.File)
+        obj = cls(new_obj=False)
+        # group = parent_group[name]
+        group = parent_group
+        if u'version' in group:
+            obj.version = group[u'version'][()]
+        if u'name' in group:
+            obj.name = group[u'name'][()]
+        if u'details' in group:
+            obj.details = group[u'details'][()]
+        if u'software_list' in group:
+            obj.software_list = SFFSoftwareList.from_hff(group)
+        if u'primary_descriptor' in group:
+            obj.primary_descriptor = group[u'primary_descriptor'][()]
+        if u'transform_list' in group:
+            obj.transform_list = SFFTransformList.from_hff(group)
+        if u'bounding_box' in group:
+            obj.bounding_box = SFFBoundingBox.from_hff(group)
+        if u'global_external_references' in group:
+            obj.global_external_references = SFFGlobalExternalReferenceList.from_hff(group)
+        if u'segment_list' in group:
+            obj.segment_list = SFFSegmentList.from_hff(group)
+        if u'lattice_list' in group:
+            obj.lattice_list = SFFLatticeList.from_hff(group)
+        return obj
 
     @classmethod
     def from_file(cls, fn):
@@ -1890,18 +2460,20 @@ class SFFSegmentation(SFFType):
         :return seg: the corresponding :py:class:`SFFSegmentation` object
         :rtype seg: :py:class:`SFFSegmentation`
         """
-        seg = cls()
+        seg = cls(new_obj=False)
         if re.match(r'.*\.(sff|xml)$', fn, re.IGNORECASE):
             try:
                 seg._local = _sff.parse(fn, silence=True)
             except IOError:
                 print_date(_encode(u"File {} not found".format(fn), u'utf-8'))
                 sys.exit(os.EX_IOERR)
-        #     elif re.match(r'.*\.(hff|h5|hdf5)$', fn, re.IGNORECASE):
-        #         with h5py.File(fn, u'r') as h:
-        #             seg._local = seg.from_hff(h)._local
-        #     elif re.match(r'.*\.json$', fn, re.IGNORECASE):
-        #         seg._local = seg.from_json(fn)._local
+        elif re.match(r'.*\.(hff|h5|hdf5)$', fn, re.IGNORECASE):
+            with h5py.File(fn, u'r') as h:
+                seg._local = seg.from_hff(h)._local
+        elif re.match(r'.*\.json$', fn, re.IGNORECASE):
+            with open(fn, 'r') as f:
+                data = json.load(f)
+            seg._local = seg.from_json(data)._local
         else:
             print_date(_encode(u"Invalid EMDB-SFF file name: {}".format(fn), u'utf-8'))
             sys.exit(os.EX_DATAERR)

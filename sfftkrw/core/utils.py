@@ -8,12 +8,14 @@ A collection of helpful utilities
 """
 from __future__ import print_function, division
 
-
-
-from ..core import _decode
-import h5py
 import json
 import re
+
+import h5py
+
+from ..core import _decode
+
+UNIQUE_ID = 1
 
 
 def get_path(D, path):
@@ -95,10 +97,16 @@ def get_version(fn):
         version = root.findall('./version')[0].text
     elif re.match(r".*\.(hff|h5|hdf5)$", fn, re.IGNORECASE):
         with h5py.File(fn, 'r') as h:
-            version = h[u'version'][()]
+            version = h[u'/version'][()]
     elif re.match(r".*\.json$", fn, re.IGNORECASE):
         with open(fn, 'r') as j:
             version = json.load(j)[u'version']
     else:
         raise ValueError(u"invalid filetype: {}".format(fn))
     return _decode(version, 'utf-8')
+
+
+def get_unique_id():
+    global UNIQUE_ID
+    UNIQUE_ID = UNIQUE_ID + 1
+    return UNIQUE_ID

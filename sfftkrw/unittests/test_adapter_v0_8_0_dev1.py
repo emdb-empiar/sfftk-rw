@@ -296,10 +296,24 @@ class TestSFFExternalReference(Py23FixTestCase):
         """Interconversion to HDF5"""
         # empty
         e = adapter.SFFExternalReference()
-        e_hff = e.as_hff()
-        self.assertEqual(e_hff, (e.id, None, None, None, None, None))
-        e2 = adapter.SFFExternalReference.from_hff(e_hff)
-        self.assertEqual(e, e2)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = e.as_hff(group)
+            self.assertIn(u'{}'.format(e.id), group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                e2 = adapter.SFFExternalReference.from_hff(group)
+                self.assertEqual(e, e2)
+        # empty with id=None
+        e = adapter.SFFExternalReference(new_obj=False)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = e.as_hff(group)
+            self.assertIn(u'{}'.format(e.id), group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                e2 = adapter.SFFExternalReference.from_hff(group)
+                self.assertEqual(e, e2)
         # pop'd
         e = adapter.SFFExternalReference(
             resource=self.r,
@@ -308,22 +322,50 @@ class TestSFFExternalReference(Py23FixTestCase):
             label=self.l,
             description=self.d,
         )
-        e_hff = e.as_hff()
-        self.assertEqual(e_hff, (e.id, e.resource, e.url, e.accession, e.label, e.description))
-        e2 = adapter.SFFExternalReference.from_hff(e_hff)
-        self.assertEqual(e, e2)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = e.as_hff(group)
+            group_name = u'{}'.format(e.id)
+            self.assertIn(group_name, group)
+            self.assertIn(group_name + u'/resource', group)
+            self.assertIn(group_name + u'/url', group)
+            self.assertIn(group_name + u'/accession', group)
+            self.assertIn(group_name + u'/label', group)
+            self.assertIn(group_name + u'/description', group)
+            self.assertEqual(group[group_name + u'/id'][()], e.id)
+            self.assertEqual(group[group_name + u'/resource'][()], e.resource)
+            self.assertEqual(group[group_name + u'/url'][()], e.url)
+            self.assertEqual(group[group_name + u'/accession'][()], e.accession)
+            self.assertEqual(group[group_name + u'/label'][()], e.label)
+            self.assertEqual(group[group_name + u'/description'][()], e.description)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                e2 = adapter.SFFExternalReference.from_hff(group)
+                self.assertEqual(e, e2)
         # missing non-mandatory
         e = adapter.SFFExternalReference(
             resource=self.r,
             url=self.u,
             accession=self.a,
         )
-        e_hff = e.as_hff()
-        self.assertEqual(e_hff.resource, e.resource)
-        self.assertEqual(e_hff.url, e.url)
-        self.assertEqual(e_hff.accession, e.accession)
-        e2 = adapter.SFFExternalReference.from_hff(e_hff)
-        self.assertEqual(e, e2)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = e.as_hff(group)
+            group_name = u'{}'.format(e.id)
+            self.assertIn(group_name, group)
+            self.assertIn(group_name + u'/resource', group)
+            self.assertIn(group_name + u'/url', group)
+            self.assertIn(group_name + u'/accession', group)
+            self.assertNotIn(group_name + u'/label', group)
+            self.assertNotIn(group_name + u'/description', group)
+            self.assertEqual(group[group_name + u'/id'][()], e.id)
+            self.assertEqual(group[group_name + u'/resource'][()], e.resource)
+            self.assertEqual(group[group_name + u'/url'][()], e.url)
+            self.assertEqual(group[group_name + u'/accession'][()], e.accession)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                e2 = adapter.SFFExternalReference.from_hff(group)
+                self.assertEqual(e, e2)
 
 
 class TestSFFExternalReferenceList(Py23FixTestCase):
@@ -493,9 +535,20 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = ee.as_hff(group)
+            self.stderrh(h)
             self.assertIn(u'external_references', group)
             self.assertEqual(len(ee), 0)
             self.assertEqual(len(ee), len(group[u'external_references']))
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            ee2 = adapter.SFFExternalReferenceList.from_hff(h[u'container'])
+            self.assertEqual(ee, ee2)
+        # pop'd but empty extrefs
+        ee = adapter.SFFExternalReferenceList()
+        e = adapter.SFFExternalReference()
+        ee.append(e)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = ee.as_hff(group)
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             ee2 = adapter.SFFExternalReferenceList.from_hff(h[u'container'])
             self.assertEqual(ee, ee2)
@@ -512,19 +565,14 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = E.as_hff(group)
-            self.stderrh(group)
             self.assertIn(u'external_references', group)
             self.assertTrue(len(ee) > 0)
             self.assertEqual(len(ee), len(group[u'external_references']))
-            for i in _xrange(self._no_items):
-                self.assertEqual(E[i].id, group[u'external_references'][i][u'id'])
-                self.assertEqual(E[i].resource, group[u'external_references'][i][u'resource'])
-                self.assertEqual(E[i].url, group[u'external_references'][i][u'url'])
-                self.assertEqual(E[i].accession, group[u'external_references'][i][u'accession'])
-                self.assertEqual(E[i].label, group[u'external_references'][i][u'label'])
-                self.assertEqual(E[i].description, group[u'external_references'][i][u'description'])
+            self.stderrh(h)
+            for er in E:
+                self.assertEqual(er,
+                             adapter.SFFExternalReference.from_hff(group[u'external_references/{}'.format(er.id)]))
         with h5py.File(self.test_hdf5_fn, u'r') as h:
-            self.stderrh(h[u'container'])
             ee2 = adapter.SFFExternalReferenceList.from_hff(h[u'container'])
 
 
@@ -692,43 +740,37 @@ class TestSFFGlobalExternalReferenceList(Py23FixTestCase):
     def test_hff(self):
         """Interconvert to HDF5"""
         # empty
-        ge = adapter.SFFGlobalExternalReferenceList()
+        G = adapter.SFFGlobalExternalReferenceList()
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
-            group = ge.as_hff(group)
+            group = G.as_hff(group)
             self.assertIn(u'global_external_references', group)
-            self.assertEqual(len(ge), 0)
-            self.assertEqual(len(ge), len(group[u'global_external_references']))
+            self.assertEqual(len(G), 0)
+            self.assertEqual(len(G), len(group[u'global_external_references']))
         with h5py.File(self.test_hdf5_fn, u'r') as h:
-            ge2 = adapter.SFFGlobalExternalReferenceList.from_hff(h[u'container'])
-            self.assertEqual(ge, ge2)
+            G2 = adapter.SFFGlobalExternalReferenceList.from_hff(h[u'container'])
+            self.assertEqual(G, G2)
         # pop'd
-        ge = [adapter.SFFExternalReference(
+        G = adapter.SFFGlobalExternalReferenceList()
+        [G.append(adapter.SFFExternalReference(
             resource=self.rr[i],
             url=self.uu[i],
             accession=self.aa[i],
             label=self.ll[i],
             description=self.dd[i]
-        ) for i in _xrange(self._no_items)]
-        G = adapter.SFFGlobalExternalReferenceList()
-        [G.append(e) for e in ge]
+        )) for i in _xrange(self._no_items)]
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = G.as_hff(group)
+            # self.stderrh(h)
             self.assertIn(u'global_external_references', group)
-            self.assertTrue(len(ge) > 0)
-            self.assertEqual(len(ge), len(group[u'global_external_references']))
-            for i in _xrange(self._no_items):
-                self.assertEqual(G[i].id, group[u'global_external_references'][i][u'id'])
-                self.assertEqual(G[i].resource, group[u'global_external_references'][i][u'resource'])
-                self.assertEqual(G[i].url, group[u'global_external_references'][i][u'url'])
-                self.assertEqual(G[i].accession, group[u'global_external_references'][i][u'accession'])
-                self.assertEqual(G[i].label, group[u'global_external_references'][i][u'label'])
-                self.assertEqual(G[i].description, group[u'global_external_references'][i][u'description'])
+            self.assertTrue(len(G) > 0)
+            self.assertEqual(len(G), len(group[u'global_external_references']))
+            for er in G:
+                self.assertEqual(er, adapter.SFFExternalReference.from_hff(group[u'global_external_references/{}'.format(er.id)]))
         with h5py.File(self.test_hdf5_fn, u'r') as h:
-            self.stderrh(h[u'container'])
-            ge2 = adapter.SFFGlobalExternalReferenceList.from_hff(h[u'container'])
-            self.stderr(ge2)
+            G2 = adapter.SFFGlobalExternalReferenceList.from_hff(h[u'container'])
+            self.assertEqual(G, G2)
 
 
 class TestSFFBiologicalAnnotation(Py23FixTestCase):
@@ -813,61 +855,6 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
         self.assertEqual(b.number_of_instances, self.no)
         self.assertEqual(b.external_references, self.external_references)
 
-    # def test_hff(self):
-    #     """Test conversion to and from HDF5"""
-    #     # empty case
-    #     b_empty = adapter.SFFBiologicalAnnotation()
-    #     # _print(b_empty)
-    #     hff_f = tempfile.NamedTemporaryFile()
-    #     hff_f.name += '.hff'
-    #     with h5py.File(hff_f.name, 'w') as h:
-    #         group = h.create_group(u'test')
-    #         group = b_empty.as_hff(group)
-    #
-    #         b2_empty = adapter.SFFBiologicalAnnotation.from_hff(group[u'biologicalAnnotation'])
-    #         # _print(b2_empty)
-    #
-    #         self.assertEqual(b_empty.name, b2_empty.name)
-    #         self.assertEqual(b_empty.name, b2_empty.name)
-    #         self.assertEqual(b_empty.description, b2_empty.description)
-    #         self.assertEqual(b_empty.number_of_instances, b2_empty.number_of_instances)
-    #         self.assertEqual(b_empty.external_references, b2_empty.external_references)
-    #     # get rid of the file
-    #     os.remove(hff_f.name)
-    #
-    #     # non-empty case
-    #     b_full = adapter.SFFBiologicalAnnotation()
-    #     b_full.name = ' '.join(rw.random_words(count=2))
-    #     b_full.description = li.get_sentence()
-    #     es = adapter.SFFExternalReferenceList()
-    #     no_es = _random_integer(2, 10)
-    #     for _ in _xrange(no_es):
-    #         e = adapter.SFFExternalReference()
-    #         e.type = rw.random_word()
-    #         e.other_type = rw.random_word()
-    #         e.value = rw.random_word()
-    #         e.label = ' '.join(rw.random_words(count=3))
-    #         e.description = li.get_sentence()
-    #         es.append(e)
-    #     b_full.external_references = es
-    #     hff_f = tempfile.NamedTemporaryFile()
-    #     hff_f.name += '.hff'
-    #     # _print(b_full)
-    #     with h5py.File(hff_f.name, 'w') as h:
-    #         group = h.create_group(u'test')
-    #         group = b_full.as_hff(group)
-    #
-    #         b2_full = adapter.SFFBiologicalAnnotation.from_hff(group[u'biologicalAnnotation'])
-    #         # _print(b2_full)
-    #
-    #         self.assertEqual(b_full.name, b2_full.name)
-    #         self.assertEqual(b_full.name, b2_full.name)
-    #         self.assertEqual(b_full.description, b2_full.description)
-    #         self.assertEqual(b_full.number_of_instances, b2_full.number_of_instances)
-    #         self.assertEqual(b_full.external_references, b2_full.external_references)
-    #     # get rid of the file
-    #     os.remove(hff_f.name)
-    #
     def test_as_json(self):
         """Test conversion to and from JSON"""
         # empty case
@@ -963,11 +950,10 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
             self.assertIn(u'number_of_instances', group[u'biological_annotation'])
             self.assertEqual(group[u'biological_annotation/number_of_instances'][()], b_full.number_of_instances)
             self.assertIn(u'external_references', group[u'biological_annotation'])
-            self.assertEqual(len(group[u'biological_annotation/external_references'][()]),
+            self.assertEqual(len(group[u'biological_annotation/external_references']),
                              len(b_full.external_references))
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             b_full2 = adapter.SFFBiologicalAnnotation.from_hff(h[u'container'])
-            self.stderr(b_full2)
             self.assertEqual(b_full, b_full2)
 
 
@@ -1082,10 +1068,10 @@ class TestSFFVolumeStructure(Py23FixTestCase):
         self.assertEqual(vs.cols, self.cols)
         self.assertEqual(vs.rows, self.rows)
         self.assertEqual(vs.sections, self.sections)
-        self.assertEqual(vs.value, (self.cols, self.rows, self.sections))
-        _c, _r, _s = _random_integer(), _random_integer(), _random_integer()
-        vs.value = _c, _r, _s
-        self.assertEqual(vs.value, (_c, _r, _s))
+        self.assertEqual(vs.value, (self.rows, self.cols, self.sections))
+        _r, _c, _s = _random_integer(), _random_integer(), _random_integer()
+        vs.value = _r, _c, _s
+        self.assertEqual(vs.value, (_r, _c, _s))
         self.assertEqual(vs.cols, _c)
         self.assertEqual(vs.rows, _r)
         self.assertEqual(vs.sections, _s)
@@ -1116,17 +1102,32 @@ class TestSFFVolumeStructure(Py23FixTestCase):
     def test_hff(self):
         # empty
         vs = adapter.SFFVolumeStructure()
-        vs_hff = vs.as_hff()
-        self.assertEqual(vs_hff, (None, None, None))
-        vs2 = adapter.SFFVolumeStructure.from_hff(vs_hff)
-        self.assertEqual(vs, vs2)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = vs.as_hff(group)
+            self.assertIn(u'size', group)
+            self.assertNotIn(u'size/rows', group)
+            self.assertNotIn(u'size/cols', group)
+            self.assertNotIn(u'size/sections', group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            vs2 = adapter.SFFVolumeStructure.from_hff(h[u'container'])
+            self.assertEqual(vs, vs2)
         # non-empty
         rows, cols, sections = _random_integers(count=3)
         vs = adapter.SFFVolumeStructure(rows=rows, cols=cols, sections=sections)
-        vs_hff = vs.as_hff(vs)
-        self.assertEqual(vs_hff, (rows, cols, sections))
-        vs2 = adapter.SFFVolumeStructure.from_hff(vs_hff)
-        self.assertEqual(vs, vs2)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = vs.as_hff(group)
+            self.assertIn(u'size', group)
+            self.assertIn(u'size/rows', group)
+            self.assertIn(u'size/cols', group)
+            self.assertIn(u'size/sections', group)
+            self.assertEqual(group[u'size/rows'][()], rows)
+            self.assertEqual(group[u'size/cols'][()], cols)
+            self.assertEqual(group[u'size/sections'][()], sections)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            vs2 = adapter.SFFVolumeStructure.from_hff(h[u'container'])
+            self.assertEqual(vs, vs2)
 
 
 class TestSFFVolumeIndex(Py23FixTestCase):
@@ -1337,7 +1338,7 @@ class TestSFFLattice(Py23FixTestCase):
         l = adapter.SFFLattice()
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
-            group = l.as_hff(group, name=_str(l.id))
+            group = l.as_hff(group)
             self.assertIn(u'{}'.format(l.id), group)
             self.assertIn(u'{}/id'.format(l.id), group)
             self.assertIn(u'{}/mode'.format(l.id), group)
@@ -1346,7 +1347,7 @@ class TestSFFLattice(Py23FixTestCase):
             self.assertIn(u'{}/start'.format(l.id), group)
             self.assertNotIn(u'{}/data'.format(l.id), group)
         with h5py.File(self.test_hdf5_fn, u'r') as h:
-            l2 = adapter.SFFLattice.from_hff(h[u'container'], name=_str(l.id))
+            l2 = adapter.SFFLattice.from_hff(h[u'container'])
             self.assertEqual(l, l2)
         # non-empty case
         rows, cols, sections = _random_integers(count=3, start=5, stop=10)
@@ -1354,7 +1355,7 @@ class TestSFFLattice(Py23FixTestCase):
         l = adapter.SFFLattice.from_array(array)
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
-            group = l.as_hff(group, name=_str(l.id))
+            group = l.as_hff(group)
             self.assertIn(u'{}'.format(l.id), group)
             self.assertIn(u'{}/id'.format(l.id), group)
             self.assertIn(u'{}/mode'.format(l.id), group)
@@ -1365,12 +1366,13 @@ class TestSFFLattice(Py23FixTestCase):
             self.assertEqual(group[u'{}/id'.format(l.id)][()], l.id)
             self.assertEqual(group[u'{}/mode'.format(l.id)][()], _encode(l.mode, 'utf-8'))
             self.assertEqual(group[u'{}/endianness'.format(l.id)][()], _encode(l.endianness, 'utf-8'))
-            self.assertCountEqual(group[u'{}/size'.format(l.id)][()], l.size.as_hff())
-            self.assertCountEqual(group[u'{}/start'.format(l.id)][()], l.start.as_hff())
+            self.assertEqual(adapter.SFFVolumeStructure.from_hff(group[u'{}'.format(l.id)]), l.size)
+            self.assertEqual(adapter.SFFVolumeIndex.from_hff(group[u'{}'.format(l.id)]), l.start)
             self.assertEqual(group[u'{}/data'.format(l.id)][()], _encode(l.data, 'utf-8'))
         with h5py.File(self.test_hdf5_fn, u'r') as h:
-            l2 = adapter.SFFLattice.from_hff(h[u'container'], name=_str(l.id))
-            self.assertEqual(l.id, l2.id)
+            for group in h[u'container'].values():
+                l2 = adapter.SFFLattice.from_hff(group)
+                self.assertEqual(l, l2)
 
 
 class TestSFFLatticeList(Py23FixTestCase):
@@ -1511,9 +1513,12 @@ class TestSFFLatticeList(Py23FixTestCase):
             group = L.as_hff(group)
             self.assertIn(u'lattice_list', group)
             self.assertEqual(len(group[u'lattice_list']), 0)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            L2 = adapter.SFFLatticeList.from_hff(h[u'container'])
+            self.assertEqual(L, L2)
         # non-empty case
         L = adapter.SFFLatticeList()
-        _no_lats = _random_integer(start=2, stop=5)
+        _no_lats = _random_integer(start=2, stop=15)
         for _ in _xrange(_no_lats):
             _mode, _endianness, _size, _start, _data = TestSFFLatticeList.generate_sff_data()
             L.append(
@@ -1530,6 +1535,15 @@ class TestSFFLatticeList(Py23FixTestCase):
             group = L.as_hff(group)
             self.assertIn(u'lattice_list', group)
             self.assertEqual(len(group[u'lattice_list']), len(L))
+            for i in _xrange(_no_lats):
+                self.assertEqual(L[i].mode, _decode(group[u'lattice_list'][_str(i)][u'mode'][()], 'utf-8'))
+                self.assertEqual(L[i].endianness, _decode(group[u'lattice_list'][_str(i)][u'endianness'][()], 'utf-8'))
+                self.assertEqual(L[i].size, adapter.SFFVolumeStructure.from_hff(group[u'lattice_list/{}'.format(i)]))
+                self.assertEqual(L[i].start, adapter.SFFVolumeIndex.from_hff(group[u'lattice_list/{}'.format(i)]))
+                self.assertEqual(L[i].data, group[u'lattice_list'][_str(i)][u'data'][()])
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            L2 = adapter.SFFLatticeList.from_hff(h[u'container'])
+            self.assertEqual(L, L2)
 
 
 class TestSFFVertices(Py23FixTestCase):
@@ -1745,7 +1759,6 @@ class TestSFFVertices(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = v.as_hff(group)
-            self.stderrh(group)
             self.assertIn(u'vertices', group)
             self.assertNotIn(u'vertices/num_vertices', group)
             self.assertIn(u'vertices/mode', group)
@@ -1764,7 +1777,6 @@ class TestSFFVertices(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = v.as_hff(group)
-            self.stderrh(group)
             self.assertIn(u'vertices', group)
             self.assertIn(u'vertices/num_vertices', group)
             self.assertEqual(group[u'vertices/num_vertices'][()], v.num_vertices)
@@ -1992,7 +2004,6 @@ class TestSFFNormals(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = n.as_hff(group)
-            self.stderrh(group)
             self.assertIn(u'normals', group)
             self.assertNotIn(u'normals/num_normals', group)
             self.assertIn(u'normals/mode', group)
@@ -2011,7 +2022,6 @@ class TestSFFNormals(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = n.as_hff(group)
-            self.stderrh(group)
             self.assertIn(u'normals', group)
             self.assertIn(u'normals/num_normals', group)
             self.assertEqual(group[u'normals/num_normals'][()], n.num_normals)
@@ -2238,7 +2248,6 @@ class TestSFFTriangles(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = n.as_hff(group)
-            self.stderrh(group)
             self.assertIn(u'triangles', group)
             self.assertNotIn(u'triangles/num_triangles', group)
             self.assertIn(u'triangles/mode', group)
@@ -2257,7 +2266,6 @@ class TestSFFTriangles(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = n.as_hff(group)
-            self.stderrh(group)
             self.assertIn(u'triangles', group)
             self.assertIn(u'triangles/num_triangles', group)
             self.assertEqual(group[u'triangles/num_triangles'][()], n.num_triangles)
@@ -2374,15 +2382,16 @@ class TestSFFMesh(Py23FixTestCase):
         m = adapter.SFFMesh()
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
-            group = m.as_hff(group, name=_str(m.id))
+            group = m.as_hff(group)
             self.assertIn(u'{}'.format(m.id), group)
             self.assertIn(u'{}/id'.format(m.id), group)
             self.assertNotIn(u'{}/vertices'.format(m.id), group)
             self.assertNotIn(u'{}/normals'.format(m.id), group)
             self.assertNotIn(u'{}/triangles'.format(m.id), group)
         with h5py.File(self.test_hdf5_fn, u'r') as h:
-            m2 = adapter.SFFMesh.from_hff(h[u'container'], name=_str(m.id))
-            self.assertEqual(m, m2)
+            for group in h[u'container'].values():
+                m2 = adapter.SFFMesh.from_hff(group)
+                self.assertEqual(m, m2)
         # non-empty
         m = adapter.SFFMesh(
             vertices=adapter.SFFVertices.from_array(self.vertices_data),
@@ -2391,15 +2400,16 @@ class TestSFFMesh(Py23FixTestCase):
         )
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
-            group = m.as_hff(group, name=_str(m.id))
+            group = m.as_hff(group)
             self.assertIn(u'{}'.format(m.id), group)
             self.assertIn(u'{}/id'.format(m.id), group)
             self.assertIn(u'{}/vertices'.format(m.id), group)
             self.assertIn(u'{}/normals'.format(m.id), group)
             self.assertIn(u'{}/triangles'.format(m.id), group)
         with h5py.File(self.test_hdf5_fn, u'r') as h:
-            m2 = adapter.SFFMesh.from_hff(h[u'container'], name=_str(m.id))
-            self.assertEqual(m, m2)
+            for group in h[u'container'].values():
+                m2 = adapter.SFFMesh.from_hff(group)
+                self.assertEqual(m, m2)
 
 
 class TestSFFMeshList(Py23FixTestCase):
@@ -2519,6 +2529,41 @@ class TestSFFMeshList(Py23FixTestCase):
         ])
         M2 = adapter.SFFMeshList.from_json(M_json)
         self.assertEqual(M, M2)
+
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # empty
+        M = adapter.SFFMeshList()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = M.as_hff(group)
+            self.assertIn(u'mesh_list', group)
+            self.assertEqual(len(group[u'mesh_list']), 0)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            M2 = adapter.SFFMeshList.from_hff(h[u'container'])
+            self.assertEqual(M, M2)
+        # non-empty
+        _no_items = _random_integer(start=2, stop=14)
+        M = adapter.SFFMeshList()
+        for _ in _xrange(_no_items):
+            vs, ts = TestSFFMeshList.generate_sff_data()
+            M.append(
+                adapter.SFFMesh(
+                    vertices=vs,
+                    triangles=ts
+                )
+            )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = M.as_hff(group)
+            self.assertIn(u'mesh_list', group)
+            self.assertEqual(len(group[u'mesh_list']), len(M))
+            # check that each mesh is exactly the same as in the HDF5 file
+            for i in _xrange(_no_items):
+                self.assertEqual(M[i], adapter.SFFMesh.from_hff(group[u'mesh_list/{}'.format(i)]))
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            M2 = adapter.SFFMeshList.from_hff(h[u'container'])
+            self.assertEqual(M, M2)
 
 
 class TestSFFBoundingBox(Py23FixTestCase):
@@ -2649,6 +2694,48 @@ class TestSFFBoundingBox(Py23FixTestCase):
         self.assertEqual(bb.zmin, 0)
         self.assertIsNone(bb.zmax)
 
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # default
+        bb = adapter.SFFBoundingBox()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = bb.as_hff(group)
+            self.assertIn(u'bounding_box', group)
+            self.assertEqual(group[u'bounding_box/xmin'][()], 0)
+            self.assertNotIn(u'bounding_box/xmax', group)
+            self.assertEqual(group[u'bounding_box/ymin'][()], 0)
+            self.assertNotIn(u'bounding_box/ymax', group)
+            self.assertEqual(group[u'bounding_box/zmin'][()], 0)
+            self.assertNotIn(u'bounding_box/zmax', group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            bb2 = adapter.SFFBoundingBox.from_hff(h[u'container'])
+            self.assertEqual(bb, bb2)
+        # non-default
+        xmin, ymin, zmin = _random_floats(count=3, multiplier=1)
+        xmax, ymax, zmax = _random_floats(count=3, multiplier=1000)
+        bb = adapter.SFFBoundingBox(
+            xmin=xmin,
+            xmax=xmax,
+            ymin=ymin,
+            ymax=ymax,
+            zmin=zmin,
+            zmax=zmax
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = bb.as_hff(group)
+            self.assertIn(u'bounding_box', group)
+            self.assertEqual(group[u'bounding_box/xmin'][()], xmin)
+            self.assertEqual(group[u'bounding_box/xmax'][()], xmax)
+            self.assertEqual(group[u'bounding_box/ymin'][()], ymin)
+            self.assertEqual(group[u'bounding_box/ymax'][()], ymax)
+            self.assertEqual(group[u'bounding_box/zmin'][()], zmin)
+            self.assertEqual(group[u'bounding_box/zmax'][()], zmax)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            bb2 = adapter.SFFBoundingBox.from_hff(h[u'container'])
+            self.assertEqual(bb, bb2)
+
 
 class TestSFFCone(Py23FixTestCase):
     """Test the SFFCone class"""
@@ -2722,6 +2809,47 @@ class TestSFFCone(Py23FixTestCase):
         c2 = adapter.SFFCone.from_json(c_json)
         self.assertEqual(c, c2)
 
+    def test_hff(self):
+        # empty case
+        cone = adapter.SFFCone()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = cone.as_hff(group)
+            group_name = u'{}'.format(cone.id)
+            self.assertIn(group_name, group)
+            self.assertIn(u'id', group[group_name])
+            self.assertIn(u'shape', group[group_name])
+            self.assertEqual(group[group_name + '/shape'][()], u'cone')
+            self.assertNotIn(u'height', group[group_name])
+            self.assertNotIn(u'bottom_radius', group[group_name])
+            self.assertNotIn(u'transform_id', group[group_name])
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                cone2 = adapter.SFFCone.from_hff(group)
+                self.assertEqual(cone, cone2)
+        # non-empty case
+        height, bottom_radius = _random_floats(count=2, multiplier=10)
+        transform_id = _random_integer(start=0)
+        cone = adapter.SFFCone(
+            height=height,
+            bottom_radius=bottom_radius,
+            transform_id=transform_id
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = cone.as_hff(group)
+            group_name = u'{}'.format(cone.id)
+            self.assertIn(group_name, group)
+            self.assertIn(u'id', group[group_name])
+            self.assertIn(u'shape', group[group_name])
+            self.assertEqual(group[u'{}/height'.format(cone.id)][()], height)
+            self.assertEqual(group[u'{}/bottom_radius'.format(cone.id)][()], bottom_radius)
+            self.assertEqual(group[u'{}/transform_id'.format(cone.id)][()], transform_id)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                cone2 = adapter.SFFCone.from_hff(group)
+                self.assertEqual(cone, cone2)
+
 
 class TestSFFCuboid(Py23FixTestCase):
     """Test the SFFCuboid class"""
@@ -2789,6 +2917,51 @@ class TestSFFCuboid(Py23FixTestCase):
         })
         c2 = adapter.SFFCuboid.from_json(c_json)
         self.assertEqual(c, c2)
+
+    def test_hff(self):
+        # empty case
+        cuboid = adapter.SFFCuboid()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = cuboid.as_hff(group)
+            group_name = u'{}'.format(cuboid.id)
+            self.assertIn(group_name, group)
+            self.assertIn(u'id', group[group_name])
+            self.assertIn(u'shape', group[group_name])
+            self.assertEqual(group[group_name + u'/shape'][()], u'cuboid')
+            self.assertNotIn(u'x', group[group_name])
+            self.assertNotIn(u'y', group[group_name])
+            self.assertNotIn(u'z', group[group_name])
+            self.assertNotIn(u'transform_id', group[group_name])
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                cuboid2 = adapter.SFFCuboid.from_hff(group)
+                self.assertEqual(cuboid, cuboid2)
+        # non-empty case
+        x, y, z = _random_floats(count=3, multiplier=10)
+        transform_id = _random_integer(start=0)
+        cuboid = adapter.SFFCuboid(
+            x=x,
+            y=y,
+            z=z,
+            transform_id=transform_id
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = cuboid.as_hff(group)
+            group_name = u'{}'.format(cuboid.id)
+            self.assertIn(group_name, group)
+            self.assertIn(u'id', group[group_name])
+            self.assertIn(u'shape', group[group_name])
+            self.assertEqual(group[group_name + u'/shape'][()], u'cuboid')
+            self.assertEqual(group[u'{}/x'.format(cuboid.id)][()], x)
+            self.assertEqual(group[u'{}/y'.format(cuboid.id)][()], y)
+            self.assertEqual(group[u'{}/z'.format(cuboid.id)][()], z)
+            self.assertEqual(group[u'{}/transform_id'.format(cuboid.id)][()], transform_id)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                cuboid2 = adapter.SFFCuboid.from_hff(group)
+                self.assertEqual(cuboid, cuboid2)
 
 
 class TestSFFCylinder(Py23FixTestCase):
@@ -2860,6 +3033,48 @@ class TestSFFCylinder(Py23FixTestCase):
         c2 = adapter.SFFCylinder.from_json(c_json)
         self.assertEqual(c, c2)
 
+    def test_hff(self):
+        # empty case
+        cylinder = adapter.SFFCylinder()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = cylinder.as_hff(group)
+            group_name = u'{}'.format(cylinder.id)
+            self.assertIn(group_name, group)
+            self.assertIn(u'id', group[group_name])
+            self.assertIn(u'shape', group[group_name])
+            self.assertEqual(group[group_name + u'/shape'][()], u'cylinder')
+            self.assertNotIn(u'height', group[group_name])
+            self.assertNotIn(u'diameter', group[group_name])
+            self.assertNotIn(u'transform_id', group[group_name])
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                cylinder2 = adapter.SFFCylinder.from_hff(group)
+                self.assertEqual(cylinder, cylinder2)
+        # non-empty case
+        height, diameter = _random_floats(count=2, multiplier=10)
+        transform_id = _random_integer(start=0)
+        cylinder = adapter.SFFCylinder(
+            height=height,
+            diameter=diameter,
+            transform_id=transform_id
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = cylinder.as_hff(group)
+            group_name = u'{}'.format(cylinder.id)
+            self.assertIn(group_name, group)
+            self.assertIn(u'id', group[group_name])
+            self.assertIn(u'shape', group[group_name])
+            self.assertEqual(group[group_name + u'/shape'][()], u'cylinder')
+            self.assertEqual(group[u'{}/height'.format(cylinder.id)][()], height)
+            self.assertEqual(group[u'{}/diameter'.format(cylinder.id)][()], diameter)
+            self.assertEqual(group[u'{}/transform_id'.format(cylinder.id)][()], transform_id)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                cylinder2 = adapter.SFFCylinder.from_hff(group)
+                self.assertEqual(cylinder, cylinder2)
+
 
 class TestSFFEllipsoid(Py23FixTestCase):
     """Test the SFFEllipsoid class"""
@@ -2927,6 +3142,51 @@ class TestSFFEllipsoid(Py23FixTestCase):
         })
         e2 = adapter.SFFEllipsoid.from_json(e_json)
         self.assertEqual(e, e2)
+
+    def test_hff(self):
+        # empty case
+        ellipsoid = adapter.SFFEllipsoid()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = ellipsoid.as_hff(group)
+            group_name = u'{}'.format(ellipsoid.id)
+            self.assertIn(group_name, group)
+            self.assertIn(u'id', group[group_name])
+            self.assertIn(u'shape', group[group_name])
+            self.assertEqual(group[group_name + u'/shape'][()], u'ellipsoid')
+            self.assertNotIn(u'x', group[group_name])
+            self.assertNotIn(u'y', group[group_name])
+            self.assertNotIn(u'z', group[group_name])
+            self.assertNotIn(u'transform_id', group[group_name])
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                ellipsoid2 = adapter.SFFEllipsoid.from_hff(group)
+                self.assertEqual(ellipsoid, ellipsoid2)
+        # non-empty case
+        x, y, z = _random_floats(count=3, multiplier=10)
+        transform_id = _random_integer(start=0)
+        ellipsoid = adapter.SFFEllipsoid(
+            x=x,
+            y=y,
+            z=z,
+            transform_id=transform_id
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = ellipsoid.as_hff(group)
+            group_name = u'{}'.format(ellipsoid.id)
+            self.assertIn(group_name, group)
+            self.assertIn(u'id', group[group_name])
+            self.assertIn(u'shape', group[group_name])
+            self.assertEqual(group[group_name + u'/shape'][()], u'ellipsoid')
+            self.assertEqual(group[u'{}/x'.format(ellipsoid.id)][()], x)
+            self.assertEqual(group[u'{}/y'.format(ellipsoid.id)][()], y)
+            self.assertEqual(group[u'{}/z'.format(ellipsoid.id)][()], z)
+            self.assertEqual(group[u'{}/transform_id'.format(ellipsoid.id)][()], transform_id)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                ellipsoid2 = adapter.SFFEllipsoid.from_hff(group)
+                self.assertEqual(ellipsoid, ellipsoid2)
 
 
 class TestSFFShapePrimitiveList(Py23FixTestCase):
@@ -3044,6 +3304,82 @@ class TestSFFShapePrimitiveList(Py23FixTestCase):
         S_json = S.as_json()
         S2 = adapter.SFFShapePrimitiveList.from_json(S_json)
         self.assertEqual(S, S2)
+
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # empty
+        S = adapter.SFFShapePrimitiveList()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = S.as_hff(group)
+            self.assertIn(u'shape_primitive_list', group)
+            self.assertEqual(len(group[u'shape_primitive_list']), 0)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            S2 = adapter.SFFShapePrimitiveList.from_hff(h[u'container'])
+            self.assertEqual(S, S2)
+        # non-empty
+        S = adapter.SFFShapePrimitiveList()
+        no_cones = _random_integer(start=2, stop=10)
+        height, bottom_radius = _random_floats(count=2, multiplier=10)
+        transform_id = _random_integer()
+        [S.append(
+            adapter.SFFCone(
+                height=height,
+                bottom_radius=bottom_radius,
+                transform_id=transform_id,
+            )
+        ) for _ in _xrange(no_cones)]
+        no_cylinders = _random_integer(start=2, stop=10)
+        transform_id = _random_integer()
+        [S.append(
+            adapter.SFFCylinder(
+                height=height,
+                diameter=bottom_radius,
+                transform_id=transform_id,
+            )
+        ) for _ in _xrange(no_cylinders)]
+        x, y, z = _random_floats(count=3, multiplier=100)
+        no_cuboids = _random_integer(start=2, stop=10)
+        transform_id = _random_integer()
+        [S.append(
+            adapter.SFFCuboid(
+                x=x,
+                y=y,
+                z=z,
+                transform_id=transform_id,
+            )
+        ) for _ in _xrange(no_cuboids)]
+        no_ellipsoids = _random_integer(start=2, stop=10)
+        transform_id = _random_integer()
+        [S.append(
+            adapter.SFFEllipsoid(
+                x=x,
+                y=y,
+                z=z,
+                transform_id=transform_id,
+            )
+        ) for _ in _xrange(no_ellipsoids)]
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = S.as_hff(group)
+            self.assertIn(u'shape_primitive_list', group)
+            self.assertEqual(len(group[u'shape_primitive_list']), len(S))
+            for i, s in enumerate(S):
+                self.assertEqual(s.id, group[u'shape_primitive_list/{}/id'.format(i)][()])
+                if isinstance(s, adapter.SFFCone):
+                    self.assertEqual(s.height, group[u'shape_primitive_list/{}/height'.format(i)][()])
+                    self.assertEqual(s.bottom_radius, group[u'shape_primitive_list/{}/bottom_radius'.format(i)][()])
+                elif isinstance(s, adapter.SFFCylinder):
+                    self.assertEqual(s.height, group[u'shape_primitive_list/{}/height'.format(i)][()])
+                    self.assertEqual(s.diameter, group[u'shape_primitive_list/{}/diameter'.format(i)][()])
+                elif isinstance(s, (adapter.SFFCuboid, adapter.SFFEllipsoid)):
+                    self.assertEqual(s.x, group[u'shape_primitive_list/{}/x'.format(i)][()])
+                    self.assertEqual(s.y, group[u'shape_primitive_list/{}/y'.format(i)][()])
+                    self.assertEqual(s.z, group[u'shape_primitive_list/{}/z'.format(i)][()])
+                self.assertEqual(s.transform_id, group[u'shape_primitive_list/{}/transform_id'.format(i)][()])
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            S2 = adapter.SFFShapePrimitiveList.from_hff(h[u'container'])
+            self.assertEqual(S, S2)
 
 
 class TestSFFSegment(Py23FixTestCase):
@@ -3322,6 +3658,88 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertEqual(s_json[u'biological_annotation'][u'number_of_instances'],
                          s.biological_annotation.number_of_instances)
 
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # empty
+        s = adapter.SFFSegment()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = s.as_hff(group)
+            group_name = u'{}'.format(s.id)
+            self.assertIn(group_name, group)
+            self.assertIn(group_name + '/id', group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                s2 = adapter.SFFSegment.from_hff(group)
+                self.assertEqual(s, s2)
+        # non-empty
+        external_references = adapter.SFFExternalReferenceList()
+        [external_references.append(
+            adapter.SFFExternalReference(
+                resource=rw.random_word(),
+                url='https://{}.com/{}/{}'.format(*rw.random_words(count=3)),
+                accession=rw.random_word(),
+                label=' '.join(rw.random_words(count=2)),
+                description=li.get_sentence(),
+            )
+        ) for _ in _xrange(_random_integer(start=2, stop=5))]
+        biological_annotation = adapter.SFFBiologicalAnnotation(
+            name=' '.join(rw.random_words(count=3)),
+            description=li.get_sentence(),
+            external_references=external_references,
+        )
+        mesh_list = adapter.SFFMeshList()
+        [mesh_list.append(
+            adapter.SFFMesh(
+                vertices=adapter.SFFVertices.from_array(numpy.random.rand(4, 3)),
+                triangles=adapter.SFFTriangles.from_array(numpy.random.randint(0, 4, size=(4, 3)))
+            )
+        ) for _ in _xrange(_random_integer(start=3, stop=5))]
+        shape_primitive_list = adapter.SFFShapePrimitiveList()
+        [shape_primitive_list.append(
+            random.choice([
+                adapter.SFFCone(height=_random_float(multiplier=10), bottom_radius=_random_float(multiplier=10)),
+                adapter.SFFCylinder(height=_random_float(multiplier=10), diameter=_random_float(multiplier=10)),
+                adapter.SFFCuboid(x=_random_float(multiplier=10), y=_random_float(multiplier=10),
+                                  z=_random_float(multiplier=10)),
+                adapter.SFFEllipsoid(x=_random_float(multiplier=10), y=_random_float(multiplier=10),
+                                     z=_random_float(multiplier=10))
+            ])
+        ) for _ in _xrange(_random_integer(start=3, stop=6))]
+        s = adapter.SFFSegment(
+            colour=adapter.SFFRGBA(random_colour=True),
+            biological_annotation=biological_annotation,
+            mesh_list=mesh_list,
+            three_d_volume=adapter.SFFThreeDVolume(
+                lattice_id=_random_integer(),
+                value=_random_integer(),
+            ),
+            shape_primitive_list=shape_primitive_list,
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = s.as_hff(group)
+            group_name = u'{}'.format(s.id)
+            self.assertIn(group_name, group)
+            self.assertIn(group_name + '/id', group)
+            self.assertIn(group_name + '/parent_id', group)
+            self.assertIn(group_name + '/biological_annotation', group)
+            self.assertIn(group_name + '/colour', group)
+            self.assertIn(group_name + '/mesh_list', group)
+            self.assertIn(group_name + '/three_d_volume', group)
+            self.assertIn(group_name + '/shape_primitive_list', group)
+            self.assertEqual(group[group_name + '/id'][()], s.id)
+            self.assertEqual(group[group_name + '/parent_id'][()], s.parent_id)
+            self.assertCountEqual(group[group_name + '/colour'][()], s.colour.value)
+            self.assertEqual(adapter.SFFBiologicalAnnotation.from_hff(group[group_name]), s.biological_annotation)
+            self.assertEqual(adapter.SFFMeshList.from_hff(group[group_name]), s.mesh_list)
+            self.assertEqual(adapter.SFFThreeDVolume.from_hff(group[group_name]), s.three_d_volume)
+            self.assertEqual(adapter.SFFShapePrimitiveList.from_hff(group[group_name]), s.shape_primitive_list)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                s2 = adapter.SFFSegment.from_hff(group)
+                self.assertEqual(s, s2)
+
 
 class TestSFFSegmentList(Py23FixTestCase):
     """Test the SFFSegmentList class"""
@@ -3409,6 +3827,76 @@ class TestSFFSegmentList(Py23FixTestCase):
         } for s in S])
         S2 = adapter.SFFSegmentList.from_json(S_json)
         self.assertEqual(S, S2)
+
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # empty
+        S = adapter.SFFSegmentList()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = S.as_hff(group)
+            self.assertIn(u'segment_list', group)
+            self.assertEqual(len(group[u'segment_list']), 0)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            S2 = adapter.SFFSegmentList.from_hff(h[u'container'])
+            self.assertEqual(S, S2)
+        # non-empty
+        S = adapter.SFFSegmentList()
+        for _ in _xrange(_random_integer(start=3, stop=5)):
+            external_references = adapter.SFFExternalReferenceList()
+            [external_references.append(
+                adapter.SFFExternalReference(
+                    resource=rw.random_word(),
+                    url='https://{}.com/{}/{}'.format(*rw.random_words(count=3)),
+                    accession=rw.random_word(),
+                    label=' '.join(rw.random_words(count=2)),
+                    description=li.get_sentence(),
+                )
+            ) for _ in _xrange(_random_integer(start=2, stop=5))]
+            biological_annotation = adapter.SFFBiologicalAnnotation(
+                name=' '.join(rw.random_words(count=3)),
+                description=li.get_sentence(),
+                external_references=external_references,
+            )
+            mesh_list = adapter.SFFMeshList()
+            [mesh_list.append(
+                adapter.SFFMesh(
+                    vertices=adapter.SFFVertices.from_array(numpy.random.rand(4, 3)),
+                    triangles=adapter.SFFTriangles.from_array(numpy.random.randint(0, 4, size=(4, 3)))
+                )
+            ) for _ in _xrange(_random_integer(start=3, stop=5))]
+            shape_primitive_list = adapter.SFFShapePrimitiveList()
+            [shape_primitive_list.append(
+                random.choice([
+                    adapter.SFFCone(height=_random_float(multiplier=10), bottom_radius=_random_float(multiplier=10)),
+                    adapter.SFFCylinder(height=_random_float(multiplier=10), diameter=_random_float(multiplier=10)),
+                    adapter.SFFCuboid(x=_random_float(multiplier=10), y=_random_float(multiplier=10),
+                                      z=_random_float(multiplier=10)),
+                    adapter.SFFEllipsoid(x=_random_float(multiplier=10), y=_random_float(multiplier=10),
+                                         z=_random_float(multiplier=10))
+                ])
+            ) for _ in _xrange(_random_integer(start=3, stop=6))]
+            s = adapter.SFFSegment(
+                colour=adapter.SFFRGBA(random_colour=True),
+                biological_annotation=biological_annotation,
+                mesh_list=mesh_list,
+                three_d_volume=adapter.SFFThreeDVolume(
+                    lattice_id=_random_integer(),
+                    value=_random_integer(),
+                ),
+                shape_primitive_list=shape_primitive_list,
+            )
+            S.append(s)
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = S.as_hff(group)
+            self.assertIn(u'segment_list', group)
+            self.assertEqual(len(group[u'segment_list']), len(S))
+            for i, segment in enumerate(S, start=1):
+                self.assertEqual(segment, adapter.SFFSegment.from_hff(group['segment_list/{}'.format(i)]))
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            S2 = adapter.SFFSegmentList.from_hff(h[u'container'])
+            self.assertEqual(S, S2)
 
 
 class TestSFFSoftware(Py23FixTestCase):
@@ -3528,6 +4016,47 @@ class TestSFFSoftware(Py23FixTestCase):
         s2 = adapter.SFFSoftware.from_json(s_json)
         self.assertEqual(s, s2)
 
+    def test_hff(self):
+        """Interconvert HDF5"""
+        # empty
+        s = adapter.SFFSoftware()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = s.as_hff(group)
+            group_name = u'{}'.format(s.id)
+            self.assertIn(group_name, group)
+            self.assertIn(group_name + u'/id', group)
+            self.assertNotIn(group_name + u'/name', group)
+            self.assertNotIn(group_name + u'/version', group)
+            self.assertNotIn(group_name + u'/processing_details', group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                s2 = adapter.SFFSoftware.from_hff(group)
+                self.assertEqual(s, s2)
+        # non-empty
+        s = adapter.SFFSoftware(
+            name=rw.random_word(),
+            version='v{}.{}.{}'.format(*_random_integers(count=3, start=1, stop=10)),
+            processing_details=li.get_sentences(sentences=3),
+        )
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = s.as_hff(group)
+            group_name = u'{}'.format(s.id)
+            self.assertIn(group_name, group)
+            self.assertIn(group_name + u'/id', group)
+            self.assertIn(group_name + u'/name', group)
+            self.assertIn(group_name + u'/version', group)
+            self.assertIn(group_name + u'/processing_details', group)
+            self.assertEqual(group[group_name + u'/id'][()], s.id)
+            self.assertEqual(group[group_name + u'/name'][()], s.name)
+            self.assertEqual(group[group_name + u'/version'][()], s.version)
+            self.assertEqual(group[group_name + u'/processing_details'][()], s.processing_details)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                s2 = adapter.SFFSoftware.from_hff(group)
+                self.assertEqual(s, s2)
+
 
 class TestSFFSoftwareList(Py23FixTestCase):
     """Test the SFFSoftwareList class"""
@@ -3591,10 +4120,42 @@ class TestSFFSoftwareList(Py23FixTestCase):
         sw2 = adapter.SFFSoftwareList.from_json(sl_json)
         self.assertEqual(sl, sw2)
 
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # empty
+        S = adapter.SFFSoftwareList()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = S.as_hff(group)
+            self.assertIn(u'software_list', group)
+            self.assertEqual(len(group[u'software_list']), 0)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            S2  = adapter.SFFSoftwareList.from_hff(h[u'container'])
+            self.assertEqual(S, S2)
+        # non-empty
+        S = adapter.SFFSoftwareList()
+        [S.append(
+            adapter.SFFSoftware(
+                name=rw.random_word(),
+                version='v{}.{}.{}'.format(*_random_integers(count=3, start=1, stop=10)),
+                processing_details=li.get_sentences(sentences=3),
+            )
+        ) for _ in _xrange(_random_integer(start=2, stop=8))]
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = S.as_hff(group)
+            self.assertIn(u'software_list', group)
+            self.assertEqual(len(group[u'software_list']), len(S))
+            for i, sw in enumerate(S):
+                self.assertEqual(sw, adapter.SFFSoftware.from_hff(group[u'software_list/{}'.format(i)]))
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            S2 = adapter.SFFSoftwareList.from_hff(h[u'container'])
+            self.assertEqual(S, S2)
+
 
 class TestSFFTransformationMatrix(Py23FixTestCase):
     def setUp(self):
-        self.rows, self.cols = _random_integers(count=2, start=2, stop=10)
+        self.rows, self.cols = _random_integer(start=2, stop=5), _random_integer(start=6, stop=10)
         self.data = numpy.random.rand(self.rows, self.cols)
         self.data_string = " ".join(list(map(_str, self.data.flatten().tolist())))
 
@@ -3719,6 +4280,43 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
         tx2 = adapter.SFFTransformationMatrix.from_json(tx_json)
         self.assertEqual(tx, tx2)
 
+    def test_hff(self):
+        """Interconvert HDF5"""
+        # empty
+        tx = adapter.SFFTransformationMatrix()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = tx.as_hff(group)
+            group_name = u'{}'.format(tx.id)
+            self.assertIn(group_name, group)
+            self.assertIn(group_name + u'/id', group)
+            self.assertNotIn(group_name + u'/rows', group)
+            self.assertNotIn(group_name + u'/cols', group)
+            self.assertNotIn(group_name + u'/data', group)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                tx2 = adapter.SFFTransformationMatrix.from_hff(group)
+                self.assertEqual(tx, tx2)
+        # non-empty
+        tx = adapter.SFFTransformationMatrix.from_array(numpy.random.rand(3, 4))
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = tx.as_hff(group)
+            group_name = u'{}'.format(tx.id)
+            self.assertIn(group_name, group)
+            self.assertIn(group_name + u'/id', group)
+            self.assertIn(group_name + u'/rows', group)
+            self.assertIn(group_name + u'/cols', group)
+            self.assertIn(group_name + u'/data', group)
+            self.assertEqual(group[group_name + u'/id'][()], tx.id)
+            self.assertEqual(group[group_name + u'/rows'][()], tx.rows)
+            self.assertEqual(group[group_name + u'/cols'][()], tx.cols)
+            self.assertEqual(group[group_name + u'/data'][()], tx.data)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            for group in h[u'container'].values():
+                tx2 = adapter.SFFTransformationMatrix.from_hff(group)
+                self.assertEqual(tx, tx2)
+
 
 class TestSFFTransformList(Py23FixTestCase):
     def setUp(self):
@@ -3794,6 +4392,34 @@ class TestSFFTransformList(Py23FixTestCase):
         } for tx in tl])
         tl2 = adapter.SFFTransformList.from_json(tl_json)
         self.assertEqual(tl, tl2)
+
+    def test_hff(self):
+        """Interconvert to HDF5"""
+        # empty
+        T = adapter.SFFTransformList()
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = T.as_hff(group)
+            self.assertIn(u'transform_list', group)
+            self.assertEqual(len(group[u'transform_list']), 0)
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            T2  = adapter.SFFTransformList.from_hff(h[u'container'])
+            self.assertEqual(T, T2)
+        # non-empty
+        T = adapter.SFFTransformList()
+        [T.append(
+            adapter.SFFTransformationMatrix.from_array(numpy.random.rand(3, 4))
+        ) for _ in _xrange(_random_integer(start=2, stop=8))]
+        with h5py.File(self.test_hdf5_fn, u'w') as h:
+            group = h.create_group(u'container')
+            group = T.as_hff(group)
+            self.assertIn(u'transform_list', group)
+            self.assertEqual(len(group[u'transform_list']), len(T))
+            for i, tx in enumerate(T):
+                self.assertEqual(tx, adapter.SFFTransformationMatrix.from_hff(group[u'transform_list/{}'.format(i)]))
+        with h5py.File(self.test_hdf5_fn, u'r') as h:
+            T2 = adapter.SFFTransformList.from_hff(h[u'container'])
+            self.assertEqual(T, T2)
 
 
 class TestSFFSegmentation(Py23FixTestCase):
@@ -3987,8 +4613,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         segmentation.segments = segments
         segmentation.lattices = lattices
         # export
-        self.stderr(segmentation)
-        self.stderrj(segmentation.as_json())
+        # self.stderr(segmentation)
+        # self.stderrj(segmentation.as_json())
         segmentation.export(self.three_d_volume_file)
         # assertions
         self.assertRegex(
@@ -4501,7 +5127,7 @@ class TestSFFSegmentation(Py23FixTestCase):
         """Read from XML (.sff) file"""
         sff_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1547.sff')
         segmentation = adapter.SFFSegmentation.from_file(sff_file)
-        transform = segmentation.transforms[1]
+        transform = segmentation.transform_list[1]
         # assertions
         self.assertEqual(segmentation.name,
                          u"EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage "

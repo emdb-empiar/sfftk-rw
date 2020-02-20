@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<segmentation>
+    <version>0.7.0.dev0</version>
+    <name>Segger Segmentation</name>
+    <software>
+        <name>segger</name>
+        <version>2</version>
+    </software>
+    <primaryDescriptor>threeDVolume</primaryDescriptor>
+    <boundingBox/>
+    <globalExternalReferences>
+        <ref id="0" type="ncit" otherType="http://purl.obolibrary.org/obo/NCIT_C14206" value="NCIT_C14206" label="Escherichia coli" description="A common, gram negative gut bacterium that has been studied intensively by geneticists because of its small genome size, normal lack of pathogenicity, and ease of growth in the laboratory."/>
+        <ref id="1" type="dron" otherType="http://purl.obolibrary.org/obo/DRON_00018778" value="DRON_00018778" label="Escherichia coli" description=""/>
+        <ref id="2" type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0006157" value="OMIT_0006157" label="Escherichia coli" description=""/>
+        <ref id="3" type="ncbitaxon" otherType="http://purl.obolibrary.org/obo/NCBITaxon_562" value="NCBITaxon_562" label="Escherichia coli" description=""/>
+    </globalExternalReferences>
+    <segmentList>
+        <segment id="9764" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.800000011920929</red>
+                <green>0.959999978542328</green>
+                <blue>0.400000005960464</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9814" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.800000011920929</red>
+                <green>0.479999989271164</green>
+                <blue>0.879999995231628</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9815" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>1.</red>
+                <green>0.411764711141586</green>
+                <blue>0.705882370471954</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9840" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.159999996423721</red>
+                <green>0.839999973773956</green>
+                <blue>0.479999989271164</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9859" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.920000016689301</red>
+                <green>0.839999973773956</green>
+                <blue>0.959999978542328</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9893" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.</red>
+                <green>0.839999973773956</green>
+                <blue>0.759999990463257</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9897" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.</red>
+                <green>0.839999973773956</green>
+                <blue>0.759999990463257</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9911" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.920000016689301</red>
+                <green>0.839999973773956</green>
+                <blue>0.959999978542328</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9914" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.159999996423721</red>
+                <green>0.839999973773956</green>
+                <blue>0.479999989271164</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9952" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>1.</red>
+                <green>0.411764711141586</green>
+                <blue>0.705882370471954</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9955" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.800000011920929</red>
+                <green>0.959999978542328</green>
+                <blue>0.400000005960464</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+        <segment id="9956" parentID="0">
+            <biologicalAnnotation>
+                <name>GroEL</name>
+                <description>GroEL</description>
+                <externalReferences>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3000881348" value="OGG_3000881348" label="groEL" description=""/>
+                    <ref type="ogg" otherType="http://purl.obolibrary.org/obo/OGG_3001198820" value="OGG_3001198820" label="groEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="vo" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0010998" value="VO_0010998" label="GroEL" description=""/>
+                    <ref type="pdro" otherType="http://purl.obolibrary.org/obo/VO_0011075" value="VO_0011075" label="GroEL" description=""/>
+                    <ref type="omit" otherType="http://purl.obolibrary.org/obo/OMIT_0001676" value="OMIT_0001676" label="Adenosine Diphosphate" description=""/>
+                </externalReferences>
+                <numberOfInstances>1</numberOfInstances>
+            </biologicalAnnotation>
+            <colour>
+                <red>0.800000011920929</red>
+                <green>0.479999989271164</green>
+                <blue>0.879999995231628</blue>
+            </colour>
+            <threeDVolume/>
+        </segment>
+    </segmentList>
+    <details></details>
+</segmentation>

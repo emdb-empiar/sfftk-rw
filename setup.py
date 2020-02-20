@@ -43,7 +43,7 @@ SFFTKRW_CLASSIFIERS = [
     u"Topic :: Utilities",
 ]
 if sys.version_info[0] > 2:
-    SFFTKRW_INSTALL_REQUIRES = ['numpy', 'h5py>2.7.0', "RandomWords"]
+    SFFTKRW_INSTALL_REQUIRES = ['numpy', 'h5py>2.7.0', "RandomWords", "lxml"]
     SFFTKRW_SETUP_REQUIRES = []
     setup(
         name=SFFTKRW_NAME,
@@ -67,7 +67,7 @@ if sys.version_info[0] > 2:
         },
     )
 else:
-    SFFTKRW_INSTALL_REQUIRES = ['numpy', 'h5py>2.7.0', "RandomWords"]
+    SFFTKRW_INSTALL_REQUIRES = ['numpy', 'h5py>2.7.0', "RandomWords", "lxml"]
     SFFTKRW_SETUP_REQUIRES = []
     setup(
         name=SFFTKRW_NAME,

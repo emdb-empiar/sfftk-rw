@@ -266,11 +266,7 @@ class SFFExternalReference(SFFIndexType):
             obj.label = data[u'label']
         if u'description' in data:
             obj.description = data[u'description']
-        # validate
-        if obj._is_valid():
-            return obj
-        else:
-            super(SFFExternalReference, cls).from_json(data)
+        return obj
 
 
 class SFFExternalReferenceList(SFFListType):
@@ -298,11 +294,7 @@ class SFFExternalReferenceList(SFFListType):
         obj = cls(new_obj=False)
         for extref in data:
             obj.append(SFFExternalReference.from_json(extref))
-        # validate
-        if obj._is_valid():
-            return obj
-        else:
-            super(SFFExternalReferenceList, cls).from_json(data)
+        return obj
 
 
 class SFFBiologicalAnnotation(SFFType):

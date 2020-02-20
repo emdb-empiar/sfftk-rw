@@ -13,10 +13,9 @@ import os
 import re
 import sys
 
-from sfftkrw.core.utils import get_version
-from . import EMDB_SFF_VERSION
 from .core import _decode
 from .core.print_tools import print_date
+from .core.utils import get_version
 
 __author__ = "Paul K. Korir, PhD"
 __email__ = "pkorir@ebi.ac.uk, paul.korir@gmail.com"

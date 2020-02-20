@@ -221,7 +221,11 @@ class SFFType(object):
                         self.as_hff(f, *_args, **_kwargs)
                 elif re.match(r"^json$", fn_ext, re.IGNORECASE):
                     with open(fn, u'w') as f:
-                        json.dump(self.as_json(*_args, **_kwargs), f)
+                        if self.version == u'0.7.0.dev0':
+                            self.as_json(f, *_args, **_kwargs)
+                        elif self.version == u'0.8.0.dev1':
+                            data = self.as_json(*_args, **_kwargs)
+                            json.dump(data, f, indent=4)
                         # self.as_json(f, *_args, **_kwargs)
             elif issubclass(type(fn), io.IOBase):
                 self._local.export(fn, 0, *_args, **_kwargs)
@@ -498,6 +502,9 @@ class SFFListType(SFFType):
         if len(self) < self.min_length:
             print_date("{} has fewer than min_length={} items: {}".format(self, self.min_length, len(self)))
             return False
+        for item in self:
+            if not item._is_valid():
+                return False
         return True
 
     @classmethod
