@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sfftk.schema package &mdash; sfftk-rw v0.5.0.dev0 documentation</title>
+  <title>sfftkrw.schema package &mdash; sfftk-rw v0.6.0.dev0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sfftkrw.schema.base" href="base.html" />
-    <link rel="prev" title="sfftk packages" href="sfftk-rw.html" /> 
+    <link rel="prev" title="sfftkrw.api" href="api.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v0.5
+                v0.6
               </div>
             
           
@@ -90,13 +90,13 @@
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Interconverting EMDB-SFF Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">sfftk.schema package</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="sfftk-rw.html">sfftk-rw packages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html">sfftkrw.api</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">sfftkrw.schema package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="base.html">sfftkrw.schema.base</a></li>
-<li class="toctree-l3"><a class="reference internal" href="adapter.html">sfftkrw.schema.adapter</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">sfftk.core package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">sfftkrw.core package</a></li>
 </ul>
 </li>
 </ul>
@@ -144,9 +144,9 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="sfftk-rw.html">sfftk packages</a> &raquo;</li>
+          <li><a href="sfftk-rw.html">sfftk-rw packages</a> &raquo;</li>
         
-      <li>sfftk.schema package</li>
+      <li>sfftkrw.schema package</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -166,7 +166,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-sfftkrw.schema.__init__">
-<span id="sfftk-schema-package"></span><h1>sfftk.schema package<a class="headerlink" href="#module-sfftkrw.schema.__init__" title="Permalink to this headline">¶</a></h1>
+<span id="sfftkrw-schema-package"></span><h1>sfftkrw.schema package<a class="headerlink" href="#module-sfftkrw.schema.__init__" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="base.html">sfftkrw.schema.base</a><ul>
@@ -175,41 +175,7 @@
 <li class="toctree-l2"><a class="reference internal" href="base.html#sffindextype-base-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFIndexType</span></code> base class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="base.html#sfflisttype-base-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFListType</span></code> base class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="base.html#sfftypeerror-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTypeError</span></code> class</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="adapter.html">sfftkrw.schema.adapter</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffsegmentation-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentation</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffsoftware-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSoftware</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sfftransformlist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sfftransformationmatrix-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformationMatrix</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffboundingbox-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFBoundingBox</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffglobalexternalreferencelist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFGlobalExternalReferenceList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffexternalreferencelist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFExternalReferenceList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffexternalreference-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFExternalReference</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffsegmentlist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffsegment-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegment</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffbiologicalannotation-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFBiologicalAnnotation</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffrgba-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFRGBA</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffcomplexesandmacromolecules-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFComplexesAndMacromolecules</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffcomplexlist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFComplexList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffmacromoleculelist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMacromoleculeList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffmeshlist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMeshList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffmesh-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMesh</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffvertexlist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertexList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffvertex-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertex</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffpolygonlist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygonList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffpolygon-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygon</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffthreedvolume-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFThreeDVolume</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sfflatticelist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLatticeList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sfflattice-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLattice</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffvolumestructure-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVolumeStructure</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffvolumeindex-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVolumeIndex</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffshapeprimitivelist-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFShapePrimitiveList</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffshape-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFShape</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffcone-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCone</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffcuboid-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCuboid</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffcylinder-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCylinder</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adapter.html#sffellipsoid-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFEllipsoid</span></code> class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html#sffvalueerror-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFValueError</span></code> class</a></li>
 </ul>
 </li>
 </ul>
@@ -227,7 +193,7 @@
         <a href="base.html" class="btn btn-neutral float-right" title="sfftkrw.schema.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="sfftk-rw.html" class="btn btn-neutral float-left" title="sfftk packages" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-left" title="sfftkrw.api" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

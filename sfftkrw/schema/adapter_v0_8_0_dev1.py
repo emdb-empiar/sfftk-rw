@@ -17,7 +17,7 @@ import numpy
 from . import FORMAT_CHARS, ENDIANNESS
 from . import v0_8_0_dev1 as _sff
 from .base import SFFType, SFFIndexType, SFFAttribute, SFFListType, SFFTypeError, _assert_or_raise
-from ..core import _str, _encode, _bytes, _decode
+from ..core import _str, _encode, _bytes, _decode, _dict, _classic_dict
 from ..core.print_tools import print_date
 from ..core.utils import get_unique_id
 
@@ -1128,7 +1128,7 @@ class SFFMesh(SFFIndexType):
             except AssertionError:
                 raise ValueError("vertex list and normal list are of different lengths/dimensions")
         # check that the triangle list is valid
-        # todo: device better test for this
+        # todo: devise better test for this
         # indexes = set(kwargs['triangles'].data_array.flatten().tolist())
         # try:
         #     assert (kwargs['vertices'].num_vertices - 1) in indexes
@@ -1263,8 +1263,8 @@ class SFFCone(SFFShape):
     """Cone shape class"""
     gds_type = _sff.cone
     gds_tag_name = u"cone"
-    repr_string = u"SFFCone(id={}, height={}, bottom_radius={}, transform_id={})"
-    repr_args = (u'id', u'height', u'bottom_radius', u'transform_id')
+    repr_string = u"SFFCone(id={}, height={}, bottom_radius={}, transform_id={}, attribute={})"
+    repr_args = (u'id', u'height', u'bottom_radius', u'transform_id', u'attribute')
     eq_attrs = [u'height', u'bottom_radius']
 
     # attributes
@@ -1347,8 +1347,8 @@ class SFFCuboid(SFFShape):
     """Cuboid shape class"""
     gds_type = _sff.cuboid
     gds_tag_name = u"cuboid"
-    repr_string = u"SFFCuboid(id={}, x={}, y={}, z={}, transform_id={})"
-    repr_args = (u'id', u'x', u'y', u'z', u'transform_id')
+    repr_string = u"SFFCuboid(id={}, x={}, y={}, z={}, transform_id={}, attribute={})"
+    repr_args = (u'id', u'x', u'y', u'z', u'transform_id', u'attribute')
     eq_attrs = [u'x', u'y', u'z']
 
     # attributes
@@ -1439,8 +1439,8 @@ class SFFCylinder(SFFShape):
     """Cylinder shape class"""
     gds_type = _sff.cylinder
     gds_tag_name = u"cylinder"
-    repr_string = u"SFFCylinder(id={}, height={}, diameter={}, transform_id={})"
-    repr_args = (u'id', u'height', u'diameter', u'transform_id')
+    repr_string = u"SFFCylinder(id={}, height={}, diameter={}, transform_id={}, attribute={})"
+    repr_args = (u'id', u'height', u'diameter', u'transform_id', u'attribute')
     eq_attrs = [u'height', u'diameter']
 
     # attributes
@@ -1523,8 +1523,8 @@ class SFFEllipsoid(SFFShape):
     """Ellipsoid shape class"""
     gds_type = _sff.ellipsoid
     gds_tag_name = u"ellipsoid"
-    repr_string = u"SFFEllipsoid(id={}, x={}, y={}, z={}, transform_id={})"
-    repr_args = (u'id', u'x', u'y', u'z', u'transform_id')
+    repr_string = u"SFFEllipsoid(id={}, x={}, y={}, z={}, transform_id={}, attribute={})"
+    repr_args = (u'id', u'x', u'y', u'z', u'transform_id', u'attribute')
     eq_attrs = [u'x', u'y', u'z']
 
     # attributes
@@ -1752,7 +1752,7 @@ class SFFSegment(SFFIndexType):
             u'id': int(self.id),
             u'parent_id': int(self.parent_id),
             u'biological_annotation': self.biological_annotation.as_json() if self.biological_annotation is not None else None,
-            u'colour': self.colour.as_json(),
+            u'colour': self.colour.as_json() if self.colour is not None else None,
             u'mesh_list': self.mesh_list.as_json(),
             u'three_d_volume': self.three_d_volume.as_json() if self.three_d_volume is not None else None,
             u'shape_primitive_list': self.shape_primitive_list.as_json()
@@ -1899,12 +1899,20 @@ class SFFTransformationMatrix(SFFIndexType):
                 self._data = kwargs[u'data']
                 # make string from numpy array
                 kwargs[u'data'] = SFFTransformationMatrix.stringify(kwargs[u'data'])
-            elif isinstance(kwargs[u'data'], _str):
+            elif isinstance(kwargs[u'data'], (_bytes, _str)):
                 # make numpy array from string
-                self._data = numpy.array(list(map(float, kwargs[u'data'].split(' ')))).reshape(
-                    kwargs[u'rows'],
-                    kwargs[u'cols']
-                )
+                _raw_data = kwargs[u'data'].split(' ')
+                _rows = kwargs[u'rows']
+                _cols = kwargs[u'cols']
+                # check for consistency
+                try:
+                    assert _rows * _cols == len(_raw_data)
+                except AssertionError:
+                    raise ValueError(u"incompatible rows/cols and array")
+                else:
+                    _data = numpy.array(list(map(float, _raw_data))).reshape(_rows,
+                                                                         _cols)
+                    self._data = _data
         super(SFFTransformationMatrix, self).__init__(**kwargs)
 
     @classmethod
@@ -1928,7 +1936,7 @@ class SFFTransformationMatrix(SFFIndexType):
     @staticmethod
     def stringify(array):
         """Convert a :py:class:`numpy.ndarray` to a space-separated list of numbers """
-        return u" ".join(list(map(_str, array.flatten().tolist())))
+        return u" ".join(list(map(repr, array.flatten().tolist())))
 
     @property
     def data_array(self):
@@ -2229,22 +2237,21 @@ class SFFBoundingBox(SFFType):
     @classmethod
     def from_json(cls, data):
         obj = cls(new_obj=False)
-        if u'xmin' in data:
-            obj.xmin = data[u'xmin']
-        if u'xmax' in data:
-            obj.xmax = data[u'xmax']
-        if u'ymin' in data:
-            obj.ymin = data[u'ymin']
-        if u'ymax' in data:
-            obj.ymax = data[u'ymax']
-        if u'zmin' in data:
-            obj.zmin = data[u'zmin']
-        if u'zmax' in data:
-            obj.zmax = data[u'zmax']
-        if obj._is_valid():
-            return obj
-        else:
-            super(SFFBoundingBox, cls).from_json(data)
+        if data is not None:
+            _assert_or_raise(data, (_classic_dict, _dict))
+            if u'xmin' in data:
+                obj.xmin = data[u'xmin']
+            if u'xmax' in data:
+                obj.xmax = data[u'xmax']
+            if u'ymin' in data:
+                obj.ymin = data[u'ymin']
+            if u'ymax' in data:
+                obj.ymax = data[u'ymax']
+            if u'zmin' in data:
+                obj.zmin = data[u'zmin']
+            if u'zmax' in data:
+                obj.zmax = data[u'zmax']
+        return obj
 
     def as_hff(self, parent_group, name=u'bounding_box'):
         _assert_or_raise(parent_group, h5py.Group)
@@ -2286,6 +2293,9 @@ class SFFSegmentation(SFFType):
     gds_tag_name = u'segmentation'
     repr_string = u"SFFSegmentation(name={}, version={})"
     repr_args = (u'name', u"version")
+    eq_attrs = [
+        u'name', u'version', u'software_list', u'primary_descriptor', u'transform_list', u'bounding_box',
+        u'global_external_references', u'segment_list', u'lattice_list', u'details']
 
     # attributes
     name = SFFAttribute(u'name', required=True, help=u"the name of this segmentation")
@@ -2301,7 +2311,7 @@ class SFFSegmentation(SFFType):
         help=u"the main type of representation used for this segmentation; "
              u"can be one of 'mesh_list', 'shape_primitive_list' or 'threeDVolume'"
     )
-    transforms = SFFAttribute(
+    transform_list = SFFAttribute(
         u'transform_list',
         required=True,
         sff_type=SFFTransformList,
@@ -2318,12 +2328,12 @@ class SFFSegmentation(SFFType):
         help=u"a list of external references that apply to the whole segmentation (global); "
              u"a :py:class:`sfftkrw.schema.adapter.SFFGlobalexternal_references` object"
     )
-    segments = SFFAttribute(
+    segment_list = SFFAttribute(
         u'segment_list',
         sff_type=SFFSegmentList,
         help=u"the list of annotated segments; a :py:class:`sfftkrw.schema.adapter.SFFSegmentList` object"
     )
-    lattices = SFFAttribute(
+    lattice_list = SFFAttribute(
         u'lattice_list',
         sff_type=SFFLatticeList,
         help=u"the list of lattices (if any) containing 3D volumes referred to; "
@@ -2333,28 +2343,28 @@ class SFFSegmentation(SFFType):
         u'details', help=u"any other details about this segmentation (free text)")
 
     @property
-    def transform_list(self):
-        return self.transforms
+    def transforms(self):
+        return self.transform_list
 
-    @transform_list.setter
-    def transform_list(self, value):
-        self.transforms = value
-
-    @property
-    def segment_list(self):
-        return self.segments
-
-    @segment_list.setter
-    def segment_list(self, value):
-        self.segments = value
+    @transforms.setter
+    def transforms(self, value):
+        self.transform_list = value
 
     @property
-    def lattice_list(self):
-        return self.lattices
+    def segments(self):
+        return self.segment_list
 
-    @lattice_list.setter
-    def lattice_list(self, value):
-        self.lattices = value
+    @segments.setter
+    def segments(self, value):
+        self.segment_list = value
+
+    @property
+    def lattices(self):
+        return self.lattice_list
+
+    @lattices.setter
+    def lattices(self, value):
+        self.lattice_list = value
 
     def as_json(self, *args, **kwargs):
         return {
@@ -2396,9 +2406,8 @@ class SFFSegmentation(SFFType):
             obj.lattice_list = SFFLatticeList.from_json(data[u'lattice_list'])
         return obj
 
-    def as_hff(self, parent_group, name=u'/'):
+    def as_hff(self, parent_group, name=None):
         _assert_or_raise(parent_group, h5py.File)
-        # group = parent_group.create_group(name)
         group = parent_group
         if self.version is not None:
             group[u'version'] = self.version
@@ -2423,10 +2432,9 @@ class SFFSegmentation(SFFType):
         return parent_group
 
     @classmethod
-    def from_hff(cls, parent_group, name=u'/'):
+    def from_hff(cls, parent_group, name=None):
         _assert_or_raise(parent_group, h5py.File)
         obj = cls(new_obj=False)
-        # group = parent_group[name]
         group = parent_group
         if u'version' in group:
             obj.version = group[u'version'][()]
@@ -2460,24 +2468,28 @@ class SFFSegmentation(SFFType):
         :return seg: the corresponding :py:class:`SFFSegmentation` object
         :rtype seg: :py:class:`SFFSegmentation`
         """
-        seg = cls(new_obj=False)
-        if re.match(r'.*\.(sff|xml)$', fn, re.IGNORECASE):
-            try:
-                seg._local = _sff.parse(fn, silence=True)
-            except IOError:
-                print_date(_encode(u"File {} not found".format(fn), u'utf-8'))
-                sys.exit(os.EX_IOERR)
-        elif re.match(r'.*\.(hff|h5|hdf5)$', fn, re.IGNORECASE):
-            with h5py.File(fn, u'r') as h:
-                seg._local = seg.from_hff(h)._local
-        elif re.match(r'.*\.json$', fn, re.IGNORECASE):
-            with open(fn, 'r') as f:
-                data = json.load(f)
-            seg._local = seg.from_json(data)._local
+        if not os.path.exists(fn):
+            print_date(_encode(u"File {} not found".format(fn), u'utf-8'))
+            sys.exit(os.EX_IOERR)
         else:
-            print_date(_encode(u"Invalid EMDB-SFF file name: {}".format(fn), u'utf-8'))
-            sys.exit(os.EX_DATAERR)
-        return seg
+            if re.match(r'.*\.(sff|xml)$', fn, re.IGNORECASE):
+                seg_local = _sff.parse(fn, silence=True)
+            elif re.match(r'.*\.(hff|h5|hdf5)$', fn, re.IGNORECASE):
+                with h5py.File(fn, u'r') as h:
+                    seg = cls.from_hff(h)
+                seg_local = seg._local
+            elif re.match(r'.*\.json$', fn, re.IGNORECASE):
+                with open(fn, u'r') as f:
+                    data = json.load(f)
+                seg = cls.from_json(data)
+                seg_local = seg._local
+            else:
+                print_date(_encode(u"Invalid EMDB-SFF file name: {}".format(fn), u'utf-8'))
+                sys.exit(os.EX_DATAERR)
+        # now create the output object
+        obj = cls(new_obj=False)
+        obj._local = seg_local
+        return obj
 
     def to_file(self, *args, **kwargs):
         return super(SFFSegmentation, self).export(*args, **kwargs)

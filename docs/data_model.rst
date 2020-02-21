@@ -22,12 +22,13 @@ At the top level, a **segmentation** has the following attributes.
 
 *  the **version** of the EMDB-SFF schema 
 *  the **name** of the segmentation - free text
-*  a **software** description (see :ref:`software`)
-*  a list of **transforms** (see :ref:`transformation_matrix`)
+*  a **software_list** container (see :ref:`software`)
+*  a **transform_list** container (see :ref:`transformation_matrix`)
 *  a **primary descriptor** field - an indication of the primary geometrical descriptor. The only permitted values are **meshList**, **threeDVolume** or **shapePrimitiveList**.
 *  the dimensions of the regions **bounding box** (see :ref:`bounding_box`)
-*  a list of **global external references** (see :ref:`global_external_references`) a list of **segments** (see :ref:`segments`)
-*  a list of **lattices** (see :ref:`lattices`)
+*  a **global external references** container (see :ref:`global_external_references`)
+*  a **segment_list** container (see :ref:`segments`)
+*  a **lattice_list** container (see :ref:`lattices`)
 *  free text **details** describing the segmentation
 
 .. _software:
@@ -92,7 +93,6 @@ A **segment** is a complex structure consisting of the following top-level entit
 
 *	a **biological annotation** description (see :ref:`biological_annotation`)
 *	the **colour** of the segment in arithmetic ``rgba``
-*   a collection of **complex and macromolecule** IDs (for internal use - see :ref:`complexes_and_macromolecules`)
 *	an optional list of **meshes** (see :ref:`meshes`)
 *	an optional **3D volume** description (see :ref:`volumes`)
 *	an optional list of **shape primitives** (see :ref:`shapes`)
@@ -111,17 +111,6 @@ The **biological annotation** consists of the following fields:
 *	a numerical indication of the **number of instances** of this segment; this has a default value of one (1)
 * 	a list of **external references** similar to global external references described in :ref:`global_external_references`
 
-.. _complexes_and_macromolecules:
-
-Segments: Complexes and Macromolecules
-----------------------------------------------------------------
-
-The collection of **complex and macromolecules** is split into two independent lists:
-
-.. image:: complexes_and_macromolecules.png
-
-*	a list of **complex** IDs as strings
-*	a list of **macromolecule** IDs as strings
 
 .. _meshes:
 
@@ -132,36 +121,53 @@ A **mesh** has three fields, each of which are further structured:
 
 .. image:: mesh.png
 
-*	a list of **vertices** which define the surface geometry (see `Segments: Mesh Vertex`_)
-*	a list of **polygons** which define the surface topology (see `Segments: Mesh Polygon`_)
+*	a **vertices** attribute which holds an encoded list of float-triples (see `Segments: Mesh Vertices`_)
+*	an optional corresponding **normals** attribute which holds an encoded list of float-triples (see `Segments: Mesh Normals`_)
+*	a **triangles** attribue which contains an encoded list of int-triples (see `Segments: Mesh Triangles`_)
 *	an optional **transform index** (from :ref:`transformation_matrix`)
 
-.. _vertex:
+.. _vertices:
 
-Segments: Mesh Vertex
-~~~~~~~~~~~~~~~~~~~~~~
+Segments: Mesh Vertices
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-A **vertex** consists of five values:
+A **vertices** object consists of five values:
 
-.. image:: vertex.png
+.. image:: vertices.png
 
-*	an **index** attribute - a unique integer value over all vertices
-*	a **designation** attribute of either "surface" or "normal" to define the type of vertex
-*	an **x** value
-*	a **y** value, and
-*	a **z** value
+*	a **num_vertices** attribute giving a count of the number of contained vertices
+*   a **mode** attribute (default "float32") used for decoding the data
+*   a **endianness** attribute (default "little") used for decoding the data
+*   the **data** as a base64-encoded binary string
 
-.. _polygon:
+.. _normals:
 
-Segments: Mesh Polygon
-~~~~~~~~~~~~~~~~~~~~~~
+Segments: Mesh Normals
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-A **polygon** has four or more attributes
+An optional **normals** object exactly corresponds to the **vertices** object
 
-.. image:: polygon.png
+.. image:: normals.png
 
-*	an **index** attribute - a unique integer value over all polygons
-*	three or more **vertex indexes** (see `Segments: Mesh Vertex`)
+*	a **num_normals** attribute giving a count of the number of contained normals
+*   a **mode** attribute (default "float32") used for decoding the data
+*   a **endianness** attribute (default "little") used for decoding the data
+*   the **data** as a base64-encoded binary string
+
+
+.. _triangles:
+
+Segments: Mesh Triangles
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+A **triangle** defines the topology of the points provided in the corresponding vertices object.
+
+.. image:: triangles.png
+
+*	a **num_triangless** attribute giving a count of the number of contained triangles
+*   a **mode** attribute (default "uint32") used for decoding the data
+*   a **endianness** attribute (default "little") used for decoding the data
+*   the **data** as a base64-encoded binary string
 
 .. _volumes:
 

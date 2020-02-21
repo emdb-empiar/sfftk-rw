@@ -150,7 +150,7 @@ class SFFType(object):
                             var = mo.group('var')
                             stop = int(mo.group('stop'))
                             sub_str = getattr(self, var)
-                            if sub_str: # there is something
+                            if sub_str:  # there is something
                                 if len(sub_str) < stop:
                                     _repr_args.append(sub_str)
                                 else:
@@ -233,24 +233,24 @@ class SFFType(object):
         else:
             raise SFFValueError("export failed due to validation error")
 
-    def as_hff(self, *args, **kwargs):
-        raise NotImplementedError
-
     def as_json(self, *args, **kwargs):
         """For all contained classes this method returns a dictionary which will be serialised into JSON. Only at the
         top level (SFFSegmentation) will the final serialisation be done."""
         raise NotImplementedError
 
-    @classmethod
-    def from_hff(cls, *args, **kwargs):
-        """Convert HDF5 objects into EMDB-SFF objects
-
-        It should either return a valid object or raise an :py:class:`SFFValueError` due to failed validation
-        """
+    def as_hff(self, parent_group, name=None):
+        """Returns the current object as a group in an HDF5 file with the given name"""
         raise NotImplementedError
 
     @classmethod
-    def from_json(cls, *args, **kwargs):
+    def from_hff(cls, parent_group, name=None):
+        """Convert HDF5 objects into EMDB-SFF objects
+        It should either return a valid object or raise an :py:class:`SFFValueError` due to failed validation"""
+        raise NotImplementedError
+
+    @classmethod
+    def from_json(cls, data):
+        """Deserialise the given json object into an EMDB-SFF object"""
         raise NotImplementedError
 
     def _is_valid(self):
@@ -719,7 +719,7 @@ class SFFAttribute(object):
 
     This is done by referencing the ``obj._local`` variable which is the proxy for the underlying objects.
 
-    Please see the :py:mod:`.adapter` module for how this is applied.
+    Please see the :py:mod:`.api` module for how this is applied.
 
     :param name: which ``emdb_sff`` attribute to get the data from
     :type name: bytes or unicode

@@ -535,7 +535,6 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = ee.as_hff(group)
-            self.stderrh(h)
             self.assertIn(u'external_references', group)
             self.assertEqual(len(ee), 0)
             self.assertEqual(len(ee), len(group[u'external_references']))
@@ -568,7 +567,6 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
             self.assertIn(u'external_references', group)
             self.assertTrue(len(ee) > 0)
             self.assertEqual(len(ee), len(group[u'external_references']))
-            self.stderrh(h)
             for er in E:
                 self.assertEqual(er,
                              adapter.SFFExternalReference.from_hff(group[u'external_references/{}'.format(er.id)]))
@@ -2685,7 +2683,7 @@ class TestSFFBoundingBox(Py23FixTestCase):
         self.assertEqual(bb.zmin, bb_json[u'zmin'])
         self.assertEqual(bb.zmax, bb_json[u'zmax'])
         # empty
-        bb_json = {}
+        bb_json = None
         bb = adapter.SFFBoundingBox.from_json(bb_json)
         self.assertEqual(bb.xmin, 0)
         self.assertIsNone(bb.xmax)
@@ -2751,8 +2749,8 @@ class TestSFFCone(Py23FixTestCase):
         C = adapter.SFFCone()
         self.assertRegex(
             _str(C),
-            r"""SFFCone\(id={}, height={}, bottom_radius={}, transform_id={}\)""".format(
-                0, None, None, None
+            r"""SFFCone\(id={}, height={}, bottom_radius={}, transform_id={}, attribute={}\)""".format(
+                0, None, None, None, None
             )
         )
         _height, _bottom_radius, _transform_id = _random_float(10), _random_float(10), _random_integer(start=0)
@@ -2761,8 +2759,8 @@ class TestSFFCone(Py23FixTestCase):
         )
         self.assertRegex(
             _str(C),
-            r"""SFFCone\(id={}, height={}, bottom_radius={}, transform_id={}\)""".format(
-                1, _height, _bottom_radius, _transform_id
+            r"""SFFCone\(id={}, height={}, bottom_radius={}, transform_id={}, attribute={}\)""".format(
+                1, _height, _bottom_radius, _transform_id, None
             )
         )
         self.assertEqual(C.id, 1)  # the second one we have created
@@ -2775,8 +2773,8 @@ class TestSFFCone(Py23FixTestCase):
         C = adapter.SFFCone.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCone\(id={}, height={}, bottom_radius={}, transform_id={}\)""".format(
-                None, None, None, None
+            r"""SFFCone\(id={}, height={}, bottom_radius={}, transform_id={}, attribute={}\)""".format(
+                None, None, None, None, None
             )
         )
         _height, _bottom_radius, _transform_id = _random_float(10), _random_float(10), _random_integer(start=0)
@@ -2786,8 +2784,8 @@ class TestSFFCone(Py23FixTestCase):
         C = adapter.SFFCone.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCone\(id={}, height={}, bottom_radius={}, transform_id={}\)""".format(
-                None, _height, _bottom_radius, _transform_id
+            r"""SFFCone\(id={}, height={}, bottom_radius={}, transform_id={}, attribute={}\)""".format(
+                None, _height, _bottom_radius, _transform_id, None
             )
         )
         self.assertIsNone(C.id)
@@ -2862,16 +2860,16 @@ class TestSFFCuboid(Py23FixTestCase):
         C = adapter.SFFCuboid()
         self.assertRegex(
             _str(C),
-            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transform_id={}\)""".format(
-                0, None, None, None, None
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transform_id={}, attribute={}\)""".format(
+                0, None, None, None, None, None
             )
         )
         _x, _y, _z, _transform_id = _random_float(10), _random_float(10), _random_float(10), _random_integer()
         C = adapter.SFFCuboid(x=_x, y=_y, z=_z, transform_id=_transform_id)
         self.assertRegex(
             _str(C),
-            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transform_id={}\)""".format(
-                1, _x, _y, _z, _transform_id
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transform_id={}, attribute={}\)""".format(
+                1, _x, _y, _z, _transform_id, None
             )
         )
         self.assertEqual(C.id, 1)  # the second one we have created
@@ -2885,8 +2883,8 @@ class TestSFFCuboid(Py23FixTestCase):
         C = adapter.SFFCuboid.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transform_id={}\)""".format(
-                None, None, None, None, None
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transform_id={}\, attribute={}\)""".format(
+                None, None, None, None, None, None
             )
         )
         _x, _y, _z, _transform_id = _random_float(10), _random_float(10), _random_float(10), _random_integer()
@@ -2894,8 +2892,8 @@ class TestSFFCuboid(Py23FixTestCase):
         C = adapter.SFFCuboid.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transform_id={}\)""".format(
-                None, _x, _y, _z, _transform_id
+            r"""SFFCuboid\(id={}, x={}, y={}, z={}, transform_id={}, attribute={}\)""".format(
+                None, _x, _y, _z, _transform_id, None
             )
         )
         self.assertEqual(C.x, _x)
@@ -2975,8 +2973,8 @@ class TestSFFCylinder(Py23FixTestCase):
         C = adapter.SFFCylinder()
         self.assertRegex(
             _str(C),
-            r"""SFFCylinder\(id={}, height={}, diameter={}, transform_id={}\)""".format(
-                0, None, None, None
+            r"""SFFCylinder\(id={}, height={}, diameter={}, transform_id={}, attribute={}\)""".format(
+                0, None, None, None, None
             )
         )
         _height, _diameter, _transform_id = _random_float(10), _random_float(10), _random_integer()
@@ -2985,8 +2983,8 @@ class TestSFFCylinder(Py23FixTestCase):
         )
         self.assertRegex(
             _str(C),
-            r"""SFFCylinder\(id={}, height={}, diameter={}, transform_id={}\)""".format(
-                1, _height, _diameter, _transform_id
+            r"""SFFCylinder\(id={}, height={}, diameter={}, transform_id={}, attribute={}\)""".format(
+                1, _height, _diameter, _transform_id, None
             )
         )
         self.assertEqual(C.id, 1)  # the second one we have created
@@ -2999,8 +2997,8 @@ class TestSFFCylinder(Py23FixTestCase):
         C = adapter.SFFCylinder.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCylinder\(id={}, height={}, diameter={}, transform_id={}\)""".format(
-                None, None, None, None
+            r"""SFFCylinder\(id={}, height={}, diameter={}, transform_id={}, attribute={}\)""".format(
+                None, None, None, None, None
             )
         )
         _height, _diameter, _transform_id = _random_float(10), _random_float(10), _random_integer(start=0)
@@ -3010,8 +3008,8 @@ class TestSFFCylinder(Py23FixTestCase):
         C = adapter.SFFCylinder.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFCylinder\(id={}, height={}, diameter={}, transform_id={}\)""".format(
-                None, _height, _diameter, _transform_id
+            r"""SFFCylinder\(id={}, height={}, diameter={}, transform_id={}, attribute={}\)""".format(
+                None, _height, _diameter, _transform_id, None
             )
         )
         self.assertIsNone(C.id)
@@ -3087,16 +3085,16 @@ class TestSFFEllipsoid(Py23FixTestCase):
         E = adapter.SFFEllipsoid()
         self.assertRegex(
             _str(E),
-            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transform_id={}\)""".format(
-                0, None, None, None, None
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transform_id={}, attribute={}\)""".format(
+                0, None, None, None, None, None
             )
         )
         _x, _y, _z, _transform_id = _random_float(10), _random_float(10), _random_float(10), _random_integer()
         E = adapter.SFFEllipsoid(x=_x, y=_y, z=_z, transform_id=_transform_id)
         self.assertRegex(
             _str(E),
-            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transform_id={}\)""".format(
-                1, _x, _y, _z, _transform_id
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transform_id={}, attribute={}\)""".format(
+                1, _x, _y, _z, _transform_id, None
             )
         )
         self.assertEqual(E.id, 1)  # the second one we have created
@@ -3110,8 +3108,8 @@ class TestSFFEllipsoid(Py23FixTestCase):
         C = adapter.SFFEllipsoid.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transform_id={}\)""".format(
-                None, None, None, None, None
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transform_id={}, attribute={}\)""".format(
+                None, None, None, None, None, None
             )
         )
         _x, _y, _z, _transform_id = _random_float(10), _random_float(10), _random_float(10), _random_integer()
@@ -3119,8 +3117,8 @@ class TestSFFEllipsoid(Py23FixTestCase):
         C = adapter.SFFEllipsoid.from_gds_type(_C)
         self.assertRegex(
             _str(C),
-            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transform_id={}\)""".format(
-                None, _x, _y, _z, _transform_id
+            r"""SFFEllipsoid\(id={}, x={}, y={}, z={}, transform_id={}, attribute={}\)""".format(
+                None, _x, _y, _z, _transform_id, None
             )
         )
         self.assertEqual(C.x, _x)
@@ -4157,7 +4155,7 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
     def setUp(self):
         self.rows, self.cols = _random_integer(start=2, stop=5), _random_integer(start=6, stop=10)
         self.data = numpy.random.rand(self.rows, self.cols)
-        self.data_string = " ".join(list(map(_str, self.data.flatten().tolist())))
+        self.data_string = " ".join(list(map(repr, self.data.flatten().tolist())))
 
     def tearDown(self):
         adapter.SFFTransformationMatrix.reset_id()
@@ -4189,6 +4187,8 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
         self.assertEqual(T.id, 0)
         self.assertEqual(T.rows, self.rows)
         self.assertEqual(T.cols, self.cols)
+        print(T.data)
+        print(self.data_string)
         self.assertEqual(T.data, self.data_string)
         self.assertTrue(numpy.array_equal(T.data_array, self.data))
 
@@ -4232,12 +4232,15 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
     def test_exceptions(self):
         # exceptions
         # wrong dimensions
-        with self.assertRaisesRegex(ValueError, r".*cannot reshape array of size.*"):
-            adapter.SFFTransformationMatrix(
+        print(self.rows, self.rows)
+        print(self.data.shape)
+        with self.assertRaisesRegex(ValueError, r".*incompatible rows/cols and array.*"):
+            T = adapter.SFFTransformationMatrix(
                 rows=self.rows,
                 cols=self.rows,
                 data=self.data_string
             )
+            print(T)
 
     def test_create_from_gds_type(self):
         # with id
@@ -4253,6 +4256,8 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
         self.assertEqual(T.rows, self.rows)
         self.assertEqual(T.cols, self.cols)
         self.assertEqual(T.data, self.data_string)
+        print(T.data_array.flatten().tolist())
+        print(self.data.flatten().tolist())
         self.assertTrue(numpy.array_equal(T.data_array, self.data))
 
         # without id
@@ -5150,49 +5155,52 @@ class TestSFFSegmentation(Py23FixTestCase):
         self.assertEqual(transform.data,
                          u"2.8 0.0 0.0 -226.8 0.0 2.8 0.0 -226.8 0.0 0.0 2.8 -226.8")
 
-    # def test_read_hff(self):
-    #     """Read from HDF5 (.hff) file"""
-    #     hff_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1547.hff')
-    #     segmentation = adapter.SFFSegmentation.from_file(hff_file)
-    #     assertions
-    # self.assertEqual(segmentation.name,
-    #                  u"EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage "
-    #                  u"T4 co-chaperone gp31 and ADPAlF3")
-    # self.assertTrue(len(segmentation.version) > 0)
-    #     self.assertEqual(segmentation.software.name, u"Segger (UCSF Chimera)")
-    #     self.assertEqual(segmentation.software.version, u"1.9.7")
-    #     self.assertEqual(
-    #         segmentation.software.processing_details,
-    #         u"Images were recorded on a 200 kV FEG microscope on photographic film and processed at 2.8 Å/pixel, with "
-    #         u"final data sets of 30,000 and 35,000 side views of the binary and ternary complexes respectively. A "
-    #         u"starting model for the binary complex was obtained by angular reconstitution in IMAGIC32, and our "
-    #         u"previously determined GroEL-ADP-gp31 structure20 was used as a starting model for the ternary complexes. "
-    #         u"The data sets were sorted into classes showing different substrate features by a combination of MSA and "
-    #         u"competitive projection matching10, and the atomic structures of the GroEL subunit domains, gp31 and gp24 "
-    #         u"subunits were docked into the final, asymmetric maps as separate rigid bodies using URO33.")
-    #     self.assertEqual(segmentation.primary_descriptor, u"threeDVolume")
-    #
-    # def test_read_json(self):
-    #     """Read from JSON (.json) file"""
-    #     json_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1547.json')
-    #     segmentation = adapter.SFFSegmentation.from_file(json_file)
-    #     # assertions
-    #     self.assertEqual(segmentation.name,
-    #                      u"EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage "
-    #                      u"T4 co-chaperone gp31 and ADPAlF3")
-    #     self.assertTrue(len(segmentation.version) > 0)
-    #     self.assertEqual(segmentation.software.name, u"Segger (UCSF Chimera)")
-    #     self.assertEqual(segmentation.software.version, u"1.9.7")
-    #     self.assertEqual(
-    #         segmentation.software.processing_details,
-    #         u"Images were recorded on a 200 kV FEG microscope on photographic film and processed at 2.8 Å/pixel, with "
-    #         u"final data sets of 30,000 and 35,000 side views of the binary and ternary complexes respectively. A "
-    #         u"starting model for the binary complex was obtained by angular reconstitution in IMAGIC32, and our "
-    #         u"previously determined GroEL-ADP-gp31 structure20 was used as a starting model for the ternary complexes. "
-    #         u"The data sets were sorted into classes showing different substrate features by a combination of MSA and "
-    #         u"competitive projection matching10, and the atomic structures of the GroEL subunit domains, gp31 and gp24 "
-    #         u"subunits were docked into the final, asymmetric maps as separate rigid bodies using URO33.")
-    #
+    def test_read_hff(self):
+        """Read from HDF5 (.hff) file"""
+        hff_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1547.hff')
+        segmentation = adapter.SFFSegmentation.from_file(hff_file)
+        # assertions
+        self.assertEqual(segmentation.name,
+                         u"EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage "
+                         u"T4 co-chaperone gp31 and ADPAlF3")
+        self.assertTrue(len(segmentation.version) > 0)
+        self.assertEqual(segmentation.version, u"0.8.0.dev1")
+        software = segmentation.software_list[0]
+        self.assertEqual(software.name, u"Segger (UCSF Chimera)")
+        self.assertEqual(software.version, u"1.9.7")
+        self.assertEqual(
+            software.processing_details,
+            u"Images were recorded on a 200 kV FEG microscope on photographic film and processed at 2.8 Å/pixel, with "
+            u"final data sets of 30,000 and 35,000 side views of the binary and ternary complexes respectively. A "
+            u"starting model for the binary complex was obtained by angular reconstitution in IMAGIC32, and our "
+            u"previously determined GroEL-ADP-gp31 structure20 was used as a starting model for the ternary complexes. "
+            u"The data sets were sorted into classes showing different substrate features by a combination of MSA and "
+            u"competitive projection matching10, and the atomic structures of the GroEL subunit domains, gp31 and gp24 "
+            u"subunits were docked into the final, asymmetric maps as separate rigid bodies using URO33.")
+        self.assertEqual(segmentation.primary_descriptor, u"three_d_volume")
+
+    def test_read_json(self):
+        """Read from JSON (.json) file"""
+        json_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1547.json')
+        segmentation = adapter.SFFSegmentation.from_file(json_file)
+        # assertions
+        self.assertEqual(segmentation.name,
+                         u"EMD-1547: Structure of GroEL in complex with non-native capsid protein gp23, Bacteriophage "
+                         u"T4 co-chaperone gp31 and ADPAlF3")
+        self.assertTrue(len(segmentation.version) > 0)
+        software = segmentation.software_list[0]
+        self.assertEqual(software.name, u"Segger (UCSF Chimera)")
+        self.assertEqual(software.version, u"1.9.7")
+        self.assertEqual(
+            software.processing_details,
+            u"Images were recorded on a 200 kV FEG microscope on photographic film and processed at 2.8 Å/pixel, with "
+            u"final data sets of 30,000 and 35,000 side views of the binary and ternary complexes respectively. A "
+            u"starting model for the binary complex was obtained by angular reconstitution in IMAGIC32, and our "
+            u"previously determined GroEL-ADP-gp31 structure20 was used as a starting model for the ternary complexes. "
+            u"The data sets were sorted into classes showing different substrate features by a combination of MSA and "
+            u"competitive projection matching10, and the atomic structures of the GroEL subunit domains, gp31 and gp24 "
+            u"subunits were docked into the final, asymmetric maps as separate rigid bodies using URO33.")
+
     def test_export_sff(self):
         """Export to an XML (.sff) file"""
         temp_file = tempfile.NamedTemporaryFile()
@@ -5201,16 +5209,16 @@ class TestSFFSegmentation(Py23FixTestCase):
         with open(temp_file.name + u'.sff') as f:
             self.assertEqual(f.readline(), u'<?xml version="1.0" encoding="UTF-8"?>\n')
 
-    #
-    # def test_export_hff(self):
-    #     """Export to an HDF5 file"""
-    #     temp_file = tempfile.NamedTemporaryFile()
-    #     self.segmentation.export(temp_file.name + u'.hff')
-    #     # assertions
-    #     with open(temp_file.name + u'.hff', u'rb') as f:
-    #         find = f.readline().find(b'HDF')
-    #         self.assertGreaterEqual(find, 0)
-    #
+
+    def test_export_hff(self):
+        """Export to an HDF5 file"""
+        temp_file = tempfile.NamedTemporaryFile()
+        self.segmentation.export(temp_file.name + u'.hff')
+        # assertions
+        with open(temp_file.name + u'.hff', u'rb') as f:
+            find = f.readline().find(b'HDF')
+            self.assertGreaterEqual(find, 0)
+
     def test_export_json(self):
         """Export to a JSON file"""
         temp_file = tempfile.NamedTemporaryFile()

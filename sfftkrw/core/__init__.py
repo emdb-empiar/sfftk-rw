@@ -25,10 +25,13 @@ if sys.version_info[0] > 2:
     # dictionaries preserve order in Python3
     if sys.version_info[1] >= 7:
         _dict = builtins.dict
+        _classic_dict = builtins.dict
     else:
         from collections import OrderedDict
 
         _dict = OrderedDict
+        _classic_dict = builtins.dict
+
     # UserList
     from collections import UserList
 
@@ -83,6 +86,9 @@ if sys.version_info[0] > 2:
 
     import inspect
     _getattr_static = inspect.getattr_static
+
+    # exceptions
+    _FileNotFoundError = FileNotFoundError
 else:
     import __builtin__
 
@@ -98,6 +104,7 @@ else:
     from collections import OrderedDict
 
     _dict = OrderedDict
+    _classic_dict = __builtin__.dict
 
     from UserList import UserList
 
@@ -246,3 +253,6 @@ else:
         raise AttributeError(attr)
 
     _getattr_static = getattr_static
+
+    # exceptions
+    _FileNotFoundError = OSError

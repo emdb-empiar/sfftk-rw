@@ -124,12 +124,12 @@ For more information on each please see the guide to the command-line and the `D
 User Interface
 ~~~~~~~~~~~~~~
 
-``sfftk-rw`` is designed as a command-line tool with various utilities. Type ``sff-rw`` to see all options;
+``sfftk-rw`` is designed as a command-line tool with various utilities. Type ``sff`` to see all options;
 
 .. code-block:: bash
 
-    sff-rw
-    usage: sff-rw [-h] [-V] EMDB-SFF Read/Write Tools ...
+    sff
+    usage: sff [-h] [-V] EMDB-SFF Read/Write Tools ...
 
     The EMDB-SFF Read/Write Toolkit (sfftk-rw)
 
@@ -156,7 +156,7 @@ Use the ``convert`` utility to carry out interconversions:
 
 .. code-block:: bash
 
-    sff-rw convert file.sff
+    sff convert file.sff
 
 By default all ``sfftk-rw`` converts to XML except when it receives to HDF5.
 
@@ -170,7 +170,7 @@ Basic metadata about an EMDB-SFF file may be obtained using the ``view`` utility
 
 .. code-block:: bash
 
-    sff-rw view [options] file.sff
+    sff view [options] file.sff
 
 
 Developing with ``sfftk-rw``
@@ -185,16 +185,16 @@ As a brief example, you can handle EMDB-SFF files using the ``SFFSegmentation`` 
 
 .. code-block:: python
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
     # read from a file
-    seg = adapter.SFFSegmentation.from_file("file.sff")
+    seg = api.SFFSegmentation.from_file("file.sff")
 
     # or create one from scratch
-    seg = adapter.SFFSegmentation()
+    seg = api.SFFSegmentation()
     # then create relevant attributes
     seg.name = "My segmentation"
-    seg.software = adapter.SFFSoftware(
+    seg.software = api.SFFSoftware(
         name="sfftk-rw",
         version="0.5.0",
         processingDetails="Used the command line utility to convert segmentation"

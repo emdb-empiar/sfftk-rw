@@ -9,5 +9,4 @@ sfftkrw.schema package
 	:maxdepth: 2
 
 	base
-	adapter
 

@@ -56,7 +56,7 @@ class TestMainHandleConvert(unittest.TestCase):
         #  first convert from some other format e.g. .mod
         args = parse_args('convert --verbose -o {} {}'.format(
             os.path.join(TEST_DATA_PATH, 'test_data.sff'),
-            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.hff'),
+            os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1832.hff'),
         ), use_shlex=True)
         Main.handle_convert(args)
         # then convert to .hff
@@ -72,7 +72,7 @@ class TestMainHandleConvert(unittest.TestCase):
         #  first convert from .sff
         args = parse_args('convert --verbose -o {output} {input}'.format(
             output=os.path.join(TEST_DATA_PATH, 'test_data.hff'),
-            input=os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.sff'),
+            input=os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1832.sff'),
         ), use_shlex=True)
         Main.handle_convert(args)
         # then convert to .sff
@@ -89,7 +89,7 @@ class TestMainHandleConvert(unittest.TestCase):
         #  first convert from some other format e.g. .mod
         args = parse_args('convert --verbose -o {output} {input}'.format(
             output=os.path.join(TEST_DATA_PATH, 'test_data.json'),
-            input=os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.hff'),
+            input=os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1832.hff'),
         ), use_shlex=True)
         Main.handle_convert(args)
         # then convert to .sff
@@ -106,21 +106,21 @@ class TestMainHandleView(unittest.TestCase):
     def test_read_sff(self):
         """Test that we can view .mod"""
         args = parse_args('view {} '.format(
-            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.sff'),
+            os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1832.sff'),
         ), use_shlex=True)
         self.assertEqual(0, Main.handle_view(args))
 
     def test_read_hff(self):
         """Test that we can view .mod"""
         args = parse_args('view {} '.format(
-            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.hff'),
+            os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1832.hff'),
         ), use_shlex=True)
         self.assertEqual(0, Main.handle_view(args))
 
     def test_read_json(self):
         """Test that we can view .mod"""
         args = parse_args('view {} '.format(
-            os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1832.json'),
+            os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1832.json'),
         ), use_shlex=True)
         self.assertEqual(0, Main.handle_view(args))
 
@@ -185,8 +185,8 @@ class TestMainHandleTests(unittest.TestCase):
 class TestMainMain(unittest.TestCase):
     def test_main_convert(self):
         """Test the main entry point"""
-        _in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1832.sff')
-        in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1832_copy.sff')
+        _in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1832.sff')
+        in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1832_copy.sff')
         shutil.copy(_in_file, in_file)
         cmd = shlex.split(u"sfr convert --verbose {}".format(
             in_file,
@@ -194,14 +194,14 @@ class TestMainMain(unittest.TestCase):
         sys.argv = cmd
         status = Main.main()
         self.assertEqual(status, os.EX_OK)
-        copies = glob.glob(os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1832_copy.*'))
+        copies = glob.glob(os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1832_copy.*'))
         if copies:
             for copy in copies:
                 os.remove(copy)
 
     def test_main_view(self):
         """Test the main entry point"""
-        in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.7', u'emd_1832.sff')
+        in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1832.sff')
         cmd = shlex.split(u"sfr view {}".format(
             in_file,
         ))

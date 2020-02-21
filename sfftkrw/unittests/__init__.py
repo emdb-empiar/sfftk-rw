@@ -6,7 +6,7 @@ import sys
 from unittest import TestCase
 
 from .. import BASE_DIR
-from ..core import _xrange, _print
+from ..core import _xrange, _print, _FileNotFoundError
 
 __author__ = 'Paul K. Korir, PhD'
 __email__ = 'pkorir@ebi.ac.uk, paul.korir@gmail.com'
@@ -88,7 +88,7 @@ class Py23FixTestCase(Py23Fix, TestCase):
     def tearDownClass(cls):
         try:
             os.remove(cls.test_hdf5_fn)
-        except FileNotFoundError:
+        except _FileNotFoundError:
             pass
 
     @staticmethod

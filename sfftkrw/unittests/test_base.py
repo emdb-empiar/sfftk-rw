@@ -166,9 +166,7 @@ class TestSFFType(Py23FixTestCase):
         tf.name += '.sff'
         S.export(tf.name)
         _S = adapter.SFFSegmentation.from_file(tf.name)
-        self.assertEqual(S.version, _S.version)
-        self.assertEqual(S.name, _S.name)
-        self.assertEqual(S.details, _S.details)
+        self.assertEqual(S, _S)
 
     def test_export_hdf5(self):
         """Test that we can export a segmentation as XML"""
@@ -186,9 +184,7 @@ class TestSFFType(Py23FixTestCase):
         tf.name += u'.hff'
         S.export(tf.name)
         _S = adapter.SFFSegmentation.from_file(tf.name)
-        self.assertEqual(S.version, _S.version)
-        self.assertEqual(S.name, _S.name)
-        self.assertEqual(S.details, _S.details)
+        self.assertEqual(S, _S)
 
     def test_export_json(self):
         """Test that we can export a segmentation as XML"""
@@ -206,10 +202,7 @@ class TestSFFType(Py23FixTestCase):
         tf.name += '.json'
         S.export(tf.name)
         _S = adapter.SFFSegmentation.from_file(tf.name)
-        self.stderr(S, _S)
-        self.assertEqual(S.version, _S.version)
-        self.assertEqual(S.name, _S.name)
-        self.assertEqual(S.details, _S.details)
+        self.assertEqual(S, _S)
 
     def test_export_stderr(self):
         """Test that we can export to stderr"""

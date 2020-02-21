@@ -17,16 +17,16 @@ Running
 
 .. code-block:: bash
 
-    sff-rw convert
-    sff-rw convert -h
-    sff-rw convert --help
+    sff convert
+    sff convert -h
+    sff convert --help
 
 displays all conversion options.
 
 .. code-block:: bash
 
-    sff-rw convert
-    usage: sff-rw convert [-h] [-p CONFIG_PATH] [-b] [-t] [-d DETAILS]
+    sff convert
+    usage: sff convert [-h] [-p CONFIG_PATH] [-b] [-t] [-d DETAILS]
                        [-R PRIMARY_DESCRIPTOR] [-v] [-m] [-o OUTPUT | -f FORMAT]
                        [from_file [from_file ...]]
 
@@ -69,21 +69,21 @@ Quick Start
 .. code-block:: bash
 
     # format interconversion
-    sff-rw convert file.sff --output /path/to/output/file.hff
-    sff-rw convert file.hff --format json
-    sff-rw convert file.sff --format sff # reduntant but should work
+    sff convert file.sff --output /path/to/output/file.hff
+    sff convert file.hff --format json
+    sff convert file.sff --format sff # reduntant but should work
 
     # verbose
-    sff-rw convert -v file.hff
-    sff-rw convert --verbose file.hff
+    sff convert -v file.hff
+    sff convert --verbose file.hff
 
     # set details
-    sff-rw convert -d "Lorem ipsum dolor..." file.sff
-    sff-rw convert --details "Lorem ipsum dolor..." file.sff
+    sff convert -d "Lorem ipsum dolor..." file.sff
+    sff convert --details "Lorem ipsum dolor..." file.sff
 
     # override primary descriptor
-    sff-rw convert -R shapePrimitiveList file.sff
-    sff-rw convert --primary-descriptor shapePrimitiveList file.sff
+    sff convert -R shapePrimitiveList file.sff
+    sff convert --primary-descriptor shapePrimitiveList file.sff
 
 
 .. _output_formats:
@@ -98,19 +98,19 @@ EMDB-SFF files.
 
 .. code-block:: bash
 
-    sff-rw convert file.sff --output /path/to/output/file.hff
+    sff convert file.sff --output /path/to/output/file.hff
 
 or using ``--format``
 
 .. code-block:: bash
 
-    sff-rw convert file.hff --format json
+    sff convert file.hff --format json
 
 Even null conversions are possible:
 
 .. code-block:: bash
 
-    sff-rw convert file.sff --format sff
+    sff convert file.sff --format sff
 
 As stated previously, conversion to JSON drops all geometrical descriptions.
 Similarly, conversions from JSON to EMDB-SFF will not reinstate the geometric
@@ -147,13 +147,13 @@ Conversion is performed as follows (the output file extension determines the out
 
 .. code-block:: bash
 
-    sff-rw convert file.sff -o file.hff
+    sff convert file.sff -o file.hff
 
 will result in an HDF5 file while
 
 .. code-block:: bash
 
-    sff-rw convert file.sff --output file.json
+    sff convert file.sff --output file.json
 
 will be a JSON file.
 
@@ -174,14 +174,14 @@ Any other value raises an error.
 
 .. code-block:: bash
 
-    sff-rw convert file.sff -f hffr
-    sff-rw convert file.sff --format hff
+    sff convert file.sff -f hffr
+    sff convert file.sff --format hff
 
 The default format (if none is specified) is ``sff`` (XML).
 
 .. code-block:: bash
 
-    sff-rw convert file.hff
+    sff convert file.hff
 
 results in ``file.sff`` as output.
 
@@ -195,7 +195,7 @@ information on the terminal.
 
 .. code-block:: bash
 
-    sff-rw convert --verbose file.hff
+    sff convert --verbose file.hff
     Tue Sep 12 15:29:18 2017 Seting output file to file.sff
     Tue Sep 12 15:29:18 2017 Converting from EMDB-SFF (HDF5) file file.hff
     Tue Sep 12 15:30:03 2017 Created SFFSegmentation object
@@ -212,7 +212,7 @@ auxilliary information. The contents of this option will be put into
 
 .. code-block:: bash
 
-    sff-rw convert --details "Lorem ipsum dolor..." file.sff
+    sff convert --details "Lorem ipsum dolor..." file.sff
 
 .. todo::
 

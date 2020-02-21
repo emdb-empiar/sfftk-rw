@@ -15,7 +15,7 @@ The main components of the package are:
 
 *   the **schema** package (:py:mod:`sfftkrw.schema`) contains two modules:
 
-    -   the **adapter** module (:py:mod:`sfftkrw.schema.adapter`) provides the main API which handles how data fields
+    -   the **adapter** module (:py:mod:`sfftkrw.api`) provides the main API which handles how data fields
         are represented independent of the file formats to be used (XML, HDF5 and JSON). This package provides an
         adapter to the underlying `GenerateDS <https://www.davekuhlman.org/generateDS.html>`_ API which
         *extends* and *simplifies* EMDB-SFF fields.
@@ -60,7 +60,7 @@ You can read an EMDB-SFF file directly by using the :py:meth:`.SFFSegmentation.f
     from __future__ import print_function
     import os
 
-    from sfftkrw.schema.adapter import SFFSegmentation
+    from segments import SFFSegmentation
     from sfftkrw.unittests import TEST_DATA_PATH
 
     # XML file
@@ -84,7 +84,7 @@ Viewing Segmentation Metadata
     from __future__ import print_function
     import os
 
-    from sfftkrw.schema.adapter import SFFSegmentation
+    from segments import SFFSegmentation
     from sfftkrw.unittests import TEST_DATA_PATH
     
     seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
@@ -128,9 +128,9 @@ Creating a new segmentation is a more involving exercise as you need to populate
     from __future__ import print_function
     import sys
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
-    seg = adapter.SFFSegmentation()
+    seg = api.SFFSegmentation()
 
     # We can view how the file looks like so far; note the lack of an XML header <?xml ...>
     seg.export(sys.stderr)
@@ -147,22 +147,22 @@ Setting Segmentation Metadata
     from __future__ import print_function
     import sys
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
-    seg = adapter.SFFSegmentation()
+    seg = api.SFFSegmentation()
 
     # segmentation name
     seg.name = 'A New Segmentation'
 
     # segmentation software used
-    seg.software = adapter.SFFSoftware(
+    seg.software = api.SFFSoftware(
         name='Some Software',
         version='v0.1.3.dev3',
         processingDetails='Lorem ipsum dolor...'
     )
 
     # bounding box
-    seg.bounding_box = adapter.SFFBoundingBox(
+    seg.bounding_box = api.SFFBoundingBox(
         xmin=0,
         xmax=512,
         ymin=0,
@@ -172,20 +172,20 @@ Setting Segmentation Metadata
     )
 
     # an identity matrix with no transformation
-    transform = adapter.SFFTransformationMatrix(
+    transform = api.SFFTransformationMatrix(
         rows=3,
         cols=4,
         data='1 0 0 0 0 1 0 0 0 0 1 0'
     )
 
     # add it to the list of transforms
-    seg.transforms = adapter.SFFTransformList()
-    seg.transforms.append(transform)
+    seg.transforms = api.SFFTransformList()
+    seg.transforms.apapipend(transform)
 
     # or from numpy
     import numpy
     seg.transforms.append(
-        adapter.SFFTransformationMatrix.from_array(numpy.random.randint(1, 10, size=(5, 5)))
+        api.SFFTransformationMatrix.from_array(numpy.random.randint(1, 10, size=(5, 5)))
     )
 
 
@@ -220,8 +220,6 @@ Here is a full list of all containers:
 *   :py:class:`.SFFVertexList`
 *   :py:class:`.SFFPolygonList`
 *   :py:class:`.SFFLatticeList`
-*   :py:class:`.SFFComplexList`
-*   :py:class:`.SFFMacromoleculeList`
 
 Containers support the following operations: *iteration*, *index retrieval*, *Python list methods*, *direct access by item IDs*, *item ID reset on instantiation*.
 
@@ -278,7 +276,7 @@ You can *retrieve*, *set* or *delete* an item from a container using Python’s 
 
     import os
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
     seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
     seg = SFFSegmentation.from_file(seg_fn)
@@ -301,8 +299,8 @@ The following methods are the preferred way to modify a container as they routin
 
 .. _dictionary:
 
-Dictionary Getter (except for :py:class:`.SFFComplexList` and :py:class:`.SFFMacromoleculeList`)
-==========================================================================================================
+Dictionary Getter
+============================
 The Python list methods above update an internal dictionary which allows direct access by ID. This provides both the IDs and the items using two special methods:
 :py:meth:`get_ids()` returns a :py:func:`dict_key` object (Python3) or a :py:func:`list` which contains the sequence of item IDs. You can cast this to a list. In Python3, the `dict_key` is automatically updated once referenced.
 
@@ -310,7 +308,7 @@ The Python list methods above update an internal dictionary which allows direct 
 
     import os
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
     seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
     seg = SFFSegmentation.from_file(seg_fn)
@@ -326,7 +324,7 @@ The Python list methods above update an internal dictionary which allows direct 
 
     import os
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
     seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
     seg = SFFSegmentation.from_file(seg_fn)
@@ -340,10 +338,10 @@ Instantiating a container resets the auto-incrementing IDs for all future instan
 
 .. code-block:: python
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
-    adapter.SFFSegment.reset_id()
-    new_segment = adapter.SFFSegment()
+    api.SFFSegment.reset_id()
+    new_segment = api.SFFSegment()
     print(new_segment) # should have an ID of 1 (segment indexes always start from 1 not 0)
 
 ------------------------------------
@@ -370,9 +368,9 @@ Keep in mind the following behaviours:
         from sfftkrw.schema import emdb_sff, adapter # the auto API and the adapter
 
         _segment = emdb_sff.segmentType() # no ID specified
-        segment = adapter.SFFSegment.from_gds_type(_segment) # ID is None
+        segment = api.SFFSegment.from_gds_type(_segment) # ID is None
 
-        segments = adapter.SFFSegmentList()
+        segments = api.SFFSegmentList()
         segments.append(segment) # adds the segment but...
         segments.get_ids() # empty dict_keys([])
 
@@ -381,22 +379,22 @@ Keep in mind the following behaviours:
 
     .. code-block:: python
 
-        seg1 = adapter.SFFSegment(id=37)
-        seg2 = adapter.SFFSegment() # has an ID of 38
+        seg1 = api.SFFSegment(id=37)
+        seg2 = api.SFFSegment() # has an ID of 38
 
 *   All indexed classes support a construction option ``new_obj`` which is ``True`` by default. If set to ``False`` then the index value is ``None`` indicating that no index is needed. This is mainly used when reading objects from a file to ensure that the IDs from the file are used instead of incrementing from the class directly (unclear).
 
     .. code-block:: python
 
-        from sfftkrw.schema import adapter
+        from sfftkrw import api
 
-        seg1 = adapter.SFFSegment(new_obj=False)
+        seg1 = api.SFFSegment(new_obj=False)
         print(seg1) # no ID
-        seg2 = adapter.SFFSegment() # default: new_obj=True
+        seg2 = api.SFFSegment() # default: new_obj=True
         print(seg2) # has ID
-        seg3 = adapter.SFFSegment(new_obj=False)
+        seg3 = api.SFFSegment(new_obj=False)
         print(seg3) # no ID
-        seg4 = adapter.SFFSegment()
+        seg4 = api.SFFSegment()
         print(seg4) # has ID one more than seg2
 
 *   You can create objects with a mixture of ``new_obj=True`` and ``new_obj=False``. Incrementing of indexes continues for every ``new_obj=True``. (see example above)
@@ -404,16 +402,16 @@ Keep in mind the following behaviours:
 
     .. code-block:: python
 
-        from sfftkrw.schema import adapter
+        from sfftkrw import api
 
         # first reset IDs
-        adapter.SFFSegment.reset_id()
+        api.SFFSegment.reset_id()
 
-        seg1 = adapter.SFFSegment()
+        seg1 = api.SFFSegment()
         print(seg1)
 
-        segments = adapter.SFFSegmentList()
-        seg2 = adapter.SFFSegment()
+        segments = api.SFFSegmentList()
+        seg2 = api.SFFSegment()
         print(seg2)
 
         # both have ID of 1!
@@ -423,29 +421,29 @@ Keep in mind the following behaviours:
 
     .. code-block:: python
 
-        from sfftkrw.schema import adapter
+        from sfftkrw import api
 
-        adapter.SFFShape.reset_id()
+        api.SFFShape.reset_id()
 
-        cone = adapter.SFFCone()
+        cone = api.SFFCone()
         print(cone)
-        cuboid = adapter.SFFCuboid()
+        cuboid = api.SFFCuboid()
         print(cuboid)
-        cylinder = adapter.SFFCylinder()
+        cylinder = api.SFFCylinder()
         print(cylinder)
-        ellipsoid = adapter.SFFEllipsoid()
+        ellipsoid = api.SFFEllipsoid()
         print(ellipsoid)
 
         # the shape container resets all IDs
-        shapes = adapter.SFFShapePrimitiveList()
+        shapes = api.SFFShapePrimitiveList()
 
-        cone = adapter.SFFCone()
+        cone = api.SFFCone()
         print(cone)
-        cuboid = adapter.SFFCuboid()
+        cuboid = api.SFFCuboid()
         print(cuboid)
-        cylinder = adapter.SFFCylinder()
+        cylinder = api.SFFCylinder()
         print(cylinder)
-        ellipsoid = adapter.SFFEllipsoid()
+        ellipsoid = api.SFFEllipsoid()
         print(ellipsoid)
 
 ------------------------------------
@@ -465,9 +463,9 @@ In this scenario the data has to be consistent i.e. the number of items in the s
 
 .. code-block:: python
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
-    T = adapter.SFFTransformationMatrix(
+    T = api.SFFTransformationMatrix(
         rows=3, cols=4,
         data="1 0 0 0 0 1 0 0 0 0 1 0"
     )
@@ -479,10 +477,10 @@ Use the :py:meth:`.SFFTransformationMatrix.from_array` class method to create an
 .. code-block:: python
 
     import numpy
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
     t = numpy.random.rand(5, 5)
-    T = adapter.SFFTransformationMatrix.from_array(t)
+    T = api.SFFTransformationMatrix.from_array(t)
 
 The `data` attribute then provides access the the string data while the :py:attr:`.SFFTransformationMatrix.data_array` attribute provides a ``numpy`` array of the matrix.
 
@@ -509,15 +507,15 @@ Direct
     import zlib
     import base64
     import numpy
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
     # from numpy array
     _l = numpy.random.randint(0, 100, size=(10, 10, 10))
-    ln = adapter.SFFLattice(
+    ln = api.SFFLattice(
         mode='uint8',
         endianness='little',
-        size=adapter.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=adapter.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
         data=_l
     )
     print(l)
@@ -528,22 +526,22 @@ Direct
     _bc = zlib.compress(_b)
     # and base64-encoded
     _bce = base64.b64encode(_bc)
-    lb = adapter.SFFLattice(
+    lb = api.SFFLattice(
         mode='int8',
         endianness='big',
-        size=adapter.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=adapter.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
         data=_bce
     )
     print(lb)
 
     # the same as above but now with a unicode string of the same data
     _bceu = _bce.decode('utf-8')
-    lbu = adapter.SFFLattice(
+    lbu = api.SFFLattice(
         mode='int8',
         endianness='big',
-        size=adapter.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=adapter.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
         data=_bceu
     )
     print(lbu)
@@ -559,14 +557,14 @@ Use the :py:meth:`.SFFLattice.from_array`
     import zlib
     import base64
     import numpy
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
     _l = numpy.random.randint(0, 100, size=(10, 10, 10))
-    l = adapter.SFFLattice.from_array(_l,
+    l = api.SFFLattice.from_array(_l,
         mode='uint8',
         endianness='little',
-        size=adapter.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=adapter.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
     )
     print(l)
 
@@ -581,7 +579,7 @@ Use the :py:meth:`.SFFLattice.from_bytes`
     import zlib
     import base64
     import numpy
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
     # from a byte sequence
     _b = struct.pack(">1000b", *list(numpy.random.randint(0, 127, size=(1000,)))) # big-endian, 1000, signed char integer
@@ -589,11 +587,11 @@ Use the :py:meth:`.SFFLattice.from_bytes`
     _bc = zlib.compress(_b)
     # and base64-encoded
     _bce = base64.b64encode(_bc)
-    l = adapter.SFFLattice.from_bytes(_bce,
+    l = api.SFFLattice.from_bytes(_bce,
         mode='int8',
         endianness='big',
-        size=adapter.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=adapter.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
     )
     print(l)
 
@@ -605,9 +603,9 @@ This is the main class to represent RGBA colours.
 
 .. code-block:: python
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
-    colour = adapter.SFFRGBA(
+    colour = api.SFFRGBA(
         red=0.1,
         green=0.2,
         blue=0.3,
@@ -619,9 +617,9 @@ Aside from being able to set channel values or leave them blank we also provide 
 
 .. code-block:: python
 
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
-    colour = adapter.SFFRGBA(random_colour=True)
+    colour = api.SFFRGBA(random_colour=True)
     print(colour)
 
 ----------------------------------------------
@@ -665,14 +663,6 @@ Biological Annotation
     print(segment.biological_annotation.external_references)
     print(segment.biological_annotation.external_references[0]) # first reference
 
-Complexes and Macromolecules
---------------------------------
-
-.. code-block:: python
-
-    print(segment.complexes_and_macromolecules)
-    print(segment.complexes_and_macromolecules.complexes)
-    print(segment.complexes_and_macromolecules.macromolecules)
 
 Setting Segments
 ================================
@@ -682,7 +672,7 @@ Setting Segment Metadata
 
 .. code-block:: python
 
-    segment = adapter.SFFSegment()
+    segment = api.SFFSegment()
 
 Biological Annotation
 ````````````````````````````````
@@ -690,15 +680,15 @@ Biological Annotation
 .. code-block:: python
 
     # define the biological annotation object
-    bioAnn = adapter.SFFBiologicalAnnotation()
+    bioAnn = api.SFFBiologicalAnnotation()
     bioAnn.name = "Segment name"
     bioAnn.description = "Some description"
     bioAnn.number_of_instances = 1
 
     # define the external references
-    ext_refs = adapter.SFFExternalReferenceList()
+    ext_refs = api.SFFExternalReferenceList()
     ext_refs.append(
-    adapter.SFFExternalReference(
+    api.SFFExternalReference(
         type="ncbitaxon",
         otherType="http://purl.obolibrary.org/obo/NCBITaxon_559292",
         value="NCBITaxon_559292",
@@ -707,7 +697,7 @@ Biological Annotation
         )
     )
     ext_refs.append(
-        adapter.SFFExternalReference(
+        api.SFFExternalReference(
             type="pdb",
             otherType="http://www.ebi.ac.uk/pdbe/entry/pdb/3ja8",
             value="3ja8",
@@ -721,28 +711,7 @@ Biological Annotation
     # add the biological annotation to the segment
     segment.biological_annotation = bioAnn
 
-Complexes and Macromolecules
-````````````````````````````````
 
-.. code-block:: python
-
-    compMacr = adapter.SFFComplexesAndMacromolecules()
-    # complexes
-    comp = adapter.SFFComplexList()
-    comp.append("comp1")
-    comp.append("comp2")
-
-    # macromolecules
-    macr = adapter.SFFMacromoleculeList()
-    macr.append("macr1")
-    macr.append("macr2")
-
-    # add the complexes and macromolecules
-    compMacr.complexes = comp
-    compMacr.macromolecules = macr
-
-    # add them to the segment
-    segment.complexes_and_macromolecules = compMacr
 
 Colour
 ````````````````````````````````
@@ -751,7 +720,7 @@ Colours should be described using normalised RGBA values (each channel has a val
 
 .. code-block:: python
 
-    segment.colour = adapter.SFFRGBA(
+    segment.colour = api.SFFRGBA(
         red=0.1,
         green=0.2,
         blue=0.3,
@@ -769,21 +738,21 @@ First, create the mesh container that will hold the meshes.
 .. code-block:: python
 
     from random import random, randint, choice
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
     
     # the list of meshes
-    meshes = adapter.SFFMeshList()
+    meshes = api.SFFMeshList()
 
 Then create the vertex list and polygon lists.
 
 .. code-block:: python
     
     # a list of vertices
-    vertices = adapter.SFFVertexList()
+    vertices = api.SFFVertexList()
     no_vertices = randint(0, 100)
     
     # a list of polygons
-    polygons = adapter.SFFPolygonList()
+    polygons = api.SFFPolygonList()
     no_polygons = randint(0, 100)
     
 Next, populate the vertex lists and polygon lists with vertices and polygons, respectively.
@@ -792,7 +761,7 @@ Next, populate the vertex lists and polygon lists with vertices and polygons, re
 
     # add vertices from the list of vertices
     for i in range(no_vertices):
-        vertex = adapter.SFFVertex()
+        vertex = api.SFFVertex()
         vertex.point = tuple(
             map(float, (randint(1, 1000), randint(1, 1000), randint(1, 1000)))
         )
@@ -802,7 +771,7 @@ Next, populate the vertex lists and polygon lists with vertices and polygons, re
     
     # add polygons to the list of polygons
     for i in range(no_polygons):
-        polygon = adapter.SFFPolygon()
+        polygon = api.SFFPolygon()
         polygon.append(choice(range(randint(1, 1000))))
         polygon.append(choice(range(randint(1, 1000))))
         polygon.append(choice(range(randint(1, 1000))))
@@ -813,7 +782,7 @@ Now create the mesh and add it to the mesh list.
 .. code-block:: python
 
     # a mesh
-    mesh = adapter.SFFMesh()
+    mesh = api.SFFMesh()
 
     # set the vertices and polygons on the mesh
     mesh.vertices = vertices
@@ -839,17 +808,17 @@ First, define the lattice container.
 
     import numpy
     import random
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
 
     # lattice container
-    lattices = adapter.SFFLatticeList()
+    lattices = api.SFFLatticeList()
 
 then define the volume structure and starting index objects.
 
 .. code-block:: python
 
-    _size = adapter.SFFVolumeStructure(cols=20, rows=20, sections=20)
-    _start = adapter.SFFVolumeIndex(cols=0, rows=0, sections=0)
+    _size = api.SFFVolumeStructure(cols=20, rows=20, sections=20)
+    _start = api.SFFVolumeIndex(cols=0, rows=0, sections=0)
 
 Now create the lattice and add it to the list of lattices.
 
@@ -857,7 +826,7 @@ Now create the lattice and add it to the list of lattices.
 
     # lattice 1
     _data = numpy.random.randint(0, 100, size=(20, 20, 20))
-    lattice = adapter.SFFLattice(
+    lattice = api.SFFLattice(
         mode='uint32',
         endianness='little',
         size=_size,
@@ -868,11 +837,11 @@ Now create the lattice and add it to the list of lattices.
     
     # lattice 2
     _data = numpy.random.rand(30, 40, 50)
-    lattice2 = adapter.SFFLattice(
+    lattice2 = api.SFFLattice(
         mode='float32',
         endianness='big',
-        size=adapter.SFFVolumeStructure(cols=30, rows=40, sections=50),
-        start=adapter.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
+        size=api.SFFVolumeStructure(cols=30, rows=40, sections=50),
+        start=api.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
         data=_data,
     )
     lattices.append(lattice2)
@@ -883,16 +852,16 @@ For each segment (voxel value) in the lattice create a 3D volume object that ref
 .. code-block:: python
     
     # now we define the segments that reference the lattices above
-    segments = adapter.SFFSegmentList()
+    segments = api.SFFSegmentList()
     
     # segment one
-    segment = adapter.SFFSegment()
+    segment = api.SFFSegment()
     vol1_value = 1
-    segment.volume = adapter.SFFThreeDVolume(
+    segment.volume = api.SFFThreeDVolume(
         latticeId=0,
         value=vol1_value,
     )
-    segment.colour = adapter.SFFRGBA(
+    segment.colour = api.SFFRGBA(
         red=random.random(),
         green=random.random(),
         blue=random.random(),
@@ -901,13 +870,13 @@ For each segment (voxel value) in the lattice create a 3D volume object that ref
     segments.append(segment)
     
     # segment two
-    segment = adapter.SFFSegment()
+    segment = api.SFFSegment()
     vol2_value = 37.1
-    segment.volume = adapter.SFFThreeDVolume(
+    segment.volume = api.SFFThreeDVolume(
         latticeId=2,
         value=vol2_value
     )
-    segment.colour = adapter.SFFRGBA(
+    segment.colour = api.SFFRGBA(
         red=random.random(),
         green=random.random(),
         blue=random.random(),
@@ -922,10 +891,10 @@ Create a shape container for all shapes.
 .. code-block:: python
 
     from random import random
-    from sfftkrw.schema import adapter
+    from sfftkrw import api
     
     # a list of shape
-    shapes = adapter.SFFShapePrimitiveList()
+    shapes = api.SFFShapePrimitiveList()
 
 Then load each shape once created into this shape container.
 
@@ -933,7 +902,7 @@ Then load each shape once created into this shape container.
     
     # a cone
     # first we define the transform that locates it in place
-    transform = adapter.SFFTransformationMatrix(
+    transform = api.SFFTransformationMatrix(
         rows=3,
         cols=4,
         data='1 0 0 0 0 1 0 0 0 0 1 0'
@@ -941,7 +910,7 @@ Then load each shape once created into this shape container.
     
     # second we define its dimension
     shapes.append(
-        adapter.SFFCone(
+        api.SFFCone(
             height=random()*100,
             bottomRadius=random()*100,
             transformId=transform.id,
@@ -952,13 +921,13 @@ Then load each shape once created into this shape container.
     seg.transforms.append(transform)
     
     # a cuboid
-    transform = adapter.SFFTransformationMatrix(
+    transform = api.SFFTransformationMatrix(
         rows=3,
         cols=4,
         data='2 0 0 5 3 0 0 27 0 0 1 9'
     )
     shapes.append(
-        adapter.SFFCuboid(
+        api.SFFCuboid(
             x=random()*100,
             y=random()*100,
             z=random()*100,
@@ -970,13 +939,13 @@ Then load each shape once created into this shape container.
     seg.transforms.append(transform)
     
     # a cylinder
-    transform = adapter.SFFTransformationMatrix(
+    transform = api.SFFTransformationMatrix(
         rows=3,
         cols=4,
         data='2 0 0 15 3 0 0 17 0 0 1 16'
     )
     shapes.append(
-        adapter.SFFCylinder(
+        api.SFFCylinder(
             height=random()*100,
             diameter=random()*100,
             transformId=transform.id,
@@ -987,13 +956,13 @@ Then load each shape once created into this shape container.
     seg.transforms.append(transform)
     
     # an ellipsoid
-    transform = adapter.SFFTransformationMatrix(
+    transform = api.SFFTransformationMatrix(
         rows=3,
         cols=4,
         data='1 0 0 15 1 0 0 17 0 0 1 16'
     )
     shapes.append(
-        adapter.SFFEllipsoid(
+        api.SFFEllipsoid(
             x=random()*100,
             y=random()*100,
             z=random()*100,
@@ -1017,7 +986,7 @@ segmentation. The list of segments is contained in a :py:class:`.SFFSegmentList`
 .. code-block:: python
 
     # create the list of segments
-    seg.segments = adapter.SFFSegmentList()
+    seg.segments = api.SFFSegmentList()
     
     # add the segment
     seg.segments.append(segment)

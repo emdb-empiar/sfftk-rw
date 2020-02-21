@@ -169,9 +169,9 @@ class TestCoreParserConvert(Py23FixTestCase):
     @classmethod
     def setUpClass(cls):
         print("convert tests...", file=sys.stderr)
-        cls.test_data_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
-        cls.test_sff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
-        cls.test_hff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.hff')
+        cls.test_data_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.sff')
+        cls.test_sff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.sff')
+        cls.test_hff_file = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.hff')
 
     @classmethod
     def tearDownClass(cls):

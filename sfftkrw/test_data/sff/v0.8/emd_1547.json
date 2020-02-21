@@ -57,7 +57,7 @@
             "url": "http://purl.obolibrary.org/obo/NCBITaxon_32630",
             "accession": "NCBITaxon_32630",
             "label": "synthetic construct",
-            "description": null
+            "description": ""
         },
         {
             "id": 6,
@@ -65,7 +65,7 @@
             "url": "http://purl.obolibrary.org/obo/NCBITaxon_10665",
             "accession": "NCBITaxon_10665",
             "label": "Escherichia virus T4",
-            "description": null
+            "description": ""
         },
         {
             "id": 7,
@@ -73,7 +73,7 @@
             "url": "http://purl.obolibrary.org/obo/NCBITaxon_348604",
             "accession": "NCBITaxon_348604",
             "label": "Enterobacteria phage T4 sensu lato",
-            "description": null
+            "description": ""
         },
         {
             "id": 8,
@@ -291,7 +291,7 @@
                         "url": "http://purl.obolibrary.org/obo/NCBITaxon_133161",
                         "accession": "NCBITaxon_133161",
                         "label": "uncultured bacterium gp23",
-                        "description": null
+                        "description": ""
                     },
                     {
                         "id": 31,
@@ -299,7 +299,7 @@
                         "url": "http://purl.obolibrary.org/obo/NCBITaxon_2023329",
                         "accession": "NCBITaxon_2023329",
                         "label": "Phage gp23",
-                        "description": null
+                        "description": ""
                     },
                     {
                         "id": 32,
@@ -475,7 +475,7 @@
                         "url": "http://purl.obolibrary.org/obo/NCBITaxon_133161",
                         "accession": "NCBITaxon_133161",
                         "label": "uncultured bacterium gp23",
-                        "description": null
+                        "description": ""
                     },
                     {
                         "id": 51,
@@ -483,7 +483,7 @@
                         "url": "http://purl.obolibrary.org/obo/NCBITaxon_2023329",
                         "accession": "NCBITaxon_2023329",
                         "label": "Phage gp23",
-                        "description": null
+                        "description": ""
                     }
                 ]
             },
@@ -618,7 +618,7 @@
             "parent_id": 0,
             "biological_annotation": {
                 "name": "Artefacts (ignore)",
-                "description": null,
+                "description": "",
                 "number_of_instances": 1,
                 "external_references": []
             },

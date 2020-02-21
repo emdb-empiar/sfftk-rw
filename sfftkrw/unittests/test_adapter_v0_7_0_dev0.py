@@ -137,8 +137,8 @@ class TestSFFSegmentation(Py23FixTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        # if os.path.exists(cls.shape_file):
-        #     os.remove(cls.shape_file)
+        if os.path.exists(cls.shape_file):
+            os.remove(cls.shape_file)
         if os.path.exists(cls.volume_file):
             os.remove(cls.volume_file)
         if os.path.exists(cls.mesh_file):

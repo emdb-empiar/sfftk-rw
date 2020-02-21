@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sfftk.core package &mdash; sfftk-rw v0.5.0.dev0 documentation</title>
+  <title>sfftkrw.core package &mdash; sfftk-rw v0.6.0.dev0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="sfftkrw.schema.adapter" href="adapter.html" /> 
+    <link rel="prev" title="sfftkrw.schema.base" href="base.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                v0.5
+                v0.6
               </div>
             
           
@@ -89,9 +89,10 @@
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Interconverting EMDB-SFF Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developing.html">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="sfftk-rw.html">sfftk packages</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="schema.html">sfftk.schema package</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">sfftk.core package</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="sfftk-rw.html">sfftk-rw packages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html">sfftkrw.api</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schema.html">sfftkrw.schema package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">sfftkrw.core package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-sfftkrw.core.parser">Parser module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#parser-py">parser.py</a></li>
 </ul>
@@ -153,9 +154,9 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="sfftk-rw.html">sfftk packages</a> &raquo;</li>
+          <li><a href="sfftk-rw.html">sfftk-rw packages</a> &raquo;</li>
         
-      <li>sfftk.core package</li>
+      <li>sfftkrw.core package</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -174,8 +175,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="sfftk-core-package">
-<h1>sfftk.core package<a class="headerlink" href="#sfftk-core-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="sfftkrw-core-package">
+<h1>sfftkrw.core package<a class="headerlink" href="#sfftkrw-core-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-sfftkrw.core.parser">
 <span id="parser-module"></span><h2>Parser module<a class="headerlink" href="#module-sfftkrw.core.parser" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="parser-py">
@@ -336,6 +337,23 @@ overwriting any characters.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="sfftkrw.core.utils.get_version">
+<code class="sig-prename descclassname">sfftkrw.core.utils.</code><code class="sig-name descname">get_version</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.utils.get_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the version from the EMDB-SFF file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)"><em>bytes</em></a><em> or </em><em>unicode</em>) – name of EMDB-SFF file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the version</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>unicode</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 </div>
@@ -349,7 +367,7 @@ overwriting any characters.</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="adapter.html" class="btn btn-neutral float-left" title="sfftkrw.schema.adapter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="base.html" class="btn btn-neutral float-left" title="sfftkrw.schema.base" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
