@@ -233,7 +233,7 @@ optional arguments:
                         <span class="o">[</span>default: <span class="s1">&#39;&#39;</span><span class="o">]</span>
   -R PRIMARY_DESCRIPTOR, --primary-descriptor PRIMARY_DESCRIPTOR
                         populates the
-                        &lt;primaryDescriptor&gt;...&lt;/primaryDescriptor&gt; to this
+                        &lt;primary_descriptor&gt;...&lt;/primary_descriptor&gt; to this
                         value <span class="o">[</span>valid values: threeDVolume, meshList,
                         shapePrimitiveList<span class="o">]</span>
   -v, --verbose         verbose output
@@ -332,7 +332,7 @@ values:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> for JSON files.</p></li>
 </ul>
 <p>Any other value raises an error.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.sff -f hffr
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sff convert file.sff -f hff
 sff convert file.sff --format hff
 </pre></div>
 </div>
@@ -374,7 +374,7 @@ auxilliary information. The contents of this option will be put into
 <p>The EMDB-SFF data model provides for three possible geometrical descriptors:
 <cite>meshes (meshList), shape primitives (shapePrimitiveList)</cite> and
 <cite>3D volumes (threeDVolume)</cite>.</p>
-<p>The mandatory <code class="docutils literal notranslate"><span class="pre">&lt;primaryDescriptor/&gt;</span></code> field specifies the main geometrical
+<p>The mandatory <code class="docutils literal notranslate"><span class="pre">&lt;primary_descriptor/&gt;</span></code> field specifies the main geometrical
 descriptor to be used when performing conversions and other processing tasks.
 Only valid values are allowed; otherwise a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> is raised.</p>
 </div>

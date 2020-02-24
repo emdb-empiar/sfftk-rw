@@ -14,6 +14,9 @@ import tempfile
 import numpy
 from random_words import RandomWords, LoremIpsum
 
+rw = RandomWords()
+li = LoremIpsum()
+
 from . import _random_integer, Py23FixTestCase, _random_float, _random_floats
 from .. import EMDB_SFF_VERSION
 from ..core import _xrange, _str, _print
@@ -29,9 +32,6 @@ adapter_name = 'sfftkrw.schema.adapter_v{schema_version}'.format(
 )
 emdb_sff = importlib.import_module(emdb_sff_name)
 adapter = importlib.import_module(adapter_name)
-
-rw = RandomWords()
-li = LoremIpsum()
 
 
 class TestSFFTypeError(Py23FixTestCase):
@@ -976,6 +976,7 @@ class TestSFFAttribute(Py23FixTestCase):
 
     def test_list_attribute(self):
         """Test that an empty list attribute does not return 'None'"""
+
         class _BA(adapter.SFFType):
             gds_type = emdb_sff.biological_annotationType
             repr_string = """_BA(external_references={})"""

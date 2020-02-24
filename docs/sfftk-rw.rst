@@ -8,6 +8,6 @@ sfftk-rw packages
 .. toctree::
 	:maxdepth: 2
 
-	api
+	sfftkrw
 	schema
 	core

@@ -59,7 +59,7 @@ def handle_convert(args):  # @UnusedVariable
     else:
         raise ValueError("Unknown file type %s" % args.from_file)
     if args.primary_descriptor is not None:
-        seg.primaryDescriptor = args.primary_descriptor
+        seg.primary_descriptor = args.primary_descriptor
     if args.details is not None:
         seg.details = args.details
     # export as args.format

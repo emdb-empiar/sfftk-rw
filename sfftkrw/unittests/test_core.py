@@ -9,13 +9,13 @@ import sys
 
 from random_words import RandomWords, LoremIpsum
 
+rw = RandomWords()
+li = LoremIpsum()
+
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase
 from ..core import print_tools
 from ..core import utils
 from ..core.parser import parse_args, tool_list
-
-rw = RandomWords()
-li = LoremIpsum()
 
 __author__ = "Paul K. Korir, PhD"
 __email__ = "pkorir@ebi.ac.uk, paul.korir@gmail.com"

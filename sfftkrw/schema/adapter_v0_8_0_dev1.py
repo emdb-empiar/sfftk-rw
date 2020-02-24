@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+adapter_v0_8_0_dev1
+=======================
+"""
+from __future__ import print_function
 
 import base64
 import collections
@@ -16,14 +21,14 @@ import numpy
 
 from . import FORMAT_CHARS, ENDIANNESS
 from . import v0_8_0_dev1 as _sff
+
+# ensure that we can read/write encoded data
+_sff.ExternalEncoding = u"utf-8"
+
 from .base import SFFType, SFFIndexType, SFFAttribute, SFFListType, SFFTypeError, _assert_or_raise
 from ..core import _str, _encode, _bytes, _decode, _dict, _classic_dict
 from ..core.print_tools import print_date
 from ..core.utils import get_unique_id
-
-# ensure that we can read/write encoded data
-
-_sff.ExternalEncoding = u"utf-8"
 
 _volume = collections.namedtuple(
     u'volume', [u'rows', u'cols', u'sections']
@@ -821,7 +826,7 @@ class SFFLatticeList(SFFListType):
 
 
 class SFFEncodedSequence(SFFType):
-    """Superclass for `SFFVertices`, `SFFNormals` and `SFFTriangles`"""
+    """Abstract base class for `SFFVertices`, `SFFNormals` and `SFFTriangles`"""
     default_mode = u'float32'
     default_endianness = u'little'
     num_items_kwarg = None  # 'num_vertices' | 'num_normals' | 'num_triangles'
@@ -1911,7 +1916,7 @@ class SFFTransformationMatrix(SFFIndexType):
                     raise ValueError(u"incompatible rows/cols and array")
                 else:
                     _data = numpy.array(list(map(float, _raw_data))).reshape(_rows,
-                                                                         _cols)
+                                                                             _cols)
                     self._data = _data
         super(SFFTransformationMatrix, self).__init__(**kwargs)
 
@@ -2212,11 +2217,11 @@ class SFFBoundingBox(SFFType):
 
     # attributes
     xmin = SFFAttribute(u'xmin', default=0, help=u"minimum x co-ordinate value")
-    xmax = SFFAttribute(u'xmax', help=u"maximum x co-ordinate value")
+    xmax = SFFAttribute(u'xmax', required=True, help=u"maximum x co-ordinate value")
     ymin = SFFAttribute(u'ymin', default=0, help=u"minimum y co-ordinate value")
-    ymax = SFFAttribute(u'ymax', help=u"maximum y co-ordinate value")
+    ymax = SFFAttribute(u'ymax', required=True, help=u"maximum y co-ordinate value")
     zmin = SFFAttribute(u'zmin', default=0, help=u"minimum z co-ordinate value")
-    zmax = SFFAttribute(u'zmax', help=u"maximum z co-ordinate value")
+    zmax = SFFAttribute(u'zmax', required=True, help=u"maximum z co-ordinate value")
 
     def as_json(self):
         bb = dict()
@@ -2492,4 +2497,5 @@ class SFFSegmentation(SFFType):
         return obj
 
     def to_file(self, *args, **kwargs):
+        """Alias for :py:meth:`.export` method. Passes all args and kwargs onto :py:meth:`.export`"""
         return super(SFFSegmentation, self).export(*args, **kwargs)

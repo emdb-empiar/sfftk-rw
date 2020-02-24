@@ -107,6 +107,11 @@ def get_version(fn):
 
 
 def get_unique_id():
+    """Return an ID that will be unique over the current segmentation
+
+    :return: unique_id
+    :rtype: int
+    """
     global UNIQUE_ID
     UNIQUE_ID = UNIQUE_ID + 1
     return UNIQUE_ID

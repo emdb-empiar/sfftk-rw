@@ -185,19 +185,22 @@ As a brief example, you can handle EMDB-SFF files using the ``SFFSegmentation`` 
 
 .. code-block:: python
 
-    from sfftkrw import api
+    import sfftkrw as sff
 
     # read from a file
-    seg = api.SFFSegmentation.from_file("file.sff")
+    seg = sff.SFFSegmentation.from_file("file.sff")
 
     # or create one from scratch
-    seg = api.SFFSegmentation()
+    seg = sff.SFFSegmentation(name="some segmentation", primary_descriptor="three_d_volume")
     # then create relevant attributes
     seg.name = "My segmentation"
-    seg.software = api.SFFSoftware(
-        name="sfftk-rw",
-        version="0.5.0",
-        processingDetails="Used the command line utility to convert segmentation"
+    seg.software_list = sff.SFFSoftwareList()
+    seg.software_list.append(
+        sff.SFFSoftware(
+            name="sfftk-rw",
+            version="0.5.0",
+            processing_details="Used the command line utility to convert segmentation"
+        )
     )
 
     # export by specifying the name of the output file for auto format detection

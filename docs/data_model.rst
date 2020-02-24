@@ -18,7 +18,7 @@ An EMDB-SFF segmentation is structured as follows:
 
 At the top level, a **segmentation** has the following attributes.
 
-.. image:: segmentation.png
+.. image:: imgs/segmentation.png
 
 *  the **version** of the EMDB-SFF schema 
 *  the **name** of the segmentation - free text
@@ -36,9 +36,9 @@ At the top level, a **segmentation** has the following attributes.
 Software
 ========
 
-The **software** is described by three fields:
+Each **software** item is described by three fields:
 
-.. image:: software.png
+.. image:: imgs/software.png
 
 *  the **name** of the software application used to generate the segmentation
 *  the software’s **version**
@@ -51,7 +51,7 @@ Transformation Matrix
 
 Each **transform** is a **transformation matrix** consisting of four fields:
 
-.. image:: transformation_matrix.png
+.. image:: imgs/transformation_matrix.png
 
 *   the transform **index** attribute - a unique integer value over all transforms
 *   the number of **rows**
@@ -65,7 +65,7 @@ Bounding Box
 
 The **bounding box** consists of *minimum* and *maximum* x, y and z values defining the extent of the bounding box (``xmin``, ``xmax``, ``ymin``, ``ymax``, ``zmin``, ``zmax``)
 
-.. image:: bounding_box.png
+.. image:: imgs/bounding_box.png
 
 .. _global_external_references:
 
@@ -74,7 +74,7 @@ Global External References and External References
 
 A **global external reference** consists of a set of fixed descriptors by which the overall segmentation may be described. They are distinct from but similar to external references which apply to single segments i.e. a global external reference is to the segmentation while a (local) external reference is to a segment. To make concrete how these are specified, we will use the example of EMPIAR-10070. Suppose we wish to annotate our segmentation (not segment) with this entry. Then the corresponding global external reference will have the following fields.
 
-.. image:: global_external_references.png
+.. image:: imgs/global_external_references.png
 
 *	the **type** is the name of the resource - from our example this will be "empiar" (case-sensitive). Other examples are "go" for Gene Ontology, "emdb" for EMDB (see :ref:`resources` for the full list of supported resources)
 *	the **otherType** is either a URI or IRI at which the accession (see **value**) is accessible) - from our example this would be https://www.ebi.ac.uk/pdbe/emdb/empiar/entry/10070/
@@ -89,7 +89,7 @@ Segments
 
 A **segment** is a complex structure consisting of the following top-level entities:
 
-.. image:: segment.png
+.. image:: imgs/segment.png
 
 *	a **biological annotation** description (see :ref:`biological_annotation`)
 *	the **colour** of the segment in arithmetic ``rgba``
@@ -104,7 +104,7 @@ Segments: Biological Annotation
 
 The **biological annotation** consists of the following fields:
 
-.. image:: biological_annotation.png
+.. image:: imgs/biological_annotation.png
 
 *	the **name** of the segment as a free text string
 *	a **description** of the segment as a free text string
@@ -119,7 +119,7 @@ Segments: Meshes
 
 A **mesh** has three fields, each of which are further structured:
 
-.. image:: mesh.png
+.. image:: imgs/mesh.png
 
 *	a **vertices** attribute which holds an encoded list of float-triples (see `Segments: Mesh Vertices`_)
 *	an optional corresponding **normals** attribute which holds an encoded list of float-triples (see `Segments: Mesh Normals`_)
@@ -133,7 +133,7 @@ Segments: Mesh Vertices
 
 A **vertices** object consists of five values:
 
-.. image:: vertices.png
+.. image:: imgs/vertices.png
 
 *	a **num_vertices** attribute giving a count of the number of contained vertices
 *   a **mode** attribute (default "float32") used for decoding the data
@@ -147,7 +147,7 @@ Segments: Mesh Normals
 
 An optional **normals** object exactly corresponds to the **vertices** object
 
-.. image:: normals.png
+.. image:: imgs/normals.png
 
 *	a **num_normals** attribute giving a count of the number of contained normals
 *   a **mode** attribute (default "float32") used for decoding the data
@@ -162,7 +162,7 @@ Segments: Mesh Triangles
 
 A **triangle** defines the topology of the points provided in the corresponding vertices object.
 
-.. image:: triangles.png
+.. image:: imgs/triangles.png
 
 *	a **num_triangless** attribute giving a count of the number of contained triangles
 *   a **mode** attribute (default "uint32") used for decoding the data
@@ -176,7 +176,7 @@ Segments: 3D Volumes
 
 A **3D volume** consists of three fields:
 
-.. image:: three_d_volume.png
+.. image:: imgs/three_d_volume.png
 
 *	the **lattice index** containing the volume data (see :ref:`lattices`)
 *	the **voxel value** that identifies this 3D volume segment in the lattice specified in :ref:`lattices`
@@ -189,7 +189,7 @@ Lattices
 
 A **lattice** describes a 3D structure consisting of orthogonally stacked voxels that has the following fields:
 
-.. image:: lattice.png
+.. image:: imgs/lattice.png
 
 *	a **lattice index** - a unique integer over all lattices
 *	a **mode** string which specifies the data type of each voxel; valid values are "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "float32", "float64"
@@ -206,7 +206,7 @@ Lattice: Volume Size
 
 The **size** has three fields:
 
-.. image:: size.png
+.. image:: imgs/size.png
 
 *	the number of **columns** as a non-negative integer
 *	the number of **rows** as a non-negative integer
@@ -219,7 +219,7 @@ Lattice: Start Index
 
 The **start** indices have three fields:
 
-.. image:: start.png
+.. image:: imgs/start.png
 
 *	the 0-based **column index** of the first voxel - an integer
 *	the 0-based **row index** of the first voxel - an integer
@@ -237,7 +237,7 @@ There are different types of **shape primitives**. Each shape primitive has:
 
 **cones** have:
 
-.. image:: cone.png
+.. image:: imgs/cone.png
 
 *  a **height**
 *  a **bottom radius**
@@ -246,7 +246,7 @@ There are different types of **shape primitives**. Each shape primitive has:
 
 **cuboids** have:
 
-.. image:: cuboid.png
+.. image:: imgs/cuboid.png
 
 *  **x** extent
 *  **y** extent
@@ -257,7 +257,7 @@ There are different types of **shape primitives**. Each shape primitive has:
 
 **cylinders** have:
 
-.. image:: cylinder.png
+.. image:: imgs/cylinder.png
 
 *	a **height**
 *	a **diameter**
@@ -267,7 +267,7 @@ There are different types of **shape primitives**. Each shape primitive has:
 
 **ellipsoids** have:
 
-.. image:: ellipsoid.png
+.. image:: imgs/ellipsoid.png
 
 *   **x** extent
 *   **y** extent
@@ -278,7 +278,7 @@ There are different types of **shape primitives**. Each shape primitive has:
 
 **subtomogram averages** are exactly the same as 3D volumes and have:
 
-.. image:: subtomogram_average.png
+.. image:: imgs/subtomogram_average.png
 
 *	the **lattice index** containing the volume data (see :ref:`lattices`)
 *	the **voxel value** that specifies the recommended contour level in the lattice specified in :ref:`lattices`

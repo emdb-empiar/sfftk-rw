@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-# adapter.py
+"""
+adapter_v0_7_0_dev0
+=======================
+"""
 from __future__ import division, print_function
 
 import base64

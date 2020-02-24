@@ -91,7 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous Operations Using sfftk-rw</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#working-with-sffsegmentation-objects">Working with <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentation</span></code> objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-sfftkrw-sffsegmentation-objects">Working with <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentation</span></code> objects</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#reading-emdb-sff-files">Reading EMDB-SFF Files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#viewing-segmentation-metadata">Viewing Segmentation Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#creating-a-new-segmentation">Creating A New Segmentation</a></li>
@@ -101,6 +101,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#containers">Containers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#iteration">Iteration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#software">Software</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#segments">Segments</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#meshes">Meshes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#external-references">External References</a></li>
@@ -114,21 +115,21 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#indexed-objects">Indexed Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#special-classes">Special Classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#sfftransformationmatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformationMatrix</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sfftkrw-sfftransformationmatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformationMatrix</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#explicit">Explicit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#implicit">Implicit</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#sfflattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLattice</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sfftkrw-sfflattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFLattice</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#direct">Direct</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#explicit-from-numpy-array">Explicit from numpy Array</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#explicit-from-byte-sequence">Explicit from Byte Sequence</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#sffrgba"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFRGBA</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sfftkrw-sffrgba"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFRGBA</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#working-with-sffsegment-objects">Working with <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegment</span></code> objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-sfftkrw-sffsegment-objects">Working with <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegment</span></code> objects</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#viewing-segments">Viewing Segments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#viewing-segment-metadata">Viewing Segment Metadata</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id-and-parent-id">ID and Parent ID</a></li>
@@ -139,9 +140,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#setting-segment-metadata">Setting Segment Metadata</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#meshes-sffmeshlist-sffmeshes-sffvertexlist-sffvertex-sffpolygonlist-and-sffpolygon">Meshes: <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMeshList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMeshes</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertexList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygonList</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygon</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#d-volumes-sfflatticelist-sffthreedvolume-sffvolumestructure-sffvolumeindex">3D Volumes: <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLatticeList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFThreeDVolume</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVolumeStructure</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVolumeIndex</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#shape-primitives-sffshapeprimitvelist-sffcone-sffcuboid-sffcylinder-sffellipsoid-sffsubtomogramaverage">Shape Primitives: <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFShapePrimitveList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCone</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCuboid</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCylinder</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFEllipsoid</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSubtomogramAverage</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#meshes-sfftkrw-sffmeshlist-sfftkrw-sffmeshes-sfftkrw-sffvertices-sfftkrw-sffnormals-sfftkrw-sfftriangles">Meshes: <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFMeshList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFMeshes</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFVertices</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFNormals</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTriangles</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#d-volumes-sfftkrw-sfflatticelist-sfftkrw-sffthreedvolume-sfftkrw-sffvolumestructure-sfftkrw-sffvolumeindex">3D Volumes: <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFLatticeList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFThreeDVolume</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFVolumeStructure</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFVolumeIndex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shape-primitives-sfftkrw-sffshapeprimitvelist-sfftkrw-sffcone-sfftkrw-sffcuboid-sfftkrw-sffcylinder-sfftkrw-sffellipsoid-sfftkrw-sffsubtomogramaverage">Shape Primitives: <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFShapePrimitveList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCone</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCuboid</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCylinder</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFEllipsoid</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSubtomogramAverage</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adding-a-segment-to-the-segmentation">Adding A Segment To The Segmentation</a></li>
 </ul>
 </li>
@@ -220,11 +221,11 @@
 <li><p><a class="reference internal" href="#developing-with-sfftk-rw" id="id2">Developing with <code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code></a></p>
 <ul>
 <li><p><a class="reference internal" href="#introduction" id="id3">Introduction</a></p></li>
-<li><p><a class="reference internal" href="#working-with-sffsegmentation-objects" id="id4">Working with <a class="reference internal" href="api.html#sfftkrw.api.SFFSegmentation" title="sfftkrw.api.SFFSegmentation"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentation</span></code></a> objects</a></p></li>
+<li><p><a class="reference internal" href="#working-with-sfftkrw-sffsegmentation-objects" id="id4">Working with <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentation" title="sfftkrw.SFFSegmentation"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentation</span></code></a> objects</a></p></li>
 <li><p><a class="reference internal" href="#containers" id="id5">Containers</a></p></li>
 <li><p><a class="reference internal" href="#indexed-objects" id="id6">Indexed Objects</a></p></li>
 <li><p><a class="reference internal" href="#special-classes" id="id7">Special Classes</a></p></li>
-<li><p><a class="reference internal" href="#working-with-sffsegment-objects" id="id8">Working with <a class="reference internal" href="api.html#sfftkrw.api.SFFSegment" title="sfftkrw.api.SFFSegment"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegment</span></code></a> objects</a></p></li>
+<li><p><a class="reference internal" href="#working-with-sfftkrw-sffsegment-objects" id="id8">Working with <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegment" title="sfftkrw.SFFSegment"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegment</span></code></a> objects</a></p></li>
 </ul>
 </li>
 </ul>
@@ -236,12 +237,13 @@
 <ul class="simple">
 <li><p>the <strong>schema</strong> package (<code class="xref py py-mod docutils literal notranslate"><span class="pre">sfftkrw.schema</span></code>) contains two modules:</p>
 <ul>
-<li><p>the <strong>adapter</strong> module (<a class="reference internal" href="api.html#module-sfftkrw.api" title="sfftkrw.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sfftkrw.api</span></code></a>) provides the main API which handles how data fields
+<li><p>the <strong>adapter</strong> module (<a class="reference internal" href="sfftkrw.html#module-sfftkrw" title="sfftkrw"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sfftkrw</span></code></a> and version-specific modules in <code class="xref py py-mod docutils literal notranslate"><span class="pre">sfftkw.schema</span></code>) provides the
+main API which handles how data fields
 are represented independent of the file formats to be used (XML, HDF5 and JSON). This package provides an
 adapter to the underlying <a class="reference external" href="https://www.davekuhlman.org/generateDS.html">GenerateDS</a> API which
 <em>extends</em> and <em>simplifies</em> EMDB-SFF fields.</p></li>
 <li><p>the <strong>base</strong> module (<a class="reference internal" href="base.html#module-sfftkrw.schema.base" title="sfftkrw.schema.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sfftkrw.schema.base</span></code></a>) provides the core functionality encapsulated in a set of
-classes that are actualised in the <strong>adapter</strong> module. There are five (5) base classes:</p>
+classes that are actualised in the <strong>adapter</strong> module. There are six (6) base classes:</p>
 <ul>
 <li><p><a class="reference internal" href="base.html#sfftkrw.schema.base.SFFType" title="sfftkrw.schema.base.SFFType"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.schema.base.SFFType</span></code></a> defines several class variables which bind each adapter to the
 underlying <cite>generateDS</cite> API;</p></li>
@@ -252,42 +254,48 @@ container attributes;</p></li>
 <li><p><a class="reference internal" href="base.html#sfftkrw.schema.base.SFFAttribute" title="sfftkrw.schema.base.SFFAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.schema.base.SFFAttribute</span></code></a> defines a descriptor class that handles attributes, and</p></li>
 <li><p><a class="reference internal" href="base.html#sfftkrw.schema.base.SFFTypeError" title="sfftkrw.schema.base.SFFTypeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.schema.base.SFFTypeError</span></code></a> defines an exception class that reports custom
 <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeError</span></code></a></p></li>
+<li><p><a class="reference internal" href="base.html#sfftkrw.schema.base.SFFValueError" title="sfftkrw.schema.base.SFFValueError"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.schema.base.SFFValueError</span></code></a> is for custom <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a> exceptions (particularly with
+regard to validation)</p></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p>the <strong>core</strong> package (<code class="xref py py-mod docutils literal notranslate"><span class="pre">:py:class:</span></code>.SFFtkrw`.core`) provides a set of useful utilities mainly for the command-line toolkit
-(<code class="docutils literal notranslate"><span class="pre">:py:class:`.SFF`-rw</span></code> command) that handle command line arguments (making sure that they have the right values) and miscellaneous
+<li><p>the <strong>core</strong> package (<code class="xref py py-mod docutils literal notranslate"><span class="pre">sfftkrw.core</span></code>) provides a set of useful utilities mainly for the command-line toolkit
+(<code class="docutils literal notranslate"><span class="pre">sff</span></code> command) that handle command line arguments (making sure that they have the right values) and miscellaneous
 utilities.</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please note that test data is only available when you clone the repository and not when you install from PyPI.</p>
 </div>
-<div class="section" id="working-with-sffsegmentation-objects">
-<h2><a class="toc-backref" href="#id4">Working with <a class="reference internal" href="api.html#sfftkrw.api.SFFSegmentation" title="sfftkrw.api.SFFSegmentation"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentation</span></code></a> objects</a><a class="headerlink" href="#working-with-sffsegmentation-objects" title="Permalink to this headline">¶</a></h2>
-<p>A segmentation is represented by an <a class="reference internal" href="api.html#sfftkrw.api.SFFSegmentation" title="sfftkrw.api.SFFSegmentation"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentation</span></code></a> object. It may be used in two ways:</p>
+</div>
+<div class="section" id="working-with-sfftkrw-sffsegmentation-objects">
+<h2><a class="toc-backref" href="#id4">Working with <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentation" title="sfftkrw.SFFSegmentation"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentation</span></code></a> objects</a><a class="headerlink" href="#working-with-sfftkrw-sffsegmentation-objects" title="Permalink to this headline">¶</a></h2>
+<p>A segmentation is represented by an <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentation" title="sfftkrw.SFFSegmentation"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentation</span></code></a> object. It may be used in two ways:</p>
 <ul class="simple">
 <li><p>To read a segmentation from a file</p></li>
 <li><p>To create a new segmentation.</p></li>
 </ul>
 <div class="section" id="reading-emdb-sff-files">
 <h3>Reading EMDB-SFF Files<a class="headerlink" href="#reading-emdb-sff-files" title="Permalink to this headline">¶</a></h3>
-<p>You can read an EMDB-SFF file directly by using the <a class="reference internal" href="api.html#sfftkrw.api.SFFSegmentation.from_file" title="sfftkrw.api.SFFSegmentation.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SFFSegmentation.from_file()</span></code></a> class method.</p>
+<p>You can read an EMDB-SFF file directly by using the <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentation.from_file" title="sfftkrw.SFFSegmentation.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentation.from_file()</span></code></a> class method.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">segments</span> <span class="kn">import</span> <span class="n">SFFSegmentation</span>
-<span class="kn">from</span> <span class="nn">sfftkrw.unittests</span> <span class="kn">import</span> <span class="n">TEST_DATA_PATH</span>
+<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">SFFSegmentation</span>
+<span class="kn">from</span> <span class="nn">sfftkrw.unittests</span> <span class="kn">import</span> <span class="n">TEST_DATA_rPATH</span>
 
 <span class="c1"># XML file</span>
-<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.7&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
+<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.8&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
 <span class="n">seg</span> <span class="o">=</span> <span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
 
 <span class="c1"># HDF5 file</span>
-<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.7&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.hff&#39;</span><span class="p">)</span>
+<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.8&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.hff&#39;</span><span class="p">)</span>
 <span class="n">seg</span> <span class="o">=</span> <span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
 
 <span class="c1"># JSON file</span>
-<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.7&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.json&#39;</span><span class="p">)</span>
+<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.8&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.json&#39;</span><span class="p">)</span>
 <span class="n">seg</span> <span class="o">=</span> <span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -297,10 +305,10 @@ utilities.</p></li>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">segments</span> <span class="kn">import</span> <span class="n">SFFSegmentation</span>
+<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">SFFSegmentation</span>
 <span class="kn">from</span> <span class="nn">sfftkrw.unittests</span> <span class="kn">import</span> <span class="n">TEST_DATA_PATH</span>
 
-<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.7&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
+<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.8&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
 <span class="n">seg</span> <span class="o">=</span> <span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
 
 <span class="c1"># name</span>
@@ -309,20 +317,20 @@ utilities.</p></li>
 
 <span class="c1"># schema version</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
-<span class="c1"># &quot;0.7.0.dev0&quot;</span>
+<span class="c1"># &quot;0.8.0.dev1&quot;</span>
 
 <span class="c1"># software details</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">software</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">software_list</span><span class="p">)</span>
 
 <span class="c1"># primary descriptor</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">primary_descriptor</span><span class="p">)</span>
-<span class="c1"># &quot;threeDVolume&quot;</span>
+<span class="c1"># &quot;three_d_volume&quot;</span>
 
 <span class="c1"># transforms</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span><span class="p">))</span>
 <span class="c1"># 2</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="c1"># bounding box</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">)</span>
@@ -339,15 +347,27 @@ utilities.</p></li>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
-<span class="n">seg</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="p">()</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="p">()</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="c1"># Mon Feb 24 12:59:10 2020  SFFSegmentation(name=None, version=&quot;0.8.0.dev1&quot;) is missing the following required attributes: name, primary_descriptor</span>
+<span class="c1"># Traceback (most recent call last):</span>
+<span class="c1">#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="c1">#   File &quot;/Users/pkorir/PycharmProjects/sfftk-rw/sfftkrw/schema/base.py&quot;, line 234, in export</span>
+<span class="c1">#     raise SFFValueError(&quot;export failed due to validation error&quot;)</span>
+<span class="c1"># sfftkrw.schema.base.SFFValueError: export failed due to validation error</span>
+
+<span class="c1"># name and primary_descriptor are now required</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my segmentation&quot;</span><span class="p">,</span> <span class="n">primary_descriptor</span><span class="o">=</span><span class="s2">&quot;three_d_volume&quot;</span><span class="p">)</span>
 
 <span class="c1"># We can view how the file looks like so far; note the lack of an XML header &lt;?xml ...&gt;</span>
 <span class="n">seg</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-<span class="sd">&quot;&quot;&quot;&lt;segmentation&gt;</span>
-<span class="sd">    &lt;version&gt;0.7.0.dev0&lt;/version&gt;</span>
-<span class="sd">&lt;/segmentation&gt;&quot;&quot;&quot;</span>
+<span class="c1"># &lt;segmentation&gt;</span>
+<span class="c1">#    &lt;version&gt;0.8.0.dev1&lt;/version&gt;</span>
+<span class="c1">#    &lt;name&gt;my segmentation&lt;/name&gt;</span>
+<span class="c1">#    &lt;primary_descriptor&gt;three_d_volume&lt;/primary_descriptor&gt;</span>
+<span class="c1"># &lt;/segmentation&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -356,22 +376,27 @@ utilities.</p></li>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
-<span class="n">seg</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="p">()</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="p">()</span>
 
 <span class="c1"># segmentation name</span>
 <span class="n">seg</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;A New Segmentation&#39;</span>
 
 <span class="c1"># segmentation software used</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">software</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSoftware</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Some Software&#39;</span><span class="p">,</span>
-    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;v0.1.3.dev3&#39;</span><span class="p">,</span>
-    <span class="n">processingDetails</span><span class="o">=</span><span class="s1">&#39;Lorem ipsum dolor...&#39;</span>
+<span class="c1"># first create the container</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">software_list</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSoftwareList</span><span class="p">()</span>
+<span class="c1"># then append a software object</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">software_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+    <span class="n">sff</span><span class="o">.</span><span class="n">SFFSoftware</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Some Software&#39;</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="s1">&#39;v0.1.3.dev3&#39;</span><span class="p">,</span>
+        <span class="n">processing_details</span><span class="o">=</span><span class="s1">&#39;Lorem ipsum dolor...&#39;</span>
+    <span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># bounding box</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">bounding_box</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFBoundingBox</span><span class="p">(</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">bounding_box</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFBoundingBox</span><span class="p">(</span>
     <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">xmax</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
     <span class="n">ymin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -381,60 +406,68 @@ utilities.</p></li>
 <span class="p">)</span>
 
 <span class="c1"># an identity matrix with no transformation</span>
-<span class="n">transform</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
-    <span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">cols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">data</span><span class="o">=</span><span class="s1">&#39;1 0 0 0 0 1 0 0 0 0 1 0&#39;</span>
-<span class="p">)</span>
+<span class="c1"># for convenience you can use numpy arrays</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="n">tx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">tx</span><span class="p">)</span>
 
 <span class="c1"># add it to the list of transforms</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFTransformList</span><span class="p">()</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">apapipend</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
-
-<span class="c1"># or from numpy</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="n">api</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)))</span>
-<span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFTransformList</span><span class="p">()</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="exporting-to-file">
 <h3>Exporting to File<a class="headerlink" href="#exporting-to-file" title="Permalink to this headline">¶</a></h3>
-<p>The <a class="reference internal" href="api.html#sfftkrw.api.SFFSegmentation.export" title="sfftkrw.api.SFFSegmentation.export"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SFFSegmentation.export()</span></code></a> method provides a direct way to write your segmentation to disk. All it requires is the name of the output file with the correct extension (<code class="docutils literal notranslate"><span class="pre">&quot;sff&quot;</span></code> for XML, <code class="docutils literal notranslate"><span class="pre">&quot;hff&quot;</span></code> for HDF5 or <code class="docutils literal notranslate"><span class="pre">&quot;json&quot;</span></code> for JSON).</p>
+<p>The <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentation.export" title="sfftkrw.SFFSegmentation.export"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentation.export()</span></code></a> method provides a direct way to write your segmentation to disk. Keep in mind it will raise an
+<a class="reference internal" href="base.html#sfftkrw.schema.base.SFFValueError" title="sfftkrw.schema.base.SFFValueError"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.SFFValueError</span></code></a> exception if the implied data model is invalid. Please refer to <a class="reference external" href="https://emdb-empiar.github.io/EMDB-SFF/">the schema documentation</a> on which fields are mandatory/optional.</p>
+<p>To export to a file provide the name of the output file with the correct extension (<code class="docutils literal notranslate"><span class="pre">&quot;sff&quot;</span></code> for XML, <code class="docutils literal notranslate"><span class="pre">&quot;hff&quot;</span></code> for HDF5 or <code class="docutils literal notranslate"><span class="pre">&quot;json&quot;</span></code> for JSON).
+It should also recognise <code class="docutils literal notranslate"><span class="pre">.xml</span></code>, <code class="docutils literal notranslate"><span class="pre">.h5</span></code>, and <code class="docutils literal notranslate"><span class="pre">.hdf5</span></code>. It is case insensitive (both <code class="docutils literal notranslate"><span class="pre">.sff</span></code> and <code class="docutils literal notranslate"><span class="pre">.SFF</span></code> should work).
+Additionally, there is now an alias method <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentation.to_file" title="sfftkrw.SFFSegmentation.to_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentation.to_file()</span></code></a>
+which mirrors the <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentation.from_file" title="sfftkrw.SFFSegmentation.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentation.from_file()</span></code></a> method.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># XML</span>
 <span class="n">seg</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s1">&#39;file.sff&#39;</span><span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;file.sff)</span>
 
 <span class="c1"># HDF5</span>
 <span class="n">seg</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s1">&#39;file.hff&#39;</span><span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;file.hff)</span>
 
 <span class="c1"># JSON</span>
 <span class="n">seg</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s1">&#39;file.json&#39;</span><span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;file.json)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="containers">
 <h2><a class="toc-backref" href="#id5">Containers</a><a class="headerlink" href="#containers" title="Permalink to this headline">¶</a></h2>
-<p>All classes with <code class="docutils literal notranslate"><span class="pre">*List</span></code> in their name are <em>containers</em> of corresponding objects (which we will refer to as <em>items</em>) e.g. a <a class="reference internal" href="api.html#sfftkrw.api.SFFTransformList" title="sfftkrw.api.SFFTransformList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformList</span></code></a> holds <a class="reference internal" href="api.html#sfftkrw.api.SFFTransformationMatrix" title="sfftkrw.api.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformationMatrix</span></code></a> items.</p>
+<p>All classes with <code class="docutils literal notranslate"><span class="pre">*List</span></code> in their name are <em>containers</em> of corresponding objects (which we will refer to as <em>items</em>) e.g. a <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTransformList" title="sfftkrw.SFFTransformList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformList</span></code></a> holds <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTransformationMatrix" title="sfftkrw.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformationMatrix</span></code></a> items.</p>
 <p>Here is a full list of all containers:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFTransformList" title="sfftkrw.api.SFFTransformList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformList</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFGlobalExternalReferenceList" title="sfftkrw.api.SFFGlobalExternalReferenceList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFGlobalExternalReferenceList</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFExternalReferenceList" title="sfftkrw.api.SFFExternalReferenceList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFExternalReferenceList</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFSegmentList" title="sfftkrw.api.SFFSegmentList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentList</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFMeshList" title="sfftkrw.api.SFFMeshList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMeshList</span></code></a></p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertexList</span></code></p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygonList</span></code></p></li>
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFLatticeList" title="sfftkrw.api.SFFLatticeList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLatticeList</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSoftwareList" title="sfftkrw.SFFSoftwareList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSoftwareList</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTransformList" title="sfftkrw.SFFTransformList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformList</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFGlobalExternalReferenceList" title="sfftkrw.SFFGlobalExternalReferenceList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFGlobalExternalReferenceList</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFExternalReferenceList" title="sfftkrw.SFFExternalReferenceList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFExternalReferenceList</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentList" title="sfftkrw.SFFSegmentList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentList</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFMeshList" title="sfftkrw.SFFMeshList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFMeshList</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFLatticeList" title="sfftkrw.SFFLatticeList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFLatticeList</span></code></a></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ShapePrimitiveList</span></code></p></li>
 </ul>
 <p>Containers support the following operations: <em>iteration</em>, <em>index retrieval</em>, <em>Python list methods</em>, <em>direct access by item IDs</em>, <em>item ID reset on instantiation</em>.</p>
 <div class="section" id="iteration">
 <h3>Iteration<a class="headerlink" href="#iteration" title="Permalink to this headline">¶</a></h3>
 <p>You can iterate over a container object to obtain items of the corresponding class.</p>
+<div class="section" id="software">
+<h4>Software<a class="headerlink" href="#software" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">sw</span> <span class="ow">in</span> <span class="n">seg</span><span class="o">.</span><span class="n">software_list</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sw</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">sw</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="segments">
 <h4>Segments<a class="headerlink" href="#segments" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">seg</span><span class="o">.</span><span class="n">segments</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">seg</span><span class="o">.</span><span class="n">segment_list</span><span class="p">:</span>
     <span class="c1"># do something with segment</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)</span>
 </pre></div>
@@ -442,24 +475,19 @@ utilities.</p></li>
 </div>
 <div class="section" id="meshes">
 <h4>Meshes<a class="headerlink" href="#meshes" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">mesh</span> <span class="ow">in</span> <span class="n">segment</span><span class="o">.</span><span class="n">meshes</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">vertex</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">vertex</span><span class="o">.</span><span class="n">designation</span><span class="p">)</span> <span class="c1"># &#39;surface&#39; or &#39;normal&#39;</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">vertex</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">vertex</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">vertex</span><span class="o">.</span><span class="n">z</span>
-
-    <span class="k">for</span> <span class="n">polygon</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">polygons</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">polygon</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">polygon</span><span class="o">.</span><span class="n">vertex_ids</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">mesh</span> <span class="ow">in</span> <span class="n">segment</span><span class="o">.</span><span class="n">mesh_list</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">normals</span><span class="p">)</span> <span class="c1"># may be None</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">triangles</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="external-references">
 <h4>External References<a class="headerlink" href="#external-references" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ext_ref</span> <span class="ow">in</span> <span class="n">segment</span><span class="o">.</span><span class="n">biological_annotation</span><span class="o">.</span><span class="n">external_references</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ext_ref</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ext_ref</span><span class="o">.</span><span class="n">other_type</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ext_ref</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ext_ref</span><span class="o">.</span><span class="n">resource</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ext_ref</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ext_ref</span><span class="o">.</span><span class="n">accession</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ext_ref</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ext_ref</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
 </pre></div>
@@ -471,12 +499,13 @@ utilities.</p></li>
 <p>You can <em>retrieve</em>, <em>set</em> or <em>delete</em> an item from a container using Python’s index syntax. However, you cannot perform slicing (yet).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
+<span class="kn">from</span> <span class="nn">sfftkrw.unittests</span> <span class="kn">import</span> <span class="n">TEST_DATA_PATH</span>
 
-<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.7&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
-<span class="n">seg</span> <span class="o">=</span> <span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
+<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.8&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -500,13 +529,14 @@ utilities.</p></li>
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ids()</span></code> returns a <code class="xref py py-func docutils literal notranslate"><span class="pre">dict_key()</span></code> object (Python3) or a <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> which contains the sequence of item IDs. You can cast this to a list. In Python3, the <cite>dict_key</cite> is automatically updated once referenced.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
+<span class="kn">from</span> <span class="nn">sfftkrw.unittests</span> <span class="kn">import</span> <span class="n">TEST_DATA_PATH</span>
 
-<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.7&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
-<span class="n">seg</span> <span class="o">=</span> <span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
+<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.8&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
 
 <span class="c1"># segment IDs</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">get_ids</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">segment_list</span><span class="o">.</span><span class="n">get_ids</span><span class="p">())</span>
 <span class="c1"># Python3: dict_keys([15559, 15560, 15561, 15562, 15563, 15564, 15565, 15566, 15567, 15568, 15569, 15570, 15571, 15572, 15573, 15574, 15575, 15576, 15577, 15578])</span>
 <span class="c1"># Python2: [15559, 15560, 15561, 15562, 15563, 15564, 15565, 15566, 15567, 15568, 15569, 15570, 15571, 15572, 15573, 15574, 15575, 15576, 15577, 15578]</span>
 </pre></div>
@@ -514,23 +544,24 @@ utilities.</p></li>
 <p><a class="reference internal" href="base.html#sfftkrw.schema.base.SFFListType.get_by_id" title="sfftkrw.schema.base.SFFListType.get_by_id"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_by_id()</span></code></a> returns the object with the corresponding ID. The parent class ensures that no overwriting is done so you should expect that the container maintains integrity.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
+<span class="kn">from</span> <span class="nn">sfftkrw.unittests</span> <span class="kn">import</span> <span class="n">TEST_DATA_PATH</span>
 
-<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.7&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
-<span class="n">seg</span> <span class="o">=</span> <span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
+<span class="n">seg_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEST_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;sff&#39;</span><span class="p">,</span> <span class="s1">&#39;v0.8&#39;</span><span class="p">,</span> <span class="s1">&#39;emd_1014.sff&#39;</span><span class="p">)</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentation</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">seg_fn</span><span class="p">)</span>
 
-<span class="n">segment</span> <span class="o">=</span> <span class="n">seg</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="mi">15559</span><span class="p">)</span>
+<span class="n">segment</span> <span class="o">=</span> <span class="n">seg</span><span class="o">.</span><span class="n">segment_list</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="mi">15559</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="reset-ids-on-instantiation">
 <h3>Reset IDs on Instantiation<a class="headerlink" href="#reset-ids-on-instantiation" title="Permalink to this headline">¶</a></h3>
-<p>Instantiating a container resets the auto-incrementing IDs for all future instances of the corresponding item class. For example, creating a new <a class="reference internal" href="api.html#sfftkrw.api.SFFSegmentList" title="sfftkrw.api.SFFSegmentList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentList</span></code></a> object guarantees that all subsequently created <a class="reference internal" href="api.html#sfftkrw.api.SFFSegment" title="sfftkrw.api.SFFSegment"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegment</span></code></a> objects will start counting IDs from 1 (default) again while creating a new <a class="reference internal" href="api.html#sfftkrw.api.SFFLatticeList" title="sfftkrw.api.SFFLatticeList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLatticeList</span></code></a> means all future new <a class="reference internal" href="api.html#sfftkrw.api.SFFLattice" title="sfftkrw.api.SFFLattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLattice</span></code></a> objects will start counting IDs from 0 (default). Please keep this in mind when working with indexed items.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<p>Instantiating a container resets the auto-incrementing IDs for all future instances of the corresponding item class. For example, creating a new <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentList" title="sfftkrw.SFFSegmentList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentList</span></code></a> object guarantees that all subsequently created <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegment" title="sfftkrw.SFFSegment"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegment</span></code></a> objects will start counting IDs from 1 (default) again while creating a new <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFLatticeList" title="sfftkrw.SFFLatticeList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFLatticeList</span></code></a> means all future new <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFLattice" title="sfftkrw.SFFLattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFLattice</span></code></a> objects will start counting IDs from 0 (default). Please keep this in mind when working with indexed items.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
-<span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="o">.</span><span class="n">reset_id</span><span class="p">()</span>
-<span class="n">new_segment</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
+<span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="o">.</span><span class="n">reset_id</span><span class="p">()</span>
+<span class="n">new_segment</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">new_segment</span><span class="p">)</span> <span class="c1"># should have an ID of 1 (segment indexes always start from 1 not 0)</span>
 </pre></div>
 </div>
@@ -541,60 +572,63 @@ utilities.</p></li>
 <p>Some classes have an auto-incrementing index associated with each object i.e. each new instance will have the index incremented by 1 on instantiation.</p>
 <p>The following classes (double-check!) are indexed:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFTransformationMatrix" title="sfftkrw.api.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformationMatrix</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFExternalReference" title="sfftkrw.api.SFFExternalReference"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFExternalReference</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFSegment" title="sfftkrw.api.SFFSegment"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegment</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFMesh" title="sfftkrw.api.SFFMesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMesh</span></code></a></p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertex</span></code></p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygon</span></code></p></li>
-<li><p><a class="reference internal" href="api.html#sfftkrw.api.SFFLattice" title="sfftkrw.api.SFFLattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLattice</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSoftware" title="sfftkrw.SFFSoftware"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSoftware</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTransformationMatrix" title="sfftkrw.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformationMatrix</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFExternalReference" title="sfftkrw.SFFExternalReference"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFExternalReference</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegment" title="sfftkrw.SFFSegment"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegment</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFMesh" title="sfftkrw.SFFMesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFMesh</span></code></a></p></li>
+<li><p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFLattice" title="sfftkrw.SFFLattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFLattice</span></code></a></p></li>
+<li><p>all shape classes: <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFCone" title="sfftkrw.SFFCone"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCone</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFCuboid" title="sfftkrw.SFFCuboid"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCuboid</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFCylinder" title="sfftkrw.SFFCylinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCylinder</span></code></a> and <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFEllipsoid" title="sfftkrw.SFFEllipsoid"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFEllipsoid</span></code></a></p></li>
 </ul>
 <p>Keep in mind the following behaviours:</p>
 <ul>
 <li><p>When reading objects from a file, only those that have an index value will set it to that value; otherwise index values will be <code class="docutils literal notranslate"><span class="pre">None</span></code>. Furthermore, <a class="reference internal" href="base.html#sfftkrw.schema.base.SFFListType.get_ids" title="sfftkrw.schema.base.SFFListType.get_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ids()</span></code></a> and <a class="reference internal" href="base.html#sfftkrw.schema.base.SFFListType.get_by_id" title="sfftkrw.schema.base.SFFListType.get_by_id"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_by_id()</span></code></a> will ignore objects with index values of <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sfftkrw.schema</span> <span class="kn">import</span> <span class="n">emdb_sff</span><span class="p">,</span> <span class="n">adapter</span> <span class="c1"># the auto API and the adapter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
-<span class="n">_segment</span> <span class="o">=</span> <span class="n">emdb_sff</span><span class="o">.</span><span class="n">segmentType</span><span class="p">()</span> <span class="c1"># no ID specified</span>
-<span class="n">segment</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="o">.</span><span class="n">from_gds_type</span><span class="p">(</span><span class="n">_segment</span><span class="p">)</span> <span class="c1"># ID is None</span>
+<span class="c1"># the autogenerated generateDS API is available on the `gds_api` namespace</span>
+<span class="n">_segment</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">gds_api</span><span class="o">.</span><span class="n">segment_type</span><span class="p">()</span> <span class="c1"># no ID specified</span>
+<span class="n">segment</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="o">.</span><span class="n">from_gds_type</span><span class="p">(</span><span class="n">_segment</span><span class="p">)</span> <span class="c1"># ID is None</span>
 
-<span class="n">segments</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegmentList</span><span class="p">()</span>
+<span class="n">segments</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentList</span><span class="p">()</span>
 <span class="n">segments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span> <span class="c1"># adds the segment but...</span>
 <span class="n">segments</span><span class="o">.</span><span class="n">get_ids</span><span class="p">()</span> <span class="c1"># empty dict_keys([])</span>
 </pre></div>
 </div>
+<p>However, when you <em>write</em> to HDF5 unique IDs will be created since the entity dataset name is the ID. Therefore, if you read this back in you will have IDs that didn’t
+exist in the original XML file.</p>
 </li>
 <li><p>You can explicitly set IDs on objects but all subsequence objects with no explicit ID value will increment from the explicit value to avoid any index collisions and ensure that the dictionary can be loaded.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">seg1</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">37</span><span class="p">)</span>
-<span class="n">seg2</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span> <span class="c1"># has an ID of 38</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">seg1</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">37</span><span class="p">)</span>
+<span class="n">seg2</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span> <span class="c1"># has an ID of 38</span>
 </pre></div>
 </div>
 </li>
 <li><p>All indexed classes support a construction option <code class="docutils literal notranslate"><span class="pre">new_obj</span></code> which is <code class="docutils literal notranslate"><span class="pre">True</span></code> by default. If set to <code class="docutils literal notranslate"><span class="pre">False</span></code> then the index value is <code class="docutils literal notranslate"><span class="pre">None</span></code> indicating that no index is needed. This is mainly used when reading objects from a file to ensure that the IDs from the file are used instead of incrementing from the class directly (unclear).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
-<span class="n">seg1</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">(</span><span class="n">new_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">seg1</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">(</span><span class="n">new_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg1</span><span class="p">)</span> <span class="c1"># no ID</span>
-<span class="n">seg2</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span> <span class="c1"># default: new_obj=True</span>
+<span class="n">seg2</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span> <span class="c1"># default: new_obj=True</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg2</span><span class="p">)</span> <span class="c1"># has ID</span>
-<span class="n">seg3</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">(</span><span class="n">new_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">seg3</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">(</span><span class="n">new_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg3</span><span class="p">)</span> <span class="c1"># no ID</span>
-<span class="n">seg4</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
+<span class="n">seg4</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg4</span><span class="p">)</span> <span class="c1"># has ID one more than seg2</span>
 </pre></div>
 </div>
 </li>
 <li><p>You can create objects with a mixture of <code class="docutils literal notranslate"><span class="pre">new_obj=True</span></code> and <code class="docutils literal notranslate"><span class="pre">new_obj=False</span></code>. Incrementing of indexes continues for every <code class="docutils literal notranslate"><span class="pre">new_obj=True</span></code>. (see example above)</p></li>
 <li><p>Creating an instance of the corresponding container resets indexes for all subsequently created indexed objects of the corresponding container.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
 <span class="c1"># first reset IDs</span>
-<span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="o">.</span><span class="n">reset_id</span><span class="p">()</span>
+<span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="o">.</span><span class="n">reset_id</span><span class="p">()</span>
 
-<span class="n">seg1</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
+<span class="n">seg1</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg1</span><span class="p">)</span>
 
-<span class="n">segments</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegmentList</span><span class="p">()</span>
-<span class="n">seg2</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
+<span class="n">segments</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentList</span><span class="p">()</span>
+<span class="n">seg2</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">seg2</span><span class="p">)</span>
 
 <span class="c1"># both have ID of 1!</span>
@@ -602,30 +636,30 @@ utilities.</p></li>
 </div>
 </li>
 <li><p>You can manually reset IDs using the <a class="reference internal" href="base.html#sfftkrw.schema.base.SFFIndexType.reset_id" title="sfftkrw.schema.base.SFFIndexType.reset_id"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset_id()</span></code></a> method.</p></li>
-<li><p>Shapes: <a class="reference internal" href="api.html#sfftkrw.api.SFFCone" title="sfftkrw.api.SFFCone"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCone</span></code></a>, <a class="reference internal" href="api.html#sfftkrw.api.SFFCuboid" title="sfftkrw.api.SFFCuboid"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCuboid</span></code></a>, <a class="reference internal" href="api.html#sfftkrw.api.SFFCylinder" title="sfftkrw.api.SFFCylinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCylinder</span></code></a> and <a class="reference internal" href="api.html#sfftkrw.api.SFFEllipsoid" title="sfftkrw.api.SFFEllipsoid"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFEllipsoid</span></code></a> objects all share a single ID.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<li><p>Shapes: <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFCone" title="sfftkrw.SFFCone"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCone</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFCuboid" title="sfftkrw.SFFCuboid"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCuboid</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFCylinder" title="sfftkrw.SFFCylinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCylinder</span></code></a> and <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFEllipsoid" title="sfftkrw.SFFEllipsoid"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFEllipsoid</span></code></a> objects all share a single ID.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
-<span class="n">api</span><span class="o">.</span><span class="n">SFFShape</span><span class="o">.</span><span class="n">reset_id</span><span class="p">()</span>
+<span class="n">sff</span><span class="o">.</span><span class="n">SFFShape</span><span class="o">.</span><span class="n">reset_id</span><span class="p">()</span>
 
-<span class="n">cone</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFCone</span><span class="p">()</span>
+<span class="n">cone</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFCone</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cone</span><span class="p">)</span>
-<span class="n">cuboid</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFCuboid</span><span class="p">()</span>
+<span class="n">cuboid</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFCuboid</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cuboid</span><span class="p">)</span>
-<span class="n">cylinder</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFCylinder</span><span class="p">()</span>
+<span class="n">cylinder</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFCylinder</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cylinder</span><span class="p">)</span>
-<span class="n">ellipsoid</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFEllipsoid</span><span class="p">()</span>
+<span class="n">ellipsoid</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFEllipsoid</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ellipsoid</span><span class="p">)</span>
 
 <span class="c1"># the shape container resets all IDs</span>
-<span class="n">shapes</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFShapePrimitiveList</span><span class="p">()</span>
+<span class="n">shapes</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFShapePrimitiveList</span><span class="p">()</span>
 
-<span class="n">cone</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFCone</span><span class="p">()</span>
+<span class="n">cone</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFCone</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cone</span><span class="p">)</span>
-<span class="n">cuboid</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFCuboid</span><span class="p">()</span>
+<span class="n">cuboid</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFCuboid</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cuboid</span><span class="p">)</span>
-<span class="n">cylinder</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFCylinder</span><span class="p">()</span>
+<span class="n">cylinder</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFCylinder</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cylinder</span><span class="p">)</span>
-<span class="n">ellipsoid</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFEllipsoid</span><span class="p">()</span>
+<span class="n">ellipsoid</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFEllipsoid</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ellipsoid</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -634,9 +668,9 @@ utilities.</p></li>
 </div>
 <div class="section" id="special-classes">
 <h2><a class="toc-backref" href="#id7">Special Classes</a><a class="headerlink" href="#special-classes" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="sfftransformationmatrix">
-<h3><a class="reference internal" href="api.html#sfftkrw.api.SFFTransformationMatrix" title="sfftkrw.api.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformationMatrix</span></code></a><a class="headerlink" href="#sfftransformationmatrix" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference internal" href="api.html#sfftkrw.api.SFFTransformationMatrix" title="sfftkrw.api.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformationMatrix</span></code></a> objects can be instantiated in two ways:</p>
+<div class="section" id="sfftkrw-sfftransformationmatrix">
+<h3><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTransformationMatrix" title="sfftkrw.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformationMatrix</span></code></a><a class="headerlink" href="#sfftkrw-sfftransformationmatrix" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTransformationMatrix" title="sfftkrw.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformationMatrix</span></code></a> objects can be instantiated in two ways:</p>
 <ul class="simple">
 <li><p>explicitly with no or raw data: row, columns and a space-separated byte-sequence or unicode sequence (string) of the actual data;</p></li>
 <li><p>implicitly from a numpy array (the rows and columns are inferred from the numpy array)</p></li>
@@ -644,9 +678,9 @@ utilities.</p></li>
 <div class="section" id="explicit">
 <h4>Explicit<a class="headerlink" href="#explicit" title="Permalink to this headline">¶</a></h4>
 <p>In this scenario the data has to be consistent i.e. the number of items in the string has to match the stated number of rows and columns.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
-<span class="n">T</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
     <span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">data</span><span class="o">=</span><span class="s2">&quot;1 0 0 0 0 1 0 0 0 0 1 0&quot;</span>
 <span class="p">)</span>
@@ -655,23 +689,23 @@ utilities.</p></li>
 </div>
 <div class="section" id="implicit">
 <h4>Implicit<a class="headerlink" href="#implicit" title="Permalink to this headline">¶</a></h4>
-<p>Use the <a class="reference internal" href="api.html#sfftkrw.api.SFFTransformationMatrix.from_array" title="sfftkrw.api.SFFTransformationMatrix.from_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SFFTransformationMatrix.from_array()</span></code></a> class method to create an <code class="xref py py-meth docutils literal notranslate"><span class="pre">SFFTransformationMatrix()</span></code> object directly from a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> 2D array.</p>
+<p>Use the <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTransformationMatrix.from_array" title="sfftkrw.SFFTransformationMatrix.from_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformationMatrix.from_array()</span></code></a> class method to create an <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTransformationMatrix" title="sfftkrw.SFFTransformationMatrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformationMatrix()</span></code></a> object directly from a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> 2D array.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <cite>data</cite> attribute then provides access the the string data while the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SFFTransformationMatrix.data_array</span></code> attribute provides a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array of the matrix.</p>
+<p>The <cite>data</cite> attribute then provides access the the string data while the <code class="xref py py-attr docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformationMatrix.data_array</span></code> attribute provides a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array of the matrix.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">data_array</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="sfflattice">
-<h3><a class="reference internal" href="api.html#sfftkrw.api.SFFLattice" title="sfftkrw.api.SFFLattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLattice</span></code></a><a class="headerlink" href="#sfflattice" title="Permalink to this headline">¶</a></h3>
-<p>In a similar way to <a class="reference internal" href="api.html#sfftkrw.api.SFFTransformationMatrix" title="sfftkrw.api.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFTransformationMatrix</span></code></a> objects, <a class="reference internal" href="api.html#sfftkrw.api.SFFLattice" title="sfftkrw.api.SFFLattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLattice</span></code></a> objects may be instantiated in several ways:</p>
+<div class="section" id="sfftkrw-sfflattice">
+<h3><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFLattice" title="sfftkrw.SFFLattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFLattice</span></code></a><a class="headerlink" href="#sfftkrw-sfflattice" title="Permalink to this headline">¶</a></h3>
+<p>In a similar way to <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTransformationMatrix" title="sfftkrw.SFFTransformationMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTransformationMatrix</span></code></a> objects, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFLattice" title="sfftkrw.SFFLattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFLattice</span></code></a> objects may be instantiated in several ways:</p>
 <ul class="simple">
 <li><p>directly with either a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array, <code class="docutils literal notranslate"><span class="pre">byte</span></code>-sequence or unicode string,</p></li>
 <li><p>explicitly from a numpy array, or</p></li>
@@ -683,15 +717,15 @@ utilities.</p></li>
 <span class="kn">import</span> <span class="nn">zlib</span>
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
 <span class="c1"># from numpy array</span>
 <span class="n">_l</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">ln</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
+<span class="n">ln</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">,</span>
     <span class="n">endianness</span><span class="o">=</span><span class="s1">&#39;little&#39;</span><span class="p">,</span>
-    <span class="n">size</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-    <span class="n">start</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">size</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="n">start</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
     <span class="n">data</span><span class="o">=</span><span class="n">_l</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
@@ -702,22 +736,22 @@ utilities.</p></li>
 <span class="n">_bc</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">_b</span><span class="p">)</span>
 <span class="c1"># and base64-encoded</span>
 <span class="n">_bce</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">_bc</span><span class="p">)</span>
-<span class="n">lb</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
+<span class="n">lb</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;int8&#39;</span><span class="p">,</span>
     <span class="n">endianness</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">,</span>
-    <span class="n">size</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-    <span class="n">start</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">size</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="n">start</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
     <span class="n">data</span><span class="o">=</span><span class="n">_bce</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span>
 
 <span class="c1"># the same as above but now with a unicode string of the same data</span>
 <span class="n">_bceu</span> <span class="o">=</span> <span class="n">_bce</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-<span class="n">lbu</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
+<span class="n">lbu</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;int8&#39;</span><span class="p">,</span>
     <span class="n">endianness</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">,</span>
-    <span class="n">size</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-    <span class="n">start</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">size</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="n">start</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
     <span class="n">data</span><span class="o">=</span><span class="n">_bceu</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">lbu</span><span class="p">)</span>
@@ -726,19 +760,19 @@ utilities.</p></li>
 </div>
 <div class="section" id="explicit-from-numpy-array">
 <h4>Explicit from numpy Array<a class="headerlink" href="#explicit-from-numpy-array" title="Permalink to this headline">¶</a></h4>
-<p>Use the <a class="reference internal" href="api.html#sfftkrw.api.SFFLattice.from_array" title="sfftkrw.api.SFFLattice.from_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SFFLattice.from_array()</span></code></a></p>
+<p>Use the <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFLattice.from_array" title="sfftkrw.SFFLattice.from_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfftkrw.SFFLattice.from_array()</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">zlib</span>
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
 <span class="n">_l</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">l</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFLattice</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">_l</span><span class="p">,</span>
+<span class="n">l</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFLattice</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">_l</span><span class="p">,</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">,</span>
     <span class="n">endianness</span><span class="o">=</span><span class="s1">&#39;little&#39;</span><span class="p">,</span>
-    <span class="n">size</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-    <span class="n">start</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">size</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="n">start</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
 </pre></div>
@@ -746,12 +780,14 @@ utilities.</p></li>
 </div>
 <div class="section" id="explicit-from-byte-sequence">
 <h4>Explicit from Byte Sequence<a class="headerlink" href="#explicit-from-byte-sequence" title="Permalink to this headline">¶</a></h4>
-<p>Use the <a class="reference internal" href="api.html#sfftkrw.api.SFFLattice.from_bytes" title="sfftkrw.api.SFFLattice.from_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SFFLattice.from_bytes()</span></code></a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span>
+<p>Use the <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFLattice.from_bytes" title="sfftkrw.SFFLattice.from_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfftkrw.SFFLattice.from_bytes()</span></code></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">zlib</span>
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
 <span class="c1"># from a byte sequence</span>
 <span class="n">_b</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&gt;1000b&quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,))))</span> <span class="c1"># big-endian, 1000, signed char integer</span>
@@ -759,11 +795,11 @@ utilities.</p></li>
 <span class="n">_bc</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">_b</span><span class="p">)</span>
 <span class="c1"># and base64-encoded</span>
 <span class="n">_bce</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">_bc</span><span class="p">)</span>
-<span class="n">l</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFLattice</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">_bce</span><span class="p">,</span>
+<span class="n">l</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFLattice</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">_bce</span><span class="p">,</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;int8&#39;</span><span class="p">,</span>
     <span class="n">endianness</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">,</span>
-    <span class="n">size</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-    <span class="n">start</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">size</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="n">start</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
 </pre></div>
@@ -771,12 +807,12 @@ utilities.</p></li>
 <p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> attribute then provides access the the string data while the <code class="docutils literal notranslate"><span class="pre">data_array</span></code> attribute provides a numpy array of the matrix.</p>
 </div>
 </div>
-<div class="section" id="sffrgba">
-<h3><a class="reference internal" href="api.html#sfftkrw.api.SFFRGBA" title="sfftkrw.api.SFFRGBA"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFRGBA</span></code></a><a class="headerlink" href="#sffrgba" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="sfftkrw-sffrgba">
+<h3><a class="reference internal" href="sfftkrw.html#sfftkrw.SFFRGBA" title="sfftkrw.SFFRGBA"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFRGBA</span></code></a><a class="headerlink" href="#sfftkrw-sffrgba" title="Permalink to this headline">¶</a></h3>
 <p>This is the main class to represent RGBA colours.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
-<span class="n">colour</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span>
+<span class="n">colour</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span>
     <span class="n">red</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="n">green</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
     <span class="n">blue</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
@@ -786,20 +822,20 @@ utilities.</p></li>
 </pre></div>
 </div>
 <p>Aside from being able to set channel values or leave them blank we also provide an argument to generate colours randomly.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
-<span class="n">colour</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span><span class="n">random_colour</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">colour</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span><span class="n">random_colour</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">colour</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="working-with-sffsegment-objects">
-<h2><a class="toc-backref" href="#id8">Working with <a class="reference internal" href="api.html#sfftkrw.api.SFFSegment" title="sfftkrw.api.SFFSegment"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegment</span></code></a> objects</a><a class="headerlink" href="#working-with-sffsegment-objects" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="working-with-sfftkrw-sffsegment-objects">
+<h2><a class="toc-backref" href="#id8">Working with <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegment" title="sfftkrw.SFFSegment"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegment</span></code></a> objects</a><a class="headerlink" href="#working-with-sfftkrw-sffsegment-objects" title="Permalink to this headline">¶</a></h2>
 <p>We show how to represent a segment using the three types of geometry by example.</p>
 <div class="section" id="viewing-segments">
 <h3>Viewing Segments<a class="headerlink" href="#viewing-segments" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">segment_list</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -834,21 +870,21 @@ utilities.</p></li>
 <h3>Setting Segments<a class="headerlink" href="#setting-segments" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="setting-segment-metadata">
 <h4>Setting Segment Metadata<a class="headerlink" href="#setting-segment-metadata" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">segment</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">segment</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="section" id="id1">
 <h5>Biological Annotation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h5>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the biological annotation object</span>
-<span class="n">bioAnn</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFBiologicalAnnotation</span><span class="p">()</span>
+<span class="n">bioAnn</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFBiologicalAnnotation</span><span class="p">()</span>
 <span class="n">bioAnn</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Segment name&quot;</span>
 <span class="n">bioAnn</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Some description&quot;</span>
 <span class="n">bioAnn</span><span class="o">.</span><span class="n">number_of_instances</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="c1"># define the external references</span>
-<span class="n">ext_refs</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFExternalReferenceList</span><span class="p">()</span>
+<span class="n">ext_refs</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFExternalReferenceList</span><span class="p">()</span>
 <span class="n">ext_refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-<span class="n">api</span><span class="o">.</span><span class="n">SFFExternalReference</span><span class="p">(</span>
+<span class="n">sff</span><span class="o">.</span><span class="n">SFFExternalReference</span><span class="p">(</span>
     <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;ncbitaxon&quot;</span><span class="p">,</span>
     <span class="n">otherType</span><span class="o">=</span><span class="s2">&quot;http://purl.obolibrary.org/obo/NCBITaxon_559292&quot;</span><span class="p">,</span>
     <span class="n">value</span><span class="o">=</span><span class="s2">&quot;NCBITaxon_559292&quot;</span><span class="p">,</span>
@@ -857,7 +893,7 @@ utilities.</p></li>
     <span class="p">)</span>
 <span class="p">)</span>
 <span class="n">ext_refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="n">api</span><span class="o">.</span><span class="n">SFFExternalReference</span><span class="p">(</span>
+    <span class="n">sff</span><span class="o">.</span><span class="n">SFFExternalReference</span><span class="p">(</span>
         <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;pdb&quot;</span><span class="p">,</span>
         <span class="n">otherType</span><span class="o">=</span><span class="s2">&quot;http://www.ebi.ac.uk/pdbe/entry/pdb/3ja8&quot;</span><span class="p">,</span>
         <span class="n">value</span><span class="o">=</span><span class="s2">&quot;3ja8&quot;</span><span class="p">,</span>
@@ -876,7 +912,7 @@ utilities.</p></li>
 <div class="section" id="colour">
 <h5>Colour<a class="headerlink" href="#colour" title="Permalink to this headline">¶</a></h5>
 <p>Colours should be described using normalised RGBA values (each channel has a value in the interval [0,1]).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">segment</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">segment</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span>
     <span class="n">red</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="n">green</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
     <span class="n">blue</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
@@ -888,86 +924,67 @@ utilities.</p></li>
 </div>
 </div>
 </div>
-<div class="section" id="meshes-sffmeshlist-sffmeshes-sffvertexlist-sffvertex-sffpolygonlist-and-sffpolygon">
-<h3>Meshes: <a class="reference internal" href="api.html#sfftkrw.api.SFFMeshList" title="sfftkrw.api.SFFMeshList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMeshList</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFMeshes</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertexList</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVertex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygonList</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFPolygon</span></code><a class="headerlink" href="#meshes-sffmeshlist-sffmeshes-sffvertexlist-sffvertex-sffpolygonlist-and-sffpolygon" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="meshes-sfftkrw-sffmeshlist-sfftkrw-sffmeshes-sfftkrw-sffvertices-sfftkrw-sffnormals-sfftkrw-sfftriangles">
+<h3>Meshes: <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFMeshList" title="sfftkrw.SFFMeshList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFMeshList</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFMeshes</span></code>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFVertices" title="sfftkrw.SFFVertices"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFVertices</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFNormals" title="sfftkrw.SFFNormals"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFNormals</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFTriangles" title="sfftkrw.SFFTriangles"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFTriangles</span></code></a><a class="headerlink" href="#meshes-sfftkrw-sffmeshlist-sfftkrw-sffmeshes-sfftkrw-sffvertices-sfftkrw-sffnormals-sfftkrw-sfftriangles" title="Permalink to this headline">¶</a></h3>
 <p>First, create the mesh container that will hold the meshes.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span><span class="p">,</span> <span class="n">randint</span><span class="p">,</span> <span class="n">choice</span>
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
 <span class="c1"># the list of meshes</span>
-<span class="n">meshes</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFMeshList</span><span class="p">()</span>
+<span class="n">meshes</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFMeshList</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Then create the vertex list and polygon lists.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># a list of vertices</span>
-<span class="n">vertices</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFVertexList</span><span class="p">()</span>
-<span class="n">no_vertices</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<p>To create a mesh you will need to specify <em>vertices</em>, <em>normals</em> (optional) and <em>triangles</em>. These are all subclasses of
+<a class="reference internal" href="sfftkrw.html#sfftkrw.SFFEncodedSequence" title="sfftkrw.SFFEncodedSequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFEncodedSequence</span></code></a> class. Here we show how to define a mesh using all three components using a simple
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">sfftkrw.SFFVertices.from_array()</span></code> method which takes a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="c1"># a list of polygons</span>
-<span class="n">polygons</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFPolygonList</span><span class="p">()</span>
-<span class="n">no_polygons</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Next, populate the vertex lists and polygon lists with vertices and polygons, respectively.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># add vertices from the list of vertices</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no_vertices</span><span class="p">):</span>
-    <span class="n">vertex</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFVertex</span><span class="p">()</span>
-    <span class="n">vertex</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-        <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">(</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)))</span>
-    <span class="p">)</span>
-    <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vertex</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">sfftrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
+<span class="n">vertices</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFVertices</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="c1"># 3: must be 3-space</span>
+<span class="n">normals</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFNormals</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="c1"># normals must correspond in length to vertices</span>
+<span class="n">triangles</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFTriangles</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
 
-
-<span class="c1"># add polygons to the list of polygons</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no_polygons</span><span class="p">):</span>
-    <span class="n">polygon</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFPolygon</span><span class="p">()</span>
-    <span class="n">polygon</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))))</span>
-    <span class="n">polygon</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))))</span>
-    <span class="n">polygon</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))))</span>
-    <span class="n">polygons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Now create the mesh and add it to the mesh list.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># a mesh</span>
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFMesh</span><span class="p">()</span>
-
-<span class="c1"># set the vertices and polygons on the mesh</span>
-<span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
-<span class="n">mesh</span><span class="o">.</span><span class="n">polygons</span> <span class="o">=</span> <span class="n">polygons</span>
-
-<span class="c1"># add the mesh to the list of meshes</span>
-<span class="n">meshes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFMesh</span><span class="p">(</span>
+    <span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span>
+    <span class="n">normals</span><span class="o">=</span><span class="n">normals</span><span class="p">,</span>
+    <span class="n">triangles</span><span class="o">=</span><span class="n">triangles</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># view as XML</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="c1"># view as JSON</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">as_json</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>Repeat this for as many meshes will need to be contained in the mesh list.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># add the mesh to the segment</span>
-<span class="n">segment</span><span class="o">.</span><span class="n">meshes</span> <span class="o">=</span> <span class="n">meshes</span>
+<span class="n">segment</span><span class="o">.</span><span class="n">mesh_list</span> <span class="o">=</span> <span class="n">meshes</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">meshes</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">mesh_list</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="d-volumes-sfflatticelist-sffthreedvolume-sffvolumestructure-sffvolumeindex">
-<h3>3D Volumes: <a class="reference internal" href="api.html#sfftkrw.api.SFFLatticeList" title="sfftkrw.api.SFFLatticeList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFLatticeList</span></code></a>, <a class="reference internal" href="api.html#sfftkrw.api.SFFThreeDVolume" title="sfftkrw.api.SFFThreeDVolume"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFThreeDVolume</span></code></a>, <a class="reference internal" href="api.html#sfftkrw.api.SFFVolumeStructure" title="sfftkrw.api.SFFVolumeStructure"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVolumeStructure</span></code></a>, <a class="reference internal" href="api.html#sfftkrw.api.SFFVolumeIndex" title="sfftkrw.api.SFFVolumeIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFVolumeIndex</span></code></a><a class="headerlink" href="#d-volumes-sfflatticelist-sffthreedvolume-sffvolumestructure-sffvolumeindex" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="d-volumes-sfftkrw-sfflatticelist-sfftkrw-sffthreedvolume-sfftkrw-sffvolumestructure-sfftkrw-sffvolumeindex">
+<h3>3D Volumes: <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFLatticeList" title="sfftkrw.SFFLatticeList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFLatticeList</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFThreeDVolume" title="sfftkrw.SFFThreeDVolume"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFThreeDVolume</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFVolumeStructure" title="sfftkrw.SFFVolumeStructure"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFVolumeStructure</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFVolumeIndex" title="sfftkrw.SFFVolumeIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFVolumeIndex</span></code></a><a class="headerlink" href="#d-volumes-sfftkrw-sfflatticelist-sfftkrw-sffthreedvolume-sfftkrw-sffvolumestructure-sfftkrw-sffvolumeindex" title="Permalink to this headline">¶</a></h3>
 <p>First, define the lattice container.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
 <span class="c1"># lattice container</span>
-<span class="n">lattices</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFLatticeList</span><span class="p">()</span>
+<span class="n">lattices</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFLatticeList</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>then define the volume structure and starting index objects.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">_size</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">_start</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">_size</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">_start</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now create the lattice and add it to the list of lattices.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># lattice 1</span>
 <span class="n">_data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
-<span class="n">lattice</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
+<span class="n">lattice</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;uint32&#39;</span><span class="p">,</span>
     <span class="n">endianness</span><span class="o">=</span><span class="s1">&#39;little&#39;</span><span class="p">,</span>
     <span class="n">size</span><span class="o">=</span><span class="n">_size</span><span class="p">,</span>
@@ -978,11 +995,11 @@ utilities.</p></li>
 
 <span class="c1"># lattice 2</span>
 <span class="n">_data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-<span class="n">lattice2</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
+<span class="n">lattice2</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFLattice</span><span class="p">(</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span>
     <span class="n">endianness</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">,</span>
-    <span class="n">size</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span>
-    <span class="n">start</span><span class="o">=</span><span class="n">api</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=-</span><span class="mi">50</span><span class="p">,</span> <span class="n">rows</span><span class="o">=-</span><span class="mi">40</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
+    <span class="n">size</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeStructure</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span>
+    <span class="n">start</span><span class="o">=</span><span class="n">sff</span><span class="o">.</span><span class="n">SFFVolumeIndex</span><span class="p">(</span><span class="n">cols</span><span class="o">=-</span><span class="mi">50</span><span class="p">,</span> <span class="n">rows</span><span class="o">=-</span><span class="mi">40</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
     <span class="n">data</span><span class="o">=</span><span class="n">_data</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">lattices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lattice2</span><span class="p">)</span>
@@ -990,16 +1007,16 @@ utilities.</p></li>
 </div>
 <p>For each segment (voxel value) in the lattice create a 3D volume object that references the lattice.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># now we define the segments that reference the lattices above</span>
-<span class="n">segments</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegmentList</span><span class="p">()</span>
+<span class="n">segments</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentList</span><span class="p">()</span>
 
 <span class="c1"># segment one</span>
-<span class="n">segment</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
+<span class="n">segment</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
 <span class="n">vol1_value</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">segment</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFThreeDVolume</span><span class="p">(</span>
+<span class="n">segment</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFThreeDVolume</span><span class="p">(</span>
     <span class="n">latticeId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">value</span><span class="o">=</span><span class="n">vol1_value</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">segment</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span>
+<span class="n">segment</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span>
     <span class="n">red</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span>
     <span class="n">green</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span>
     <span class="n">blue</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span>
@@ -1008,13 +1025,13 @@ utilities.</p></li>
 <span class="n">segments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span>
 
 <span class="c1"># segment two</span>
-<span class="n">segment</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
+<span class="n">segment</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegment</span><span class="p">()</span>
 <span class="n">vol2_value</span> <span class="o">=</span> <span class="mf">37.1</span>
-<span class="n">segment</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFThreeDVolume</span><span class="p">(</span>
+<span class="n">segment</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFThreeDVolume</span><span class="p">(</span>
     <span class="n">latticeId</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">value</span><span class="o">=</span><span class="n">vol2_value</span>
 <span class="p">)</span>
-<span class="n">segment</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span>
+<span class="n">segment</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFRGBA</span><span class="p">(</span>
     <span class="n">red</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span>
     <span class="n">green</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span>
     <span class="n">blue</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span>
@@ -1023,20 +1040,20 @@ utilities.</p></li>
 </pre></div>
 </div>
 </div>
-<div class="section" id="shape-primitives-sffshapeprimitvelist-sffcone-sffcuboid-sffcylinder-sffellipsoid-sffsubtomogramaverage">
-<h3>Shape Primitives: <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFShapePrimitveList</span></code>, <a class="reference internal" href="api.html#sfftkrw.api.SFFCone" title="sfftkrw.api.SFFCone"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCone</span></code></a>, <a class="reference internal" href="api.html#sfftkrw.api.SFFCuboid" title="sfftkrw.api.SFFCuboid"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCuboid</span></code></a>, <a class="reference internal" href="api.html#sfftkrw.api.SFFCylinder" title="sfftkrw.api.SFFCylinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFCylinder</span></code></a>, <a class="reference internal" href="api.html#sfftkrw.api.SFFEllipsoid" title="sfftkrw.api.SFFEllipsoid"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFEllipsoid</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSubtomogramAverage</span></code><a class="headerlink" href="#shape-primitives-sffshapeprimitvelist-sffcone-sffcuboid-sffcylinder-sffellipsoid-sffsubtomogramaverage" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="shape-primitives-sfftkrw-sffshapeprimitvelist-sfftkrw-sffcone-sfftkrw-sffcuboid-sfftkrw-sffcylinder-sfftkrw-sffellipsoid-sfftkrw-sffsubtomogramaverage">
+<h3>Shape Primitives: <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFShapePrimitveList</span></code>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFCone" title="sfftkrw.SFFCone"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCone</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFCuboid" title="sfftkrw.SFFCuboid"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCuboid</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFCylinder" title="sfftkrw.SFFCylinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFCylinder</span></code></a>, <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFEllipsoid" title="sfftkrw.SFFEllipsoid"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFEllipsoid</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSubtomogramAverage</span></code><a class="headerlink" href="#shape-primitives-sfftkrw-sffshapeprimitvelist-sfftkrw-sffcone-sfftkrw-sffcuboid-sfftkrw-sffcylinder-sfftkrw-sffellipsoid-sfftkrw-sffsubtomogramaverage" title="Permalink to this headline">¶</a></h3>
 <p>Create a shape container for all shapes.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span>
-<span class="kn">from</span> <span class="nn">sfftkrw</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">import</span> <span class="nn">sfftkrw</span> <span class="k">as</span> <span class="nn">sff</span>
 
 <span class="c1"># a list of shape</span>
-<span class="n">shapes</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFShapePrimitiveList</span><span class="p">()</span>
+<span class="n">shapes</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFShapePrimitiveList</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Then load each shape once created into this shape container.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># a cone</span>
 <span class="c1"># first we define the transform that locates it in place</span>
-<span class="n">transform</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
     <span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">cols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">data</span><span class="o">=</span><span class="s1">&#39;1 0 0 0 0 1 0 0 0 0 1 0&#39;</span>
@@ -1044,7 +1061,7 @@ utilities.</p></li>
 
 <span class="c1"># second we define its dimension</span>
 <span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="n">api</span><span class="o">.</span><span class="n">SFFCone</span><span class="p">(</span>
+    <span class="n">sff</span><span class="o">.</span><span class="n">SFFCone</span><span class="p">(</span>
         <span class="n">height</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">bottomRadius</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">transformId</span><span class="o">=</span><span class="n">transform</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
@@ -1052,16 +1069,16 @@ utilities.</p></li>
 <span class="p">)</span>
 
 <span class="c1"># add the transform to the list of transforms</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 
 <span class="c1"># a cuboid</span>
-<span class="n">transform</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
     <span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">cols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">data</span><span class="o">=</span><span class="s1">&#39;2 0 0 5 3 0 0 27 0 0 1 9&#39;</span>
 <span class="p">)</span>
 <span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="n">api</span><span class="o">.</span><span class="n">SFFCuboid</span><span class="p">(</span>
+    <span class="n">sff</span><span class="o">.</span><span class="n">SFFCuboid</span><span class="p">(</span>
         <span class="n">x</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">y</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">z</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
@@ -1070,16 +1087,16 @@ utilities.</p></li>
 <span class="p">)</span>
 
 <span class="c1"># add the transform to the list of transforms</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 
 <span class="c1"># a cylinder</span>
-<span class="n">transform</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
     <span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">cols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">data</span><span class="o">=</span><span class="s1">&#39;2 0 0 15 3 0 0 17 0 0 1 16&#39;</span>
 <span class="p">)</span>
 <span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="n">api</span><span class="o">.</span><span class="n">SFFCylinder</span><span class="p">(</span>
+    <span class="n">sff</span><span class="o">.</span><span class="n">SFFCylinder</span><span class="p">(</span>
         <span class="n">height</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">diameter</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">transformId</span><span class="o">=</span><span class="n">transform</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
@@ -1087,16 +1104,16 @@ utilities.</p></li>
 <span class="p">)</span>
 
 <span class="c1"># add the transform to the list of transforms</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 
 <span class="c1"># an ellipsoid</span>
-<span class="n">transform</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFTransformationMatrix</span><span class="p">(</span>
     <span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">cols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">data</span><span class="o">=</span><span class="s1">&#39;1 0 0 15 1 0 0 17 0 0 1 16&#39;</span>
 <span class="p">)</span>
 <span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="n">api</span><span class="o">.</span><span class="n">SFFEllipsoid</span><span class="p">(</span>
+    <span class="n">sff</span><span class="o">.</span><span class="n">SFFEllipsoid</span><span class="p">(</span>
         <span class="n">x</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">y</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">z</span><span class="o">=</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
@@ -1105,19 +1122,19 @@ utilities.</p></li>
 <span class="p">)</span>
 
 <span class="c1"># add the transform to the list of transforms</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">transform_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="adding-a-segment-to-the-segmentation">
 <h3>Adding A Segment To The Segmentation<a class="headerlink" href="#adding-a-segment-to-the-segmentation" title="Permalink to this headline">¶</a></h3>
 <p>Once we have added the individual segment representations to the respective segments we can add the segment to the
-segmentation. The list of segments is contained in a <a class="reference internal" href="api.html#sfftkrw.api.SFFSegmentList" title="sfftkrw.api.SFFSegmentList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SFFSegmentList</span></code></a> object.</p>
+segmentation. The list of segments is contained in a <a class="reference internal" href="sfftkrw.html#sfftkrw.SFFSegmentList" title="sfftkrw.SFFSegmentList"><code class="xref py py-class docutils literal notranslate"><span class="pre">sfftkrw.SFFSegmentList</span></code></a> object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create the list of segments</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">SFFSegmentList</span><span class="p">()</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">segment_list</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">SFFSegmentList</span><span class="p">()</span>
 
 <span class="c1"># add the segment</span>
-<span class="n">seg</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">segment_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

@@ -16,7 +16,7 @@ import sys
 import unittest
 
 from . import TEST_DATA_PATH
-from ..api import SFFSegmentation
+from .. import SFFSegmentation
 from .. import sffrw as Main
 from ..core.parser import parse_args
 
@@ -229,9 +229,17 @@ class TestMainMain(unittest.TestCase):
 
     def test_abbreviated_import(self):
         """Test importing user-classes from sfftkrw"""
-        mod_name = 'sfftkrw.api'
+        mod_name = 'sfftkrw'
         mod = importlib.import_module(mod_name)
         self.assertEqual(mod.SFFSegmentation, SFFSegmentation)
         s1, s2 = mod.SFFSegmentation(), SFFSegmentation()
         # ensure we're working on the same version
         self.assertEqual(s1.version, s2.version)
+
+    def test_import_api_namespaces(self):
+        """Test that we can import all adapter classes from the package"""
+        adapter_name = "sfftkrw"
+        adapter = importlib.import_module(adapter_name)
+        self.assertTrue(hasattr(adapter, u'SFFSegmentation'))
+        self.assertTrue(hasattr(adapter, u'gds_api'))
+

@@ -8,15 +8,18 @@ from __future__ import print_function
 import importlib
 import json
 import os
-import sys
 import random
 import re
+import sys
 import tempfile
 import unittest
 
 import h5py
 import numpy
 from random_words import RandomWords, LoremIpsum
+
+rw = RandomWords()
+li = LoremIpsum()
 
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase, _random_float, _random_integers
 from ..core import _xrange, _str, _bytes, _decode, _print
@@ -34,9 +37,6 @@ emdb_sff_name = 'sfftkrw.schema.v{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 emdb_sff = importlib.import_module(emdb_sff_name)
-
-rw = RandomWords()
-li = LoremIpsum()
 
 __author__ = u"Paul K. Korir, PhD"
 __email__ = u"pkorir@ebi.ac.uk, paul.korir@gmail.com"
@@ -2783,7 +2783,8 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID=0, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(_id)
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
+                _id)
         )
         # change parent_id
         _parent_id = _random_integer()
@@ -2892,7 +2893,8 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertRegex(
             _str(s),
             r"""SFFSegment\(id={}, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
-            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(_id)
+            r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
+                _id)
         )
         # change parent_id
         _parent_id = _random_integer()

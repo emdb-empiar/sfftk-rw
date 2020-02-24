@@ -129,7 +129,7 @@ output = {
 primary_descriptor = {
     'args': ['-R', '--primary-descriptor'],
     'kwargs': {
-        'help': "populates the <primaryDescriptor>...</primaryDescriptor> to this value [valid values:  threeDVolume, meshList, shapePrimitiveList]"
+        'help': "populates the <primary_descriptor>...</primary_descriptor> to this value [valid values:  three_d_volume, mesh_list, shape_primitive_list]"
     }
 }
 segment_name = {

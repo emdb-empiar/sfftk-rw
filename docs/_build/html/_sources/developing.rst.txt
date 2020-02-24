@@ -15,13 +15,14 @@ The main components of the package are:
 
 *   the **schema** package (:py:mod:`sfftkrw.schema`) contains two modules:
 
-    -   the **adapter** module (:py:mod:`sfftkrw.api`) provides the main API which handles how data fields
+    -   the **adapter** module (:py:mod:`sfftkrw` and version-specific modules in :py:mod:`sfftkw.schema`) provides the
+        main API which handles how data fields
         are represented independent of the file formats to be used (XML, HDF5 and JSON). This package provides an
         adapter to the underlying `GenerateDS <https://www.davekuhlman.org/generateDS.html>`_ API which
         *extends* and *simplifies* EMDB-SFF fields.
 
     -   the **base** module (:py:mod:`sfftkrw.schema.base`) provides the core functionality encapsulated in a set of
-        classes that are actualised in the **adapter** module. There are five (5) base classes:
+        classes that are actualised in the **adapter** module. There are six (6) base classes:
 
         +   :py:class:`sfftkrw.schema.base.SFFType` defines several class variables which bind each adapter to the
             underlying `generateDS` API;
@@ -37,15 +38,22 @@ The main components of the package are:
         +   :py:class:`sfftkrw.schema.base.SFFTypeError` defines an exception class that reports custom
             :py:class:`TypeError`
 
-*   the **core** package (:py:mod:`:py:class:`.SFFtkrw`.core`) provides a set of useful utilities mainly for the command-line toolkit
-    (``:py:class:`.SFF`-rw`` command) that handle command line arguments (making sure that they have the right values) and miscellaneous
+        +   :py:class:`sfftkrw.schema.base.SFFValueError` is for custom :py:class:`ValueError` exceptions (particularly with
+            regard to validation)
+
+*   the **core** package (:py:mod:`sfftkrw.core`) provides a set of useful utilities mainly for the command-line toolkit
+    (``sff`` command) that handle command line arguments (making sure that they have the right values) and miscellaneous
     utilities.
 
+.. warning::
+
+    Please note that test data is only available when you clone the repository and not when you install from PyPI.
+
 ------------------------------------------------------------------------
-Working with :py:class:`.SFFSegmentation` objects
+Working with :py:class:`sfftkrw.SFFSegmentation` objects
 ------------------------------------------------------------------------
 
-A segmentation is represented by an :py:class:`.SFFSegmentation` object. It may be used in two ways:
+A segmentation is represented by an :py:class:`sfftkrw.SFFSegmentation` object. It may be used in two ways:
 
 *   To read a segmentation from a file
 
@@ -53,27 +61,27 @@ A segmentation is represented by an :py:class:`.SFFSegmentation` object. It may 
 
 Reading EMDB-SFF Files
 ================================
-You can read an EMDB-SFF file directly by using the :py:meth:`.SFFSegmentation.from_file` class method.
+You can read an EMDB-SFF file directly by using the :py:meth:`sfftkrw.SFFSegmentation.from_file` class method.
 
 .. code-block:: python
 
     from __future__ import print_function
     import os
 
-    from segments import SFFSegmentation
-    from sfftkrw.unittests import TEST_DATA_PATH
+    from sfftkrw import SFFSegmentation
+    from sfftkrw.unittests import TEST_DATA_rPATH
 
     # XML file
-    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
+    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.sff')
     print(seg_fn)
     seg = SFFSegmentation.from_file(seg_fn)
 
     # HDF5 file
-    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.hff')
+    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.hff')
     seg = SFFSegmentation.from_file(seg_fn)
 
     # JSON file
-    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.json')
+    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.json')
     seg = SFFSegmentation.from_file(seg_fn)
     
 Viewing Segmentation Metadata
@@ -84,10 +92,10 @@ Viewing Segmentation Metadata
     from __future__ import print_function
     import os
 
-    from segments import SFFSegmentation
+    from sfftkrw import SFFSegmentation
     from sfftkrw.unittests import TEST_DATA_PATH
     
-    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
+    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.sff')
     seg = SFFSegmentation.from_file(seg_fn)
 
     # name
@@ -96,20 +104,20 @@ Viewing Segmentation Metadata
 
     # schema version
     print(seg.version)
-    # "0.7.0.dev0"
+    # "0.8.0.dev1"
 
     # software details
-    print(seg.software)
+    print(seg.software_list)
 
     # primary descriptor
     print(seg.primary_descriptor)
-    # "threeDVolume"
+    # "three_d_volume"
 
     # transforms
-    print(seg.transforms)
-    print(len(seg.transforms))
+    print(seg.transform_list)
+    print(len(seg.transform_list))
     # 2
-    print(seg.transforms[0])
+    print(seg.transform_list[0])
 
     # bounding box
     print(seg.bounding_box)
@@ -128,15 +136,27 @@ Creating a new segmentation is a more involving exercise as you need to populate
     from __future__ import print_function
     import sys
 
-    from sfftkrw import api
+    import sfftkrw as sff
 
-    seg = api.SFFSegmentation()
+    seg = sff.SFFSegmentation()
+    seg.export(sys.stderr)
+    # Mon Feb 24 12:59:10 2020	SFFSegmentation(name=None, version="0.8.0.dev1") is missing the following required attributes: name, primary_descriptor
+    # Traceback (most recent call last):
+    #   File "<stdin>", line 1, in <module>
+    #   File "/Users/pkorir/PycharmProjects/sfftk-rw/sfftkrw/schema/base.py", line 234, in export
+    #     raise SFFValueError("export failed due to validation error")
+    # sfftkrw.schema.base.SFFValueError: export failed due to validation error
+
+    # name and primary_descriptor are now required
+    seg = sff.SFFSegmentation(name="my segmentation", primary_descriptor="three_d_volume")
 
     # We can view how the file looks like so far; note the lack of an XML header <?xml ...>
     seg.export(sys.stderr)
-    """<segmentation>
-        <version>0.7.0.dev0</version>
-    </segmentation>"""
+    # <segmentation>
+    #    <version>0.8.0.dev1</version>
+    #    <name>my segmentation</name>
+    #    <primary_descriptor>three_d_volume</primary_descriptor>
+    # </segmentation>
 
 
 Setting Segmentation Metadata
@@ -147,22 +167,27 @@ Setting Segmentation Metadata
     from __future__ import print_function
     import sys
 
-    from sfftkrw import api
+    import sfftkrw as sff
 
-    seg = api.SFFSegmentation()
+    seg = sff.SFFSegmentation()
 
     # segmentation name
     seg.name = 'A New Segmentation'
 
     # segmentation software used
-    seg.software = api.SFFSoftware(
-        name='Some Software',
-        version='v0.1.3.dev3',
-        processingDetails='Lorem ipsum dolor...'
+    # first create the container
+    seg.software_list = sff.SFFSoftwareList()
+    # then append a software object
+    seg.software_list.append(
+        sff.SFFSoftware(
+            name='Some Software',
+            version='v0.1.3.dev3',
+            processing_details='Lorem ipsum dolor...'
+        )
     )
 
     # bounding box
-    seg.bounding_box = api.SFFBoundingBox(
+    seg.bounding_box = sff.SFFBoundingBox(
         xmin=0,
         xmax=512,
         ymin=0,
@@ -172,54 +197,59 @@ Setting Segmentation Metadata
     )
 
     # an identity matrix with no transformation
-    transform = api.SFFTransformationMatrix(
-        rows=3,
-        cols=4,
-        data='1 0 0 0 0 1 0 0 0 0 1 0'
-    )
+    # for convenience you can use numpy arrays
+    import numpy
+    tx = numpy.eye(4)
+    transform = sff.SFFTransformationMatrix.from_array(tx)
 
     # add it to the list of transforms
-    seg.transforms = api.SFFTransformList()
-    seg.transforms.apapipend(transform)
-
-    # or from numpy
-    import numpy
-    seg.transforms.append(
-        api.SFFTransformationMatrix.from_array(numpy.random.randint(1, 10, size=(5, 5)))
-    )
+    seg.transform_list = sff.SFFTransformList()
+    seg.transform_list.append(transform)
 
 
 Exporting to File
 ============================================
 
-The :py:meth:`.SFFSegmentation.export` method provides a direct way to write your segmentation to disk. All it requires is the name of the output file with the correct extension (``"sff"`` for XML, ``"hff"`` for HDF5 or ``"json"`` for JSON).
+The :py:meth:`sfftkrw.SFFSegmentation.export` method provides a direct way to write your segmentation to disk. Keep in mind it will raise an
+:py:class:`.base.SFFValueError` exception if the implied data model is invalid. Please refer to `the schema documentation <https://emdb-empiar.github.io/EMDB-SFF/>`_ on which fields are mandatory/optional.
+
+To export to a file provide the name of the output file with the correct extension (``"sff"`` for XML, ``"hff"`` for HDF5 or ``"json"`` for JSON).
+It should also recognise ``.xml``, ``.h5``, and ``.hdf5``. It is case insensitive (both ``.sff`` and ``.SFF`` should work).
+Additionally, there is now an alias method :py:meth:`sfftkrw.SFFSegmentation.to_file`
+which mirrors the :py:meth:`sfftkrw.SFFSegmentation.from_file` method.
 
 .. code-block:: python
 
     # XML
     seg.export('file.sff')
+    seg.to_file('file.sff)
 
     # HDF5
     seg.export('file.hff')
+    seg.to_file('file.hff)
 
     # JSON
     seg.export('file.json')
+    seg.to_file('file.json)
+
+
+
 
 ------------------------------------
 Containers
 ------------------------------------
-All classes with ``*List`` in their name are *containers* of corresponding objects (which we will refer to as *items*) e.g. a :py:class:`.SFFTransformList` holds :py:class:`.SFFTransformationMatrix` items.
+All classes with ``*List`` in their name are *containers* of corresponding objects (which we will refer to as *items*) e.g. a :py:class:`sfftkrw.SFFTransformList` holds :py:class:`sfftkrw.SFFTransformationMatrix` items.
 
 Here is a full list of all containers:
 
-*   :py:class:`.SFFTransformList`
-*   :py:class:`.SFFGlobalExternalReferenceList`
-*   :py:class:`.SFFExternalReferenceList`
-*   :py:class:`.SFFSegmentList`
-*   :py:class:`.SFFMeshList`
-*   :py:class:`.SFFVertexList`
-*   :py:class:`.SFFPolygonList`
-*   :py:class:`.SFFLatticeList`
+*   :py:class:`sfftkrw.SFFSoftwareList`
+*   :py:class:`sfftkrw.SFFTransformList`
+*   :py:class:`sfftkrw.SFFGlobalExternalReferenceList`
+*   :py:class:`sfftkrw.SFFExternalReferenceList`
+*   :py:class:`sfftkrw.SFFSegmentList`
+*   :py:class:`sfftkrw.SFFMeshList`
+*   :py:class:`sfftkrw.SFFLatticeList`
+*   :py:class:`.ShapePrimitiveList`
 
 Containers support the following operations: *iteration*, *index retrieval*, *Python list methods*, *direct access by item IDs*, *item ID reset on instantiation*.
 
@@ -228,12 +258,20 @@ Iteration
 
 You can iterate over a container object to obtain items of the corresponding class.
 
+Software
+-----------
+
+.. code-block:: python
+
+    for sw in seg.software_list:
+        print(sw.name, sw.version)
+
 Segments
 --------------------------------
 
 .. code-block:: python
 
-    for segment in seg.segments:
+    for segment in seg.segment_list:
         # do something with segment
         print(segment.id, segment.parent_id)
 
@@ -243,15 +281,10 @@ Meshes
 
 .. code-block:: python
 
-    for mesh in segment.meshes:
-        for vertex in mesh.vertices:
-            print(vertex.id)
-            print(vertex.designation) # 'surface' or 'normal'
-            x, y, z = vertex.x, vertex.y, vertex.z
-
-        for polygon in mesh.polygons:
-            print(polygon.id)
-            print(polygon.vertex_ids)
+    for mesh in segment.mesh_list:
+        print(mesh.vertices)
+        print(mesh.normals) # may be None
+        print(mesh.triangles)
 
 
 External References
@@ -260,9 +293,9 @@ External References
 .. code-block:: python
 
     for ext_ref in segment.biological_annotation.external_references:
-        print(ext_ref.type)
-        print(ext_ref.other_type)
-        print(ext_ref.value)
+        print(ext_ref.resource)
+        print(ext_ref.url)
+        print(ext_ref.accession)
         print(ext_ref.label)
         print(ext_ref.description)
 
@@ -276,12 +309,13 @@ You can *retrieve*, *set* or *delete* an item from a container using Python’s 
 
     import os
 
-    from sfftkrw import api
+    import sfftkrw as sff
+    from sfftkrw.unittests import TEST_DATA_PATH
 
-    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
-    seg = SFFSegmentation.from_file(seg_fn)
+    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.sff')
+    seg = sff.SFFSegmentation.from_file(seg_fn)
 
-    print(seg.transforms[0])
+    print(seg.transform_list[0])
 
 Python List Methods
 ======================
@@ -308,13 +342,14 @@ The Python list methods above update an internal dictionary which allows direct 
 
     import os
 
-    from sfftkrw import api
+    import sfftkrw as sff
+    from sfftkrw.unittests import TEST_DATA_PATH
 
-    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
-    seg = SFFSegmentation.from_file(seg_fn)
+    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.sff')
+    seg = sff.SFFSegmentation.from_file(seg_fn)
 
     # segment IDs
-    print(seg.segments.get_ids())
+    print(seg.segment_list.get_ids())
     # Python3: dict_keys([15559, 15560, 15561, 15562, 15563, 15564, 15565, 15566, 15567, 15568, 15569, 15570, 15571, 15572, 15573, 15574, 15575, 15576, 15577, 15578])
     # Python2: [15559, 15560, 15561, 15562, 15563, 15564, 15565, 15566, 15567, 15568, 15569, 15570, 15571, 15572, 15573, 15574, 15575, 15576, 15577, 15578]
 
@@ -324,24 +359,25 @@ The Python list methods above update an internal dictionary which allows direct 
 
     import os
 
-    from sfftkrw import api
+    import sfftkrw as sff
+    from sfftkrw.unittests import TEST_DATA_PATH
 
-    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.7', 'emd_1014.sff')
-    seg = SFFSegmentation.from_file(seg_fn)
+    seg_fn = os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1014.sff')
+    seg = sff.SFFSegmentation.from_file(seg_fn)
 
-    segment = seg.segments.get_by_id(15559)
+    segment = seg.segment_list.get_by_id(15559)
     print(segment)
 
 Reset IDs on Instantiation
 =================================
-Instantiating a container resets the auto-incrementing IDs for all future instances of the corresponding item class. For example, creating a new :py:class:`.SFFSegmentList` object guarantees that all subsequently created :py:class:`.SFFSegment` objects will start counting IDs from 1 (default) again while creating a new :py:class:`.SFFLatticeList` means all future new :py:class:`.SFFLattice` objects will start counting IDs from 0 (default). Please keep this in mind when working with indexed items.
+Instantiating a container resets the auto-incrementing IDs for all future instances of the corresponding item class. For example, creating a new :py:class:`sfftkrw.SFFSegmentList` object guarantees that all subsequently created :py:class:`sfftkrw.SFFSegment` objects will start counting IDs from 1 (default) again while creating a new :py:class:`sfftkrw.SFFLatticeList` means all future new :py:class:`sfftkrw.SFFLattice` objects will start counting IDs from 0 (default). Please keep this in mind when working with indexed items.
 
 .. code-block:: python
 
-    from sfftkrw import api
+    import sfftkrw as sff
 
-    api.SFFSegment.reset_id()
-    new_segment = api.SFFSegment()
+    sff.SFFSegment.reset_id()
+    new_segment = sff.SFFSegment()
     print(new_segment) # should have an ID of 1 (segment indexes always start from 1 not 0)
 
 ------------------------------------
@@ -351,13 +387,13 @@ Some classes have an auto-incrementing index associated with each object i.e. ea
 
 The following classes (double-check!) are indexed:
 
-*   :py:class:`.SFFTransformationMatrix`
-*   :py:class:`.SFFExternalReference`
-*   :py:class:`.SFFSegment`
-*   :py:class:`.SFFMesh`
-*   :py:class:`.SFFVertex`
-*   :py:class:`.SFFPolygon`
-*   :py:class:`.SFFLattice`
+*   :py:class:`sfftkrw.SFFSoftware`
+*   :py:class:`sfftkrw.SFFTransformationMatrix`
+*   :py:class:`sfftkrw.SFFExternalReference`
+*   :py:class:`sfftkrw.SFFSegment`
+*   :py:class:`sfftkrw.SFFMesh`
+*   :py:class:`sfftkrw.SFFLattice`
+*   all shape classes: :py:class:`sfftkrw.SFFCone`, :py:class:`sfftkrw.SFFCuboid`, :py:class:`sfftkrw.SFFCylinder` and :py:class:`sfftkrw.SFFEllipsoid`
 
 Keep in mind the following behaviours:
 
@@ -365,36 +401,39 @@ Keep in mind the following behaviours:
 
     .. code-block:: python
 
-        from sfftkrw.schema import emdb_sff, adapter # the auto API and the adapter
+        import sfftkrw as sff
 
-        _segment = emdb_sff.segmentType() # no ID specified
-        segment = api.SFFSegment.from_gds_type(_segment) # ID is None
+        # the autogenerated generateDS API is available on the `gds_api` namespace
+        _segment = sff.gds_api.segment_type() # no ID specified
+        segment = sff.SFFSegment.from_gds_type(_segment) # ID is None
 
-        segments = api.SFFSegmentList()
+        segments = sff.SFFSegmentList()
         segments.append(segment) # adds the segment but...
         segments.get_ids() # empty dict_keys([])
 
+    However, when you *write* to HDF5 unique IDs will be created since the entity dataset name is the ID. Therefore, if you read this back in you will have IDs that didn't
+    exist in the original XML file.
 
 *   You can explicitly set IDs on objects but all subsequence objects with no explicit ID value will increment from the explicit value to avoid any index collisions and ensure that the dictionary can be loaded.
 
     .. code-block:: python
 
-        seg1 = api.SFFSegment(id=37)
-        seg2 = api.SFFSegment() # has an ID of 38
+        seg1 = sff.SFFSegment(id=37)
+        seg2 = sff.SFFSegment() # has an ID of 38
 
 *   All indexed classes support a construction option ``new_obj`` which is ``True`` by default. If set to ``False`` then the index value is ``None`` indicating that no index is needed. This is mainly used when reading objects from a file to ensure that the IDs from the file are used instead of incrementing from the class directly (unclear).
 
     .. code-block:: python
 
-        from sfftkrw import api
+        import sfftkrw as sff
 
-        seg1 = api.SFFSegment(new_obj=False)
+        seg1 = sff.SFFSegment(new_obj=False)
         print(seg1) # no ID
-        seg2 = api.SFFSegment() # default: new_obj=True
+        seg2 = sff.SFFSegment() # default: new_obj=True
         print(seg2) # has ID
-        seg3 = api.SFFSegment(new_obj=False)
+        seg3 = sff.SFFSegment(new_obj=False)
         print(seg3) # no ID
-        seg4 = api.SFFSegment()
+        seg4 = sff.SFFSegment()
         print(seg4) # has ID one more than seg2
 
 *   You can create objects with a mixture of ``new_obj=True`` and ``new_obj=False``. Incrementing of indexes continues for every ``new_obj=True``. (see example above)
@@ -402,57 +441,57 @@ Keep in mind the following behaviours:
 
     .. code-block:: python
 
-        from sfftkrw import api
+        import sfftkrw as sff
 
         # first reset IDs
-        api.SFFSegment.reset_id()
+        sff.SFFSegment.reset_id()
 
-        seg1 = api.SFFSegment()
+        seg1 = sff.SFFSegment()
         print(seg1)
 
-        segments = api.SFFSegmentList()
-        seg2 = api.SFFSegment()
+        segments = sff.SFFSegmentList()
+        seg2 = sff.SFFSegment()
         print(seg2)
 
         # both have ID of 1!
 
 *   You can manually reset IDs using the :py:meth:`.reset_id` method.
-*   Shapes: :py:class:`.SFFCone`, :py:class:`.SFFCuboid`, :py:class:`.SFFCylinder` and :py:class:`.SFFEllipsoid` objects all share a single ID.
+*   Shapes: :py:class:`sfftkrw.SFFCone`, :py:class:`sfftkrw.SFFCuboid`, :py:class:`sfftkrw.SFFCylinder` and :py:class:`sfftkrw.SFFEllipsoid` objects all share a single ID.
 
     .. code-block:: python
 
-        from sfftkrw import api
+        import sfftkrw as sff
 
-        api.SFFShape.reset_id()
+        sff.SFFShape.reset_id()
 
-        cone = api.SFFCone()
+        cone = sff.SFFCone()
         print(cone)
-        cuboid = api.SFFCuboid()
+        cuboid = sff.SFFCuboid()
         print(cuboid)
-        cylinder = api.SFFCylinder()
+        cylinder = sff.SFFCylinder()
         print(cylinder)
-        ellipsoid = api.SFFEllipsoid()
+        ellipsoid = sff.SFFEllipsoid()
         print(ellipsoid)
 
         # the shape container resets all IDs
-        shapes = api.SFFShapePrimitiveList()
+        shapes = sff.SFFShapePrimitiveList()
 
-        cone = api.SFFCone()
+        cone = sff.SFFCone()
         print(cone)
-        cuboid = api.SFFCuboid()
+        cuboid = sff.SFFCuboid()
         print(cuboid)
-        cylinder = api.SFFCylinder()
+        cylinder = sff.SFFCylinder()
         print(cylinder)
-        ellipsoid = api.SFFEllipsoid()
+        ellipsoid = sff.SFFEllipsoid()
         print(ellipsoid)
 
 ------------------------------------
 Special Classes
 ------------------------------------
 
-:py:class:`.SFFTransformationMatrix`
+:py:class:`sfftkrw.SFFTransformationMatrix`
 ==============================================================
-:py:class:`.SFFTransformationMatrix` objects can be instantiated in two ways:
+:py:class:`sfftkrw.SFFTransformationMatrix` objects can be instantiated in two ways:
 
 *   explicitly with no or raw data: row, columns and a space-separated byte-sequence or unicode sequence (string) of the actual data;
 *   implicitly from a numpy array (the rows and columns are inferred from the numpy array)
@@ -463,35 +502,35 @@ In this scenario the data has to be consistent i.e. the number of items in the s
 
 .. code-block:: python
 
-    from sfftkrw import api
+    import sfftkrw as sff
 
-    T = api.SFFTransformationMatrix(
+    T = sff.SFFTransformationMatrix(
         rows=3, cols=4,
         data="1 0 0 0 0 1 0 0 0 0 1 0"
     )
 
 Implicit
 ------------------------------------
-Use the :py:meth:`.SFFTransformationMatrix.from_array` class method to create an :py:meth:`.SFFTransformationMatrix` object directly from a ``numpy`` 2D array.
+Use the :py:meth:`sfftkrw.SFFTransformationMatrix.from_array` class method to create an :py:meth:`sfftkrw.SFFTransformationMatrix` object directly from a ``numpy`` 2D array.
 
 .. code-block:: python
 
     import numpy
-    from sfftkrw import api
+    import sfftkrw as sff
 
     t = numpy.random.rand(5, 5)
-    T = api.SFFTransformationMatrix.from_array(t)
+    T = sff.SFFTransformationMatrix.from_array(t)
 
-The `data` attribute then provides access the the string data while the :py:attr:`.SFFTransformationMatrix.data_array` attribute provides a ``numpy`` array of the matrix.
+The `data` attribute then provides access the the string data while the :py:attr:`sfftkrw.SFFTransformationMatrix.data_array` attribute provides a ``numpy`` array of the matrix.
 
 .. code-block:: python
 
     T.data_array
 
 
-:py:class:`.SFFLattice`
+:py:class:`sfftkrw.SFFLattice`
 ===================================================
-In a similar way to :py:class:`.SFFTransformationMatrix` objects, :py:class:`.SFFLattice` objects may be instantiated in several ways:
+In a similar way to :py:class:`sfftkrw.SFFTransformationMatrix` objects, :py:class:`sfftkrw.SFFLattice` objects may be instantiated in several ways:
 
 *   directly with either a ``numpy`` array, ``byte``-sequence or unicode string,
 *   explicitly from a numpy array, or
@@ -507,15 +546,15 @@ Direct
     import zlib
     import base64
     import numpy
-    from sfftkrw import api
+    import sfftkrw as sff
 
     # from numpy array
     _l = numpy.random.randint(0, 100, size=(10, 10, 10))
-    ln = api.SFFLattice(
+    ln = sff.SFFLattice(
         mode='uint8',
         endianness='little',
-        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=sff.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=sff.SFFVolumeIndex(cols=0, rows=0, sections=0),
         data=_l
     )
     print(l)
@@ -526,22 +565,22 @@ Direct
     _bc = zlib.compress(_b)
     # and base64-encoded
     _bce = base64.b64encode(_bc)
-    lb = api.SFFLattice(
+    lb = sff.SFFLattice(
         mode='int8',
         endianness='big',
-        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=sff.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=sff.SFFVolumeIndex(cols=0, rows=0, sections=0),
         data=_bce
     )
     print(lb)
 
     # the same as above but now with a unicode string of the same data
     _bceu = _bce.decode('utf-8')
-    lbu = api.SFFLattice(
+    lbu = sff.SFFLattice(
         mode='int8',
         endianness='big',
-        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=sff.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=sff.SFFVolumeIndex(cols=0, rows=0, sections=0),
         data=_bceu
     )
     print(lbu)
@@ -549,7 +588,7 @@ Direct
 
 Explicit from numpy Array
 ------------------------------------
-Use the :py:meth:`.SFFLattice.from_array`
+Use the :py:meth:`sfftkrw.SFFLattice.from_array`
 
 .. code-block:: python
 
@@ -557,29 +596,31 @@ Use the :py:meth:`.SFFLattice.from_array`
     import zlib
     import base64
     import numpy
-    from sfftkrw import api
+    import sfftkrw as sff
 
     _l = numpy.random.randint(0, 100, size=(10, 10, 10))
-    l = api.SFFLattice.from_array(_l,
+    l = sff.SFFLattice.from_array(_l,
         mode='uint8',
         endianness='little',
-        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=sff.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=sff.SFFVolumeIndex(cols=0, rows=0, sections=0),
     )
     print(l)
 
 
 Explicit from Byte Sequence
 ------------------------------------
-Use the :py:meth:`.SFFLattice.from_bytes`
+Use the :py:meth:`sfftkrw.SFFLattice.from_bytes`
 
 .. code-block:: python
+
+    from __future__ import print_function
 
     import struct
     import zlib
     import base64
     import numpy
-    from sfftkrw import api
+    import sfftkrw as sff
 
     # from a byte sequence
     _b = struct.pack(">1000b", *list(numpy.random.randint(0, 127, size=(1000,)))) # big-endian, 1000, signed char integer
@@ -587,25 +628,26 @@ Use the :py:meth:`.SFFLattice.from_bytes`
     _bc = zlib.compress(_b)
     # and base64-encoded
     _bce = base64.b64encode(_bc)
-    l = api.SFFLattice.from_bytes(_bce,
+    l = sff.SFFLattice.from_bytes(_bce,
         mode='int8',
         endianness='big',
-        size=api.SFFVolumeStructure(cols=10, rows=10, sections=10),
-        start=api.SFFVolumeIndex(cols=0, rows=0, sections=0),
+        size=sff.SFFVolumeStructure(cols=10, rows=10, sections=10),
+        start=sff.SFFVolumeIndex(cols=0, rows=0, sections=0),
     )
     print(l)
 
 The ``data`` attribute then provides access the the string data while the ``data_array`` attribute provides a numpy array of the matrix.
 
-:py:class:`.SFFRGBA`
+
+:py:class:`sfftkrw.SFFRGBA`
 ========================================
 This is the main class to represent RGBA colours.
 
 .. code-block:: python
 
-    from sfftkrw import api
+    import sfftkrw as sff
 
-    colour = api.SFFRGBA(
+    colour = sff.SFFRGBA(
         red=0.1,
         green=0.2,
         blue=0.3,
@@ -617,14 +659,14 @@ Aside from being able to set channel values or leave them blank we also provide 
 
 .. code-block:: python
 
-    from sfftkrw import api
+    import sfftkrw as sff
 
-    colour = api.SFFRGBA(random_colour=True)
+    colour = sff.SFFRGBA(random_colour=True)
     print(colour)
 
-----------------------------------------------
-Working with :py:class:`.SFFSegment` objects
-----------------------------------------------
+----------------------------------------------------
+Working with :py:class:`sfftkrw.SFFSegment` objects
+----------------------------------------------------
 We show how to represent a segment using the three types of geometry by example.
 
 Viewing Segments
@@ -632,7 +674,7 @@ Viewing Segments
 
 .. code-block:: python
 
-    print(seg.segments)
+    print(seg.segment_list)
 
 Viewing Segment Metadata
 ================================
@@ -672,7 +714,7 @@ Setting Segment Metadata
 
 .. code-block:: python
 
-    segment = api.SFFSegment()
+    segment = sff.SFFSegment()
 
 Biological Annotation
 ````````````````````````````````
@@ -680,15 +722,15 @@ Biological Annotation
 .. code-block:: python
 
     # define the biological annotation object
-    bioAnn = api.SFFBiologicalAnnotation()
+    bioAnn = sff.SFFBiologicalAnnotation()
     bioAnn.name = "Segment name"
     bioAnn.description = "Some description"
     bioAnn.number_of_instances = 1
 
     # define the external references
-    ext_refs = api.SFFExternalReferenceList()
+    ext_refs = sff.SFFExternalReferenceList()
     ext_refs.append(
-    api.SFFExternalReference(
+    sff.SFFExternalReference(
         type="ncbitaxon",
         otherType="http://purl.obolibrary.org/obo/NCBITaxon_559292",
         value="NCBITaxon_559292",
@@ -697,7 +739,7 @@ Biological Annotation
         )
     )
     ext_refs.append(
-        api.SFFExternalReference(
+        sff.SFFExternalReference(
             type="pdb",
             otherType="http://www.ebi.ac.uk/pdbe/entry/pdb/3ja8",
             value="3ja8",
@@ -720,7 +762,7 @@ Colours should be described using normalised RGBA values (each channel has a val
 
 .. code-block:: python
 
-    segment.colour = api.SFFRGBA(
+    segment.colour = sff.SFFRGBA(
         red=0.1,
         green=0.2,
         blue=0.3,
@@ -731,94 +773,72 @@ Colours should be described using normalised RGBA values (each channel has a val
 
 
 
-Meshes: :py:class:`.SFFMeshList`, :py:class:`.SFFMeshes`, :py:class:`.SFFVertexList`, :py:class:`.SFFVertex`, :py:class:`.SFFPolygonList`, and :py:class:`.SFFPolygon`
+Meshes: :py:class:`sfftkrw.SFFMeshList`, :py:class:`sfftkrw.SFFMeshes`, :py:class:`sfftkrw.SFFVertices`, :py:class:`sfftkrw.SFFNormals`, :py:class:`sfftkrw.SFFTriangles`
 ==========================================================================================================================================================================================
 First, create the mesh container that will hold the meshes.
 
 .. code-block:: python
 
-    from random import random, randint, choice
-    from sfftkrw import api
+    import sfftkrw as sff
     
     # the list of meshes
-    meshes = api.SFFMeshList()
+    meshes = sff.SFFMeshList()
 
-Then create the vertex list and polygon lists.
 
-.. code-block:: python
-    
-    # a list of vertices
-    vertices = api.SFFVertexList()
-    no_vertices = randint(0, 100)
-    
-    # a list of polygons
-    polygons = api.SFFPolygonList()
-    no_polygons = randint(0, 100)
-    
-Next, populate the vertex lists and polygon lists with vertices and polygons, respectively.
+To create a mesh you will need to specify *vertices*, *normals* (optional) and *triangles*. These are all subclasses of
+:py:class:`sfftkrw.SFFEncodedSequence` class. Here we show how to define a mesh using all three components using a simple
+:py:meth:`sfftkrw.SFFVertices.from_array` method which takes a :py:class:`numpy.ndarray` object.
 
 .. code-block:: python
 
-    # add vertices from the list of vertices
-    for i in range(no_vertices):
-        vertex = api.SFFVertex()
-        vertex.point = tuple(
-            map(float, (randint(1, 1000), randint(1, 1000), randint(1, 1000)))
-        )
-        vertices.append(vertex)
+    from __future__ import print_function
+    import sys
 
+    import numpy
+    import sfftrw as sff
 
-    
-    # add polygons to the list of polygons
-    for i in range(no_polygons):
-        polygon = api.SFFPolygon()
-        polygon.append(choice(range(randint(1, 1000))))
-        polygon.append(choice(range(randint(1, 1000))))
-        polygon.append(choice(range(randint(1, 1000))))
-        polygons.append(polygon)
-        
-Now create the mesh and add it to the mesh list.
+    vertices = sff.SFFVertices.from_array(numpy.random.rand(10, 3)) # 3: must be 3-space
+    normals = sff.SFFNormals.from_array(numpy.random.rand(10, 3)) # normals must correspond in length to vertices
+    triangles = sff.SFFTriangles.from_array(numpy.random.randint(0, 10, size=(8, 3)))
 
-.. code-block:: python
-
-    # a mesh
-    mesh = api.SFFMesh()
-
-    # set the vertices and polygons on the mesh
-    mesh.vertices = vertices
-    mesh.polygons = polygons
-
-    # add the mesh to the list of meshes
-    meshes.append(mesh)
+    mesh = sff.SFFMesh(
+        vertices=vertices,
+        normals=normals,
+        triangles=triangles,
+    )
+    # view as XML
+    mesh.export(sys.stderr)
+    # view as JSON
+    print(mesh.as_json())
     
 Repeat this for as many meshes will need to be contained in the mesh list.
 
 .. code-block:: python
     
     # add the mesh to the segment
-    segment.meshes = meshes
+    segment.mesh_list = meshes
     
-    print(len(segment.meshes))
+    print(len(segment.mesh_list))
 
-3D Volumes: :py:class:`.SFFLatticeList`, :py:class:`.SFFThreeDVolume`, :py:class:`.SFFVolumeStructure`, :py:class:`.SFFVolumeIndex`
-==================================================================================================================================================
+3D Volumes: :py:class:`sfftkrw.SFFLatticeList`, :py:class:`sfftkrw.SFFThreeDVolume`, :py:class:`sfftkrw.SFFVolumeStructure`, :py:class:`sfftkrw.SFFVolumeIndex`
+===============================================================================================================================================================================================
 First, define the lattice container.
 
 .. code-block:: python
 
     import numpy
     import random
-    from sfftkrw import api
+    import sfftkrw as sff
 
     # lattice container
-    lattices = api.SFFLatticeList()
+    lattices = sff.SFFLatticeList()
 
 then define the volume structure and starting index objects.
 
 .. code-block:: python
 
-    _size = api.SFFVolumeStructure(cols=20, rows=20, sections=20)
-    _start = api.SFFVolumeIndex(cols=0, rows=0, sections=0)
+    _size = sff.SFFVolumeStructure(cols=20, rows=20, sections=20)
+    _start = sff.SFFVolumeIndex(cols=0, rows=0, sections=0)
 
 Now create the lattice and add it to the list of lattices.
 
@@ -826,7 +846,7 @@ Now create the lattice and add it to the list of lattices.
 
     # lattice 1
     _data = numpy.random.randint(0, 100, size=(20, 20, 20))
-    lattice = api.SFFLattice(
+    lattice = sff.SFFLattice(
         mode='uint32',
         endianness='little',
         size=_size,
@@ -837,11 +857,11 @@ Now create the lattice and add it to the list of lattices.
     
     # lattice 2
     _data = numpy.random.rand(30, 40, 50)
-    lattice2 = api.SFFLattice(
+    lattice2 = sff.SFFLattice(
         mode='float32',
         endianness='big',
-        size=api.SFFVolumeStructure(cols=30, rows=40, sections=50),
-        start=api.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
+        size=sff.SFFVolumeStructure(cols=30, rows=40, sections=50),
+        start=sff.SFFVolumeIndex(cols=-50, rows=-40, sections=100),
         data=_data,
     )
     lattices.append(lattice2)
@@ -852,16 +872,16 @@ For each segment (voxel value) in the lattice create a 3D volume object that ref
 .. code-block:: python
     
     # now we define the segments that reference the lattices above
-    segments = api.SFFSegmentList()
+    segments = sff.SFFSegmentList()
     
     # segment one
-    segment = api.SFFSegment()
+    segment = sff.SFFSegment()
     vol1_value = 1
-    segment.volume = api.SFFThreeDVolume(
+    segment.volume = sff.SFFThreeDVolume(
         latticeId=0,
         value=vol1_value,
     )
-    segment.colour = api.SFFRGBA(
+    segment.colour = sff.SFFRGBA(
         red=random.random(),
         green=random.random(),
         blue=random.random(),
@@ -870,13 +890,13 @@ For each segment (voxel value) in the lattice create a 3D volume object that ref
     segments.append(segment)
     
     # segment two
-    segment = api.SFFSegment()
+    segment = sff.SFFSegment()
     vol2_value = 37.1
-    segment.volume = api.SFFThreeDVolume(
+    segment.volume = sff.SFFThreeDVolume(
         latticeId=2,
         value=vol2_value
     )
-    segment.colour = api.SFFRGBA(
+    segment.colour = sff.SFFRGBA(
         red=random.random(),
         green=random.random(),
         blue=random.random(),
@@ -884,17 +904,17 @@ For each segment (voxel value) in the lattice create a 3D volume object that ref
     )
 
 
-Shape Primitives: :py:class:`.SFFShapePrimitveList`, :py:class:`.SFFCone`, :py:class:`.SFFCuboid`, :py:class:`.SFFCylinder`, :py:class:`.SFFEllipsoid`, :py:class:`.SFFSubtomogramAverage`
-=====================================================================================================================================================================================================
+Shape Primitives: :py:class:`sfftkrw.SFFShapePrimitveList`, :py:class:`sfftkrw.SFFCone`, :py:class:`sfftkrw.SFFCuboid`, :py:class:`sfftkrw.SFFCylinder`, :py:class:`sfftkrw.SFFEllipsoid`, :py:class:`sfftkrw.SFFSubtomogramAverage`
+==================================================================================================================================================================================================================================================
 Create a shape container for all shapes.
 
 .. code-block:: python
 
     from random import random
-    from sfftkrw import api
+    import sfftkrw as sff
     
     # a list of shape
-    shapes = api.SFFShapePrimitiveList()
+    shapes = sff.SFFShapePrimitiveList()
 
 Then load each shape once created into this shape container.
 
@@ -902,7 +922,7 @@ Then load each shape once created into this shape container.
     
     # a cone
     # first we define the transform that locates it in place
-    transform = api.SFFTransformationMatrix(
+    transform = sff.SFFTransformationMatrix(
         rows=3,
         cols=4,
         data='1 0 0 0 0 1 0 0 0 0 1 0'
@@ -910,7 +930,7 @@ Then load each shape once created into this shape container.
     
     # second we define its dimension
     shapes.append(
-        api.SFFCone(
+        sff.SFFCone(
             height=random()*100,
             bottomRadius=random()*100,
             transformId=transform.id,
@@ -918,16 +938,16 @@ Then load each shape once created into this shape container.
     )
     
     # add the transform to the list of transforms
-    seg.transforms.append(transform)
+    seg.transform_list.append(transform)
     
     # a cuboid
-    transform = api.SFFTransformationMatrix(
+    transform = sff.SFFTransformationMatrix(
         rows=3,
         cols=4,
         data='2 0 0 5 3 0 0 27 0 0 1 9'
     )
     shapes.append(
-        api.SFFCuboid(
+        sff.SFFCuboid(
             x=random()*100,
             y=random()*100,
             z=random()*100,
@@ -936,16 +956,16 @@ Then load each shape once created into this shape container.
     )
     
     # add the transform to the list of transforms
-    seg.transforms.append(transform)
+    seg.transform_list.append(transform)
     
     # a cylinder
-    transform = api.SFFTransformationMatrix(
+    transform = sff.SFFTransformationMatrix(
         rows=3,
         cols=4,
         data='2 0 0 15 3 0 0 17 0 0 1 16'
     )
     shapes.append(
-        api.SFFCylinder(
+        sff.SFFCylinder(
             height=random()*100,
             diameter=random()*100,
             transformId=transform.id,
@@ -953,16 +973,16 @@ Then load each shape once created into this shape container.
     )
     
     # add the transform to the list of transforms
-    seg.transforms.append(transform)
+    seg.transform_list.append(transform)
     
     # an ellipsoid
-    transform = api.SFFTransformationMatrix(
+    transform = sff.SFFTransformationMatrix(
         rows=3,
         cols=4,
         data='1 0 0 15 1 0 0 17 0 0 1 16'
     )
     shapes.append(
-        api.SFFEllipsoid(
+        sff.SFFEllipsoid(
             x=random()*100,
             y=random()*100,
             z=random()*100,
@@ -971,7 +991,7 @@ Then load each shape once created into this shape container.
     )
     
     # add the transform to the list of transforms
-    seg.transforms.append(transform)
+    seg.transform_list.append(transform)
 
 
 
@@ -981,15 +1001,15 @@ Then load each shape once created into this shape container.
 Adding A Segment To The Segmentation
 ==========================================================
 Once we have added the individual segment representations to the respective segments we can add the segment to the 
-segmentation. The list of segments is contained in a :py:class:`.SFFSegmentList` object.
+segmentation. The list of segments is contained in a :py:class:`sfftkrw.SFFSegmentList` object.
 
 .. code-block:: python
 
     # create the list of segments
-    seg.segments = api.SFFSegmentList()
+    seg.segment_list = sff.SFFSegmentList()
     
     # add the segment
-    seg.segments.append(segment)
+    seg.segment_list.append(segment)
     
 
 

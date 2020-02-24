@@ -1,0 +1,2 @@
+SFFTKRW_VERSION = 'v0.6.0.dev1'
+SFFTKRW_ENTRY_POINT = 'sff'

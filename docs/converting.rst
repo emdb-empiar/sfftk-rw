@@ -48,7 +48,7 @@ displays all conversion options.
                             [default: '']
       -R PRIMARY_DESCRIPTOR, --primary-descriptor PRIMARY_DESCRIPTOR
                             populates the
-                            <primaryDescriptor>...</primaryDescriptor> to this
+                            <primary_descriptor>...</primary_descriptor> to this
                             value [valid values: threeDVolume, meshList,
                             shapePrimitiveList]
       -v, --verbose         verbose output
@@ -174,7 +174,7 @@ Any other value raises an error.
 
 .. code-block:: bash
 
-    sff convert file.sff -f hffr
+    sff convert file.sff -f hff
     sff convert file.sff --format hff
 
 The default format (if none is specified) is ``sff`` (XML).
@@ -226,7 +226,7 @@ The EMDB-SFF data model provides for three possible geometrical descriptors:
 `meshes (meshList), shape primitives (shapePrimitiveList)` and 
 `3D volumes (threeDVolume)`.
  
-The mandatory ``<primaryDescriptor/>`` field specifies the main geometrical
+The mandatory ``<primary_descriptor/>`` field specifies the main geometrical
 descriptor to be used when performing conversions and other processing tasks. 
 Only valid values are allowed; otherwise a ``ValueError`` is raised.
 

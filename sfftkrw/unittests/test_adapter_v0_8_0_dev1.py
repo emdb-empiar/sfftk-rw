@@ -13,6 +13,9 @@ import h5py
 import numpy
 from random_words import RandomWords, LoremIpsum
 
+rw = RandomWords()
+li = LoremIpsum()
+
 from . import TEST_DATA_PATH, Py23FixTestCase, _random_integer, _random_float, _random_integers, _random_floats
 from ..core import _str, _xrange, _decode, _bytes, _encode
 from ..schema import base
@@ -29,9 +32,6 @@ emdb_sff_name = 'sfftkrw.schema.v{schema_version}'.format(
     schema_version=EMDB_SFF_VERSION.replace('.', '_')
 )
 emdb_sff = importlib.import_module(emdb_sff_name)
-
-rw = RandomWords()
-li = LoremIpsum()
 
 
 class TestSFFRGBA(Py23FixTestCase):
@@ -569,7 +569,7 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
             self.assertEqual(len(ee), len(group[u'external_references']))
             for er in E:
                 self.assertEqual(er,
-                             adapter.SFFExternalReference.from_hff(group[u'external_references/{}'.format(er.id)]))
+                                 adapter.SFFExternalReference.from_hff(group[u'external_references/{}'.format(er.id)]))
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             ee2 = adapter.SFFExternalReferenceList.from_hff(h[u'container'])
 
@@ -765,7 +765,8 @@ class TestSFFGlobalExternalReferenceList(Py23FixTestCase):
             self.assertTrue(len(G) > 0)
             self.assertEqual(len(G), len(group[u'global_external_references']))
             for er in G:
-                self.assertEqual(er, adapter.SFFExternalReference.from_hff(group[u'global_external_references/{}'.format(er.id)]))
+                self.assertEqual(er, adapter.SFFExternalReference.from_hff(
+                    group[u'global_external_references/{}'.format(er.id)]))
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             G2 = adapter.SFFGlobalExternalReferenceList.from_hff(h[u'container'])
             self.assertEqual(G, G2)
@@ -2605,6 +2606,12 @@ class TestSFFBoundingBox(Py23FixTestCase):
         self.assertEqual(B.zmin, _zmin)
         self.assertEqual(B.zmax, _zmax)
 
+    def test_mandatory_fields(self):
+        """Test that *max fields are mandatory"""
+        bb = adapter.SFFBoundingBox()
+        with self.assertRaisesRegex(base.SFFValueError, r".*validation.*"):
+            bb.export(sys.stderr)
+
     def test_from_gds_type(self):
         """Test that all attributes exists when we start with a gds_type"""
         _B = emdb_sff.bounding_box_type()
@@ -4128,7 +4135,7 @@ class TestSFFSoftwareList(Py23FixTestCase):
             self.assertIn(u'software_list', group)
             self.assertEqual(len(group[u'software_list']), 0)
         with h5py.File(self.test_hdf5_fn, u'r') as h:
-            S2  = adapter.SFFSoftwareList.from_hff(h[u'container'])
+            S2 = adapter.SFFSoftwareList.from_hff(h[u'container'])
             self.assertEqual(S, S2)
         # non-empty
         S = adapter.SFFSoftwareList()
@@ -4408,7 +4415,7 @@ class TestSFFTransformList(Py23FixTestCase):
             self.assertIn(u'transform_list', group)
             self.assertEqual(len(group[u'transform_list']), 0)
         with h5py.File(self.test_hdf5_fn, u'r') as h:
-            T2  = adapter.SFFTransformList.from_hff(h[u'container'])
+            T2 = adapter.SFFTransformList.from_hff(h[u'container'])
             self.assertEqual(T, T2)
         # non-empty
         T = adapter.SFFTransformList()
@@ -5208,7 +5215,6 @@ class TestSFFSegmentation(Py23FixTestCase):
         # assertions
         with open(temp_file.name + u'.sff') as f:
             self.assertEqual(f.readline(), u'<?xml version="1.0" encoding="UTF-8"?>\n')
-
 
     def test_export_hff(self):
         """Export to an HDF5 file"""
