@@ -13,9 +13,8 @@ import os
 import shlex
 import shutil
 import sys
-import unittest
 
-from . import TEST_DATA_PATH
+from . import TEST_DATA_PATH, Py23FixTestCase
 from .. import SFFSegmentation
 from .. import sffrw as Main
 from ..core.parser import parse_args
@@ -25,12 +24,12 @@ __email__ = 'pkorir@ebi.ac.uk, paul.korir@gmail.com'
 __date__ = '2016-06-10'
 
 
-class TestMainHandleConvert(unittest.TestCase):
+class TestMainHandleConvert(Py23FixTestCase):
     def setUp(self):
-        unittest.TestCase.setUp(self)
+        super(TestMainHandleConvert, self).setUp()
 
     def tearDown(self):
-        unittest.TestCase.tearDown(self)
+        super(TestMainHandleConvert, self).tearDown()
         for s in glob.glob(os.path.join(TEST_DATA_PATH, '*.sff')):
             os.remove(s)
         hff_fn = os.path.join(TEST_DATA_PATH, 'test_data.hff')
@@ -101,8 +100,38 @@ class TestMainHandleConvert(unittest.TestCase):
         sff_files = glob.glob(os.path.join(TEST_DATA_PATH, '*.json'))
         self.assertEqual(len(sff_files), 1)
 
+    def test_json_exclude_geometry(self):
+        """Test that we can convert to JSON and exclude geometry"""
+        # convert normally
+        output_fn = os.path.join(TEST_DATA_PATH, 'test_data.json')
+        args = parse_args('convert --verbose -o {output} {input}'.format(
+            output=output_fn,
+            input=os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1832.hff'),
+        ), use_shlex=True)
+        Main.handle_convert(args)
+        # read
+        seg = SFFSegmentation.from_file(output_fn, args)
+        segment = seg.segment_list[0]  # the first one
+        # check that there is geometry
+        self.stderrj(segment.as_json())
+        self.assertIsNotNone(segment.three_d_volume)
+        self.assertTrue(len(seg.lattice_list) > 0)
+        # convert and exclude geometry
+        args = parse_args('convert --verbose --exclude-geometry -o {output} {input}'.format(
+            output=output_fn,
+            input=os.path.join(TEST_DATA_PATH, 'sff', 'v0.8', 'emd_1832.hff'),
+        ), use_shlex=True)
+        Main.handle_convert(args)
+        # read
+        seg = SFFSegmentation.from_file(output_fn, args)
+        segment = seg.segment_list[0]  # the first one
+        # check that there is no geometry
+        self.stderrj(segment.as_json())
+        self.assertIsNone(segment.three_d_volume)
+        self.assertTrue(len(seg.lattice_list) == 0)
 
-class TestMainHandleView(unittest.TestCase):
+
+class TestMainHandleView(Py23FixTestCase):
     def test_read_sff(self):
         """Test that we can view .mod"""
         args = parse_args('view {} '.format(
@@ -134,7 +163,7 @@ class TestMainHandleView(unittest.TestCase):
             Main.handle_view(args)
 
 
-class TestMainHandleTests(unittest.TestCase):
+class TestMainHandleTests(Py23FixTestCase):
     """The test runners"""
 
     def test_module_test_runner(self):
@@ -182,13 +211,13 @@ class TestMainHandleTests(unittest.TestCase):
         self.assertEqual(Main.handle_tests(args), os.EX_OK)
 
 
-class TestMainMain(unittest.TestCase):
+class TestMainMain(Py23FixTestCase):
     def test_main_convert(self):
         """Test the main entry point"""
         _in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1832.sff')
         in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1832_copy.sff')
         shutil.copy(_in_file, in_file)
-        cmd = shlex.split(u"sfr convert --verbose {}".format(
+        cmd = shlex.split(u"sff convert --verbose {}".format(
             in_file,
         ))
         sys.argv = cmd
@@ -202,7 +231,7 @@ class TestMainMain(unittest.TestCase):
     def test_main_view(self):
         """Test the main entry point"""
         in_file = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1832.sff')
-        cmd = shlex.split(u"sfr view {}".format(
+        cmd = shlex.split(u"sff view {}".format(
             in_file,
         ))
         sys.argv = cmd
@@ -211,18 +240,18 @@ class TestMainMain(unittest.TestCase):
 
     def test_main_tests(self):
         """Test the main entry point"""
-        cmd = shlex.split(u"sfr tests all --dry-run")
+        cmd = shlex.split(u"sff tests all --dry-run")
         sys.argv = cmd
         status = Main.main()
         self.assertEqual(status, os.EX_OK)
 
     def test_main_error(self):
         """Test for wrong input"""
-        cmd = shlex.split(u"sfr tests")
+        cmd = shlex.split(u"sff tests")
         sys.argv = cmd
         status = Main.main()
         self.assertEqual(status, os.EX_OK)
-        cmd = shlex.split(u"sfr convert file.sff -f file.abc")
+        cmd = shlex.split(u"sff convert file.sff -f file.abc")
         sys.argv = cmd
         status = Main.main()
         self.assertEqual(status, os.EX_USAGE)
@@ -242,4 +271,3 @@ class TestMainMain(unittest.TestCase):
         adapter = importlib.import_module(adapter_name)
         self.assertTrue(hasattr(adapter, u'SFFSegmentation'))
         self.assertTrue(hasattr(adapter, u'gds_api'))
-

@@ -186,7 +186,7 @@ class SFFType(object):
             return all(list(map(lambda a: getattr(self, a) == getattr(other, a), self.eq_attrs)))
         return False
 
-    def export(self, fn, *_args, **_kwargs):
+    def export(self, fn, args=None, *_args, **_kwargs):
         """Export to a file on disc
 
         :param fn: filename to export to; the output format is determined by the extension:
@@ -218,14 +218,20 @@ class SFFType(object):
                         self._local.export(f, 0, *_args, **_kwargs)
                 elif re.match(r"^(hff|h5|hdf5)$", fn_ext, re.IGNORECASE):
                     with h5py.File(fn, u'w') as f:
-                        self.as_hff(f, *_args, **_kwargs)
+                        self.as_hff(f, args=args)
                 elif re.match(r"^json$", fn_ext, re.IGNORECASE):
                     with open(fn, u'w') as f:
                         if self.version == u'0.7.0.dev0':
-                            self.as_json(f, *_args, **_kwargs)
+                            self.as_json(f, args=args, *_args, **_kwargs)
                         elif self.version == u'0.8.0.dev1':
-                            data = self.as_json(*_args, **_kwargs)
-                            json.dump(data, f, indent=4)
+                            data = self.as_json(args=args)
+                            try:
+                                json_sort = args.json_sort
+                                json_indent = args.json_indent
+                            except AttributeError:
+                                json_sort = False
+                                json_indent = 2
+                            json.dump(data, f, sort_keys=json_sort, indent=json_indent)
                         # self.as_json(f, *_args, **_kwargs)
             elif issubclass(type(fn), io.IOBase):
                 self._local.export(fn, 0, *_args, **_kwargs)
@@ -233,24 +239,63 @@ class SFFType(object):
         else:
             raise SFFValueError("export failed due to validation error")
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, args=None):
         """For all contained classes this method returns a dictionary which will be serialised into JSON. Only at the
-        top level (SFFSegmentation) will the final serialisation be done."""
-        raise NotImplementedError
+        top level (SFFSegmentation) will the final serialisation be done.
 
-    def as_hff(self, parent_group, name=None):
-        """Returns the current object as a group in an HDF5 file with the given name"""
+        :param args: command line arguments
+        :type args: :py:class:`argparse.Namespace`
+        :return: a set of nested dictionaries
+        :rtype: dict
+        """
         raise NotImplementedError
 
     @classmethod
-    def from_hff(cls, parent_group, name=None):
+    def from_json(cls, data, args=None):
+        """Deserialise the given json object into an EMDB-SFF object
+
+        :param dict data: the data to be converted into `SFF*` objects
+        :param args: command line arguments
+        :type args: :py:class:`argparse.Namespace`
+        :return: the corresponding `SFF*` object
+        :rtype: :py:class:`.base.SFFType` subclass
+        """
+        raise NotImplementedError
+
+    def as_hff(self, parent_group, name=None, args=None):
+        """Returns the current object as a group in an HDF5 file with the given name
+
+        For instances which are subclasses of :py:class:`.base.SFFIndexType` `name` will be
+        a string version of the index (`id`). If `id` is `None` then we will generate a
+        unique one so as to write the object to file. Therefore, the process of writing to
+        HDF5 could end up looking slightly different from the original if the original
+        had missing indexes for some objects.
+
+        :param parent_group: an HDF5 Group that will contain the objects in this object
+        :type parent_group: :py:class:`Group`
+        :param args: command line arguments
+        :type args: :py:class:`argparse.Namespace`
+        :param name: the name to be given to this object in the object hierarchy (default: None)
+        :type name: str or None
+        :return: the populated parent group
+        :rtype: :py:class:`Group`
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def from_hff(cls, parent_group, name=None, args=None):
         """Convert HDF5 objects into EMDB-SFF objects
-        It should either return a valid object or raise an :py:class:`SFFValueError` due to failed validation"""
-        raise NotImplementedError
+        It should either return a valid object or raise an :py:class:`SFFValueError` due to failed validation
 
-    @classmethod
-    def from_json(cls, data):
-        """Deserialise the given json object into an EMDB-SFF object"""
+        :param parent_group: an HDF5 Group that will contain the objects in this object
+        :type parent_group: :py:class:`Group`
+        :param args: command line arguments
+        :type args: :py:class:`argparse.Namespace`
+        :param name: the name to be given to this object in the object hierarchy (default: None)
+        :type name: str or None
+        :return: the corresponding `SFF*` object
+        :rtype: :py:class:`.base.SFFType` subclass
+        """
         raise NotImplementedError
 
     def _is_valid(self):

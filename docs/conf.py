@@ -297,6 +297,7 @@ texinfo_documents = [
 intersphinx_mapping = {
     'python': ('https://docs.python.org/', None),
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+    'h5py': ('http://docs.h5py.org/en/latest/', None),
 }
 
 # autodoc options

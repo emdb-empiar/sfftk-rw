@@ -43,17 +43,17 @@ def handle_convert(args):  # @UnusedVariable
     if re.match(r'.*\.(sff|xml)$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (XML) file {}".format(args.from_file))
-        seg = adapter.SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file, args)
     elif re.match(r'.*\.(hff|h5|hdf5)$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (HDF5) file {}".format(args.from_file))
-        seg = adapter.SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file, args)
         if args.verbose:
             print_date("Created SFFSegmentation object")
     elif re.match(r'.*\.json$', args.from_file, re.IGNORECASE):
         if args.verbose:
             print_date("Converting from EMDB-SFF (JSON) file {}".format(args.from_file))
-        seg = adapter.SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file, args)
         if args.verbose:
             print_date("Created SFFSegmentation object")
     else:
@@ -66,7 +66,7 @@ def handle_convert(args):  # @UnusedVariable
     if args.verbose:
         print_date("Exporting to {}".format(args.output))
     # perform actual export
-    status = seg.export(args.output)
+    status = seg.export(args.output, args)
     if args.verbose:
         if status == os.EX_OK:
             print_date("Done")
@@ -92,7 +92,7 @@ def handle_view(args):  # @UnusedVariable
     )
     adapter = importlib.import_module(adapter_name)
     if re.match(r'.*\.(sff|xml)$', args.from_file, re.IGNORECASE):
-        seg = adapter.SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file, args)
         print("*" * 50)
         print(u"EMDB-SFF Segmentation version {}".format(_decode(seg.version, u'utf-8')))
         print(u"Segmentation name: {}".format(_decode(seg.name, u'utf-8')))
@@ -101,7 +101,7 @@ def handle_view(args):  # @UnusedVariable
         print(u"No. of segments: {}".format(len(seg.segments)))
         print(u"*" * 50)
     elif re.match(r'.*\.(hff|h5|hdf5)$', args.from_file, re.IGNORECASE):
-        seg = adapter.SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file, args)
         print("*" * 50)
         print(u"EMDB-SFF Segmentation version {}".format(_decode(seg.version, u'utf-8')))
         print(u"Segmentation name: {}".format(_decode(seg.name, u'utf-8')))
@@ -110,7 +110,7 @@ def handle_view(args):  # @UnusedVariable
         print(u"No. of segments: {}".format(len(seg.segments)))
         print(u"*" * 50)
     elif re.match(r'.*\.json$', args.from_file, re.IGNORECASE):
-        seg = adapter.SFFSegmentation.from_file(args.from_file)
+        seg = adapter.SFFSegmentation.from_file(args.from_file, args)
         print("*" * 50)
         print(u"EMDB-SFF Segmentation version {}".format(_decode(seg.version, u'utf-8')))
         print(u"Segmentation name: {}".format(_decode(seg.name, u'utf-8')))

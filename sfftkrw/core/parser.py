@@ -99,6 +99,14 @@ format_ = {
         ),
     }
 }
+exclude_geometry = {
+    'args': ['-x', '--exclude-geometry'],
+    'kwargs': {
+        'default': False,
+        'action': 'store_true',
+        'help': 'do not include the geometry in the conversion; geometry is included by default [default: False]',
+    }
+}
 header = {
     'args': ['-H', '--header'],
     'kwargs': {
@@ -138,6 +146,22 @@ segment_name = {
         'help': "the name of the segment"
     }
 }
+json_sort = {
+    'args': ['--json-sort'],
+    'kwargs': {
+        'default': False,
+        'action': 'store_true',
+        'help': "output JSON sorted lexicographically [default: False]"
+    }
+}
+json_indent = {
+    'args': ['--json-indent'],
+    'kwargs': {
+        'type': int,
+        'default': 2,
+        'help': "size in spaces of the JSON indent [default: 2]"
+    }
+}
 verbose = {
     'args': ['-v', '--verbose'],
     'kwargs': {
@@ -159,6 +183,9 @@ convert_parser.add_argument(*details['args'], **details['kwargs'])
 convert_parser.add_argument(
     *primary_descriptor['args'], **primary_descriptor['kwargs'])
 convert_parser.add_argument(*verbose['args'], **verbose['kwargs'])
+add_args(convert_parser, exclude_geometry)
+add_args(convert_parser, json_indent)
+add_args(convert_parser, json_sort)
 group = convert_parser.add_mutually_exclusive_group()
 group.add_argument(*output['args'], **output['kwargs'])
 group.add_argument(*format_['args'], **format_['kwargs'])
@@ -225,7 +252,8 @@ def parse_args(_args, use_shlex=False):
         # if _args[0] == 'tests':
         #     pass
         if _args[0] == '-V' or _args[0] == '--version':
-            print_date("sfftk-rw version: {} for EMDB-SFF {}".format(SFFTKRW_VERSION, ', '.join(SUPPORTED_EMDB_SFF_VERSIONS)))
+            print_date(
+                "sfftk-rw version: {} for EMDB-SFF {}".format(SFFTKRW_VERSION, ', '.join(SUPPORTED_EMDB_SFF_VERSIONS)))
             return os.EX_OK
         # anytime a new argument is added to the base parser subparsers are bumped down in index
         elif _args[0] in _dict_iter_keys(Parser._actions[2].choices):
@@ -283,15 +311,34 @@ def parse_args(_args, use_shlex=False):
         if args.primary_descriptor:
             try:
                 assert args.primary_descriptor in [
-                    'threeDVolume', 'meshList', 'shapePrimitive']
-            except:
-                if args.verbose:
-                    print_date(
+                    u'threeDVolume', u'meshList', u'shapePrimitiveList',
+                    u'three_d_volume', u'mesh_list', u'shape_primitive_list',
+                ]
+            except AssertionError:
+                print_date(
                         "Invalid value for primary descriptor: {}".format(args.primary_descriptor))
                 return os.EX_USAGE
             if args.verbose:
                 print_date(
                     "Trying to set primary descriptor to {}".format(args.primary_descriptor))
+
+        # report on geometry
+        if args.exclude_geometry and (args.format == u'json' or re.match(r'.*\.(json)$', args.output, re.IGNORECASE)):
+            print_date("Excluding geometry for JSON")
+
+        # validate indent for json
+        if args.format == u'json' or re.match(r'.*\.(json)$', args.output, re.IGNORECASE):
+            try:
+                assert args.json_indent >= 0
+            except AssertionError:
+                print_date("Invalid value for --json-indent: {}".format(args.json_indent))
+                return os.EX_USAGE
+            if args.verbose:
+                print_date("Indenting JSON with indent={}".format(args.json_indent))
+
+            if args.json_sort and args.verbose:
+                print_date("JSON keys will be sorted lexicographically")
+
     # tests
     elif args.subcommand == 'tests':
         # normalise tool list

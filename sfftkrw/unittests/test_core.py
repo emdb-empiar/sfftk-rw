@@ -188,6 +188,9 @@ class TestCoreParserConvert(Py23FixTestCase):
         self.assertEqual(args.output, os.path.join(os.path.dirname(self.test_data_file), 'emd_1014.hff'))
         self.assertEqual(args.primary_descriptor, None)
         self.assertFalse(args.verbose)
+        self.assertFalse(args.exclude_geometry)
+        self.assertFalse(args.json_sort)
+        self.assertEqual(args.json_indent, 2)
 
     def test_details(self):
         """Test convert parser with details"""
@@ -240,6 +243,37 @@ class TestCoreParserConvert(Py23FixTestCase):
         # assertions
         self.assertTrue(args.verbose)
 
+    def test_exclude_geometry(self):
+        """Test flag to exclude geometry"""
+        args = parse_args('convert -v -x {}'.format(self.test_data_file), use_shlex=True)
+        self.assertTrue(args.exclude_geometry)
+
+    def test_json_sort(self):
+        """Test that we can sort for JSON"""
+        args = parse_args('convert -v --json-sort -f json {}'.format(self.test_data_file), use_shlex=True)
+        self.assertTrue(args.json_sort)
+
+    def test_json_indent(self):
+        """Test that we can sort for JSON"""
+        indent = _random_integer(start=1, stop=10)
+        args = parse_args(
+            'convert -v -f json --json-indent {indent} {file_}'.format(
+                indent=indent,
+                file_=self.test_data_file
+            ),
+            use_shlex=True
+        )
+        self.assertEqual(args.json_indent, indent)
+        # failure
+        indent = - _random_integer(start=1, stop=10)
+        args = parse_args(
+            'convert -v -f json --json-indent {indent} {file_}'.format(
+                indent=indent,
+                file_=self.test_data_file
+            ),
+            use_shlex=True
+        )
+        self.assertEqual(args, os.EX_USAGE)
 
 class TestCoreParserView(Py23FixTestCase):
     @classmethod
