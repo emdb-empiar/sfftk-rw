@@ -82,7 +82,7 @@ class SFFType(object):
     
     -   ``len()`` fills the ``{}`` with the length;
     -   ``list()`` fills the ``{}`` with a list of contained objects.
-    -   ``data[:100]`` applied to the :py:class:`.SFFLattice` class where only the first 100 bytes are displayed
+    -   ``data[:100]`` applied to the :py:class:`sfftkrw.SFFLattice` class where only the first 100 bytes are displayed
     """
     eq_attrs = list()
     u"""A list of attributes used to test equality"""

@@ -16,7 +16,7 @@
 import os
 import sys
 sys.path.append('..') # to import sfftkrw
-from sfftkrw import SFFTKRW_VERSION
+from sfftkrw.conf import SFFTKRW_VERSION
 from sfftkrw.core import _str
 
 
