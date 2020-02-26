@@ -28,6 +28,11 @@ Welcome to ``sfftk-rw``'s documentation!
    Looking to convert other segmentation file formats to EMDB-SFF? Then checkout the `sfftk package <https://pypi.org/project/sfftk/>`_.
    Also, checkout the `Segmentation Annotation Tool <https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/>`_ for the online version.
 
+.. note:: Integrating ``sfftk-rw``?
+
+   If you would like to integrate ``sfftk-rw`` into your software please feel free
+   to get in touch through Github. We are very eager to help you out.
+
 Contents
 ==========
 

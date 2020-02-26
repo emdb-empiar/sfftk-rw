@@ -16,7 +16,7 @@ SFFTKRW_DESCRIPTION = u"Toolkit for reading and writing EMDB-SFF files"
 SFFTKRW_DESCRIPTION_CONTENT_TYPE = u'text/x-rst; charset=UTF-8'
 SFFTKRW_URL = u"http://sfftk-rw.readthedocs.io/en/latest/index.html"
 SFFTKRW_LICENSE = u"Apache License"
-SFFTKRW_KEYWORDS = u"EMDB-SFF, SFF, segmentation"
+SFFTKRW_KEYWORDS = [u"EMDB-SFF", u"SFF", u"segmentation"]
 SFFTKRW_INSTALL_REQUIRES = ['numpy', 'h5py>2.7.0', "RandomWords", "lxml"]
 SFFTKRW_SETUP_REQUIRES = ['six']
 SFFTKRW_CLASSIFIERS = [
