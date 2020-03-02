@@ -3,20 +3,20 @@ EMDB-SFF Read/Write Toolkit (``sfftk-rw``)
 ========================================================
 
 .. image:: https://badge.fury.io/py/sfftk-rw.svg
-   :target: https://badge.fury.io/py/sfftk-rw
+    :target: https://badge.fury.io/py/sfftk-rw
 
 .. image:: https://img.shields.io/pypi/pyversions/sfftk-rw
-   :alt: PyPI - Python Version
+    :alt: PyPI - Python Version
 
 .. image:: https://travis-ci.org/emdb-empiar/sfftk-rw.svg?branch=master
-   :target: https://travis-ci.org/emdb-empiar/sfftk-rw
+    :target: https://travis-ci.org/emdb-empiar/sfftk-rw
 
 .. image:: https://readthedocs.org/projects/sfftk-rw/badge/?version=latest
-   :target: https://sfftk-rw.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
+    :target: https://sfftk-rw.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 .. image:: https://coveralls.io/repos/github/emdb-empiar/sfftk-rw/badge.svg?branch=master
-   :target: https://coveralls.io/github/emdb-empiar/sfftk-rw?branch=master
+    :target: https://coveralls.io/github/emdb-empiar/sfftk-rw?branch=master
 
 
 -------------
