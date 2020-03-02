@@ -154,7 +154,10 @@ class SFFType(object):
                                 if len(sub_str) < stop:
                                     _repr_args.append(sub_str)
                                 else:
-                                    _repr_args.append(sub_str[:stop] + b"...")
+                                    if isinstance(sub_str, _bytes):
+                                        _repr_args.append(sub_str[:stop] + b"...")
+                                    elif isinstance(sub_str, _str):
+                                        _repr_args.append(sub_str[:stop] + u"...")
                             else:
                                 _repr_args.append(sub_str)
                         else:

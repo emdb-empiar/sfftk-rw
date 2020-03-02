@@ -1055,7 +1055,7 @@ class TestSFFVolumeStructure(Py23FixTestCase):
     def test_default(self):
         """Test default settings"""
         vs = adapter.SFFVolumeStructure(cols=self.cols, rows=self.rows, sections=self.sections)
-        self.assertRegex(_str(vs), r"SFFVolumeStructure\(rows.*cols.*sections.*\)")
+        self.assertRegex(_str(vs), r"SFFVolumeStructure\(cols.*rows.*sections.*\)")
         self.assertEqual(vs.cols, self.cols)
         self.assertEqual(vs.rows, self.rows)
         self.assertEqual(vs.sections, self.sections)
@@ -1067,10 +1067,10 @@ class TestSFFVolumeStructure(Py23FixTestCase):
         self.assertEqual(vs.cols, self.cols)
         self.assertEqual(vs.rows, self.rows)
         self.assertEqual(vs.sections, self.sections)
-        self.assertEqual(vs.value, (self.rows, self.cols, self.sections))
-        _r, _c, _s = _random_integer(), _random_integer(), _random_integer()
-        vs.value = _r, _c, _s
-        self.assertEqual(vs.value, (_r, _c, _s))
+        self.assertEqual(vs.value, (self.cols, self.rows, self.sections))
+        _c, _r, _s = _random_integer(), _random_integer(), _random_integer()
+        vs.value = _c, _r, _s
+        self.assertEqual(vs.value, (_c, _r, _s))
         self.assertEqual(vs.cols, _c)
         self.assertEqual(vs.rows, _r)
         self.assertEqual(vs.sections, _s)
@@ -1079,7 +1079,7 @@ class TestSFFVolumeStructure(Py23FixTestCase):
         """Test that we can create from a gds_type"""
         _vs = emdb_sff.volume_structure_type(cols=self.cols, rows=self.rows, sections=self.sections)
         vs = adapter.SFFVolumeStructure.from_gds_type(_vs)
-        self.assertRegex(_str(vs), r"SFFVolumeStructure\(rows.*cols.*sections.*\)")
+        self.assertRegex(_str(vs), r"SFFVolumeStructure\(cols.*rows.*sections.*\)")
         self.assertEqual(vs.cols, self.cols)
         self.assertEqual(vs.rows, self.rows)
         self.assertEqual(vs.sections, self.sections)
@@ -1177,7 +1177,7 @@ class TestSFFLattice(Py23FixTestCase):
         self.l_start = adapter.SFFVolumeIndex(rows=0, cols=0, sections=0)
         self.l_data = numpy.random.rand(self.r, self.c, self.s)
         self.l_bytes = adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian)
-        self.l_unicode = self.l_bytes.decode(u'utf-8')
+        self.l_unicode = _decode(self.l_bytes, u'utf-8')
 
     def tearDown(self):
         adapter.SFFLattice.reset_id()
@@ -1203,6 +1203,9 @@ class TestSFFLattice(Py23FixTestCase):
             _str(l),
             r"""SFFLattice\(id=\d+, mode=".*", endianness=".*", size=SFFVolumeStructure\(.*\), start=SFFVolumeIndex\(.*\), data=".*"\)"""
         )
+        import sys
+        # self.stderr(type(l.data))
+        l.export(sys.stderr)
 
     def test_create_init_bytes(self):
         """Test that we can create from bytes using __init__"""
@@ -1263,8 +1266,9 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.endianness, self.l_endian)
         self.assertEqual(l.size.voxel_count, self.r * self.c * self.s)
         self.assertEqual(l.start.value, (0, 0, 0))
-        self.assertEqual(l.data, adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
+        self.assertEqual(_decode(l.data, u'utf-8'), adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
+        self.stderr(l)
         self.assertRegex(
             _str(l),
             r"""SFFLattice\(id=\d+, mode=".*", endianness=".*", size=SFFVolumeStructure\(.*\), start=SFFVolumeIndex\(.*\), data=".*"\)"""
@@ -1363,11 +1367,11 @@ class TestSFFLattice(Py23FixTestCase):
             self.assertIn(u'{}/start'.format(l.id), group)
             self.assertIn(u'{}/data'.format(l.id), group)
             self.assertEqual(group[u'{}/id'.format(l.id)][()], l.id)
-            self.assertEqual(group[u'{}/mode'.format(l.id)][()], _encode(l.mode, 'utf-8'))
-            self.assertEqual(group[u'{}/endianness'.format(l.id)][()], _encode(l.endianness, 'utf-8'))
+            self.assertEqual(group[u'{}/mode'.format(l.id)][()], l.mode)
+            self.assertEqual(group[u'{}/endianness'.format(l.id)][()], l.endianness)
             self.assertEqual(adapter.SFFVolumeStructure.from_hff(group[u'{}'.format(l.id)]), l.size)
             self.assertEqual(adapter.SFFVolumeIndex.from_hff(group[u'{}'.format(l.id)]), l.start)
-            self.assertEqual(group[u'{}/data'.format(l.id)][()], _encode(l.data, 'utf-8'))
+            self.assertEqual(group[u'{}/data'.format(l.id)][()], l.data)
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             for group in h[u'container'].values():
                 l2 = adapter.SFFLattice.from_hff(group)
@@ -1444,7 +1448,7 @@ class TestSFFLatticeList(Py23FixTestCase):
         self.assertIn(l.endianness, list(adapter.ENDIANNESS.keys()))
         self.assertIsInstance(l.size, adapter.SFFVolumeStructure)
         self.assertIsInstance(l.start, adapter.SFFVolumeIndex)
-        self.assertIsInstance(l.data, _bytes)
+        self.assertIsInstance(l.data, _str)
         self.assertIsInstance(l.data_array, numpy.ndarray)
         self.assertTrue(len(l.data) > 0)
 
@@ -1481,7 +1485,7 @@ class TestSFFLatticeList(Py23FixTestCase):
         self.assertIn(l.endianness, list(adapter.ENDIANNESS.keys()))
         self.assertIsInstance(l.size, adapter.SFFVolumeStructure)
         self.assertIsInstance(l.start, adapter.SFFVolumeIndex)
-        self.assertIsInstance(l.data, _bytes)
+        self.assertIsInstance(l.data, _str)
         self.assertIsInstance(l.data_array, numpy.ndarray)
         self.assertTrue(len(l.data) > 0)
 
@@ -1554,7 +1558,7 @@ class TestSFFVertices(Py23FixTestCase):
         self.endian = u'little'
         self.data = numpy.random.rand(self.num_vertices, 3)
         self.bytes = adapter.SFFVertices._encode(self.data, mode=self.mode, endianness=self.endian)
-        self.unicode = self.bytes.decode(u'utf-8')
+        self.unicode = _decode(self.bytes, u'utf-8')
 
     def test_create_init_array(self):
         """Default configuration"""
@@ -1567,13 +1571,13 @@ class TestSFFVertices(Py23FixTestCase):
         self.assertIsInstance(v, adapter.SFFVertices)
         self.assertEqual(v.mode, self.mode)
         self.assertEqual(v.endianness, self.endian)
-        self.assertIsInstance(v.data, _bytes)
+        self.assertIsInstance(v.data, _str)
         self.assertEqual(v.data, adapter.SFFVertices._encode(self.data, mode=self.mode, endianness=self.endian))
         self.assertEqual(v.data_array.flatten().tolist(), self.data.flatten().tolist())
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFVertices(num_vertices={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -1605,7 +1609,7 @@ class TestSFFVertices(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFVertices(num_vertices={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -1639,7 +1643,7 @@ class TestSFFVertices(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFVertices(num_vertices={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -1672,7 +1676,7 @@ class TestSFFVertices(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFVertices(num_vertices={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -1699,7 +1703,7 @@ class TestSFFVertices(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFVertices(num_vertices={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -1799,7 +1803,7 @@ class TestSFFNormals(Py23FixTestCase):
         self.endian = u'little'
         self.data = numpy.random.rand(self.num_normals, 3)
         self.bytes = adapter.SFFNormals._encode(self.data, mode=self.mode, endianness=self.endian)
-        self.unicode = self.bytes.decode(u'utf-8')
+        self.unicode = _decode(self.bytes, u'utf-8')
 
     def test_create_init_array(self):
         """Default configuration"""
@@ -1812,13 +1816,13 @@ class TestSFFNormals(Py23FixTestCase):
         self.assertIsInstance(v, adapter.SFFNormals)
         self.assertEqual(v.mode, self.mode)
         self.assertEqual(v.endianness, self.endian)
-        self.assertIsInstance(v.data, _bytes)
+        self.assertIsInstance(v.data, _str)
         self.assertEqual(v.data, adapter.SFFNormals._encode(self.data, mode=self.mode, endianness=self.endian))
         self.assertEqual(v.data_array.flatten().tolist(), self.data.flatten().tolist())
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFNormals(num_normals={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -1850,7 +1854,7 @@ class TestSFFNormals(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFNormals(num_normals={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -1884,7 +1888,7 @@ class TestSFFNormals(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFNormals(num_normals={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -1917,7 +1921,7 @@ class TestSFFNormals(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFNormals(num_normals={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -1944,7 +1948,7 @@ class TestSFFNormals(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFNormals(num_normals={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -2044,7 +2048,7 @@ class TestSFFTriangles(Py23FixTestCase):
         self.endian = u'little'
         self.data = numpy.random.randint(0, 100, size=(self.num_triangles, 3))
         self.bytes = adapter.SFFTriangles._encode(self.data, mode=self.mode, endianness=self.endian)
-        self.unicode = self.bytes.decode(u'utf-8')
+        self.unicode = _decode(self.bytes, u'utf-8')
 
     def test_create_init_array(self):
         """Default configuration"""
@@ -2057,13 +2061,13 @@ class TestSFFTriangles(Py23FixTestCase):
         self.assertIsInstance(v, adapter.SFFTriangles)
         self.assertEqual(v.mode, self.mode)
         self.assertEqual(v.endianness, self.endian)
-        self.assertIsInstance(v.data, _bytes)
+        self.assertIsInstance(v.data, _str)
         self.assertEqual(v.data, adapter.SFFTriangles._encode(self.data, mode=self.mode, endianness=self.endian))
         self.assertEqual(v.data_array.flatten().tolist(), self.data.flatten().tolist())
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFTriangles(num_triangles={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -2095,7 +2099,7 @@ class TestSFFTriangles(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFTriangles(num_triangles={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -2129,7 +2133,7 @@ class TestSFFTriangles(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFTriangles(num_triangles={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -2162,7 +2166,7 @@ class TestSFFTriangles(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFTriangles(num_triangles={}, mode="{}", endianness="{}", data="{}")""".format(
@@ -2189,7 +2193,7 @@ class TestSFFTriangles(Py23FixTestCase):
         if len(v.data) < 100:
             _data = _decode(v.data, u"utf-8")
         else:
-            _data = _decode(v.data[:100] + b"...", u"utf-8")
+            _data = _decode(v.data[:100] + u"...", u"utf-8")
         self.assertEqual(
             _str(v),
             u"""SFFTriangles(num_triangles={}, mode="{}", endianness="{}", data="{}")""".format(

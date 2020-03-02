@@ -446,22 +446,14 @@ class SFFVolume(SFFType):
 
     @property
     def value(self):
-        return self.rows, self.cols, self.sections
+        return self.cols, self.rows, self.sections
 
     @value.setter
     def value(self, value):
         if len(value) == 3:
-            self.rows, self.cols, self.sections = value
+            self.cols, self.rows, self.sections = value
         else:
             raise SFFTypeError(value, u"Iterable", message=u"should be of length 3")
-
-        # def __eq__(self, other):
-        self.attrs = [u'']
-        # try:
-        #     assert isinstance(other, type(self))
-        # except AssertionError:
-        #     raise SFFTypeError(other, type(self))
-        # return self.rows == other.rows and self.cols == other.cols and self.sections == other.sections
 
     def as_json(self, args=None):
         return {
@@ -511,8 +503,8 @@ class SFFVolume(SFFType):
 class SFFVolumeStructure(SFFVolume):
     gds_type = _sff.volume_structure_type
     gds_tag_name = u'size'
-    repr_string = u"SFFVolumeStructure(rows={}, cols={}, sections={})"
-    repr_args = (u'rows', u'cols', u'sections')
+    repr_string = u"SFFVolumeStructure(cols={}, rows={},sections={})"
+    repr_args = (u'cols', u'rows', u'sections')
 
     @property
     def voxel_count(self):
@@ -576,13 +568,13 @@ class SFFLattice(SFFIndexType):
             if isinstance(kwargs[u'data'], numpy.ndarray):
                 self._data = kwargs[u'data']
                 kwargs[u'data'] = SFFLattice._encode(kwargs[u'data'], **kwargs)
-            elif isinstance(kwargs[u'data'], _bytes):
+            elif isinstance(kwargs[u'data'], (_bytes, _str)):
                 self._data = SFFLattice._decode(kwargs[u'data'], **kwargs)
-            elif isinstance(kwargs[u'data'], _str):
-                _data = _encode(kwargs[u'data'], u'ASCII')
-                self._data = SFFLattice._decode(_data, **kwargs)
-                kwargs[u'data'] = _data
-                del _data
+            # elif isinstance(kwargs[u'data'], _str):
+            #     _data = _encode(kwargs[u'data'], u'ASCII')
+            #     self._data = SFFLattice._decode(_data, **kwargs)
+            #     kwargs[u'data'] = _data
+            #     del _data
         super(SFFLattice, self).__init__(**kwargs)
 
     @classmethod
@@ -670,7 +662,7 @@ class SFFLattice(SFFIndexType):
 
         :param array: a :py:class:`numpy.ndarray` array
         :type array: :py:class:`numpy.ndarray`
-        :return bytes: the corresponding zipped bytes object
+        :return str: the corresponding zipped object as a string
         """
         r, c, s = array.shape
         voxel_count = r * c * s
@@ -681,19 +673,23 @@ class SFFLattice(SFFIndexType):
         del binpack
         bin64 = base64.b64encode(binzip)
         del binzip
-        return bin64
+        return _decode(bin64, u'utf-8')
 
     @staticmethod
     def _decode(bin64, size, mode=u'uint32', endianness=u'little', **kwargs):
         """Decode a base64-encoded, zipped byte sequence to a numpy array
 
-        :param bin64: the base64-encoded zipped bytes
+        :param bin64: the base64-encoded zipped data
+        :type bin64: bytes or unicode string
         :param size: the size of the expected volume
         :type size: :py:class:`SFFVolumeStructure`
         :return: a :py:class:`numpy.ndarray` object
         :rtype: :py:class:`numpy.ndarray`
         """
-        binzip = base64.b64decode(bin64)
+        if isinstance(bin64, _str):
+            binzip = base64.b64decode(_encode(bin64, u'utf-8'))
+        else:
+            binzip = base64.b64decode(bin64)
         del bin64
         binpack = zlib.decompress(binzip)
         del binzip
@@ -716,7 +712,7 @@ class SFFLattice(SFFIndexType):
             u'endianness': self.endianness,
             u'size': self.size.as_json(args=args) if self.size is not None else None,
             u'start': self.start.as_json(args=args) if self.start is not None else None,
-            u'data': _decode(self.data, 'ASCII'),
+            u'data': self.data,
         }
 
     @classmethod
@@ -739,7 +735,7 @@ class SFFLattice(SFFIndexType):
             else:
                 obj.start = None
         if u'data' in data:  # lazy for numpy
-            obj.data = _encode(data[u'data'], 'ASCII')
+            obj.data = data[u'data']
         return obj
 
     def as_hff(self, parent_group, name=None, args=None):
@@ -754,15 +750,15 @@ class SFFLattice(SFFIndexType):
         if self.id is not None:
             group[u'id'] = self.id
         if self.mode:
-            group[u'mode'] = _encode(self.mode, 'utf-8')
+            group[u'mode'] = self.mode
         if self.endianness:
-            group[u'endianness'] = _encode(self.endianness, 'utf-8')
+            group[u'endianness'] = self.endianness
         if self.size:
             group = self.size.as_hff(group, args=args)
         if self.start:
             group = self.start.as_hff(group, args=args)
         if self.data:
-            group[u'data'] = _encode(self.data, 'utf-8')
+            group[u'data'] = self.data
         return parent_group
 
     @classmethod
@@ -773,9 +769,9 @@ class SFFLattice(SFFIndexType):
         if u'id' in group:
             obj.id = int(group[u'id'][()])
         if u'mode' in group:
-            obj.mode = _decode(group[u'mode'][()], 'utf-8')
+            obj.mode = group[u'mode'][()]
         if u'endianness' in group:
-            obj.endianness = _decode(group[u'endianness'][()], 'utf-8')
+            obj.endianness = group[u'endianness'][()]
         if u'size' in group:
             obj.size = SFFVolumeStructure.from_hff(group, args=args)
         if u'start' in group:
@@ -842,28 +838,28 @@ class SFFEncodedSequence(SFFType):
                     raise ValueError(u"data has invalid dimensions: {}; should be (n, 3)".format(kwargs[u'data'].shape))
                 self._data = kwargs[u'data']
                 kwargs['data'] = self._encode(kwargs[u'data'], **kwargs)
-            elif isinstance(kwargs[u'data'], _bytes):
+            elif isinstance(kwargs[u'data'], (_bytes, _str)):
                 self._data = self._decode(kwargs[u'data'], **kwargs)
                 # make sure the number of items is correct
                 try:
                     assert self._data.shape[0] == kwargs.get(self.num_items_kwarg)
                 except AssertionError:
                     raise ValueError(
-                        u"mismatch in stated in retrieved number of items: {}/{}".format(
+                        u"mismatch in stated and retrieved number of items: {}/{}".format(
                             kwargs.get(self.num_items_kwarg),
                             self._data.shape[0]))
-            elif isinstance(kwargs[u'data'], _str):
-                _data = _encode(kwargs[u'data'], u'ASCII')
-                self._data = SFFEncodedSequence._decode(_data, **kwargs)
-                # make sure the number of items is correct
-                try:
-                    assert self._data.shape[0] == kwargs.get(self.num_items_kwarg)
-                except AssertionError:
-                    raise ValueError(
-                        u"mismatch in stated in retrieved number of items: {}/{}".format(kwargs[self.num_items_kwarg],
-                                                                                         self._data.shape[0]))
-                kwargs[u'data'] = _data
-                del _data
+            # elif isinstance(kwargs[u'data'], _str):
+            #     _data = _encode(kwargs[u'data'], u'ASCII')
+            #     self._data = SFFEncodedSequence._decode(_data, **kwargs)
+            #     make sure the number of items is correct
+                # try:
+                #     assert self._data.shape[0] == kwargs.get(self.num_items_kwarg)
+                # except AssertionError:
+                #     raise ValueError(
+                #         u"mismatch in stated in retrieved number of items: {}/{}".format(kwargs[self.num_items_kwarg],
+                #                                                                          self._data.shape[0]))
+                # kwargs[u'data'] = _data
+                # del _data
         super(SFFEncodedSequence, self).__init__(**kwargs)
 
     def __getitem__(self, item):
@@ -919,8 +915,8 @@ class SFFEncodedSequence(SFFType):
             mode = cls.default_mode
         if endianness is None:
             endianness = cls.default_endianness
-        if isinstance(byte_seq, _str):  # if unicode convert to bytes
-            byte_seq = _encode(byte_seq, u'ASCII')
+        # if isinstance(byte_seq, _str):  # if unicode convert to bytes
+        #     byte_seq = _encode(byte_seq, u'ASCII')
         kwargs = {
             cls.num_items_kwarg: num_items,
             'mode': mode,
@@ -949,7 +945,7 @@ class SFFEncodedSequence(SFFType):
         :type array: :py:class:`numpy.ndarray`
         :param str mode: the data type
         :param str endianness: the byte orientation
-        :return bytes: the corresponding bytes sequence
+        :return str: the corresponding encoded sequence
         """
         if mode is None:
             mode = SFFEncodedSequence.default_mode
@@ -957,13 +953,14 @@ class SFFEncodedSequence(SFFType):
             endianness = SFFEncodedSequence.default_endianness
         array_in_mode_and_endianness = array.astype(
             '{}{}'.format(ENDIANNESS[endianness], FORMAT_CHARS[mode]))  # cast to required mode
-        return base64.b64encode(array_in_mode_and_endianness.tobytes())
+        return _decode(base64.b64encode(array_in_mode_and_endianness.tobytes()), u'utf-8')
 
     @staticmethod
     def _decode(bin64, mode=None, endianness=None, **kwargs):
         """Decode a base64-encoded byte sequence to a numpy array
 
-        :param str bin64: the base64-encoded byte sequence
+        :param bin64: the base64-encoded byte sequence
+        :type bin64: bytes or unicode
         :param str mode: the data type
         :param str endianness: the byte orientation
         :return: a :py:class:`numpy.ndarray` object
@@ -973,7 +970,10 @@ class SFFEncodedSequence(SFFType):
             mode = SFFEncodedSequence.default_mode
         if endianness is None:
             endianness = SFFEncodedSequence.default_endianness
-        binpack = base64.b64decode(bin64)
+        if isinstance(bin64, _str):
+            binpack = base64.b64decode(_encode(bin64, u'utf-8'))
+        else:
+            binpack = base64.b64decode(bin64)
         dt = numpy.dtype('{}{}'.format(ENDIANNESS[endianness], FORMAT_CHARS[mode]))
         unpacked = numpy.frombuffer(binpack, dtype=dt)
         return unpacked.reshape(-1, 3)  # leave first value to be auto-filled
@@ -983,7 +983,7 @@ class SFFEncodedSequence(SFFType):
             self.num_items_kwarg: int(getattr(self, self.num_items_kwarg)),
             u'mode': self.mode,
             u'endianness': self.endianness,
-            u'data': _decode(self.data, 'ASCII'),
+            u'data': self.data
         }
 
     @classmethod
@@ -996,7 +996,7 @@ class SFFEncodedSequence(SFFType):
         if u'endianness' in data:
             obj.endianness = data[u'endianness']
         if u'data' in data:
-            obj.data = _encode(data[u'data'], 'ASCII')
+            obj.data = data[u'data']
         return obj
 
     def as_hff(self, parent_group, name=None, args=None):
@@ -1007,11 +1007,11 @@ class SFFEncodedSequence(SFFType):
         if num_items is not None:
             group[self.num_items_kwarg] = int(num_items)
         if self.mode:
-            group[u'mode'] = _encode(self.mode, 'utf-8')
+            group[u'mode'] = self.mode
         if self.endianness:
-            group[u'endianness'] = _encode(self.endianness, 'utf-8')
+            group[u'endianness'] = self.endianness
         if self.data:
-            group[u'data'] = _encode(self.data, 'utf-8')
+            group[u'data'] = self.data
         return parent_group
 
     @classmethod
@@ -1023,11 +1023,11 @@ class SFFEncodedSequence(SFFType):
         if cls.num_items_kwarg in group:
             setattr(obj, cls.num_items_kwarg, int(group[cls.num_items_kwarg][()]))
         if u'mode' in group:
-            obj.mode = _decode(group[u'mode'][()], 'utf-8')
+            obj.mode = group[u'mode'][()]
         if u'endianness' in group:
-            obj.endianness = _decode(group[u'endianness'][()], 'utf-8')
+            obj.endianness = group[u'endianness'][()]
         if u'data' in group:
-            obj.data = _encode(group[u'data'][()], 'utf-8')
+            obj.data = group[u'data'][()]
         return obj
 
 

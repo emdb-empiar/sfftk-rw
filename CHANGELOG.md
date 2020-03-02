@@ -1,5 +1,53 @@
 #Changes by release
 
+
+## [0.6.1.dev0] - 2020-03-02
+
+Bugfix and minor improvements
+
+Fixed a bug which affected encoded data (lattice, vertices, normals and triangles).
+
+* reverted presentation of `SFFVolume` subclasses to be ordered as (rows, cols, sections)
+* now we store encoded data as unicode strings instead of bytes; otherwise, on export we write string with `'b"..."` formatting
+* writing to JSON and HDF5 is not raw bytes but Unicode string
+* version bump: v0.6.1.dev0
+
+
+## [0.6.0.dev2] - 2020-02-25
+
+* `-x/--exclude-geometry` for JSON output
+* `--json-sort` and `--json-indent <+int>` to control JSON output
+* now links to h5py documentation should work
+* changed interface for v0.7.0 adapter HDF5 methods in line with sfftk-rw v0.6.0.dev0 changes
+* now `args` passed through all classes for command-line contol/features
+
+## [0.6.0.dev1] - 2020-02-24
+
+* clean up of documentation to include correct examples, adapters and generateDS API
+* now `from sfftkrw import SFFSegmentation` or `import sfftkrw as sff`
+* new images for data model page
+* new module `sfftkrw/conf.py` for settings; removed `sfftkrw/api.py`
+* added new data files
+
+## [0.6.0.dev0] - 2020-02-21
+
+This is the first release to work with EMDB-SFF v0.8.0 files in addition to v0.7 files. When reading 
+the API to use is determined from the version attribute. However, creating new files will only
+be of v0.8.0.
+
+* new `sfftkrw.api` provided a short path to v0.8 adapter e.g. `sfftkrw.api.SFFSegmentation`
+* documentation improvements
+* changed entry point to `sff` (from `sff-rw`)
+* added references for Python version compatibility: `_FileNotFound`, `_classic_dict` 
+* added missing field `attribute` to shapes
+* changed `SFFSegmentation` container attributes to `*_list` e.g. `segment_list` instead of `segments`. 
+However we retain `segments` as a property for backward compatibility.
+* signature of HDF5 conversion methods (`as_hff` and `from_hff`) is now `*(parent_group, args, name=None)`
+by default
+* refactored `SFFSegmentation.from_file`
+* new `SFFSegmentation.to_file` which is an alias for `SFFSegmentation.export`
+* added test data under v0.8 schema
+
 ## [0.5.2.dev1] - 2019-12-18
 
 ### List validations
