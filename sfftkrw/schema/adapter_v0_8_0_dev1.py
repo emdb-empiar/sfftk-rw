@@ -2523,3 +2523,50 @@ class SFFSegmentation(SFFType):
     def to_file(self, *args, **kwargs):
         """Alias for :py:meth:`.export` method. Passes all args and kwargs onto :py:meth:`.export`"""
         return super(SFFSegmentation, self).export(*args, **kwargs)
+
+    def merge_annotation(self, other_seg):
+        """Merge the annotation from another sff_seg to this one
+
+        :param other_seg: segmentation to get annotations from
+        :type other_seg: :py:class:`sfftkrw.SFFSegmentation`
+        """
+        _assert_or_raise(other_seg, SFFSegmentation)
+        # global data
+        # self.name = other_seg.name
+        # self.software_list = other_seg.software_list
+        self.global_external_references = other_seg.global_external_references
+        # self.details = other_seg.details
+        # loop through segments
+        for segment in self.segments:
+            other_segment = other_seg.segments.get_by_id(segment.id)
+            segment.biological_annotation = other_segment.biological_annotation
+
+    def copy_annotation(self, from_id, to_id):
+        """Copy annotation across segments
+
+        :param int/list from_id: segment ID to get notes from; use -1 for for global notes
+        :param int/list to_id: segment ID to copy notes to; use -1 for global notes
+        """
+        if from_id == -1:
+            _from = self.global_external_references
+        else:
+            _from = self.segments.get_by_id(from_id).biological_annotation.external_references
+        if to_id == -1:
+            to = self.global_external_references
+        else:
+            to = self.segments.get_by_id(to_id).biological_annotation.external_references
+        # the id for global notes
+        for extref in _from:
+            to.append(extref)
+
+    def clear_annotation(self, from_id):
+        """Clear all annotations from the segment with ID specified
+
+        :param from_id: segment ID
+        :return:
+        """
+        if from_id == -1:
+            self.global_external_references.clear() # = SFFGlobalExternalReferenceList()
+        else:
+            segment = self.segments.get_by_id(from_id)
+            segment.biological_annotation.external_references.clear() # = SFFExternalReferenceList()

@@ -5238,3 +5238,66 @@ class TestSFFSegmentation(Py23FixTestCase):
         with open(temp_file.name) as f:
             J = json.load(f)
             self.assertEqual(J[u'primary_descriptor'], u"three_d_volume")
+
+    def test_merge_annotation(self):
+        """Test that we can merge annotation from one to another"""
+        seg1_fn = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'annotated_emd_1014.json')
+        seg2_fn = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1014.json')
+        seg1 = adapter.SFFSegmentation.from_file(seg1_fn)
+        seg2 = adapter.SFFSegmentation.from_file(seg2_fn)
+        # perform the notes merge
+        seg1.merge_annotation(seg2)
+        self.assertEqual(seg1.global_external_references, seg2.global_external_references)
+        for segment in seg1.segment_list:
+            other_segment = seg2.segment_list.get_by_id(segment.id)
+            self.assertEqual(segment.biological_annotation.external_references, other_segment.biological_annotation.external_references)
+
+    def test_copy_annotation(self):
+        """Test that we can copy annotations: global and local"""
+        seg_fn = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1014.json')
+        seg = adapter.SFFSegmentation.from_file(seg_fn)
+        segment_ids = list(seg.segment_list.get_ids())
+        from_segment_id = random.choice(segment_ids)
+        from_segment = seg.segment_list.get_by_id(from_segment_id)
+        segment_ids.remove(from_segment_id)
+        try:
+            to_segment_ids = random.choices(segment_ids, k=len(segment_ids)//2)
+        except AttributeError:
+            to_segment_ids = list(set([random.choice(segment_ids) for _ in _xrange(len(segment_ids)//2)]))
+        # clear annotations; check no annotations left
+        for segment_id in to_segment_ids:
+            segment = seg.segment_list.get_by_id(segment_id)
+            segment.biological_annotation.external_references.clear()
+            self.assertEqual(len(segment.biological_annotation.external_references), 0)
+        # copy annotations
+        # noinspection PyStatementEffect
+        (seg.copy_annotation(from_segment_id, to_id) for to_id in to_segment_ids)
+        # now ensure they are similar to the one copied from
+        for segment_id in to_segment_ids:
+            segment = seg.segment_list.get_by_id(segment_id)
+            self.assertEqual(segment.biological_annotation.external_references, from_segment.biological_annotation.external_references)
+        # for global
+        seg.global_external_references.clear()
+        self.assertEqual(len(seg.global_external_references), 0)
+        seg.copy_annotation(from_segment_id, -1) # -1 for global
+        self.assertEqual(len(from_segment.biological_annotation.external_references), len(seg.global_external_references))
+        for i, er in enumerate(from_segment.biological_annotation.external_references):
+            self.assertEqual(er, seg.global_external_references[i])
+
+    def test_clear_annotation(self):
+        """Test that we can clear annotations"""
+        seg_fn = os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1014.json')
+        seg = adapter.SFFSegmentation.from_file(seg_fn)
+        # global
+        self.assertTrue(len(seg.global_external_references) > 0)
+        seg.clear_annotation(-1)
+        self.assertEqual(len(seg.global_external_references), 0)
+        # local
+        segment_ids = list(seg.segment_list.get_ids())
+        from_segment_id = random.choice(segment_ids)
+        from_segment = seg.segment_list.get_by_id(from_segment_id)
+        self.assertTrue(len(from_segment.biological_annotation.external_references) > 0)
+        seg.clear_annotation(from_segment_id)
+        self.assertEqual(len(from_segment.biological_annotation.external_references), 0)
+
+
