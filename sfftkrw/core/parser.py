@@ -197,9 +197,7 @@ view_parser = subparsers.add_parser(
     'view', description="View a summary of an SFF file", help="view file summary")
 view_parser.add_argument('from_file', help="any SFF file")
 view_parser.add_argument(
-    '-V', '--version', action='store_true', help="show SFF format version")
-view_parser.add_argument('-C', '--show-chunks', action='store_true',
-                         help="show sequence of chunks in IMOD file; only works with IMOD model files (.mod) [default: False]")
+    '--sff-version', action='store_true', help="show SFF format version")
 view_parser.add_argument(*verbose['args'], **verbose['kwargs'])
 
 # get the full list of tools from the Parser object
@@ -265,10 +263,7 @@ def parse_args(_args, use_shlex=False):
     # check values
     # view
     if args.subcommand == 'view':
-        if args.show_chunks:
-            if not re.match(r".*\.mod$", args.from_file, re.IGNORECASE):
-                print_date("Invalid file type to view chunks. Only works with IMOD files")
-                return os.EX_USAGE
+        pass # no view-specific checks yet
     # convert
     elif args.subcommand == 'convert':
         # we only use the first file in sfftk-rw; sfftk may use more than one file

@@ -289,22 +289,11 @@ class TestCoreParserView(Py23FixTestCase):
         args = parse_args('view file.sff', use_shlex=True)
         self.assertEqual(args.from_file, 'file.sff')
         self.assertFalse(args.version)
-        self.assertFalse(args.show_chunks)
 
     def test_version(self):
         """Test view version"""
-        args = parse_args('view -V file.sff', use_shlex=True)
-        self.assertTrue(args.version)
-
-    def test_show_chunks_mod(self):
-        """Test that we can view chunks"""
-        args = parse_args('view -C file.mod', use_shlex=True)
-        self.assertTrue(args.show_chunks)
-
-    def test_show_chunks_other_fails(self):
-        """Test that show chunks only works for .mod files"""
-        args = parse_args('view -C file.sff', use_shlex=True)
-        self.assertEqual(args, os.EX_USAGE)
+        args = parse_args('view --sff-version file.sff', use_shlex=True)
+        self.assertTrue(args.sff_version)
 
 
 class TestCoreParserTests(Py23FixTestCase):
