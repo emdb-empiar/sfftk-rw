@@ -33,7 +33,11 @@ def get_path(D, path):
 
     item = D
     for p in path:
-        item = item[p]
+        try:
+            item = item[p]
+        except KeyError:
+            item = None
+            break
     return item
 
 

@@ -440,8 +440,8 @@ class TestCoreUtils(Py23FixTestCase):
             }
         }}
         path = ['a', 'b', 'c', 'f']
-        with self.assertRaises(KeyError):
-            utils.get_path(D, path)
+        val = utils.get_path(D, path)
+        self.assertIsNone(val)
 
     def test_get_path_nondict_type_error(self):
         """Test that we get an exception when D is not a dict"""
