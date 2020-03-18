@@ -6,9 +6,8 @@ Convenience utilities
 """
 from __future__ import print_function
 
-from functools import partial
-
 import sys
+from functools import partial
 
 _print = partial(print, file=sys.stderr)
 
@@ -18,11 +17,7 @@ if sys.version_info[0] > 2:
 
     # xrange
     _xrange = builtins.range
-    # iter* methods on dictionaries
-    _dict_iter_keys = builtins.dict.keys
-    _dict_iter_values = builtins.dict.values
-    _dict_iter_items = builtins.dict.items
-    # dictionaries preserve order in Python3
+    # dictionaries preserve order in Python3.7+
     if sys.version_info[1] >= 7:
         _dict = builtins.dict
         _classic_dict = builtins.dict
@@ -31,6 +26,11 @@ if sys.version_info[0] > 2:
 
         _dict = OrderedDict
         _classic_dict = builtins.dict
+
+    # iter* methods on dictionaries
+    _dict_iter_keys = _dict.keys
+    _dict_iter_values = _dict.values
+    _dict_iter_items = _dict.items
 
     # UserList
     from collections import UserList
@@ -84,7 +84,9 @@ if sys.version_info[0] > 2:
     def _clear(_list):
         _list.clear()
 
+
     import inspect
+
     _getattr_static = inspect.getattr_static
 
     # exceptions
@@ -95,16 +97,16 @@ else:
     # xrange
     _xrange = __builtin__.xrange
 
-    # iter* methods on dictionaries
-    _dict_iter_keys = __builtin__.dict.iterkeys
-    _dict_iter_values = __builtin__.dict.itervalues
-    _dict_iter_items = __builtin__.dict.iteritems
-
     # for order preservation in dicts user OrderedDict
     from collections import OrderedDict
 
     _dict = OrderedDict
     _classic_dict = __builtin__.dict
+
+    # iter* methods on dictionaries
+    _dict_iter_keys = _dict.iterkeys
+    _dict_iter_values = _dict.itervalues
+    _dict_iter_items = _dict.iteritems
 
     from UserList import UserList
 
@@ -159,6 +161,7 @@ else:
     # borrowed from Python 3.8's inspect.py
     # ------------------------------------------------ static version of getattr
     import types
+
     _sentinel = object()
 
 
@@ -251,6 +254,7 @@ else:
         if default is not _sentinel:
             return default
         raise AttributeError(attr)
+
 
     _getattr_static = getattr_static
 
