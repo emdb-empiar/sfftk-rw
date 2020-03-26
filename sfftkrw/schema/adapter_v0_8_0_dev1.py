@@ -612,6 +612,7 @@ class SFFLattice(SFFIndexType):
 
     @property
     def data_array(self):
+        """The data as a :py:class:`numpy.ndarray`"""
         if not hasattr(self, u'_data'):
             # make numpy from bytes
             self._data = SFFLattice._decode(
@@ -667,12 +668,16 @@ class SFFLattice(SFFIndexType):
         r, c, s = array.shape
         voxel_count = r * c * s
         format_string = "{}{}{}".format(ENDIANNESS[endianness], voxel_count, FORMAT_CHARS[mode])
-        binpack = struct.pack(format_string, *array.flat)
-        del array
-        binzip = zlib.compress(binpack)
-        del binpack
-        bin64 = base64.b64encode(binzip)
-        del binzip
+        try:
+            binpack = struct.pack(format_string, *array.flat)
+            del array
+            binzip = zlib.compress(binpack)
+            del binpack
+            bin64 = base64.b64encode(binzip)
+            del binzip
+        except MemoryError:
+            print_date("Insufficient memory. Please run with more memory.")
+            bin64 = ""
         return _decode(bin64, u'utf-8')
 
     @staticmethod
@@ -848,18 +853,6 @@ class SFFEncodedSequence(SFFType):
                         u"mismatch in stated and retrieved number of items: {}/{}".format(
                             kwargs.get(self.num_items_kwarg),
                             self._data.shape[0]))
-            # elif isinstance(kwargs[u'data'], _str):
-            #     _data = _encode(kwargs[u'data'], u'ASCII')
-            #     self._data = SFFEncodedSequence._decode(_data, **kwargs)
-            #     make sure the number of items is correct
-                # try:
-                #     assert self._data.shape[0] == kwargs.get(self.num_items_kwarg)
-                # except AssertionError:
-                #     raise ValueError(
-                #         u"mismatch in stated in retrieved number of items: {}/{}".format(kwargs[self.num_items_kwarg],
-                #                                                                          self._data.shape[0]))
-                # kwargs[u'data'] = _data
-                # del _data
         super(SFFEncodedSequence, self).__init__(**kwargs)
 
     def __getitem__(self, item):
@@ -928,6 +921,7 @@ class SFFEncodedSequence(SFFType):
 
     @property
     def data_array(self):
+        """The data as a :py:class:`numpy.ndarray`"""
         if not hasattr(self, u'_data'):
             # make numpy from bytes
             self._data = SFFEncodedSequence._decode(
