@@ -183,7 +183,6 @@ class TestCoreParserConvert(Py23FixTestCase):
         # assertions
         self.assertEqual(args.subcommand, 'convert')
         self.assertEqual(args.from_file, self.test_data_file)
-        self.assertFalse(args.top_level_only)
         self.assertIsNone(args.details)
         self.assertEqual(args.output, os.path.join(os.path.dirname(self.test_data_file), 'emd_1014.hff'))
         self.assertEqual(args.primary_descriptor, None)

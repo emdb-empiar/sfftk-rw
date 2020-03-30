@@ -177,8 +177,6 @@ verbose = {
 convert_parser = subparsers.add_parser(
     'convert', description="Perform EMDB-SFF file format interconversions", help="converts between EMDB-SFF formats")
 convert_parser.add_argument('from_file', nargs='*', help="file to convert from")
-convert_parser.add_argument('-t', '--top-level-only', default=False,
-                            action='store_true', help="convert only the top-level segments [default: False]")
 convert_parser.add_argument(*details['args'], **details['kwargs'])
 convert_parser.add_argument(
     *primary_descriptor['args'], **primary_descriptor['kwargs'])
