@@ -19,9 +19,9 @@ import numpy
 
 from . import FORMAT_CHARS, ENDIANNESS
 from . import v0_7_0_dev0 as _sff
-from .base import SFFType, SFFAttribute, SFFListType, SFFTypeError, SFFIndexType
+from .base import SFFType, SFFAttribute, SFFListType, SFFTypeError, SFFIndexType, _assert_or_raise
 from .. import SFFTKRW_VERSION
-from ..core import _decode, _dict, _str, _encode, _bytes, _xrange
+from ..core import _decode, _dict, _str, _encode, _bytes, _xrange, _classic_dict
 from ..core.print_tools import print_date
 
 # ensure that we can read/write encoded data
@@ -1648,14 +1648,20 @@ class SFFBoundingBox(SFFType):
     @classmethod
     def from_hff(cls, hff_data, name=None, args=None):
         """Bounding box from HDF5 group"""
-        assert isinstance(hff_data, h5py.Group)
-        obj = cls()
-        obj.xmin = hff_data[u'xmin'][()]
-        obj.xmax = hff_data[u'xmax'][()]
-        obj.ymin = hff_data[u'ymin'][()]
-        obj.ymax = hff_data[u'ymax'][()]
-        obj.zmin = hff_data[u'zmin'][()]
-        obj.zmax = hff_data[u'zmax'][()]
+        _assert_or_raise(hff_data, h5py.Group)
+        obj = cls(new_obj=False)
+        if u'xmin' in hff_data:
+            obj.xmin = hff_data[u'xmin'][()]
+        if u'xmax' in hff_data:
+            obj.xmax = hff_data[u'xmax'][()]
+        if u'ymin' in hff_data:
+            obj.ymin = hff_data[u'ymin'][()]
+        if u'ymax' in hff_data:
+            obj.ymax = hff_data[u'ymax'][()]
+        if u'zmin' in hff_data:
+            obj.zmin = hff_data[u'zmin'][()]
+        if u'zmax' in hff_data:
+            obj.zmax = hff_data[u'zmax'][()]
         return obj
 
     def as_json(self, args=None):
@@ -1677,18 +1683,21 @@ class SFFBoundingBox(SFFType):
     @classmethod
     def from_json(cls, data, args=None):
         obj = cls(new_obj=False)
-        if u'xmin' in data:
-            obj.xmin = data[u'xmin']
-        if u'xmax' in data:
-            obj.xmax = data[u'xmax']
-        if u'ymin' in data:
-            obj.ymin = data[u'ymin']
-        if u'ymax' in data:
-            obj.ymax = data[u'ymax']
-        if u'zmin' in data:
-            obj.zmin = data[u'zmin']
-        if u'zmax' in data:
-            obj.zmax = data[u'zmax']
+        if data is not None:
+            _assert_or_raise(data, (_classic_dict, _dict))
+            if u'xmin' in data:
+                obj.xmin = data[u'xmin']
+            if u'xmax' in data:
+                obj.xmax = data[u'xmax']
+            if u'ymin' in data:
+                obj.ymin = data[u'ymin']
+            if u'ymax' in data:
+                obj.ymax = data[u'ymax']
+            if u'zmin' in data:
+                obj.zmin = data[u'zmin']
+            if u'zmax' in data:
+                obj.zmax = data[u'zmax']
+            return obj
         return obj
 
 
@@ -1908,7 +1917,7 @@ class SFFSegmentation(SFFType):
         else:
             sff_data[u'details'] = None
         sff_data[u'transforms'] = list()
-        sff_data[u'boundingBox'] = self.bounding_box.as_json(args=args)
+        sff_data[u'boundingBox'] = self.bounding_box.as_json(args=args) if self.bounding_box else None
         if self.global_external_references:
             global_external_references = list()
             for gextref in self.global_external_references:
