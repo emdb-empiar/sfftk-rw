@@ -2526,10 +2526,10 @@ class SFFSegmentation(SFFType):
         """
         _assert_or_raise(other_seg, SFFSegmentation)
         # global data
-        # self.name = other_seg.name
-        # self.software_list = other_seg.software_list
+        self.name = other_seg.name
+        self.software_list = other_seg.software_list
         self.global_external_references = other_seg.global_external_references
-        # self.details = other_seg.details
+        self.details = other_seg.details
         # loop through segments
         for segment in self.segments:
             other_segment = other_seg.segments.get_by_id(segment.id)

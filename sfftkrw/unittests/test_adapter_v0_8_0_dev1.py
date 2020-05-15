@@ -5248,6 +5248,9 @@ class TestSFFSegmentation(Py23FixTestCase):
         seg2 = adapter.SFFSegmentation.from_file(seg2_fn)
         # perform the notes merge
         seg1.merge_annotation(seg2)
+        self.assertEqual(seg1.name, seg2.name)
+        self.assertEqual(seg1.software_list, seg2.software_list)
+        self.assertEqual(seg1.details, seg2.details)
         self.assertEqual(seg1.global_external_references, seg2.global_external_references)
         for segment in seg1.segment_list:
             other_segment = seg2.segment_list.get_by_id(segment.id)
