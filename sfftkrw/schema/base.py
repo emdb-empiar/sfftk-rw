@@ -626,7 +626,7 @@ class SFFListType(SFFType):
         cont = getattr(self._local, iter_name)
         if iter_type not in [_str, int] and isinstance(value, iter_type):
             cont[index] = value._local
-            self._add_to_dict(value.id, value)
+            self._add_to_dict(value)
         elif iter_type in [_str, int] and (isinstance(value, _str) or isinstance(value, int)):
             cont[index] = value
         else:
@@ -639,7 +639,7 @@ class SFFListType(SFFType):
         sff_item = self[index]
         del cont[index]
         if hasattr(sff_item, u'id'):
-            self._del_from_dict(sff_item.id)
+            self._del_from_dict(sff_item)
 
     def append(self, item):
         """Append to the list"""
@@ -647,7 +647,7 @@ class SFFListType(SFFType):
         cont = getattr(self._local, iter_name)
         if iter_type not in [_str, int] and isinstance(item, iter_type):
             cont.append(item._local)
-            self._add_to_dict(item.id, item)
+            self._add_to_dict(item)
         elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
             cont.append(item)
         else:
@@ -687,7 +687,7 @@ class SFFListType(SFFType):
         cont = getattr(self._local, iter_name)
         if iter_type not in [_str, int] and isinstance(item, iter_type):
             cont.insert(index, item._local)
-            self._add_to_dict(item.id, item)
+            self._add_to_dict(item)
         elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
             cont.insert(index, item)
         else:
@@ -700,12 +700,12 @@ class SFFListType(SFFType):
         popped = cont.pop(index)
         if self.sibling_classes:
             sff_popped = self._cast(popped)
-            self._del_from_dict(sff_popped.id)
+            self._del_from_dict(sff_popped)
             return sff_popped
         else:
             if issubclass(iter_type, SFFType):
                 sff_popped = iter_type.from_gds_type(popped)
-                self._del_from_dict(sff_popped.id)
+                self._del_from_dict(sff_popped)
                 return sff_popped
             elif iter_type in [_str, int]:
                 return iter_type(popped)
@@ -716,6 +716,7 @@ class SFFListType(SFFType):
         cont = getattr(self._local, iter_name)
         if iter_type not in [_str, int] and isinstance(item, iter_type):
             cont.remove(item._local)
+            self._del_from_dict(item)
         elif iter_type in [_str, int] and (isinstance(item, _str) or isinstance(item, int)):
             cont.remove(item)
         else:
@@ -734,16 +735,30 @@ class SFFListType(SFFType):
         """
         return self._id_dict.keys()
 
-    def _add_to_dict(self, k, v):
-        """Private method that adds to the convenience dictionary"""
-        if k in self._id_dict:
-            raise KeyError(u"item with ID={} already present".format(k))
-        elif k is not None:
-            self._id_dict[k] = v
+    def _get_next_id(self):
+        """Private method that returns the next usable id to avoid collisions"""
+        ids = list(self.get_ids())
+        if len(ids) > 0:
+            return max(ids) + 1
+        return 1 # to be on the safe side for segments (segment ids begin at 1)
 
-    def _del_from_dict(self, k):
+    def _add_to_dict(self, v):
+        """Private method that adds to the convenience dictionary
+
+        :param v: item to add to the list container
+        :type v: :py:class:`.SFFIndexType`
+
+        If the key is in the dictionary we should not abort; rather, we should figure
+        out the next id then use that; in the worst case we just abort adding.
+        """
+        # we request a new id if there is a collision or none is defined
+        if v.id in self._id_dict or v.id is None:
+            v.id = self._get_next_id()
+        self._id_dict[v.id] = v
+
+    def _del_from_dict(self, v):
         """Private method that removes from the convenience dictionary"""
-        del self._id_dict[k]
+        del self._id_dict[v.id]
 
     def _update_dict(self):
         iter_name, iter_type = self.iter_attr

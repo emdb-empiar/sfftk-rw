@@ -3055,16 +3055,16 @@ class TestSFFSegmentList(Py23FixTestCase):
         )
         self.assertEqual(len(S), _no_items)
         self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
-        # adding a segment without ID does not change the number of IDs (because it has ID=None)
+        # adding a segment without ID changes the number of IDs (even if it starts off with ID=None)
+        # the sfftk.schema.base.SFFListType._add_to_dict method has been updated to automatically assign a new ID
         S.append(adapter.SFFSegment.from_gds_type(
             emdb_sff.segmentType()
         ))
-        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
-        # exception when trying to overwrite an ID in `_id_dict`
-        with self.assertRaisesRegex(KeyError, r".*already present.*"):
-            S.append(adapter.SFFSegment.from_gds_type((
-                emdb_sff.segmentType(id=1)
-            )))
+        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 2)))
+        S.append(adapter.SFFSegment.from_gds_type((
+            emdb_sff.segmentType(id=1)
+        )))
+        self.assertEqual(len(S.get_ids()), len(S))
 
     def test_create_from_gds_type(self):
         """Test that we can create from gds_type"""

@@ -17,7 +17,7 @@ rw = RandomWords()
 li = LoremIpsum()
 
 from . import TEST_DATA_PATH, Py23FixTestCase, _random_integer, _random_float, _random_integers, _random_floats
-from ..core import _str, _xrange, _decode, _bytes, _encode
+from ..core import _str, _xrange, _decode
 from ..schema import base
 
 EMDB_SFF_VERSION = u'0.8.0.dev1'
@@ -1266,7 +1266,8 @@ class TestSFFLattice(Py23FixTestCase):
         self.assertEqual(l.endianness, self.l_endian)
         self.assertEqual(l.size.voxel_count, self.r * self.c * self.s)
         self.assertEqual(l.start.value, (0, 0, 0))
-        self.assertEqual(_decode(l.data, u'utf-8'), adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
+        self.assertEqual(_decode(l.data, u'utf-8'),
+                         adapter.SFFLattice._encode(self.l_data, mode=self.l_mode, endianness=self.l_endian))
         self.assertEqual(l.data_array.flatten().tolist(), self.l_data.flatten().tolist())
         self.stderr(l)
         self.assertRegex(
@@ -3764,16 +3765,16 @@ class TestSFFSegmentList(Py23FixTestCase):
         )
         self.assertEqual(len(S), _no_items)
         self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
-        # adding a segment without ID does not change the number of IDs (because it has ID=None)
+        # adding a segment without ID changes the number of IDs (even if it starts off with ID=None)
+        # the sfftk.schema.base.SFFListType._add_to_dict method has been updated to automatically assign a new ID
         S.append(adapter.SFFSegment.from_gds_type(
             emdb_sff.segment_type()
         ))
-        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
-        # exception when trying to overwrite an ID in `_id_dict`
-        with self.assertRaisesRegex(KeyError, r".*already present.*"):
-            S.append(adapter.SFFSegment.from_gds_type((
-                emdb_sff.segment_type(id=1)
-            )))
+        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 2)))
+        S.append(adapter.SFFSegment.from_gds_type((
+            emdb_sff.segment_type(id=1)
+        )))
+        self.assertEqual(len(S.get_ids()), len(S))
 
     def test_create_from_gds_type(self):
         """Test that we can create from gds_type"""
@@ -4081,14 +4082,14 @@ class TestSFFSoftwareList(Py23FixTestCase):
             _str(S),
             r"""SFFSoftwareList\(\[SFFSoftware\(.*\)\]\)"""
         )
-        # add without an ID; no change in the result of .get_ids()
+        # adding an item without ID changes the number of IDs (even if it starts off with ID=None)
+        # the sfftk.schema.base.SFFListType._add_to_dict method has been updated to automatically assign a new ID
         S.append(
             adapter.SFFSoftware.from_gds_type(emdb_sff.software_type())
         )
-        self.assertEqual(list(S.get_ids()), list(_xrange(_no_items)))
-        # prevent adding an item with an ID present
-        with self.assertRaisesRegex(KeyError, r".*already present.*"):
-            S.append(adapter.SFFSoftware(id=0))
+        self.assertEqual(list(S.get_ids()), list(_xrange(_no_items + 1)))
+        S.append(adapter.SFFSoftware(id=0))
+        self.assertEqual(len(S.get_ids()), len(S))
 
     def test_create_from_gds_type(self):
         """Create direct from the gds_type"""
@@ -5250,7 +5251,8 @@ class TestSFFSegmentation(Py23FixTestCase):
         self.assertEqual(seg1.global_external_references, seg2.global_external_references)
         for segment in seg1.segment_list:
             other_segment = seg2.segment_list.get_by_id(segment.id)
-            self.assertEqual(segment.biological_annotation.external_references, other_segment.biological_annotation.external_references)
+            self.assertEqual(segment.biological_annotation.external_references,
+                             other_segment.biological_annotation.external_references)
 
     def test_copy_annotation(self):
         """Test that we can copy annotations: global and local"""
@@ -5261,9 +5263,9 @@ class TestSFFSegmentation(Py23FixTestCase):
         from_segment = seg.segment_list.get_by_id(from_segment_id)
         segment_ids.remove(from_segment_id)
         try:
-            to_segment_ids = random.choices(segment_ids, k=len(segment_ids)//2)
+            to_segment_ids = random.choices(segment_ids, k=len(segment_ids) // 2)
         except AttributeError:
-            to_segment_ids = list(set([random.choice(segment_ids) for _ in _xrange(len(segment_ids)//2)]))
+            to_segment_ids = list(set([random.choice(segment_ids) for _ in _xrange(len(segment_ids) // 2)]))
         # clear annotations; check no annotations left
         for segment_id in to_segment_ids:
             segment = seg.segment_list.get_by_id(segment_id)
@@ -5275,12 +5277,14 @@ class TestSFFSegmentation(Py23FixTestCase):
         # now ensure they are similar to the one copied from
         for segment_id in to_segment_ids:
             segment = seg.segment_list.get_by_id(segment_id)
-            self.assertEqual(segment.biological_annotation.external_references, from_segment.biological_annotation.external_references)
+            self.assertEqual(segment.biological_annotation.external_references,
+                             from_segment.biological_annotation.external_references)
         # for global
         seg.global_external_references.clear()
         self.assertEqual(len(seg.global_external_references), 0)
-        seg.copy_annotation(from_segment_id, -1) # -1 for global
-        self.assertEqual(len(from_segment.biological_annotation.external_references), len(seg.global_external_references))
+        seg.copy_annotation(from_segment_id, -1)  # -1 for global
+        self.assertEqual(len(from_segment.biological_annotation.external_references),
+                         len(seg.global_external_references))
         for i, er in enumerate(from_segment.biological_annotation.external_references):
             self.assertEqual(er, seg.global_external_references[i])
 
@@ -5299,5 +5303,3 @@ class TestSFFSegmentation(Py23FixTestCase):
         self.assertTrue(len(from_segment.biological_annotation.external_references) > 0)
         seg.clear_annotation(from_segment_id)
         self.assertEqual(len(from_segment.biological_annotation.external_references), 0)
-
-

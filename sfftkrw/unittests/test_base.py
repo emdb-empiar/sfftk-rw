@@ -776,6 +776,7 @@ class TestSFFListType(Py23FixTestCase):
         self.assertEqual(len(S), 1)
         S.remove(s)
         self.assertEqual(len(S), 0)
+        self.assertEqual(len(S), len(S.get_ids()))
         # shapes
         Sh = adapter.SFFShapePrimitiveList()
         sh = adapter.SFFCuboid(id=1)
@@ -835,9 +836,10 @@ class TestSFFListType(Py23FixTestCase):
         _no_items = _random_integer(start=1, stop=10)
         [S.append(adapter.SFFSegment()) for _ in _xrange(_no_items)]
         self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
-        # appending item from gds does not change length of ID list
+        # following changes to how _id_dict is now updated
+        # appending items direct from gds types changes the length of ID list because a new id is issued
         S.append(adapter.SFFSegment.from_gds_type(emdb_sff.segment_type()))
-        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 1)))
+        self.assertEqual(list(S.get_ids()), list(_xrange(1, _no_items + 2)))
         # software list
         Sw = adapter.SFFSoftwareList()
         [Sw.append(adapter.SFFSoftware(name=rw.random_word(), version=rw.random_word())) for _ in _xrange(_no_items)]
@@ -898,10 +900,21 @@ class TestSFFListType(Py23FixTestCase):
         # exceptions
         # ID collisions
         S = adapter.SFFSegmentList()
-        S.append(adapter.SFFSegment())
-        with self.assertRaisesRegex(KeyError, r"item with ID.*already present"):
-            S.append(adapter.SFFSegment(id=1))
-        # nothing with key 'None'
+        S.append(adapter.SFFSegment()) # id=1
+        # let's reset the index on SFFSegment; this will create a collision of ids (old has id=1, new has id=1)
+        # when we append both to the same SFFSegmentList we expect the second to have id=2
+        adapter.SFFSegment.reset_id()
+        # we should
+        s = adapter.SFFSegment() # id=1
+        self.assertEqual(s.id, 1)
+        S.append(s)
+        self.assertEqual(s.id, 2)
+        # the id should auto-increment regardless of how many have been added before
+        added_segments = _random_integer(start=3, stop=10)
+        [S.append(adapter.SFFSegment()) for _ in _xrange(added_segments)]
+        S.append(adapter.SFFSegment(id=added_segments))
+        # there are as many ids as the length i.e. all items are in the id_dict
+        self.assertEqual(len(S), len(S.get_ids()))
 
     def test_get_from_segmentation(self):
         """Test that we can get by ID from the top level
@@ -947,7 +960,6 @@ class TestSFFListType(Py23FixTestCase):
         [t.append(
             adapter.SFFTransformationMatrix(data=numpy.random.rand(5, 5))
         ) for _ in _xrange(_random_integer(start=3, stop=10))]
-        _print(t)
         self.assertTrue(t._is_valid())
 
 
@@ -988,7 +1000,6 @@ class TestSFFAttribute(Py23FixTestCase):
             )
 
         ba = _BA()
-        self.stderr(ba)
         self.assertIsInstance(ba.extref, adapter.SFFExternalReferenceList)
         self.assertEqual(len(ba.extref), 0)
 
