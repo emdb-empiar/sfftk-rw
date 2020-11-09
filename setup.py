@@ -17,7 +17,7 @@ SFFTKRW_DESCRIPTION_CONTENT_TYPE = u'text/x-rst; charset=UTF-8'
 SFFTKRW_URL = u"http://sfftk-rw.readthedocs.io/en/latest/index.html"
 SFFTKRW_LICENSE = u"Apache License"
 SFFTKRW_KEYWORDS = [u"EMDB-SFF", u"SFF", u"segmentation"]
-SFFTKRW_INSTALL_REQUIRES = ['numpy', 'h5py>2.7.0', "RandomWords", "lxml"]
+SFFTKRW_INSTALL_REQUIRES = ['numpy', "RandomWords", "lxml"]
 SFFTKRW_SETUP_REQUIRES = ['six']
 SFFTKRW_CLASSIFIERS = [
     # maturity
@@ -45,6 +45,7 @@ SFFTKRW_CLASSIFIERS = [
     u"Topic :: Utilities",
 ]
 if sys.version_info[0] > 2:
+    SFFTKRW_INSTALL_REQUIRES += ['h5py']
     setup(
         name=SFFTKRW_NAME,
         version=SFFTKRW_VERSION,
@@ -67,6 +68,7 @@ if sys.version_info[0] > 2:
         },
     )
 else:
+    SFFTKRW_INSTALL_REQUIRES += ['h5py>2.7.0,<3']
     setup(
         name=SFFTKRW_NAME,
         version=SFFTKRW_VERSION,

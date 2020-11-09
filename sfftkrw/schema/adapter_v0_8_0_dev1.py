@@ -188,15 +188,15 @@ class SFFExternalReference(SFFIndexType):
         if u'id' in group:
             obj.id = group[u'id'][()]
         if u'resource' in group:
-            obj.resource = group[u'resource'][()]
+            obj.resource = _decode(group[u'resource'][()], 'utf-8')
         if u'url' in group:
-            obj.url = group[u'url'][()]
+            obj.url = _decode(group[u'url'][()], 'utf-8')
         if u'accession' in group:
-            obj.accession = group[u'accession'][()]
+            obj.accession = _decode(group[u'accession'][()], 'utf-8')
         if u'label' in group:
-            obj.label = group[u'label'][()]
+            obj.label = _decode(group[u'label'][()], 'utf-8')
         if u'description' in group:
-            obj.description = group[u'description'][()]
+            obj.description = _decode(group[u'description'][()], 'utf-8')
         return obj
 
 
@@ -774,15 +774,15 @@ class SFFLattice(SFFIndexType):
         if u'id' in group:
             obj.id = int(group[u'id'][()])
         if u'mode' in group:
-            obj.mode = group[u'mode'][()]
+            obj.mode = _decode(group[u'mode'][()], 'utf-8')
         if u'endianness' in group:
-            obj.endianness = group[u'endianness'][()]
+            obj.endianness = _decode(group[u'endianness'][()], 'utf-8')
         if u'size' in group:
             obj.size = SFFVolumeStructure.from_hff(group, args=args)
         if u'start' in group:
             obj.start = SFFVolumeIndex.from_hff(group, args=args)
         if u'data' in group:
-            obj.data = group[u'data'][()]
+            obj.data = _decode(group[u'data'][()], 'utf-8')
         return obj
 
 
@@ -1017,11 +1017,11 @@ class SFFEncodedSequence(SFFType):
         if cls.num_items_kwarg in group:
             setattr(obj, cls.num_items_kwarg, int(group[cls.num_items_kwarg][()]))
         if u'mode' in group:
-            obj.mode = group[u'mode'][()]
+            obj.mode = _decode(group[u'mode'][()], 'utf-8')
         if u'endianness' in group:
-            obj.endianness = group[u'endianness'][()]
+            obj.endianness = _decode(group[u'endianness'][()], 'utf-8')
         if u'data' in group:
-            obj.data = group[u'data'][()]
+            obj.data = _decode(group[u'data'][()], 'utf-8')
         return obj
 
 
@@ -1326,7 +1326,7 @@ class SFFCone(SFFShape):
         obj = cls(new_obj=False)
         group = parent_group[parent_group.name]
         if u'shape' in group:
-            if group[u'shape'][()] == u'cone':
+            if _decode(group[u'shape'][()], 'utf-8') == u'cone':
                 if u'id' in group:
                     obj.id = group[u'id'][()]
                 if u'height' in group:
@@ -1416,7 +1416,7 @@ class SFFCuboid(SFFShape):
         obj = cls(new_obj=False)
         group = parent_group[parent_group.name]
         if u'shape' in group:
-            if group[u'shape'][()] == u'cuboid':
+            if _decode(group[u'shape'][()], 'utf-8') == u'cuboid':
                 if u'id' in group:
                     obj.id = group[u'id'][()]
                 if u'x' in group:
@@ -1502,7 +1502,7 @@ class SFFCylinder(SFFShape):
         obj = cls(new_obj=False)
         group = parent_group[parent_group.name]
         if u'shape' in group:
-            if group[u'shape'][()] == u'cylinder':
+            if _decode(group[u'shape'][()], 'utf-8') == u'cylinder':
                 if u'id' in group:
                     obj.id = group[u'id'][()]
                 if u'height' in group:
@@ -1592,7 +1592,7 @@ class SFFEllipsoid(SFFShape):
         obj = cls(new_obj=False)
         group = parent_group[parent_group.name]
         if u'shape' in group:
-            if group[u'shape'][()] == u'ellipsoid':
+            if _decode(group[u'shape'][()], 'utf-8') == u'ellipsoid':
                 if u'id' in group:
                     obj.id = group[u'id'][()]
                 if u'x' in group:
@@ -1690,13 +1690,13 @@ class SFFShapePrimitiveList(SFFListType):
         group = parent_group[name]
         for subgroup in sorted(group.values(), key=lambda g: int(os.path.basename(g.name))):
             if u'shape' in subgroup:
-                if subgroup[u'shape'][()] == u'cone':
+                if _decode(subgroup[u'shape'][()], 'utf-8') == u'cone':
                     obj.append(SFFCone.from_hff(subgroup, args=args))
-                elif subgroup[u'shape'][()] == u'cuboid':
+                elif _decode(subgroup[u'shape'][()], 'utf-8') == u'cuboid':
                     obj.append(SFFCuboid.from_hff(subgroup, args=args))
-                elif subgroup[u'shape'][()] == u'cylinder':
+                elif _decode(subgroup[u'shape'][()], 'utf-8') == u'cylinder':
                     obj.append(SFFCylinder.from_hff(subgroup, args=args))
-                elif subgroup[u'shape'][()] == u'ellipsoid':
+                elif _decode(subgroup[u'shape'][()], 'utf-8') == u'ellipsoid':
                     obj.append(SFFEllipsoid.from_hff(subgroup, args=args))
                 else:
                     raise SFFTypeError(u"cannot convert shape '{}'".format(subgroup[u'shape'][()]))
@@ -2025,7 +2025,7 @@ class SFFTransformationMatrix(SFFIndexType):
         if u'cols' in group:
             obj.cols = group[u'cols'][()]
         if u'data' in group:
-            obj.data = group[u'data'][()]
+            obj.data = _decode(group[u'data'][()], 'utf-8')
         return obj
 
 
@@ -2163,13 +2163,13 @@ class SFFSoftware(SFFIndexType):
         obj = cls(new_obj=False)
         group = parent_group[parent_group.name]
         if u'id' in group:
-            obj.id = group[u'id'][()]
+            obj.id = _decode(group[u'id'][()], 'utf-8')
         if u'name' in group:
-            obj.name = group[u'name'][()]
+            obj.name = _decode(group[u'name'][()], 'utf-8')
         if u'version' in group:
-            obj.version = group[u'version'][()]
+            obj.version = _decode(group[u'version'][()], 'utf-8')
         if u'processing_details' in group:
-            obj.processing_details = group[u'processing_details'][()]
+            obj.processing_details = _decode(group[u'processing_details'][()], 'utf-8')
         return obj
 
 
@@ -2460,15 +2460,15 @@ class SFFSegmentation(SFFType):
         obj = cls(new_obj=False)
         group = parent_group
         if u'version' in group:
-            obj.version = group[u'version'][()]
+            obj.version = _decode(group[u'version'][()], 'utf-8')
         if u'name' in group:
-            obj.name = group[u'name'][()]
+            obj.name = _decode(group[u'name'][()], 'utf-8')
         if u'details' in group:
-            obj.details = group[u'details'][()]
+            obj.details = _decode(group[u'details'][()], 'utf-8')
         if u'software_list' in group:
             obj.software_list = SFFSoftwareList.from_hff(group, args=args)
         if u'primary_descriptor' in group:
-            obj.primary_descriptor = group[u'primary_descriptor'][()]
+            obj.primary_descriptor = _decode(group[u'primary_descriptor'][()], 'utf-8')
         if u'transform_list' in group:
             obj.transform_list = SFFTransformList.from_hff(group, args=args)
         if u'bounding_box' in group:
