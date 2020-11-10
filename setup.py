@@ -17,7 +17,7 @@ SFFTKRW_DESCRIPTION_CONTENT_TYPE = u'text/x-rst; charset=UTF-8'
 SFFTKRW_URL = u"http://sfftk-rw.readthedocs.io/en/latest/index.html"
 SFFTKRW_LICENSE = u"Apache License"
 SFFTKRW_KEYWORDS = [u"EMDB-SFF", u"SFF", u"segmentation"]
-SFFTKRW_INSTALL_REQUIRES = ['numpy', "RandomWords", "lxml"]
+SFFTKRW_INSTALL_REQUIRES = ['numpy', "RandomWords", "lxml", 'h5py>2.7.0,<3']
 SFFTKRW_SETUP_REQUIRES = ['six']
 SFFTKRW_CLASSIFIERS = [
     # maturity
@@ -44,52 +44,47 @@ SFFTKRW_CLASSIFIERS = [
     u"Topic :: Text Processing :: Markup",
     u"Topic :: Utilities",
 ]
-if sys.version_info[0] > 2:
-    if sys.version_info[1] > 5:
-        SFFTKRW_INSTALL_REQUIRES += ['h5py']
-    else:
-        SFFTKRW_INSTALL_REQUIRES += ['h5py>2.7.0,<3']
-    setup(
-        name=SFFTKRW_NAME,
-        version=SFFTKRW_VERSION,
-        packages=find_packages(),
-        author=SFFTKRW_AUTHOR,
-        author_email=SFFTKRW_AUTHOR_EMAIL,
-        description=SFFTKRW_DESCRIPTION,
-        long_description=long_description,
-        long_description_content_type=SFFTKRW_DESCRIPTION_CONTENT_TYPE,
-        url=SFFTKRW_URL,
-        license=SFFTKRW_LICENSE,
-        keywords=SFFTKRW_KEYWORDS,
-        setup_requires=SFFTKRW_SETUP_REQUIRES,
-        install_requires=SFFTKRW_INSTALL_REQUIRES,
-        classifiers=SFFTKRW_CLASSIFIERS,
-        entry_points={
-            'console_scripts': [
-                '{} = sfftkrw.sffrw:main'.format(SFFTKRW_ENTRY_POINT),
-            ]
-        },
-    )
-else:
-    SFFTKRW_INSTALL_REQUIRES += ['h5py>2.7.0,<3']
-    setup(
-        name=SFFTKRW_NAME,
-        version=SFFTKRW_VERSION,
-        packages=find_packages(),
-        author=SFFTKRW_AUTHOR,
-        author_email=SFFTKRW_AUTHOR_EMAIL,
-        description=SFFTKRW_DESCRIPTION,
-        long_description=long_description,
-        long_description_content_type=SFFTKRW_DESCRIPTION_CONTENT_TYPE,
-        url=SFFTKRW_URL,
-        license=SFFTKRW_LICENSE,
-        keywords=SFFTKRW_KEYWORDS,
-        setup_requires=SFFTKRW_SETUP_REQUIRES,
-        install_requires=SFFTKRW_INSTALL_REQUIRES,
-        classifiers=SFFTKRW_CLASSIFIERS,
-        entry_points={
-            'console_scripts': [
-                '{} = sfftkrw.sffrw:main'.format(SFFTKRW_ENTRY_POINT),
-            ]
-        },
-    )
+setup(
+    name=SFFTKRW_NAME,
+    version=SFFTKRW_VERSION,
+    packages=find_packages(),
+    author=SFFTKRW_AUTHOR,
+    author_email=SFFTKRW_AUTHOR_EMAIL,
+    description=SFFTKRW_DESCRIPTION,
+    long_description=long_description,
+    long_description_content_type=SFFTKRW_DESCRIPTION_CONTENT_TYPE,
+    url=SFFTKRW_URL,
+    license=SFFTKRW_LICENSE,
+    keywords=SFFTKRW_KEYWORDS,
+    setup_requires=SFFTKRW_SETUP_REQUIRES,
+    install_requires=SFFTKRW_INSTALL_REQUIRES,
+    classifiers=SFFTKRW_CLASSIFIERS,
+    entry_points={
+        'console_scripts': [
+            '{} = sfftkrw.sffrw:main'.format(SFFTKRW_ENTRY_POINT),
+        ]
+    },
+)
+# if sys.version_info[0] > 2:
+# else:
+#     setup(
+#         name=SFFTKRW_NAME,
+#         version=SFFTKRW_VERSION,
+#         packages=find_packages(),
+#         author=SFFTKRW_AUTHOR,
+#         author_email=SFFTKRW_AUTHOR_EMAIL,
+#         description=SFFTKRW_DESCRIPTION,
+#         long_description=long_description,
+#         long_description_content_type=SFFTKRW_DESCRIPTION_CONTENT_TYPE,
+#         url=SFFTKRW_URL,
+#         license=SFFTKRW_LICENSE,
+#         keywords=SFFTKRW_KEYWORDS,
+#         setup_requires=SFFTKRW_SETUP_REQUIRES,
+#         install_requires=SFFTKRW_INSTALL_REQUIRES,
+#         classifiers=SFFTKRW_CLASSIFIERS,
+#         entry_points={
+#             'console_scripts': [
+#                 '{} = sfftkrw.sffrw:main'.format(SFFTKRW_ENTRY_POINT),
+#             ]
+#         },
+#     )
