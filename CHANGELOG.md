@@ -1,5 +1,108 @@
 #Changes by release
 
+## [0.7.0] - 2021-06-17
+
+add Python3.9 support; dropped Python2.7
+
+* add official support for Python3.9
+* dropped support for Python2.7 and Python3.5
+* now in beta but stable
+* new version: v0.7.0
+
+## [0.6.7.dev1] - 2020-11-10
+
+dropped py39 until time is available ;-)
+version bump: v0.6.7.dev1
+
+## [0.6.7.dev0] - 2020-11-09
+
+h5py accommomdation
+
+* h5py>3 has dropped py27 support; it now returns strings as bytes
+* this release fixes reading of bytes as unicode strings
+* also works with py39
+* modified h5py version for py35
+* version bump: v0.6.7.dev0
+
+## [0.6.6.dev0] - 2020-05-15
+
+Bugfix: saving excluding name, software and details
+
+* merge_annotation method had these fields commented out; fixed
+* unit tests updated to check the same
+* version bump: v0.6.6.dev0
+
+## [0.6.5.dev0] - 2020-05-15
+
+Bugfix: index collision during append for new objects to lists
+
+* during annotation in `sfftk` new objects e.g. `SFFSoftware` or `SFFExternalReference` objects, are
+created with an `id=0`; an exception is raised during addition to the `SFFListType._id_dict` if the ID
+already exists;
+* fix: a new method `_get_next_id` has been added to `SFFListType` which determines the next best ID
+to use to avoid collision; this also works when items with `id=None` are added - a new ID (starting from 1)
+is issued to ensure the integrity of `SFFListType._id_dict`
+* version bump: v0.6.5.dev0
+
+## [0.6.4.dev0] - 2020-04-15
+
+Bugfix: reading large XML files
+
+* version bump: v0.6.4.dev0
+
+## [0.6.3.dev0] - 2020-04-14
+
+Bugfix: reading of empty bounding box in v0.7.0.dev0 files
+
+* version bump: v0.6.3.dev0
+
+## [0.6.2.dev6] - 2020-03-30
+
+Development changes
+
+* removed redudant `-t/--top-level-only` convert flag
+
+## [0.6.2.dev5] - 2020-03-26
+
+Development changes
+
+* minor documentation corrections
+* handling `MemoryError` when encoding large 3D volumes for travis
+* version bump: v0.6.2.dev5
+
+## [0.6.2.dev4] - 2020-08-18
+
+Development bugfix
+
+* utils.py: `get_path()` now returns `None` if path invalid
+* version bump: v0.6.2.dev4
+
+## [0.6.2.dev3] - 2020-08-18
+
+Development bugfix
+
+* `sfftk` will now use core tools from `sfftk-rw`
+* use `iter*` methods from `_dict` (dictionary preserving insertion order) instead of from builtin dictionary
+* version bump: v0.6.2.dev3
+
+## [0.6.2.dev2] - 2020-03-13
+
+Development changes
+
+* view parser: check EMDB-SFF version with `--sff-version`
+* handling of IMOD chunks deferred to `sfftk` package
+* this change has no impact whatsover on function of the package
+
+## [0.6.2.dev1] - 2020-03-13
+
+Development changes
+
+* convert parser argument `from_file` has `nargs='*'` for `sfftk` downstream
+* this change has no impact whatsover on function of the package
+
+## [0.6.2.dev0] - 2020-03-06
+
+added methods for handling notes to `sfftkrw.SFFSegmentation`
 
 ## [0.6.1.dev0] - 2020-03-02
 
