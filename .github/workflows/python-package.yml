@@ -38,24 +38,9 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
         run: |
-          # coverage run --rcfile=.coveragerc -m pytest
           pytest --cov=./sfftkrw ./sfftkrw/unittests
-      - name: Compile coverage reports
-        uses: AndreMiras/coveralls-python-action@develop
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
         with:
-          github-token: ${{ secrets.github_token }}
-          flag-name: run-${{ matrix.python-version }}
-          parallel: true
-
-  coveralls:
-    name: Indicate completion to coveralls.io
-    needs: test
-    runs-on: ubuntu-latest
-    container: python:3-slim
-    steps:
-      - name: Coveralls Finished
-        uses: AndreMiras/coveralls-python-action@develop
-        with:
-          github-token: ${{ secrets.github_token }}
-          parallel-finished: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
