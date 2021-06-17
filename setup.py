@@ -15,13 +15,12 @@ SFFTKRW_AUTHOR_EMAIL = u"pkorir@ebi.ac.uk, paul.korir@gmail.com"
 SFFTKRW_DESCRIPTION = u"Toolkit for reading and writing EMDB-SFF files"
 SFFTKRW_DESCRIPTION_CONTENT_TYPE = u'text/x-rst; charset=UTF-8'
 SFFTKRW_URL = u"http://sfftk-rw.readthedocs.io/en/latest/index.html"
-SFFTKRW_LICENSE = u"Apache License"
+SFFTKRW_LICENSE = u"Apache License 2.0"
 SFFTKRW_KEYWORDS = [u"EMDB-SFF", u"SFF", u"segmentation"]
-SFFTKRW_INSTALL_REQUIRES = ['numpy', "RandomWords", "lxml", 'h5py>2.7.0,<3']
-SFFTKRW_SETUP_REQUIRES = ['six']
+SFFTKRW_INSTALL_REQUIRES = ['six', 'numpy', "lxml", 'h5py', 'RandomWords']
 SFFTKRW_CLASSIFIERS = [
     # maturity
-    u"Development Status :: 2 - Pre-Alpha",
+    u"Development Status :: 4 - Beta",
     # environment
     u"Environment :: Console",
     u"Intended Audience :: Developers",
@@ -31,13 +30,11 @@ SFFTKRW_CLASSIFIERS = [
     # os
     u"Operating System :: OS Independent",
     # python versions
-    u"Programming Language :: Python :: 2",
-    u"Programming Language :: Python :: 2.7",
     u"Programming Language :: Python :: 3",
-    u"Programming Language :: Python :: 3.5",
     u"Programming Language :: Python :: 3.6",
     u"Programming Language :: Python :: 3.7",
     u"Programming Language :: Python :: 3.8",
+    u"Programming Language :: Python :: 3.9",
     u"Topic :: Software Development :: Libraries :: Python Modules",
     u"Topic :: Terminals",
     u"Topic :: Text Processing",
@@ -56,7 +53,6 @@ setup(
     url=SFFTKRW_URL,
     license=SFFTKRW_LICENSE,
     keywords=SFFTKRW_KEYWORDS,
-    setup_requires=SFFTKRW_SETUP_REQUIRES,
     install_requires=SFFTKRW_INSTALL_REQUIRES,
     classifiers=SFFTKRW_CLASSIFIERS,
     entry_points={
