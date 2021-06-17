@@ -39,7 +39,7 @@ jobs:
       - name: Test with pytest
         run: |
           # coverage run --rcfile=.coveragerc -m pytest
-          pytest --cov=./sfftkrw sfftkrw/unittests
+          pytest --cov=./sfftkrw ./sfftkrw/unittests
       - name: Compile coverage reports
         uses: AndreMiras/coveralls-python-action@develop
         with:
