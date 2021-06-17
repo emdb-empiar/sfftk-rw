@@ -2,8 +2,8 @@
 EMDB-SFF Read/Write Toolkit (``sfftk-rw``)
 ========================================================
 
-.. image:: https://badge.fury.io/py/sfftk-rw.svg
-    :target: https://badge.fury.io/py/sfftk-rw
+.. image:: https://img.shields.io/pypi/v/sfftk-rw?color=green
+    :alt: PyPI
 
 .. image:: https://img.shields.io/pypi/pyversions/sfftk-rw
     :alt: PyPI - Python Version

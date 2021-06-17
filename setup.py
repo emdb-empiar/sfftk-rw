@@ -55,6 +55,7 @@ setup(
     keywords=SFFTKRW_KEYWORDS,
     install_requires=SFFTKRW_INSTALL_REQUIRES,
     classifiers=SFFTKRW_CLASSIFIERS,
+    python_requires=">=3.6",
     entry_points={
         'console_scripts': [
             '{} = sfftkrw.sffrw:main'.format(SFFTKRW_ENTRY_POINT),
