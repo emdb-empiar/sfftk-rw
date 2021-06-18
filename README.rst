@@ -15,8 +15,9 @@ EMDB-SFF Read/Write Toolkit (``sfftk-rw``)
     :target: https://sfftk-rw.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://coveralls.io/repos/github/emdb-empiar/sfftk-rw/badge.svg?branch=master
-    :target: https://coveralls.io/github/emdb-empiar/sfftk-rw?branch=master
+.. image:: https://codecov.io/gh/emdb-empiar/sfftk-rw/branch/master/graph/badge.svg?token=OIN3VDFH1K
+    :target: https://codecov.io/gh/emdb-empiar/sfftk-rw
+
 
 
 -------------
