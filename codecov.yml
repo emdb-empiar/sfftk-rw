@@ -1,0 +1,8 @@
+ignore:
+  - "sfftkrw/unittests/*"
+  - "sfftkrw/schema/v*.py"
+  - "sfftkrw/schema/emdb_sff.py"
+  - "sfftkrw/schema/adapter.py"
+  - "sfftkrw/test_data/*"
+  - "sfftkrw/core/__init__.py"
+  - "docs"

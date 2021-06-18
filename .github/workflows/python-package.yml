@@ -38,9 +38,9 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
         run: |
-          pytest --cov=./sfftkrw ./sfftkrw/unittests
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
+          # pytest --cov=./sfftkrw ./sfftkrw/unittests
+          coverage run --rcfile=.coveragerc -m pytest
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
