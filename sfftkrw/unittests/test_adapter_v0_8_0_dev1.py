@@ -304,6 +304,7 @@ class TestSFFExternalReference(Py23FixTestCase):
             for group in h[u'container'].values():
                 e2 = adapter.SFFExternalReference.from_hff(group)
                 self.assertEqual(e, e2)
+                self.assertIsInstance(e2.id, int)
         # empty with id=None
         e = adapter.SFFExternalReference(new_obj=False)
         with h5py.File(self.test_hdf5_fn, u'w') as h:
@@ -1032,6 +1033,8 @@ class TestSFFThreeDVolume(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             vol_full2 = adapter.SFFThreeDVolume.from_hff(h[u'container'])
             self.assertEqual(vol_full, vol_full2)
+            self.assertIsInstance(vol_full2.lattice_id, int)
+            self.assertIsInstance(vol_full2.transform_id, int)
         # empty
         vol_empty = adapter.SFFThreeDVolume()
         with h5py.File(self.test_hdf5_fn, u'w') as h:
@@ -1044,6 +1047,8 @@ class TestSFFThreeDVolume(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             vol_empty2 = adapter.SFFThreeDVolume.from_hff(h[u'container'])
             self.assertEqual(vol_empty, vol_empty2)
+            self.assertIsInstance(vol_full2.lattice_id, int)
+            self.assertIsInstance(vol_full2.transform_id, int)
 
 
 class TestSFFVolumeStructure(Py23FixTestCase):
@@ -1353,6 +1358,7 @@ class TestSFFLattice(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             l2 = adapter.SFFLattice.from_hff(h[u'container'])
             self.assertEqual(l, l2)
+            self.assertIsNone(l2.id)
         # non-empty case
         rows, cols, sections = _random_integers(count=3, start=5, stop=10)
         array = numpy.random.randint(0, 10, size=(rows, cols, sections))
@@ -1377,6 +1383,7 @@ class TestSFFLattice(Py23FixTestCase):
             for group in h[u'container'].values():
                 l2 = adapter.SFFLattice.from_hff(group)
                 self.assertEqual(l, l2)
+                self.assertIsInstance(l2.id, int)
 
 
 class TestSFFLatticeList(Py23FixTestCase):
@@ -2396,6 +2403,7 @@ class TestSFFMesh(Py23FixTestCase):
             for group in h[u'container'].values():
                 m2 = adapter.SFFMesh.from_hff(group)
                 self.assertEqual(m, m2)
+                self.assertIsInstance(m2.id, int)
         # non-empty
         m = adapter.SFFMesh(
             vertices=adapter.SFFVertices.from_array(self.vertices_data),
@@ -2837,6 +2845,11 @@ class TestSFFCone(Py23FixTestCase):
             for group in h[u'container'].values():
                 cone2 = adapter.SFFCone.from_hff(group)
                 self.assertEqual(cone, cone2)
+                self.assertIsInstance(cone2.id, int)
+                self.assertIsNone(cone2.height)
+                self.assertIsNone(cone2.bottom_radius)
+                self.assertIsNone(cone2.transform_id)
+                self.assertIsNone(cone2.attribute)
         # non-empty case
         height, bottom_radius = _random_floats(count=2, multiplier=10)
         transform_id = _random_integer(start=0)
@@ -2859,6 +2872,8 @@ class TestSFFCone(Py23FixTestCase):
             for group in h[u'container'].values():
                 cone2 = adapter.SFFCone.from_hff(group)
                 self.assertEqual(cone, cone2)
+                self.assertIsInstance(cone2.id, int)
+                self.assertIsInstance(cone2.transform_id, int)
 
 
 class TestSFFCuboid(Py23FixTestCase):
@@ -2947,6 +2962,7 @@ class TestSFFCuboid(Py23FixTestCase):
             for group in h[u'container'].values():
                 cuboid2 = adapter.SFFCuboid.from_hff(group)
                 self.assertEqual(cuboid, cuboid2)
+                self.assertIsInstance(cuboid2.id, int)
         # non-empty case
         x, y, z = _random_floats(count=3, multiplier=10)
         transform_id = _random_integer(start=0)
@@ -2964,14 +2980,19 @@ class TestSFFCuboid(Py23FixTestCase):
             self.assertIn(u'id', group[group_name])
             self.assertIn(u'shape', group[group_name])
             self.assertEqual(_decode(group[group_name + u'/shape'][()], 'utf-8'), u'cuboid')
-            self.assertEqual(group[u'{}/x'.format(cuboid.id)][()], x)
-            self.assertEqual(group[u'{}/y'.format(cuboid.id)][()], y)
-            self.assertEqual(group[u'{}/z'.format(cuboid.id)][()], z)
+            self.assertEqual(group[u'{}/x'.format(cuboid.id)][()], numpy.float64(x))
+            self.assertEqual(group[u'{}/y'.format(cuboid.id)][()], numpy.float64(y))
+            self.assertEqual(group[u'{}/z'.format(cuboid.id)][()], numpy.float64(z))
             self.assertEqual(group[u'{}/transform_id'.format(cuboid.id)][()], transform_id)
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             for group in h[u'container'].values():
                 cuboid2 = adapter.SFFCuboid.from_hff(group)
                 self.assertEqual(cuboid, cuboid2)
+                self.assertIsInstance(cuboid2.id, int)
+                self.assertIsInstance(cuboid2.x, float)
+                self.assertIsInstance(cuboid2.y, float)
+                self.assertIsInstance(cuboid2.z, float)
+                self.assertIsInstance(cuboid2.transform_id, int)
 
 
 class TestSFFCylinder(Py23FixTestCase):
@@ -3061,12 +3082,13 @@ class TestSFFCylinder(Py23FixTestCase):
             for group in h[u'container'].values():
                 cylinder2 = adapter.SFFCylinder.from_hff(group)
                 self.assertEqual(cylinder, cylinder2)
+                self.assertIsInstance(cylinder2.id, int)
         # non-empty case
         height, diameter = _random_floats(count=2, multiplier=10)
         transform_id = _random_integer(start=0)
         cylinder = adapter.SFFCylinder(
-            height=height,
-            diameter=diameter,
+            height=numpy.float64(height),
+            diameter=numpy.float64(diameter),
             transform_id=transform_id
         )
         with h5py.File(self.test_hdf5_fn, u'w') as h:
@@ -3084,6 +3106,10 @@ class TestSFFCylinder(Py23FixTestCase):
             for group in h[u'container'].values():
                 cylinder2 = adapter.SFFCylinder.from_hff(group)
                 self.assertEqual(cylinder, cylinder2)
+                self.assertIsInstance(cylinder2.id, int)
+                self.assertIsInstance(cylinder2.height, float)
+                self.assertIsInstance(cylinder2.diameter, float)
+                self.assertIsInstance(cylinder2.transform_id, int)
 
 
 class TestSFFEllipsoid(Py23FixTestCase):
@@ -3172,6 +3198,8 @@ class TestSFFEllipsoid(Py23FixTestCase):
             for group in h[u'container'].values():
                 ellipsoid2 = adapter.SFFEllipsoid.from_hff(group)
                 self.assertEqual(ellipsoid, ellipsoid2)
+                self.assertIsInstance(ellipsoid2.id, int)
+                self.assertIsNone(ellipsoid2.transform_id)
         # non-empty case
         x, y, z = _random_floats(count=3, multiplier=10)
         transform_id = _random_integer(start=0)
@@ -3197,6 +3225,11 @@ class TestSFFEllipsoid(Py23FixTestCase):
             for group in h[u'container'].values():
                 ellipsoid2 = adapter.SFFEllipsoid.from_hff(group)
                 self.assertEqual(ellipsoid, ellipsoid2)
+                self.assertIsInstance(ellipsoid2.id, int)
+                self.assertIsInstance(ellipsoid2.x, float)
+                self.assertIsInstance(ellipsoid2.y, float)
+                self.assertIsInstance(ellipsoid2.z, float)
+                self.assertIsInstance(ellipsoid2.transform_id, int)
 
 
 class TestSFFShapePrimitiveList(Py23FixTestCase):
@@ -3682,6 +3715,8 @@ class TestSFFSegment(Py23FixTestCase):
             for group in h[u'container'].values():
                 s2 = adapter.SFFSegment.from_hff(group)
                 self.assertEqual(s, s2)
+                self.assertIsInstance(s2.id, int)
+                self.assertIsInstance(s2.parent_id, int)
         # non-empty
         external_references = adapter.SFFExternalReferenceList()
         [external_references.append(
@@ -3749,6 +3784,8 @@ class TestSFFSegment(Py23FixTestCase):
             for group in h[u'container'].values():
                 s2 = adapter.SFFSegment.from_hff(group)
                 self.assertEqual(s, s2)
+                self.assertIsInstance(s2.id, int)
+                self.assertIsInstance(s2.parent_id, int)
 
 
 class TestSFFSegmentList(Py23FixTestCase):
@@ -4043,6 +4080,7 @@ class TestSFFSoftware(Py23FixTestCase):
             for group in h[u'container'].values():
                 s2 = adapter.SFFSoftware.from_hff(group)
                 self.assertEqual(s, s2)
+                self.assertIsInstance(s2.id, int)
         # non-empty
         s = adapter.SFFSoftware(
             name=rw.random_word(),
@@ -4066,6 +4104,7 @@ class TestSFFSoftware(Py23FixTestCase):
             for group in h[u'container'].values():
                 s2 = adapter.SFFSoftware.from_hff(group)
                 self.assertEqual(s, s2)
+                self.assertIsInstance(s2.id, int)
 
 
 class TestSFFSoftwareList(Py23FixTestCase):
@@ -4314,6 +4353,9 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
             for group in h[u'container'].values():
                 tx2 = adapter.SFFTransformationMatrix.from_hff(group)
                 self.assertEqual(tx, tx2)
+                self.assertIsInstance(tx2.id, int)
+                self.assertIsNone(tx2.rows)
+                self.assertIsNone(tx2.cols)
         # non-empty
         tx = adapter.SFFTransformationMatrix.from_array(numpy.random.rand(3, 4))
         with h5py.File(self.test_hdf5_fn, u'w') as h:
@@ -4333,6 +4375,9 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
             for group in h[u'container'].values():
                 tx2 = adapter.SFFTransformationMatrix.from_hff(group)
                 self.assertEqual(tx, tx2)
+                self.assertIsInstance(tx2.id, int)
+                self.assertIsInstance(tx2.rows, int)
+                self.assertIsInstance(tx2.cols, int)
 
 
 class TestSFFTransformList(Py23FixTestCase):

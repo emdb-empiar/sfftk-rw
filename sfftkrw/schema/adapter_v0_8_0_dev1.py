@@ -186,7 +186,7 @@ class SFFExternalReference(SFFIndexType):
         group = parent_group[parent_group.name]
         obj = cls(new_obj=False)
         if u'id' in group:
-            obj.id = group[u'id'][()]
+            obj.id = int(group[u'id'][()])
         if u'resource' in group:
             obj.resource = _decode(group[u'resource'][()], 'utf-8')
         if u'url' in group:
@@ -427,11 +427,11 @@ class SFFThreeDVolume(SFFType):
         group = parent_group[name]
         obj = cls(new_obj=False)
         if u'lattice_id' in group:
-            obj.lattice_id = group[u'lattice_id'][()]
+            obj.lattice_id = int(group[u'lattice_id'][()])
         if u'value' in group:
             obj.value = group[u'value'][()]
         if u'transform_id' in group:
-            obj.transform_id = group[u'transform_id'][()]
+            obj.transform_id = int(group[u'transform_id'][()])
         return obj
 
 
@@ -1328,13 +1328,13 @@ class SFFCone(SFFShape):
         if u'shape' in group:
             if _decode(group[u'shape'][()], 'utf-8') == u'cone':
                 if u'id' in group:
-                    obj.id = group[u'id'][()]
+                    obj.id = int(group[u'id'][()])
                 if u'height' in group:
                     obj.height = group[u'height'][()]
                 if u'bottom_radius' in group:
                     obj.bottom_radius = group[u'bottom_radius'][()]
                 if u'transform_id' in group:
-                    obj.transform_id = group[u'transform_id'][()]
+                    obj.transform_id = int(group[u'transform_id'][()])
                 return obj
             else:
                 raise SFFTypeError(u"cannot convert shape '{}' into cone".format(group[u'shape'][()]))
@@ -1418,7 +1418,7 @@ class SFFCuboid(SFFShape):
         if u'shape' in group:
             if _decode(group[u'shape'][()], 'utf-8') == u'cuboid':
                 if u'id' in group:
-                    obj.id = group[u'id'][()]
+                    obj.id = int(group[u'id'][()])
                 if u'x' in group:
                     obj.x = group[u'x'][()]
                 if u'y' in group:
@@ -1426,7 +1426,7 @@ class SFFCuboid(SFFShape):
                 if u'z' in group:
                     obj.z = group[u'z'][()]
                 if u'transform_id' in group:
-                    obj.transform_id = group[u'transform_id'][()]
+                    obj.transform_id = int(group[u'transform_id'][()])
                 return obj
             else:
                 raise SFFTypeError(u"cannot convert shape '{}' into cuboid".format(group[u'shape'][()]))
@@ -1504,13 +1504,13 @@ class SFFCylinder(SFFShape):
         if u'shape' in group:
             if _decode(group[u'shape'][()], 'utf-8') == u'cylinder':
                 if u'id' in group:
-                    obj.id = group[u'id'][()]
+                    obj.id = int(group[u'id'][()])
                 if u'height' in group:
                     obj.height = group[u'height'][()]
                 if u'diameter' in group:
                     obj.diameter = group[u'diameter'][()]
                 if u'transform_id' in group:
-                    obj.transform_id = group[u'transform_id'][()]
+                    obj.transform_id = int(group[u'transform_id'][()])
                 return obj
             else:
                 raise SFFTypeError(u"cannot convert shape '{}' into cylinder".format(group[u'shape'][()]))
@@ -1594,7 +1594,7 @@ class SFFEllipsoid(SFFShape):
         if u'shape' in group:
             if _decode(group[u'shape'][()], 'utf-8') == u'ellipsoid':
                 if u'id' in group:
-                    obj.id = group[u'id'][()]
+                    obj.id = int(group[u'id'][()])
                 if u'x' in group:
                     obj.x = group[u'x'][()]
                 if u'y' in group:
@@ -1602,7 +1602,7 @@ class SFFEllipsoid(SFFShape):
                 if u'z' in group:
                     obj.z = group[u'z'][()]
                 if u'transform_id' in group:
-                    obj.transform_id = group[u'transform_id'][()]
+                    obj.transform_id = int(group[u'transform_id'][()])
                 return obj
             else:
                 raise SFFTypeError(u"cannot convert shape '{}' into ellipsoid".format(group[u'shape'][()]))
@@ -1822,9 +1822,9 @@ class SFFSegment(SFFIndexType):
         group = parent_group[parent_group.name]
         obj = cls(new_obj=False)
         if u'id' in group:
-            obj.id = group[u'id'][()]
+            obj.id = int(group[u'id'][()])
         if u'parent_id' in group:
-            obj.parent_id = group[u'parent_id'][()]
+            obj.parent_id = int(group[u'parent_id'][()])
         if u'biological_annotation' in group:
             obj.biological_annotation = SFFBiologicalAnnotation.from_hff(group, args=args)
         if u'colour' in group:
@@ -2019,11 +2019,11 @@ class SFFTransformationMatrix(SFFIndexType):
         obj = cls(new_obj=False)
         group = parent_group[parent_group.name]
         if u'id' in group:
-            obj.id = group[u'id'][()]
+            obj.id = int(group[u'id'][()])
         if u'rows' in group:
-            obj.rows = group[u'rows'][()]
+            obj.rows = int(group[u'rows'][()])
         if u'cols' in group:
-            obj.cols = group[u'cols'][()]
+            obj.cols = int(group[u'cols'][()])
         if u'data' in group:
             obj.data = _decode(group[u'data'][()], 'utf-8')
         return obj
@@ -2163,7 +2163,7 @@ class SFFSoftware(SFFIndexType):
         obj = cls(new_obj=False)
         group = parent_group[parent_group.name]
         if u'id' in group:
-            obj.id = _decode(group[u'id'][()], 'utf-8')
+            obj.id = int(group[u'id'][()])
         if u'name' in group:
             obj.name = _decode(group[u'name'][()], 'utf-8')
         if u'version' in group:
