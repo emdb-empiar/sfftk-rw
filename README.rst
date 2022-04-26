@@ -35,7 +35,7 @@ designed to work with EMDB-SFF files. Other related tools are:
 
     *   **prepares** segmentation files prior to conversion to EMDB-SFF files;
 
--   **SAT** - an online wrapper around ``sfftk`` available at https://wwwdev.ebi.ac.uk/pdbe/emdb/sat_branch/sat/
+-   **SAT** - an online wrapper around ``sfftk`` available at https://www.ebi.ac.uk/empiar/sat/
 
 -------------
 License
