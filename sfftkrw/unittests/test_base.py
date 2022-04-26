@@ -6,7 +6,6 @@ Unit for schema adapter
 from __future__ import print_function
 
 import importlib
-import os
 import random
 import sys
 import tempfile
@@ -19,7 +18,7 @@ li = LoremIpsum()
 
 from . import _random_integer, Py23FixTestCase, _random_float, _random_floats
 from .. import EMDB_SFF_VERSION
-from ..core import _xrange, _str, _print
+from ..core import _xrange, _str
 from ..schema import base  # , emdb_sff
 
 # dynamically import the latest schema generateDS API
@@ -211,13 +210,13 @@ class TestSFFType(Py23FixTestCase):
             primary_descriptor=u'mesh_list',
         )
         # we check that everything was OK
-        self.assertEqual(S.export(sys.stderr), os.EX_OK)
+        self.assertEqual(S.export(sys.stderr), 0)
 
     def test_export_errors(self):
         """Test that we catch all export errors"""
         tf = tempfile.NamedTemporaryFile()
         tf.name += u'.invalid'
-        self.assertEqual(os.EX_DATAERR,
+        self.assertEqual(65,
                          adapter.SFFSegmentation(name=rw.random_word(), primary_descriptor=u'mesh_list').export(
                              tf.name))
 
@@ -900,12 +899,12 @@ class TestSFFListType(Py23FixTestCase):
         # exceptions
         # ID collisions
         S = adapter.SFFSegmentList()
-        S.append(adapter.SFFSegment()) # id=1
+        S.append(adapter.SFFSegment())  # id=1
         # let's reset the index on SFFSegment; this will create a collision of ids (old has id=1, new has id=1)
         # when we append both to the same SFFSegmentList we expect the second to have id=2
         adapter.SFFSegment.reset_id()
         # we should
-        s = adapter.SFFSegment() # id=1
+        s = adapter.SFFSegment()  # id=1
         self.assertEqual(s.id, 1)
         S.append(s)
         self.assertEqual(s.id, 2)

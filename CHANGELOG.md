@@ -1,5 +1,18 @@
 #Changes by release
 
+## [0.7.2] - 2022-04-26
+
+add Python3.10 support
+
+* removed use of `os` package for exit codes (problems on Windows)
+* fixed errors in `developing` documentation
+
+## [0.7.1] - 2021-08-24
+
+bugfix: reading from HDF5 retains some ids as `numpy.int64`
+
+* tests added and pass
+
 ## [0.7.0] - 2021-06-17
 
 add Python3.9 support; dropped Python2.7

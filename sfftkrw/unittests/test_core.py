@@ -26,17 +26,17 @@ class TestParser(Py23FixTestCase):
     def test_default(self):
         """Test that default operation is OK"""
         args = parse_args("--version", use_shlex=True)
-        self.assertEqual(args, os.EX_OK)
+        self.assertEqual(args, 0)
 
     def test_use_shlex(self):
         """Test that we can use shlex i.e. treat command as string"""
         args = parse_args("--version", use_shlex=True)
-        self.assertEqual(args, os.EX_OK)
+        self.assertEqual(args, 0)
 
     def test_fail_use_shlex(self):
         """Test that we raise an error when use_shlex=True but _args not str"""
         args = parse_args("--version", use_shlex=True)
-        self.assertEqual(args, os.EX_OK)
+        self.assertEqual(args, 0)
 
 
 class TestCorePrintUtils(Py23FixTestCase):
@@ -234,7 +234,7 @@ class TestCoreParserConvert(Py23FixTestCase):
     def test_wrong_primary_descriptor_fails(self):
         """Test that we have a check on primary descriptor values"""
         args = parse_args('convert -R something {}'.format(self.test_data_file), use_shlex=True)
-        self.assertEqual(args, os.EX_USAGE)
+        self.assertEqual(args, 64)
 
     def test_verbose(self):
         """Test convert parser with verbose"""
@@ -272,7 +272,8 @@ class TestCoreParserConvert(Py23FixTestCase):
             ),
             use_shlex=True
         )
-        self.assertEqual(args, os.EX_USAGE)
+        self.assertEqual(args, 64)
+
 
 class TestCoreParserView(Py23FixTestCase):
     @classmethod
@@ -324,12 +325,12 @@ class TestCoreParserTests(Py23FixTestCase):
     def test_tool_fail(self):
         """Test that we catch a wrong tool"""
         args = parse_args("tests wrong_tool_spec", use_shlex=True)
-        self.assertEqual(args, os.EX_USAGE)
+        self.assertEqual(args, 64)
 
     def test_tests_no_tool(self):
         """Test that with no tool we simply get usage info"""
         args = parse_args("tests", use_shlex=True)
-        self.assertEqual(args, os.EX_OK)
+        self.assertEqual(args, 0)
 
     def test_valid_verbosity(self):
         """Test valid verbosity"""
@@ -346,10 +347,10 @@ class TestCoreParserTests(Py23FixTestCase):
         """Test that verbosity is in [0,3]"""
         v1 = _random_integer(start=4)
         args = parse_args("tests all -v {}".format(v1), use_shlex=True)
-        self.assertEqual(args, os.EX_USAGE)
+        self.assertEqual(args, 64)
         v2 = -_random_integer(start=0)
         args = parse_args("tests all -v {}".format(v2), use_shlex=True)
-        self.assertEqual(args, os.EX_USAGE)
+        self.assertEqual(args, 64)
 
     def test_dry_run(self):
         """Test that we can set the `dry-run` argument"""

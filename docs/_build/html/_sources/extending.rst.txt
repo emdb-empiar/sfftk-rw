@@ -305,7 +305,7 @@ In order to perform conversion using the command-line utility, we need to have t
         # ...
         sff_seg.export(args.output)
 
-        return os.EX_OK
+        return 0
 
 Once this is done the following should work:
 

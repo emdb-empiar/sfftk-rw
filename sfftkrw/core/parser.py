@@ -234,13 +234,13 @@ def parse_args(_args, use_shlex=False):
         try:
             assert isinstance(_args, _basestring)
         except AssertionError:
-            return os.EX_USAGE
+            return 64
         import shlex
         _args = shlex.split(_args)
     # if we have no subcommands then show the available tools
     if len(_args) == 0:
         Parser.print_help()
-        return os.EX_OK
+        return 0
     # if we only have a subcommand then show that subcommand's help
     elif len(_args) == 1:
         # print(_args[0])
@@ -250,18 +250,18 @@ def parse_args(_args, use_shlex=False):
         if _args[0] == '-V' or _args[0] == '--version':
             print_date(
                 "sfftk-rw version: {} for EMDB-SFF {}".format(SFFTKRW_VERSION, ', '.join(SUPPORTED_EMDB_SFF_VERSIONS)))
-            return os.EX_OK
+            return 0
         # anytime a new argument is added to the base parser subparsers are bumped down in index
         elif _args[0] in _dict_iter_keys(Parser._actions[2].choices):
             exec('{}_parser.print_help()'.format(_args[0]))
-            return os.EX_OK
+            return 0
     # parse arguments
     args = Parser.parse_args(_args)
 
     # check values
     # view
     if args.subcommand == 'view':
-        pass # no view-specific checks yet
+        pass  # no view-specific checks yet
     # convert
     elif args.subcommand == 'convert':
         # we only use the first file in sfftk-rw; sfftk may use more than one file
@@ -281,7 +281,7 @@ def parse_args(_args, use_shlex=False):
                         invalid=args.format,
                         formats=", ".join(map(lambda x: x[0], FORMAT_LIST)))
                     )
-                    return os.EX_USAGE
+                    return 64
                 fn = ".".join(os.path.basename(from_file).split(
                     '.')[:-1]) + '.{}'.format(args.format)
                 args.__setattr__('output', os.path.join(dirname, fn))
@@ -311,8 +311,8 @@ def parse_args(_args, use_shlex=False):
                 ]
             except AssertionError:
                 print_date(
-                        "Invalid value for primary descriptor: {}".format(args.primary_descriptor))
-                return os.EX_USAGE
+                    "Invalid value for primary descriptor: {}".format(args.primary_descriptor))
+                return 64
             if args.verbose:
                 print_date(
                     "Trying to set primary descriptor to {}".format(args.primary_descriptor))
@@ -327,7 +327,7 @@ def parse_args(_args, use_shlex=False):
                 assert args.json_indent >= 0
             except AssertionError:
                 print_date("Invalid value for --json-indent: {}".format(args.json_indent))
-                return os.EX_USAGE
+                return 64
             if args.verbose:
                 print_date("Indenting JSON with indent={}".format(args.json_indent))
 
@@ -348,7 +348,7 @@ def parse_args(_args, use_shlex=False):
                 print_date(
                     "Unknown tool: {}; Available tools for test: {}".format(tool, ", ".join(tool_list))
                 )
-                return os.EX_USAGE
+                return 64
         if args.verbosity:
             try:
                 assert args.verbosity in range(4)
@@ -360,6 +360,6 @@ def parse_args(_args, use_shlex=False):
                         args.verbosity
                     )
                 )
-                return os.EX_USAGE
+                return 64
 
     return args

@@ -9,7 +9,6 @@ sfftkrw.sffrw is the main entry point for performing command-line operations.
 from __future__ import division, print_function
 
 import importlib
-import os
 import re
 import sys
 
@@ -68,7 +67,7 @@ def handle_convert(args):  # @UnusedVariable
     # perform actual export
     status = seg.export(args.output, args)
     if args.verbose:
-        if status == os.EX_OK:
+        if status == 0:
             print_date("Done")
         else:
             print_date("Error")
@@ -120,7 +119,7 @@ def handle_view(args):  # @UnusedVariable
         print(u"*" * 50)
     else:
         print(u"Not implemented view for files of type .{}".format(args.from_file.split('.')[-1]), file=sys.stderr)
-    return os.EX_OK
+    return 0
 
 
 def _module_test_runner(mod, args):
@@ -135,7 +134,7 @@ def _module_test_runner(mod, args):
     print_date(u"Found {} test cases in the suite...".format(suite.countTestCases()))
     if not args.dry_run:
         unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
-    return os.EX_OK
+    return 0
 
 
 def _testcase_test_runner(tc, args):
@@ -150,7 +149,7 @@ def _testcase_test_runner(tc, args):
     print_date(u"Found {} test cases in the suite...".format(suite.countTestCases()))
     if not args.dry_run:
         unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
-    return os.EX_OK
+    return 0
 
 
 def _discover_test_runner(path, args, top_level_dir=None):
@@ -165,7 +164,7 @@ def _discover_test_runner(path, args, top_level_dir=None):
     print_date(u"Found {} test cases in the suite...".format(suite.countTestCases()))
     if not args.dry_run:
         unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
-    return os.EX_OK
+    return 0
 
 
 def handle_tests(args):
@@ -199,7 +198,7 @@ def handle_tests(args):
                 )
                 test_adapter = importlib.import_module(test_adapter_name)
                 _module_test_runner(test_adapter, args)
-    return os.EX_OK
+    return 0
 
 
 def main():
@@ -207,10 +206,10 @@ def main():
         from .core.parser import parse_args
         args = parse_args(sys.argv[1:])
         # missing args
-        if args == os.EX_USAGE:
-            return os.EX_USAGE
-        elif args == os.EX_OK:  # e.g. show version has no error but has no handler either
-            return os.EX_OK
+        if args == 64:
+            return 64
+        elif args == 0:  # e.g. show version has no error but has no handler either
+            return 0
         # subcommands
         if args.subcommand == 'convert':
             return handle_convert(args)
@@ -221,8 +220,8 @@ def main():
 
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
-        return os.EX_OK
-    return os.EX_OK
+        return 0
+    return 0
 
 
 if __name__ == "__main__":

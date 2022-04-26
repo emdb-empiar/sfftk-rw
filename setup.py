@@ -35,6 +35,7 @@ SFFTKRW_CLASSIFIERS = [
     u"Programming Language :: Python :: 3.7",
     u"Programming Language :: Python :: 3.8",
     u"Programming Language :: Python :: 3.9",
+    u"Programming Language :: Python :: 3.10",
     u"Topic :: Software Development :: Libraries :: Python Modules",
     u"Topic :: Terminals",
     u"Topic :: Text Processing",
@@ -62,26 +63,3 @@ setup(
         ]
     },
 )
-# if sys.version_info[0] > 2:
-# else:
-#     setup(
-#         name=SFFTKRW_NAME,
-#         version=SFFTKRW_VERSION,
-#         packages=find_packages(),
-#         author=SFFTKRW_AUTHOR,
-#         author_email=SFFTKRW_AUTHOR_EMAIL,
-#         description=SFFTKRW_DESCRIPTION,
-#         long_description=long_description,
-#         long_description_content_type=SFFTKRW_DESCRIPTION_CONTENT_TYPE,
-#         url=SFFTKRW_URL,
-#         license=SFFTKRW_LICENSE,
-#         keywords=SFFTKRW_KEYWORDS,
-#         setup_requires=SFFTKRW_SETUP_REQUIRES,
-#         install_requires=SFFTKRW_INSTALL_REQUIRES,
-#         classifiers=SFFTKRW_CLASSIFIERS,
-#         entry_points={
-#             'console_scripts': [
-#                 '{} = sfftkrw.sffrw:main'.format(SFFTKRW_ENTRY_POINT),
-#             ]
-#         },
-#     )

@@ -1782,7 +1782,7 @@ class SFFSegmentation(SFFType):
                 seg._local = _sff.parse(fn, silence=True)
             except IOError:
                 print_date(_encode(u"File {} not found".format(fn), u'utf-8'))
-                sys.exit(os.EX_IOERR)
+                sys.exit(74)
         elif re.match(r'.*\.(hff|h5|hdf5)$', fn, re.IGNORECASE):
             with h5py.File(fn, u'r') as h:
                 seg._local = seg.from_hff(h, args=args)._local
@@ -1790,7 +1790,7 @@ class SFFSegmentation(SFFType):
             seg._local = seg.from_json(fn, args=args)._local
         else:
             print_date(_encode(u"Invalid EMDB-SFF file name: {}".format(fn), u'utf-8'))
-            sys.exit(os.EX_USAGE)
+            sys.exit(64)
         return seg
 
     @property
@@ -1813,7 +1813,7 @@ class SFFSegmentation(SFFType):
         group[u'version'] = self.version
         if self.primary_descriptor is None:
             print_date(_encode(u"Invalid segmentation: primary_descriptor required", u'utf-8'))
-            return os.EX_DATAERR
+            return 65
         group[u'primaryDescriptor'] = self.primary_descriptor
         # if we are adding another group then donu't set dict style; just return the populated group
         if self.software is None:
@@ -1872,7 +1872,7 @@ class SFFSegmentation(SFFType):
             print_date(_encode(u'Segmentation name not found. Please check that {} is a valid EMDB-SFF file'.format(
                 hff_data.filename
             ), u'utf-8'))
-            sys.exit(os.EX_DATAERR)
+            sys.exit(65)
         obj.version = _decode(hff_data[u'version'][()], u'utf-8')
         obj.software = SFFSoftware.from_hff(hff_data[u'software'], args=args)
         obj.transforms = SFFTransformList.from_hff(hff_data[u'transforms'], args=args)
@@ -2068,7 +2068,7 @@ class SFFSegmentation(SFFType):
             assert isinstance(other_seg, SFFSegmentation)
         except AssertionError:
             print_date(_encode(u"Invalid type for other_seg: {}".format(type(other_seg)), u'utf-8'))
-            sys.exit(os.EX_DATAERR)
+            sys.exit(65)
         # global data
         self.name = other_seg.name
         self.software = other_seg.software

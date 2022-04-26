@@ -172,7 +172,7 @@ class TestMainHandleTests(Py23FixTestCase):
         from . import test_base
         args = parse_args(u"tests all", use_shlex=True)
         status = _module_test_runner(test_base, args)
-        self.assertEqual(status, os.EX_OK)
+        self.assertEqual(status, 0)
 
     def test_discover_test_runner(self):
         """Test correct functionality of `_discover_test_runner`"""
@@ -180,7 +180,7 @@ class TestMainHandleTests(Py23FixTestCase):
         args = parse_args(u"tests schema", use_shlex=True)
         path = ".."  # no tests to be found here
         status = _discover_test_runner(path, args)
-        self.assertEqual(status, os.EX_OK)
+        self.assertEqual(status, 0)
 
     def test_testcase_test_runner(self):
         """Test correct functionality of `_testcase_test_runner`"""
@@ -188,27 +188,27 @@ class TestMainHandleTests(Py23FixTestCase):
         args = parse_args(u"tests schema", use_shlex=True)
         from .test_base import TestSFFTypeError
         status = _testcase_test_runner(TestSFFTypeError, args)
-        self.assertEqual(status, os.EX_OK)
+        self.assertEqual(status, 0)
 
     def test_handle_tests_all(self):
         """Test the `tests all` tests command"""
         args = parse_args(u"tests all --dry-run", use_shlex=True)
-        self.assertEqual(Main.handle_tests(args), os.EX_OK)
+        self.assertEqual(Main.handle_tests(args), 0)
 
     def test_handle_tests_main(self):
         """Test the `tests main` tests command"""
         args = parse_args(u"tests main --dry-run", use_shlex=True)
-        self.assertEqual(Main.handle_tests(args), os.EX_OK)
+        self.assertEqual(Main.handle_tests(args), 0)
 
     def test_handle_tests_core(self):
         """Test the `tests core` tests command"""
         args = parse_args(u"tests core --dry-run", use_shlex=True)
-        self.assertEqual(Main.handle_tests(args), os.EX_OK)
+        self.assertEqual(Main.handle_tests(args), 0)
 
     def test_handle_tests_schema(self):
         """Test the `tests schema` tests command"""
         args = parse_args(u"tests schema --dry-run", use_shlex=True)
-        self.assertEqual(Main.handle_tests(args), os.EX_OK)
+        self.assertEqual(Main.handle_tests(args), 0)
 
 
 class TestMainMain(Py23FixTestCase):
@@ -222,7 +222,7 @@ class TestMainMain(Py23FixTestCase):
         ))
         sys.argv = cmd
         status = Main.main()
-        self.assertEqual(status, os.EX_OK)
+        self.assertEqual(status, 0)
         copies = glob.glob(os.path.join(TEST_DATA_PATH, u'sff', u'v0.8', u'emd_1832_copy.*'))
         if copies:
             for copy in copies:
@@ -236,25 +236,25 @@ class TestMainMain(Py23FixTestCase):
         ))
         sys.argv = cmd
         status = Main.main()
-        self.assertEqual(status, os.EX_OK)
+        self.assertEqual(status, 0)
 
     def test_main_tests(self):
         """Test the main entry point"""
         cmd = shlex.split(u"sff tests all --dry-run")
         sys.argv = cmd
         status = Main.main()
-        self.assertEqual(status, os.EX_OK)
+        self.assertEqual(status, 0)
 
     def test_main_error(self):
         """Test for wrong input"""
         cmd = shlex.split(u"sff tests")
         sys.argv = cmd
         status = Main.main()
-        self.assertEqual(status, os.EX_OK)
+        self.assertEqual(status, 0)
         cmd = shlex.split(u"sff convert file.sff -f file.abc")
         sys.argv = cmd
         status = Main.main()
-        self.assertEqual(status, os.EX_USAGE)
+        self.assertEqual(status, 64)
 
     def test_abbreviated_import(self):
         """Test importing user-classes from sfftkrw"""

@@ -2493,7 +2493,7 @@ class SFFSegmentation(SFFType):
         """
         if not os.path.exists(fn):
             print_date(_encode(u"File {} not found".format(fn), u'utf-8'))
-            sys.exit(os.EX_IOERR)
+            sys.exit(74)
         else:
             if re.match(r'.*\.(sff|xml)$', fn, re.IGNORECASE):
                 seg_local = _sff.parse(fn, silence=True)
@@ -2508,7 +2508,7 @@ class SFFSegmentation(SFFType):
                 seg_local = seg._local
             else:
                 print_date(_encode(u"Invalid EMDB-SFF file name: {}".format(fn), u'utf-8'))
-                sys.exit(os.EX_DATAERR)
+                sys.exit(65)
         # now create the output object
         obj = cls(new_obj=False)
         obj._local = seg_local

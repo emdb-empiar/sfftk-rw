@@ -7,7 +7,6 @@ import inspect
 import io
 import json
 import numbers
-import os
 import re
 
 import h5py
@@ -210,7 +209,7 @@ class SFFType(object):
                         ", ".join(VALID_EXTENSIONS),
                         fn,
                     ), u'utf-8'))
-                    return os.EX_DATAERR
+                    return 65
                 if re.match(r"^(sff|xml)$", fn_ext, re.IGNORECASE):
                     with open(fn, u'w') as f:
                         # write version and encoding
@@ -238,7 +237,7 @@ class SFFType(object):
                         # self.as_json(f, *_args, **_kwargs)
             elif issubclass(type(fn), io.IOBase):
                 self._local.export(fn, 0, *_args, **_kwargs)
-            return os.EX_OK
+            return 0
         else:
             raise SFFValueError("export failed due to validation error")
 
@@ -740,7 +739,7 @@ class SFFListType(SFFType):
         ids = list(self.get_ids())
         if len(ids) > 0:
             return max(ids) + 1
-        return 1 # to be on the safe side for segments (segment ids begin at 1)
+        return 1  # to be on the safe side for segments (segment ids begin at 1)
 
     def _add_to_dict(self, v):
         """Private method that adds to the convenience dictionary
