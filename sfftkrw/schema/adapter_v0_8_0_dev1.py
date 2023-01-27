@@ -2518,10 +2518,11 @@ class SFFSegmentation(SFFType):
         """Alias for :py:meth:`.export` method. Passes all args and kwargs onto :py:meth:`.export`"""
         return super(SFFSegmentation, self).export(*args, **kwargs)
 
-    def merge_annotation(self, other_seg):
+    def merge_annotation(self, other_seg, include_colour=False):
         """Merge the annotation from another sff_seg to this one
 
         :param other_seg: segmentation to get annotations from
+        :param bool include_colour: copy the colours from the source (useful if you want control over the colours)
         :type other_seg: :py:class:`sfftkrw.SFFSegmentation`
         """
         _assert_or_raise(other_seg, SFFSegmentation)
@@ -2534,6 +2535,8 @@ class SFFSegmentation(SFFType):
         for segment in self.segments:
             other_segment = other_seg.segments.get_by_id(segment.id)
             segment.biological_annotation = other_segment.biological_annotation
+            if include_colour:
+                segment.colour = other_segment.colour
 
     def copy_annotation(self, from_id, to_id):
         """Copy annotation across segments

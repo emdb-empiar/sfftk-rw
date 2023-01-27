@@ -574,6 +574,21 @@ class TestSFFExternalReferenceList(Py23FixTestCase):
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             ee2 = adapter.SFFExternalReferenceList.from_hff(h[u'container'])
 
+    def test_create_from_list(self):
+        """Test that we can create an SFFExternalReferenceList from a literal list"""
+        ee = [adapter.SFFExternalReference(
+            resource=self.rr[i],
+            url=self.uu[i],
+            accession=self.aa[i],
+            label=self.ll[i],
+            description=self.dd[i]
+        ) for i in _xrange(self._no_items)]
+        E = adapter.SFFExternalReferenceList()
+        print(ee)
+        print(E)
+        ES = adapter.SFFExternalReferenceList(new_obj=True, )
+        print(ES)
+
 
 class TestSFFGlobalExternalReferenceList(Py23FixTestCase):
     """Test the SFFGlobalExternalReferenceList class"""
@@ -948,7 +963,8 @@ class TestSFFBiologicalAnnotation(Py23FixTestCase):
             self.assertIn(u'description', group[u'biological_annotation'])
             self.assertEqual(_decode(group[u'biological_annotation/description'][()], 'utf-8'), b_full.description)
             self.assertIn(u'number_of_instances', group[u'biological_annotation'])
-            self.assertEqual(_decode(group[u'biological_annotation/number_of_instances'][()], 'utf-8'), b_full.number_of_instances)
+            self.assertEqual(_decode(group[u'biological_annotation/number_of_instances'][()], 'utf-8'),
+                             b_full.number_of_instances)
             self.assertIn(u'external_references', group[u'biological_annotation'])
             self.assertEqual(len(group[u'biological_annotation/external_references']),
                              len(b_full.external_references))
@@ -5301,6 +5317,14 @@ class TestSFFSegmentation(Py23FixTestCase):
             other_segment = seg2.segment_list.get_by_id(segment.id)
             self.assertEqual(segment.biological_annotation.external_references,
                              other_segment.biological_annotation.external_references)
+            self.assertNotEqual(segment.colour, other_segment.colour)
+        # test that we can merge colours too!
+        seg1.merge_annotation(seg2, include_colour=True)
+        for segment in seg1.segment_list:
+            other_segment = seg2.segment_list.get_by_id(segment.id)
+            self.assertEqual(segment.biological_annotation.external_references,
+                             other_segment.biological_annotation.external_references)
+            self.assertEqual(segment.colour, other_segment.colour)
 
     def test_copy_annotation(self):
         """Test that we can copy annotations: global and local"""
