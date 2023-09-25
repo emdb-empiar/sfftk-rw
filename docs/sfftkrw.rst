@@ -286,7 +286,12 @@ To learn more about the core classes please refer to :doc:`base`.
     :members:
     :show-inheritance:
 
+:py:class:`SFFSubtomogramAverage` class
+========================================
 
+.. autoclass:: SFFSubtomogramAverage(id=None, lattice_id, value=None, transform_id=None)
+    :members:
+    :show-inheritance:
 
 
 

@@ -3248,6 +3248,120 @@ class TestSFFEllipsoid(Py23FixTestCase):
                 self.assertIsInstance(ellipsoid2.transform_id, int)
 
 
+class TestSFFSubtomogramAverage(Py23FixTestCase):
+    """Test the SFFSubtomogramAverage class"""
+
+    def tearDown(self):
+        adapter.SFFShape.reset_id()
+
+    def test_default(self):
+        """Test default settings"""
+        SA = adapter.SFFSubtomogramAverage()
+        self.assertRegex(
+            _str(SA),
+            r"""SFFSubtomogramAverage\(id={}, lattice_id={}, value={}, transform_id={}\)""".format(
+                0, None, None, None
+            )
+        )
+        _lattice_id, _value, _transform_id = _random_integer(), _random_float(10), _random_integer()
+        SA = adapter.SFFSubtomogramAverage(lattice_id=_lattice_id, value=_value, transform_id=_transform_id)
+        self.assertRegex(
+            _str(SA),
+            r"""SFFSubtomogramAverage\(id={}, lattice_id={}, value={}, transform_id={}\)""".format(
+                1, _lattice_id, _value, _transform_id
+            )
+        )
+        self.assertEqual(SA.id, 1)  # the second one we have created
+        self.assertEqual(SA.lattice_id, _lattice_id)
+        self.assertEqual(SA.value, _value)
+        self.assertEqual(SA.transform_id, _transform_id)
+
+    def test_from_gds_type(self):
+        """Test that all attributes exists when we start with a gds_type"""
+        _SA = emdb_sff.three_d_volume_type()
+        SA = adapter.SFFSubtomogramAverage.from_gds_type(_SA)
+        self.assertRegex(
+            _str(SA),
+            r"""SFFSubtomogramAverage\(id={}, lattice_id={}, value={}, transform_id={}\)""".format(
+                None, None, None, None
+            )
+        )
+        _lattice_id, _value, _transform_id = _random_integer(), _random_float(10), _random_integer()
+        _SA = emdb_sff.three_d_volume_type(lattice_id=_lattice_id, value=_value, transform_id=_transform_id)
+        SA = adapter.SFFSubtomogramAverage.from_gds_type(_SA)
+        self.assertRegex(
+            _str(SA),
+            r"""SFFSubtomogramAverage\(id={}, lattice_id={}, value={}, transform_id={}\)""".format(
+                None, _lattice_id, _value, _transform_id
+            )
+        )
+        self.assertEqual(SA.lattice_id, _lattice_id)
+        self.assertEqual(SA.value, _value)
+        self.assertEqual(SA.transform_id, _transform_id)
+
+    def test_json(self):
+        """Interconvert to JSON"""
+        _lattice_id, _value, _transform_id = _random_integer(), _random_float(10), _random_integer()
+        sa = adapter.SFFSubtomogramAverage(lattice_id=_lattice_id, value=_value, transform_id=_transform_id)
+        e_json = sa.as_json()
+        self.assertEqual(e_json, {
+            'id': sa.id,
+            'shape': 'subtomogram_average',
+            'lattice_id': sa.lattice_id,
+            'value': sa.value,
+            'transform_id': _transform_id,
+        })
+        sa2 = adapter.SFFSubtomogramAverage.from_json(e_json)
+        self.assertEqual(sa, sa2)
+
+    def test_hff(self):
+        # empty case
+        subtomogram_average = adapter.SFFSubtomogramAverage()
+        with h5py.File(self.test_hdf5_fn, 'w') as h:
+            group = h.create_group('container')
+            group = subtomogram_average.as_hff(group)
+            group_name = f'{subtomogram_average.id}'
+            self.assertIn(group_name, group)
+            self.assertIn('id', group[group_name])
+            self.assertIn('shape', group[group_name])
+            self.assertEqual(_decode(group[group_name + '/shape'][()], 'utf-8'), 'subtomogram_average')
+            self.assertNotIn('lattice_id', group[group_name])
+            self.assertNotIn('value', group[group_name])
+            self.assertNotIn('transform_id', group[group_name])
+        with h5py.File(self.test_hdf5_fn, 'r') as h:
+            for group in h['container'].values():
+                subtomogram_average2 = adapter.SFFSubtomogramAverage.from_hff(group)
+                self.assertEqual(subtomogram_average, subtomogram_average2)
+                self.assertIsInstance(subtomogram_average2.id, int)
+                self.assertIsNone(subtomogram_average2.transform_id)
+        # non-empty case
+        _lattice_id, _value, _transform_id = _random_integer(), _random_float(10), _random_integer()
+        subtomogram_average = adapter.SFFSubtomogramAverage(
+            lattice_id=_lattice_id,
+            value=_value,
+            transform_id=_transform_id
+        )
+        with h5py.File(self.test_hdf5_fn, 'w') as h:
+            group = h.create_group('container')
+            group = subtomogram_average.as_hff(group)
+            group_name = f'{subtomogram_average.id}'
+            self.assertIn(group_name, group)
+            self.assertIn('id', group[group_name])
+            self.assertIn('shape', group[group_name])
+            self.assertEqual(_decode(group[group_name + u'/shape'][()], 'utf-8'), 'subtomogram_average')
+            self.assertEqual(group[f'{group_name}/lattice_id'][()], _lattice_id)
+            self.assertEqual(group[f'{group_name}/value'][()], _value)
+            self.assertEqual(group[f'{group_name}/transform_id'][()], _transform_id)
+        with h5py.File(self.test_hdf5_fn, 'r') as h:
+            for group in h['container'].values():
+                subtomogram_average2 = adapter.SFFSubtomogramAverage.from_hff(group)
+                self.assertEqual(subtomogram_average, subtomogram_average2)
+                self.assertIsInstance(subtomogram_average2.id, int)
+                self.assertIsInstance(subtomogram_average2.lattice_id, int)
+                self.assertIsInstance(subtomogram_average2.value, float)
+                self.assertIsInstance(subtomogram_average2.transform_id, int)
+
+
 class TestSFFShapePrimitiveList(Py23FixTestCase):
     """Test the SFFShapePrimitiveList class"""
 

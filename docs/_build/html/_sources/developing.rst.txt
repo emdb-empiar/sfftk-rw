@@ -877,8 +877,8 @@ For each segment (voxel value) in the lattice create a 3D volume object that ref
     # segment one
     segment = sff.SFFSegment()
     vol1_value = 1
-    segment.volume = sff.SFFThreeDVolume(
-        latticeId=0,
+    segment.three_d_volume = sff.SFFThreeDVolume(
+        lattice_id=0,
         value=vol1_value,
     )
     segment.colour = sff.SFFRGBA(
@@ -892,8 +892,8 @@ For each segment (voxel value) in the lattice create a 3D volume object that ref
     # segment two
     segment = sff.SFFSegment()
     vol2_value = 37.1
-    segment.volume = sff.SFFThreeDVolume(
-        latticeId=2,
+    segment.three_d_volume = sff.SFFThreeDVolume(
+        lattice_id=2,
         value=vol2_value
     )
     segment.colour = sff.SFFRGBA(

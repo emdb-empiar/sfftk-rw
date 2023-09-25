@@ -1,88 +1,49 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en-gb" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>sfftkrw.core package &mdash; sfftk-rw v0.6.0.dev0 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sfftkrw.core package &mdash; sfftk-rw v0.8.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=64ae4820"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="sfftkrw.schema GenerateDS API" href="gds_api.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="index.html" class="icon icon-home"> sfftk-rw
           
-
-          
+          <a href="index.html" class="icon icon-home">
+            sfftk-rw
           </a>
-
-          
-            
-            
               <div class="version">
-                v0.6
+                v0.8
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">EMDB-SFF Read/Write Toolkit (<code class="docutils literal notranslate"><span class="pre">sfftk-rw</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_model.html">Understanding the EMDB-SFF Data Model</a></li>
@@ -95,14 +56,23 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">sfftkrw.core package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-sfftkrw.core.parser">Parser module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#parser-py">parser.py</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sfftkrw.core.parser.add_args"><code class="docutils literal notranslate"><span class="pre">add_args()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sfftkrw.core.parser.parse_args"><code class="docutils literal notranslate"><span class="pre">parse_args()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sfftkrw.core.print_tools">Printing utilities</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#print-tools-py">print_tools.py</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sfftkrw.core.print_tools.print_date"><code class="docutils literal notranslate"><span class="pre">print_date()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sfftkrw.core.print_tools.get_printable_ascii_string"><code class="docutils literal notranslate"><span class="pre">get_printable_ascii_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sfftkrw.core.print_tools.print_static"><code class="docutils literal notranslate"><span class="pre">print_static()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sfftkrw.core.utils">Miscellaneous utilities</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#utils-py">utils.py</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sfftkrw.core.utils.get_path"><code class="docutils literal notranslate"><span class="pre">get_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sfftkrw.core.utils.rgba_to_hex"><code class="docutils literal notranslate"><span class="pre">rgba_to_hex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sfftkrw.core.utils.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sfftkrw.core.utils.get_unique_id"><code class="docutils literal notranslate"><span class="pre">get_unique_id()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -111,79 +81,41 @@
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sfftk-rw</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="sfftk-rw.html">sfftk-rw packages</a> &raquo;</li>
-        
-      <li>sfftkrw.core package</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="sfftk-rw.html">sfftk-rw packages</a></li>
+      <li class="breadcrumb-item active">sfftkrw.core package</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/core.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="sfftkrw-core-package">
-<h1>sfftkrw.core package<a class="headerlink" href="#sfftkrw-core-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-sfftkrw.core.parser">
-<span id="parser-module"></span><h2>Parser module<a class="headerlink" href="#module-sfftkrw.core.parser" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="parser-py">
-<h3>parser.py<a class="headerlink" href="#parser-py" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt id="sfftkrw.core.parser.add_args">
-<code class="sig-prename descclassname">sfftkrw.core.parser.</code><code class="sig-name descname">add_args</code><span class="sig-paren">(</span><em class="sig-param">parser</em>, <em class="sig-param">the_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.parser.add_args" title="Permalink to this definition">¶</a></dt>
+             
+  <section id="sfftkrw-core-package">
+<h1>sfftkrw.core package<a class="headerlink" href="#sfftkrw-core-package" title="Link to this heading"></a></h1>
+<section id="module-sfftkrw.core.parser">
+<span id="parser-module"></span><h2>Parser module<a class="headerlink" href="#module-sfftkrw.core.parser" title="Link to this heading"></a></h2>
+<section id="parser-py">
+<h3>parser.py<a class="headerlink" href="#parser-py" title="Link to this heading"></a></h3>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="sfftkrw.core.parser.add_args">
+<span class="sig-prename descclassname"><span class="pre">sfftkrw.core.parser.</span></span><span class="sig-name descname"><span class="pre">add_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">the_arg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.parser.add_args" title="Link to this definition"></a></dt>
 <dd><p>Convenience function to add <code class="docutils literal notranslate"><span class="pre">the_arg</span></code> to the <code class="docutils literal notranslate"><span class="pre">parser</span></code>.</p>
 <p>This relies on the argument being structured as a dictionary with the keys 
 <code class="docutils literal notranslate"><span class="pre">args</span></code> for positional arguments and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> for the keyword
@@ -197,226 +129,208 @@ redefined.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></a>) – the parser to be modified</p></li>
-<li><p><strong>the_arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – the argument specified as a dict with keys <code class="docutils literal notranslate"><span class="pre">args</span></code> and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code></p></li>
+<li><p><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></a>) – the parser to be modified</p></li>
+<li><p><strong>the_arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – the argument specified as a dict with keys <code class="docutils literal notranslate"><span class="pre">args</span></code> and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a modified parser object</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="sfftkrw.core.parser.parse_args">
-<code class="sig-prename descclassname">sfftkrw.core.parser.</code><code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param">_args</em>, <em class="sig-param">use_shlex=False</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.parser.parse_args" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="sfftkrw.core.parser.parse_args">
+<span class="sig-prename descclassname"><span class="pre">sfftkrw.core.parser.</span></span><span class="sig-name descname"><span class="pre">parse_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_shlex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.parser.parse_args" title="Link to this definition"></a></dt>
 <dd><p>Parse and check command-line arguments.</p>
 <p>This function does all the heavy lifting in ensuring that commandline
 arguments are properly formatted and checked for sanity.</p>
 <p>In this way command handlers (defined in <code class="docutils literal notranslate"><span class="pre">sfftk/sff.py</span></code> e.g. <code class="docutils literal notranslate"><span class="pre">handle_convert(...)</span></code>)
 assume correct argument values and can concentrate on functionality.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><em>unicode</em>) – list of arguments (<code class="docutils literal notranslate"><span class="pre">use_shlex=False</span></code>); string of arguments (<code class="docutils literal notranslate"><span class="pre">use_shlex=True</span></code>)</p></li>
-<li><p><strong>use_shlex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – treat <code class="docutils literal notranslate"><span class="pre">_args</span></code> as a string instead for parsing using <code class="docutils literal notranslate"><span class="pre">shlex</span></code> lib</p></li>
+<li><p><strong>_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>unicode</em>) – list of arguments (<code class="docutils literal notranslate"><span class="pre">use_shlex=False</span></code>); string of arguments (<code class="docutils literal notranslate"><span class="pre">use_shlex=True</span></code>)</p></li>
+<li><p><strong>use_shlex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – treat <code class="docutils literal notranslate"><span class="pre">_args</span></code> as a string instead for parsing using <code class="docutils literal notranslate"><span class="pre">shlex</span></code> lib</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>parsed arguments</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="module-sfftkrw.core.print_tools">
-<span id="printing-utilities"></span><h2>Printing utilities<a class="headerlink" href="#module-sfftkrw.core.print_tools" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="print-tools-py">
-<h3>print_tools.py<a class="headerlink" href="#print-tools-py" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="module-sfftkrw.core.print_tools">
+<span id="printing-utilities"></span><h2>Printing utilities<a class="headerlink" href="#module-sfftkrw.core.print_tools" title="Link to this heading"></a></h2>
+<section id="print-tools-py">
+<h3>print_tools.py<a class="headerlink" href="#print-tools-py" title="Link to this heading"></a></h3>
 <p>Utilities for printing stuff to the screen.</p>
-<dl class="function">
-<dt id="sfftkrw.core.print_tools.print_date">
-<code class="sig-prename descclassname">sfftkrw.core.print_tools.</code><code class="sig-name descname">print_date</code><span class="sig-paren">(</span><em class="sig-param">print_string</em>, <em class="sig-param">stream=&lt;_io.TextIOWrapper name='&lt;stderr&gt;' mode='w' encoding='UTF-8'&gt;</em>, <em class="sig-param">newline=True</em>, <em class="sig-param">incl_date=True</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.print_tools.print_date" title="Permalink to this definition">¶</a></dt>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="sfftkrw.core.print_tools.print_date">
+<span class="sig-prename descclassname"><span class="pre">sfftkrw.core.print_tools.</span></span><span class="sig-name descname"><span class="pre">print_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">print_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stderr&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incl_date=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.print_tools.print_date" title="Link to this definition"></a></dt>
 <dd><p>Print the given string with date on the given stream</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>print_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)"><em>bytes</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><em>unicode</em>) – the bytes/str to be printed</p></li>
-<li><p><strong>stream</strong> (<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stderr" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stderr</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stdout" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stdout</span></code></a>) – the stream/file to write to</p></li>
-<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – whether (default) or not to add a newline at the end</p></li>
-<li><p><strong>incl_date</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – whether (default) or not to include the date at the beginning</p></li>
+<li><p><strong>print_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><em>bytes</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>unicode</em>) – the bytes/str to be printed</p></li>
+<li><p><strong>stream</strong> (<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stderr" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stderr</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stdout" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stdout</span></code></a>) – the stream/file to write to</p></li>
+<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – whether (default) or not to add a newline at the end</p></li>
+<li><p><strong>incl_date</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – whether (default) or not to include the date at the beginning</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="sfftkrw.core.print_tools.get_printable_ascii_string">
-<code class="sig-prename descclassname">sfftkrw.core.print_tools.</code><code class="sig-name descname">get_printable_ascii_string</code><span class="sig-paren">(</span><em class="sig-param">B</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.print_tools.get_printable_ascii_string" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="sfftkrw.core.print_tools.get_printable_ascii_string">
+<span class="sig-prename descclassname"><span class="pre">sfftkrw.core.print_tools.</span></span><span class="sig-name descname"><span class="pre">get_printable_ascii_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.print_tools.get_printable_ascii_string" title="Link to this definition"></a></dt>
 <dd><p>Given a bytes string of ASCII and non-ASCII return the maximal printable prefix</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>B</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)"><em>bytes</em></a>) – the bytes string to search</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>B</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><em>bytes</em></a>) – the bytes string to search</p>
 </dd>
-<dt class="field-even">Return ascii_b</dt>
+<dt class="field-even">Return ascii_b<span class="colon">:</span></dt>
 <dd class="field-even"><p>the maximal ASCII prefix</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)">bytes</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)">bytes</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="sfftkrw.core.print_tools.print_static">
-<code class="sig-prename descclassname">sfftkrw.core.print_tools.</code><code class="sig-name descname">print_static</code><span class="sig-paren">(</span><em class="sig-param">print_string</em>, <em class="sig-param">stream=&lt;_io.TextIOWrapper name='&lt;stderr&gt;' mode='w' encoding='UTF-8'&gt;</em>, <em class="sig-param">incl_date=True</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.print_tools.print_static" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="sfftkrw.core.print_tools.print_static">
+<span class="sig-prename descclassname"><span class="pre">sfftkrw.core.print_tools.</span></span><span class="sig-name descname"><span class="pre">print_static</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">print_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stderr&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incl_date=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.print_tools.print_static" title="Link to this definition"></a></dt>
 <dd><p>Print the given string with date on the given stream from the first position 
 overwriting any characters.</p>
 <p>This is a useful way to display progress without overcrowding the screen.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>print_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)"><em>bytes</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – the bytes/str to be printed</p></li>
-<li><p><strong>stream</strong> (<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stderr" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stderr</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stdout" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stdout</span></code></a>) – the stream/file to write to</p></li>
-<li><p><strong>incl_date</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – whether (default) or not to include the date at the beginning</p></li>
+<li><p><strong>print_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><em>bytes</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the bytes/str to be printed</p></li>
+<li><p><strong>stream</strong> (<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stderr" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stderr</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stdout" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sys.stdout</span></code></a>) – the stream/file to write to</p></li>
+<li><p><strong>incl_date</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – whether (default) or not to include the date at the beginning</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="module-sfftkrw.core.utils">
-<span id="miscellaneous-utilities"></span><h2>Miscellaneous utilities<a class="headerlink" href="#module-sfftkrw.core.utils" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="utils-py">
-<h3>utils.py<a class="headerlink" href="#utils-py" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="module-sfftkrw.core.utils">
+<span id="miscellaneous-utilities"></span><h2>Miscellaneous utilities<a class="headerlink" href="#module-sfftkrw.core.utils" title="Link to this heading"></a></h2>
+<section id="utils-py">
+<h3>utils.py<a class="headerlink" href="#utils-py" title="Link to this heading"></a></h3>
 <p>A collection of helpful utilities</p>
-<dl class="function">
-<dt id="sfftkrw.core.utils.get_path">
-<code class="sig-prename descclassname">sfftkrw.core.utils.</code><code class="sig-name descname">get_path</code><span class="sig-paren">(</span><em class="sig-param">D</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.utils.get_path" title="Permalink to this definition">¶</a></dt>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="sfftkrw.core.utils.get_path">
+<span class="sig-prename descclassname"><span class="pre">sfftkrw.core.utils.</span></span><span class="sig-name descname"><span class="pre">get_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.utils.get_path" title="Link to this definition"></a></dt>
 <dd><p>Get a path from a dictionary</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>D</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – a dictionary</p></li>
-<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – an iterable of hashables</p></li>
+<li><p><strong>D</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – a dictionary</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – an iterable of hashables</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the item at the path from the dictionary</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="sfftkrw.core.utils.rgba_to_hex">
-<code class="sig-prename descclassname">sfftkrw.core.utils.</code><code class="sig-name descname">rgba_to_hex</code><span class="sig-paren">(</span><em class="sig-param">rgba</em>, <em class="sig-param">channels=3</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.utils.rgba_to_hex" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="sfftkrw.core.utils.rgba_to_hex">
+<span class="sig-prename descclassname"><span class="pre">sfftkrw.core.utils.</span></span><span class="sig-name descname"><span class="pre">rgba_to_hex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgba</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.utils.rgba_to_hex" title="Link to this definition"></a></dt>
 <dd><p>Convert RGB(A) iterable to a hex string (e.g. #aabbcc(dd)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rgba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – an iterable with normalised (values in the closed interval <code class="docutils literal notranslate"><span class="pre">[0-1]</span></code>) colour channel values</p></li>
-<li><p><strong>channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of channels (3 or 4); default 3</p></li>
+<li><p><strong>rgba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – an iterable with normalised (values in the closed interval <code class="docutils literal notranslate"><span class="pre">[0-1]</span></code>) colour channel values</p></li>
+<li><p><strong>channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the number of channels (3 or 4); default 3</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a hex string</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="sfftkrw.core.utils.get_version">
-<code class="sig-prename descclassname">sfftkrw.core.utils.</code><code class="sig-name descname">get_version</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.utils.get_version" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="sfftkrw.core.utils.get_version">
+<span class="sig-prename descclassname"><span class="pre">sfftkrw.core.utils.</span></span><span class="sig-name descname"><span class="pre">get_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.utils.get_version" title="Link to this definition"></a></dt>
 <dd><p>Gets the version from the EMDB-SFF file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)"><em>bytes</em></a><em> or </em><em>unicode</em>) – name of EMDB-SFF file</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><em>bytes</em></a><em> or </em><em>unicode</em>) – name of EMDB-SFF file</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the version</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>unicode</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="sfftkrw.core.utils.get_unique_id">
-<code class="sig-prename descclassname">sfftkrw.core.utils.</code><code class="sig-name descname">get_unique_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.utils.get_unique_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="sfftkrw.core.utils.get_unique_id">
+<span class="sig-prename descclassname"><span class="pre">sfftkrw.core.utils.</span></span><span class="sig-name descname"><span class="pre">get_unique_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sfftkrw.core.utils.get_unique_id" title="Link to this definition"></a></dt>
 <dd><p>Return an ID that will be unique over the current segmentation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>unique_id</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-</div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="gds_api.html" class="btn btn-neutral float-left" title="sfftkrw.schema GenerateDS API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gds_api.html" class="btn btn-neutral float-left" title="sfftkrw.schema GenerateDS API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2017, EMBL-EBI
-
-    </p>
+    <p>&#169; Copyright 2017, EMBL-EBI.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

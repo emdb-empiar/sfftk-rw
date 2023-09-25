@@ -1,5 +1,9 @@
 #Changes by release
 
+## [0.8.0] - 2023-09-25
+
+* added `SFFSubtomogramAverage` class
+
 ## [0.7.3] - 2023-01-27 Option to include source EMDB-SFF colours when merging
 
 * In EMDB-SFF `v0.8.0.dev1` `SFFSegmentation.merge_annotation(other_seg, include_colour=False)` (*do not* merge colour by default)

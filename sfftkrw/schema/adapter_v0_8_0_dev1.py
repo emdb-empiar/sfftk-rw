@@ -1610,6 +1610,93 @@ class SFFEllipsoid(SFFShape):
             raise ValueError(u"missing 'shape' attribute")
 
 
+class SFFSubtomogramAverage(SFFShape):
+    """Subtomogram average class"""
+    gds_type = _sff.three_d_volume_type
+    gds_tag_name = "subtomogram_average"
+    repr_string = "SFFSubtomogramAverage(id={}, lattice_id={}, value={}, transform_id={})"
+    repr_args = ('id', 'lattice_id', 'value', 'transform_id')
+    eq_attrs = ['lattice_id', 'value', 'transform_id']
+
+    # attributes
+    lattice_id = SFFAttribute('lattice_id', required=True,
+                              help="the ID of the lattice holding the subtomogram average")
+    value = SFFAttribute('value', required=True, help=u"the value at which the contour is defined")
+    transform_id = SFFAttribute('transform_id', required=True,
+                                help="the transform applied to this shape to position it in the space")
+
+    def as_json(self, args=None):
+        if self.id is None:
+            self.id = get_unique_id()
+        return {
+            'id': int(self.id),
+            'shape': 'subtomogram_average',
+            'lattice_id': self.lattice_id,
+            'value': self.value,
+            'transform_id': self.transform_id,
+        }
+
+    @classmethod
+    def from_json(cls, data, args=None):
+        if 'shape' in data:
+            if data['shape'] == 'subtomogram_average':
+                obj = cls(new_obj=False)
+                if 'id' in data:
+                    obj.id = data['id']
+                if 'lattice_id' in data:
+                    obj.lattice_id = data['lattice_id']
+                if 'value' in data:
+                    obj.value = data['value']
+                if 'transform_id' in data:
+                    obj.transform_id = data['transform_id']
+                return obj
+            else:
+                raise SFFTypeError(f"cannot convert shape '{data['shape']}' into subtomogram average")
+        else:
+            raise ValueError("missing 'shape' attribute")
+
+    def as_hff(self, parent_group, name=None, args=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        if self.id is None:
+            self.id = get_unique_id()
+        if not name:
+            name = _str(self.id)
+        else:
+            _assert_or_raise(name, _str)
+        group = parent_group.create_group(name)
+        if self.id is not None:
+            group['id'] = self.id
+        if self.lattice_id is not None:
+            group['lattice_id'] = self.lattice_id
+        if self.value is not None:
+            group['value'] = self.value
+        if self.transform_id is not None:
+            group['transform_id'] = self.transform_id
+        group['shape'] = 'subtomogram_average'
+        return parent_group
+
+    @classmethod
+    def from_hff(cls, parent_group, name=None, args=None):
+        _assert_or_raise(parent_group, h5py.Group)
+        obj = cls(new_obj=False)
+        group = parent_group[parent_group.name]
+        if 'shape' in group:
+            if _decode(group['shape'][()], 'utf-8') == 'subtomogram_average':
+                if 'id' in group:
+                    obj.id = int(group['id'][()])
+                if 'lattice_id' in group:
+                    obj.lattice_id = int(group['lattice_id'][()])
+                if 'value' in group:
+                    obj.value = group['value'][()]
+                if 'transform_id' in group:
+                    obj.transform_id = int(group['transform_id'][()])
+                return obj
+            else:
+                raise SFFTypeError(f"cannot convert shape '{group['shape']}' into subtomogram average")
+        else:
+            raise ValueError("missing 'shape' attribute")
+
+
 class SFFShapePrimitiveList(SFFListType):
     """Container for shapes"""
     gds_type = _sff.shape_primitive_listType
@@ -1752,7 +1839,8 @@ class SFFSegment(SFFIndexType):
                 return {
                     u'id': int(self.id),
                     u'parent_id': int(self.parent_id),
-                    u'biological_annotation': self.biological_annotation.as_json(args=args) if self.biological_annotation is not None else None,
+                    u'biological_annotation': self.biological_annotation.as_json(
+                        args=args) if self.biological_annotation is not None else None,
                     u'colour': self.colour.as_json(args=args) if self.colour is not None else None,
                     u'mesh_list': [],
                     u'three_d_volume': None,
@@ -1761,7 +1849,8 @@ class SFFSegment(SFFIndexType):
         return {
             u'id': int(self.id),
             u'parent_id': int(self.parent_id),
-            u'biological_annotation': self.biological_annotation.as_json(args=args) if self.biological_annotation is not None else None,
+            u'biological_annotation': self.biological_annotation.as_json(
+                args=args) if self.biological_annotation is not None else None,
             u'colour': self.colour.as_json(args=args) if self.colour is not None else None,
             u'mesh_list': self.mesh_list.as_json(args=args),
             u'three_d_volume': self.three_d_volume.as_json(args=args) if self.three_d_volume is not None else None,
@@ -2563,7 +2652,7 @@ class SFFSegmentation(SFFType):
         :return:
         """
         if from_id == -1:
-            self.global_external_references.clear() # = SFFGlobalExternalReferenceList()
+            self.global_external_references.clear()  # = SFFGlobalExternalReferenceList()
         else:
             segment = self.segments.get_by_id(from_id)
-            segment.biological_annotation.external_references.clear() # = SFFExternalReferenceList()
+            segment.biological_annotation.external_references.clear()  # = SFFExternalReferenceList()
