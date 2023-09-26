@@ -13,13 +13,13 @@ import tempfile
 import numpy
 from random_words import RandomWords, LoremIpsum
 
-rw = RandomWords()
-li = LoremIpsum()
-
 from . import _random_integer, Py23FixTestCase, _random_float, _random_floats
 from .. import EMDB_SFF_VERSION
 from ..core import _xrange, _str
-from ..schema import base  # , emdb_sff
+from ..schema import base
+
+rw = RandomWords()
+li = LoremIpsum()
 
 # dynamically import the latest schema generateDS API
 emdb_sff_name = 'sfftkrw.schema.v{schema_version}'.format(
@@ -65,7 +65,7 @@ class TestSFFType(Py23FixTestCase):
             """Empty entity"""
 
         with self.assertRaisesRegex(ValueError, r'.*gds_type.*'):
-            _s = _SomeEntity()
+            _SomeEntity()
 
     def test_create_from_gds_type(self):
         """Test creating an `SFFType` subclass object from a `gds_type' object"""
@@ -90,7 +90,7 @@ class TestSFFType(Py23FixTestCase):
         as the one provided"""
         _r = emdb_sff.biological_annotationType()
         with self.assertRaisesRegex(base.SFFTypeError, r".*is not object of type.*"):
-            r = adapter.SFFRGBA.from_gds_type(_r)
+            adapter.SFFRGBA.from_gds_type(_r)
 
     def test_ref_attr(self):
         """Test the `gds_tag_name` attribute"""
@@ -413,7 +413,7 @@ class TestSFFIndexType(Py23FixTestCase):
             ref = "cone"
 
         with self.assertRaisesRegex(AttributeError, r".*superclass does not have an 'update_counter' classmethod"):
-            _cone = _Cone()
+            _Cone()
 
     def test_errors(self):
         """Test that we get the right exceptions"""
@@ -646,7 +646,6 @@ class TestSFFListType(Py23FixTestCase):
         self.assertNotEqual(id(C), id(D))
         # shapes
         Sh = adapter.SFFShapePrimitiveList()
-        _no_shapes = 3
         Sh.append(adapter.SFFCone())
         Sh.append(adapter.SFFCuboid())
         Sh.append(adapter.SFFCylinder())

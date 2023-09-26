@@ -1,5 +1,9 @@
 #Changes by release
 
+## [0.8.1] - 2023-09-26
+
+* bugfix for using `SubtomogramAverage` class in `SFFShapePrimitiveList` class
+
 ## [0.8.0] - 2023-09-25
 
 * added `SFFSubtomogramAverage` class

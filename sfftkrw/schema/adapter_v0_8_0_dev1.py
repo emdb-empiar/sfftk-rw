@@ -1709,6 +1709,7 @@ class SFFShapePrimitiveList(SFFListType):
         (_sff.cuboid, SFFCuboid),
         (_sff.cylinder, SFFCylinder),
         (_sff.ellipsoid, SFFEllipsoid),
+        (_sff.three_d_volume_type, SFFSubtomogramAverage),
     ]
 
     def _shape_count(self, shape_type):
@@ -1734,9 +1735,9 @@ class SFFShapePrimitiveList(SFFListType):
         """The number of cones in this container"""
         return self._shape_count(_sff.cone)
 
-    #     @property
-    #     def num_subtomogram_averages(self):
-    #         return self._shape_count(sff.subtomogramAverage)
+    @property
+    def num_subtomogram_averages(self):
+        return self._shape_count(_sff.three_d_volume_type)
 
     def as_json(self, args=None):
         slist = list()
@@ -1757,6 +1758,8 @@ class SFFShapePrimitiveList(SFFListType):
                     obj.append(SFFCylinder.from_json(shape, args=args))
                 elif shape[u'shape'] == u'ellipsoid':
                     obj.append(SFFEllipsoid.from_json(shape, args=args))
+                elif shape[u'shape'] == u'subtomogram_average':
+                    obj.append(SFFSubtomogramAverage.from_json(shape, args=args))
                 else:
                     raise SFFTypeError(u"cannot convert shape '{}'".format(data[u'shape']))
             else:
@@ -1785,6 +1788,8 @@ class SFFShapePrimitiveList(SFFListType):
                     obj.append(SFFCylinder.from_hff(subgroup, args=args))
                 elif _decode(subgroup[u'shape'][()], 'utf-8') == u'ellipsoid':
                     obj.append(SFFEllipsoid.from_hff(subgroup, args=args))
+                elif _decode(subgroup['shape'][()], 'utf-8') == 'subtomogram_average':
+                    obj.append(SFFSubtomogramAverage.from_hff(subgroup, args=args))
                 else:
                     raise SFFTypeError(u"cannot convert shape '{}'".format(subgroup[u'shape'][()]))
             else:

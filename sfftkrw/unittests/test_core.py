@@ -9,13 +9,13 @@ import sys
 
 from random_words import RandomWords, LoremIpsum
 
-rw = RandomWords()
-li = LoremIpsum()
-
 from . import TEST_DATA_PATH, _random_integer, Py23FixTestCase
 from ..core import print_tools
 from ..core import utils
 from ..core.parser import parse_args, tool_list
+
+rw = RandomWords()
+li = LoremIpsum()
 
 __author__ = "Paul K. Korir, PhD"
 __email__ = "pkorir@ebi.ac.uk, paul.korir@gmail.com"
@@ -63,7 +63,7 @@ class TestCorePrintUtils(Py23FixTestCase):
         data = self.temp_file.readlines()[0]
         _words = data.split(' ')
         self.assertIn(_words[0], self._weekdays)  # the first part is a date
-        self.assertEqual(_words[-1][-1], '\n')  #  the last letter is a newline
+        self.assertEqual(_words[-1][-1], '\n')  # the last letter is a newline
 
     def test_print_date_non_basestring(self):
         """Test exception when print_string is not a basestring subclass"""

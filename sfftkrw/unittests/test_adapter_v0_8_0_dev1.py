@@ -3393,7 +3393,14 @@ class TestSFFShapePrimitiveList(Py23FixTestCase):
                 z=_random_float(10),
             )
         ]
-        return cones, cuboids, cylinders, ellipsoids
+        subtomogram_averages = [
+            adapter.SFFSubtomogramAverage(
+                lattice_id=_random_integer(),
+                value=_random_float(10),
+                transform_id=_random_integer(),
+            )
+        ]
+        return cones, cuboids, cylinders, ellipsoids, subtomogram_averages
 
     @staticmethod
     def get_gds_shapes(counts=_random_integers(count=4, start=2, stop=10)):
@@ -3420,46 +3427,57 @@ class TestSFFShapePrimitiveList(Py23FixTestCase):
                 z=_random_float(10),
             )
         ]
-        return cones, cuboids, cylinders, ellipsoids
+        subtomogram_averages = [
+            emdb_sff.three_d_volume_type(
+                lattice_id=_random_integer(),
+                value=_random_float(10),
+                transform_id=_random_integer(),
+            )
+        ]
+        return cones, cuboids, cylinders, ellipsoids, subtomogram_averages
 
     def test_default(self):
         """Test default settings"""
         S = adapter.SFFShapePrimitiveList()
-        cones, cuboids, cylinders, ellipsoids = TestSFFShapePrimitiveList.get_sff_shapes()
+        cones, cuboids, cylinders, ellipsoids, subtomogram_averages = TestSFFShapePrimitiveList.get_sff_shapes()
         [S.append(c) for c in cones]
         [S.append(c) for c in cuboids]
         [S.append(c) for c in cylinders]
         [S.append(c) for c in ellipsoids]
+        [S.append(c) for c in subtomogram_averages]
         self.assertRegex(
             _str(S),
             r"""SFFShapePrimitiveList\(\[.*\]\)"""
         )
-        total_shapes = len(cones) + len(cuboids) + len(cylinders) + len(ellipsoids)
+        total_shapes = len(cones) + len(cuboids) + len(cylinders) + len(ellipsoids) + len(subtomogram_averages)
         self.assertEqual(len(S), total_shapes)
         self.assertEqual(list(S.get_ids()), list(_xrange(total_shapes)))
         s_id = random.choice(list(_xrange(total_shapes)))
         s = S.get_by_id(s_id)
-        self.assertIsInstance(s, (adapter.SFFCone, adapter.SFFCuboid, adapter.SFFCylinder, adapter.SFFEllipsoid))
+        self.assertIsInstance(s, (
+        adapter.SFFCone, adapter.SFFCuboid, adapter.SFFCylinder, adapter.SFFEllipsoid, adapter.SFFSubtomogramAverage))
 
     def test_create_from_gds_type(self):
         """Test that we can create from gds_type"""
         _S = emdb_sff.shape_primitive_listType()
-        cones, cuboids, cylinders, ellipsoids = TestSFFShapePrimitiveList.get_gds_shapes()
+        cones, cuboids, cylinders, ellipsoids, subtomogram_averages = TestSFFShapePrimitiveList.get_gds_shapes()
         [_S.add_shape_primitive(c) for c in cones]
         [_S.add_shape_primitive(c) for c in cuboids]
         [_S.add_shape_primitive(c) for c in cylinders]
         [_S.add_shape_primitive(c) for c in ellipsoids]
+        [_S.add_shape_primitive(c) for c in subtomogram_averages]
         S = adapter.SFFShapePrimitiveList.from_gds_type(_S)
         self.assertRegex(
             _str(S),
             r"""SFFShapePrimitiveList\(\[.*\]\)"""
         )
-        total_shapes = len(cones) + len(cuboids) + len(cylinders) + len(ellipsoids)
+        total_shapes = len(cones) + len(cuboids) + len(cylinders) + len(ellipsoids) + len(subtomogram_averages)
         self.assertEqual(len(S), total_shapes)
         self.assertEqual(list(S.get_ids()), list())
         s_id = random.choice(list(_xrange(total_shapes)))
         s = S[s_id]
-        self.assertIsInstance(s, (adapter.SFFCone, adapter.SFFCuboid, adapter.SFFCylinder, adapter.SFFEllipsoid))
+        self.assertIsInstance(s, (
+        adapter.SFFCone, adapter.SFFCuboid, adapter.SFFCylinder, adapter.SFFEllipsoid, adapter.SFFSubtomogramAverage))
 
     def test_json(self):
         """Interconvert to JSON"""
@@ -3532,6 +3550,15 @@ class TestSFFShapePrimitiveList(Py23FixTestCase):
                 transform_id=transform_id,
             )
         ) for _ in _xrange(no_ellipsoids)]
+        no_subtomogram_averages = _random_integer(start=2, stop=10)
+        transform_id = _random_integer()
+        [S.append(
+            adapter.SFFSubtomogramAverage(
+                lattice_id=_random_integer(),
+                value=_random_float(10),
+                transform_id=transform_id,
+            )
+        ) for _ in _xrange(no_subtomogram_averages)]
         with h5py.File(self.test_hdf5_fn, u'w') as h:
             group = h.create_group(u'container')
             group = S.as_hff(group)
@@ -3549,6 +3576,9 @@ class TestSFFShapePrimitiveList(Py23FixTestCase):
                     self.assertEqual(s.x, group[u'shape_primitive_list/{}/x'.format(i)][()])
                     self.assertEqual(s.y, group[u'shape_primitive_list/{}/y'.format(i)][()])
                     self.assertEqual(s.z, group[u'shape_primitive_list/{}/z'.format(i)][()])
+                elif isinstance(s, (adapter.SFFSubtomogramAverage,)):
+                    self.assertEqual(s.lattice_id, group[f'shape_primitive_list/{i}/lattice_id'][()])    
+                    self.assertEqual(s.value, group[f'shape_primitive_list/{i}/value'][()])    
                 self.assertEqual(s.transform_id, group[u'shape_primitive_list/{}/transform_id'.format(i)][()])
         with h5py.File(self.test_hdf5_fn, u'r') as h:
             S2 = adapter.SFFShapePrimitiveList.from_hff(h[u'container'])

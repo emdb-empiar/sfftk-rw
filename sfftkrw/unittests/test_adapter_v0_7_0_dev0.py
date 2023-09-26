@@ -2882,7 +2882,7 @@ class TestSFFSegment(Py23FixTestCase):
         s = adapter.SFFSegment.from_gds_type(_s)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
+            r"""SFFSegment\(id=None, parentID=\d+, biologicalAnnotation=None, colour=None, """ 
             r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)"""
         )
         # change ID
@@ -2892,7 +2892,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertEqual(s.id, _id)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id={}, parentID=\d+, biologicalAnnotation=None, colour=None, """ \
+            r"""SFFSegment\(id={}, parentID=\d+, biologicalAnnotation=None, colour=None, """ 
             r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 _id)
         )
@@ -2904,7 +2904,7 @@ class TestSFFSegment(Py23FixTestCase):
         self.assertEqual(s.parent_id, _parent_id)
         self.assertRegex(
             _str(s),
-            r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ \
+            r"""SFFSegment\(id={}, parentID={}, biologicalAnnotation=None, colour=None, """ 
             r"""threeDVolume=None, meshList=SFFMeshList\(\[\]\), shapePrimitiveList=SFFShapePrimitiveList\(\[\]\)\)""".format(
                 None,
                 _parent_id
