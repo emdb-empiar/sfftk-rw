@@ -4387,6 +4387,9 @@ class TestSFFTransformationMatrix(Py23FixTestCase):
         self.assertEqual(T.cols, self.cols)
         self.assertEqual(T.data, self.data_string)
         self.assertTrue(numpy.array_equal(T.data_array, self.data))
+        # test that if we create a second one from_array the index will increment
+        T2 = adapter.SFFTransformationMatrix.from_array(self.data)
+        self.assertEqual(T2.id, 1)
 
     def test_create_array(self):
         # create from constructor using numpy
