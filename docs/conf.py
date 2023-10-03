@@ -306,4 +306,4 @@ autodoc_default_options = {
     'member-order': 'bysource',
 }
 # mock imports
-autodoc_mock_imports = ['h5py', 'numpy', 'RandomWords', 'lxml', 'six']
+autodoc_mock_imports = ['h5py', 'numpy', 'RandomWords', 'lxml', 'six', 'sfftkrw']

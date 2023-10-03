@@ -2609,7 +2609,7 @@ class SFFSegmentation(SFFType):
         return obj
 
     def to_file(self, *args, **kwargs):
-        """Alias for :py:meth:`.export` method. Passes all args and kwargs onto :py:meth:`.export`"""
+        """Alias for :py:meth:`.export` method. Passes all args and kwargs onto :py:meth:`.SFFSegmentation.export`"""
         return super(SFFSegmentation, self).export(*args, **kwargs)
 
     def merge_annotation(self, other_seg, include_colour=False):
